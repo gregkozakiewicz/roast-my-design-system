@@ -37,6 +37,15 @@ cp -r roast-my-design-system/skills/roast-my-design-system ~/.claude/skills/
 
 (Use `.claude/skills/` inside a repo instead to share it with your team.)
 
+**OpenAI Codex CLI** (same SKILL.md, same folder):
+
+```bash
+git clone https://github.com/pencilrebel/roast-my-design-system.git
+cp -r roast-my-design-system/skills/roast-my-design-system ~/.codex/skills/
+```
+
+Invoke with `$roast-my-design-system` (or let Codex auto-match it). Use `.codex/skills/` inside a repo to share with your team.
+
 **`npx skills`:** `npx skills add pencilrebel/roast-my-design-system` works for agents that read `~/.agents/skills/`. Claude Code currently reads `~/.claude/skills/`, so prefer one of the routes above.
 
 Requires Node 18+.

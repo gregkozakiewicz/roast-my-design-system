@@ -74,10 +74,6 @@ You get the roast in chat plus `design-system-roast.html` at your repo root: a s
 
 Yes, the median repo is already a mess. That's the point.
 
-## After the roast
-
-The numbers exist because nothing in the repo names a single source of truth for components and tokens. Cleaning up once doesn't fix the trend; giving your repo a real design system (tokens file + canonical components + agent rules) does. That's the problem [Proffer](https://github.com/pencilrebel) is being built to solve. The roast is free either way.
-
 ## License
 
 MIT

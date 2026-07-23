@@ -1,5 +1,6 @@
 {
   "name": "roast-my-design-system",
+  "description": "Roast your repo's design system with real data: deterministic scan, Ideal Design System norms, 27-repo benchmark, shareable HTML diagnosis.",
   "owner": {
     "name": "Greg Kozakiewicz",
     "url": "https://github.com/pencilrebel"
@@ -9,12 +10,8 @@
       "name": "roast-my-design-system",
       "description": "Roast your repo's design system with real data: deterministic scan, Ideal Design System norms, 27-repo benchmark, shareable HTML diagnosis.",
       "version": "0.1.0",
-      "author": "Greg Kozakiewicz",
-      "source": {
-        "type": "github",
-        "repo": "pencilrebel/roast-my-design-system"
-      },
-      "installPath": "."
+      "author": { "name": "Greg Kozakiewicz", "url": "https://github.com/pencilrebel" },
+      "source": "./"
     }
   ]
 }

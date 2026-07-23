@@ -1,0 +1,855 @@
+{
+  "builtAt": "2026-07-23T13:55:14.855Z",
+  "repoCount": 27,
+  "ideal2026": {
+    "colors": {
+      "value": 20,
+      "note": "12–24: brand hue + tints, accent, greys, status"
+    },
+    "greys": {
+      "value": 6,
+      "note": "5–7 steps"
+    },
+    "spacing": {
+      "value": 8,
+      "note": "one scale, ~8 steps"
+    },
+    "typefaces": {
+      "value": 2,
+      "note": "one for UI, one accent (code/display)"
+    },
+    "fontSizes": {
+      "value": 8,
+      "note": "a type scale, 6–8 steps"
+    },
+    "radii": {
+      "value": 4,
+      "note": "sm / md / lg / full"
+    },
+    "shadows": {
+      "value": 3,
+      "note": "2–3 elevation levels"
+    },
+    "exactDuplicates": {
+      "value": 0,
+      "note": "one canonical implementation each"
+    },
+    "inlineStyles": {
+      "value": 0,
+      "note": "styling belongs to the system"
+    }
+  },
+  "stats": {
+    "colors": {
+      "values": [
+        0,
+        0,
+        0,
+        2,
+        3,
+        36,
+        42,
+        48,
+        49,
+        69,
+        79,
+        82,
+        89,
+        112,
+        120,
+        136,
+        138,
+        146,
+        154,
+        174,
+        197,
+        237,
+        246,
+        290,
+        398,
+        403,
+        1689
+      ],
+      "p25": 45,
+      "median": 112,
+      "p75": 186,
+      "p90": 333
+    },
+    "greys": {
+      "values": [
+        0,
+        0,
+        0,
+        2,
+        2,
+        3,
+        4,
+        5,
+        8,
+        8,
+        8,
+        9,
+        14,
+        15,
+        17,
+        18,
+        20,
+        24,
+        30,
+        32,
+        34,
+        35,
+        39,
+        48,
+        49,
+        82,
+        111
+      ],
+      "p25": 5,
+      "median": 15,
+      "p75": 33,
+      "p90": 48
+    },
+    "spacing": {
+      "values": [
+        0,
+        8,
+        11,
+        12,
+        15,
+        18,
+        21,
+        25,
+        30,
+        31,
+        39,
+        40,
+        42,
+        48,
+        52,
+        58,
+        66,
+        70,
+        70,
+        71,
+        74,
+        86,
+        86,
+        88,
+        108,
+        112,
+        158
+      ],
+      "p25": 23,
+      "median": 48,
+      "p75": 73,
+      "p90": 96
+    },
+    "typefaces": {
+      "values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        5,
+        6,
+        7
+      ],
+      "p25": 0,
+      "median": 0,
+      "p75": 3,
+      "p90": 4
+    },
+    "fontSizes": {
+      "values": [
+        0,
+        0,
+        2,
+        2,
+        4,
+        5,
+        7,
+        7,
+        9,
+        10,
+        12,
+        13,
+        14,
+        18,
+        18,
+        21,
+        22,
+        23,
+        24,
+        28,
+        28,
+        30,
+        35,
+        37,
+        39,
+        40,
+        62
+      ],
+      "p25": 7,
+      "median": 18,
+      "p75": 28,
+      "p90": 38
+    },
+    "radii": {
+      "values": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        5,
+        7,
+        8,
+        8,
+        9,
+        10,
+        11,
+        11,
+        12,
+        12,
+        12,
+        16,
+        20,
+        21,
+        21,
+        23,
+        24,
+        25,
+        26,
+        31,
+        33,
+        62
+      ],
+      "p25": 8,
+      "median": 12,
+      "p75": 22,
+      "p90": 28
+    },
+    "shadows": {
+      "values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        4,
+        5,
+        5,
+        6,
+        10,
+        10,
+        16,
+        28,
+        28
+      ],
+      "p25": 0,
+      "median": 0,
+      "p75": 5,
+      "p90": 12
+    },
+    "exactDuplicates": {
+      "values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        4,
+        5,
+        7,
+        7,
+        13,
+        18,
+        19,
+        21,
+        22,
+        24,
+        24,
+        25,
+        32,
+        38,
+        46,
+        74,
+        97,
+        99,
+        118,
+        187
+      ],
+      "p25": 3,
+      "median": 19,
+      "p75": 35,
+      "p90": 98
+    },
+    "inlineStyles": {
+      "values": [
+        0,
+        0,
+        0,
+        4,
+        6,
+        6,
+        22,
+        29,
+        31,
+        47,
+        77,
+        80,
+        106,
+        116,
+        123,
+        137,
+        138,
+        149,
+        163,
+        171,
+        177,
+        181,
+        202,
+        203,
+        312,
+        1521,
+        3672
+      ],
+      "p25": 26,
+      "median": 116,
+      "p75": 174,
+      "p90": 247
+    },
+    "components": {
+      "values": [
+        9,
+        25,
+        36,
+        51,
+        62,
+        183,
+        184,
+        226,
+        276,
+        359,
+        378,
+        418,
+        620,
+        779,
+        801,
+        826,
+        916,
+        965,
+        966,
+        1039,
+        1041,
+        1229,
+        1397,
+        1428,
+        1654,
+        2163,
+        2505
+      ],
+      "p25": 205,
+      "median": 779,
+      "p75": 1040,
+      "p90": 1518
+    }
+  },
+  "repos": [
+    {
+      "repo": "calcom/cal.com",
+      "designSystem": "custom",
+      "codeFiles": 4382,
+      "metrics": {
+        "colors": 398,
+        "greys": 82,
+        "spacing": 158,
+        "typefaces": 7,
+        "fontSizes": 62,
+        "radii": 62,
+        "shadows": 10,
+        "exactDuplicates": 118,
+        "inlineStyles": 137,
+        "components": 1428
+      }
+    },
+    {
+      "repo": "excalidraw/excalidraw",
+      "designSystem": "custom",
+      "codeFiles": 518,
+      "metrics": {
+        "colors": 237,
+        "greys": 49,
+        "spacing": 88,
+        "typefaces": 3,
+        "fontSizes": 37,
+        "radii": 31,
+        "shadows": 28,
+        "exactDuplicates": 5,
+        "inlineStyles": 138,
+        "components": 359
+      }
+    },
+    {
+      "repo": "AykutSarac/jsoncrack.com",
+      "designSystem": "library",
+      "codeFiles": 107,
+      "metrics": {
+        "colors": 112,
+        "greys": 48,
+        "spacing": 18,
+        "typefaces": 2,
+        "fontSizes": 7,
+        "radii": 8,
+        "shadows": 5,
+        "exactDuplicates": 4,
+        "inlineStyles": 31,
+        "components": 51
+      }
+    },
+    {
+      "repo": "outline/outline",
+      "designSystem": "custom",
+      "codeFiles": 2075,
+      "metrics": {
+        "colors": 89,
+        "greys": 15,
+        "spacing": 15,
+        "typefaces": 0,
+        "fontSizes": 0,
+        "radii": 0,
+        "shadows": 0,
+        "exactDuplicates": 24,
+        "inlineStyles": 106,
+        "components": 620
+      }
+    },
+    {
+      "repo": "nodejs/nodejs.org",
+      "designSystem": "custom",
+      "codeFiles": 370,
+      "metrics": {
+        "colors": 69,
+        "greys": 5,
+        "spacing": 8,
+        "typefaces": 0,
+        "fontSizes": 2,
+        "radii": 0,
+        "shadows": 0,
+        "exactDuplicates": 21,
+        "inlineStyles": 6,
+        "components": 226
+      }
+    },
+    {
+      "repo": "gothinkster/react-redux-realworld-example-app",
+      "designSystem": "none",
+      "codeFiles": 38,
+      "metrics": {
+        "colors": 0,
+        "greys": 0,
+        "spacing": 0,
+        "typefaces": 0,
+        "fontSizes": 0,
+        "radii": 0,
+        "shadows": 0,
+        "exactDuplicates": 0,
+        "inlineStyles": 0,
+        "components": 25
+      }
+    },
+    {
+      "repo": "shadcn-ui/taxonomy",
+      "designSystem": "shadcn",
+      "codeFiles": 131,
+      "metrics": {
+        "colors": 2,
+        "greys": 2,
+        "spacing": 25,
+        "typefaces": 0,
+        "fontSizes": 13,
+        "radii": 7,
+        "shadows": 1,
+        "exactDuplicates": 0,
+        "inlineStyles": 6,
+        "components": 183
+      }
+    },
+    {
+      "repo": "ixartz/Next-js-Boilerplate",
+      "designSystem": "custom",
+      "codeFiles": 51,
+      "metrics": {
+        "colors": 0,
+        "greys": 0,
+        "spacing": 11,
+        "typefaces": 0,
+        "fontSizes": 7,
+        "radii": 2,
+        "shadows": 0,
+        "exactDuplicates": 0,
+        "inlineStyles": 0,
+        "components": 9
+      }
+    },
+    {
+      "repo": "steven-tey/novel",
+      "designSystem": "custom",
+      "codeFiles": 61,
+      "metrics": {
+        "colors": 36,
+        "greys": 8,
+        "spacing": 21,
+        "typefaces": 1,
+        "fontSizes": 5,
+        "radii": 11,
+        "shadows": 2,
+        "exactDuplicates": 1,
+        "inlineStyles": 4,
+        "components": 62
+      }
+    },
+    {
+      "repo": "mckaywrigley/chatbot-ui",
+      "designSystem": "shadcn",
+      "codeFiles": 258,
+      "metrics": {
+        "colors": 3,
+        "greys": 3,
+        "spacing": 42,
+        "typefaces": 0,
+        "fontSizes": 9,
+        "radii": 8,
+        "shadows": 0,
+        "exactDuplicates": 1,
+        "inlineStyles": 22,
+        "components": 276
+      }
+    },
+    {
+      "repo": "documenso/documenso",
+      "designSystem": "custom",
+      "codeFiles": 1938,
+      "metrics": {
+        "colors": 82,
+        "greys": 17,
+        "spacing": 70,
+        "typefaces": 6,
+        "fontSizes": 22,
+        "radii": 12,
+        "shadows": 0,
+        "exactDuplicates": 18,
+        "inlineStyles": 116,
+        "components": 801
+      }
+    },
+    {
+      "repo": "dubinc/dub",
+      "designSystem": "custom",
+      "codeFiles": 3513,
+      "metrics": {
+        "colors": 138,
+        "greys": 14,
+        "spacing": 86,
+        "typefaces": 0,
+        "fontSizes": 40,
+        "radii": 23,
+        "shadows": 0,
+        "exactDuplicates": 32,
+        "inlineStyles": 312,
+        "components": 1397
+      }
+    },
+    {
+      "repo": "formbricks/formbricks",
+      "designSystem": "custom",
+      "codeFiles": 1861,
+      "metrics": {
+        "colors": 136,
+        "greys": 18,
+        "spacing": 74,
+        "typefaces": 2,
+        "fontSizes": 28,
+        "radii": 25,
+        "shadows": 6,
+        "exactDuplicates": 74,
+        "inlineStyles": 77,
+        "components": 1041
+      }
+    },
+    {
+      "repo": "openstatusHQ/openstatus",
+      "designSystem": "custom",
+      "codeFiles": 1742,
+      "metrics": {
+        "colors": 79,
+        "greys": 2,
+        "spacing": 30,
+        "typefaces": 0,
+        "fontSizes": 14,
+        "radii": 12,
+        "shadows": 0,
+        "exactDuplicates": 97,
+        "inlineStyles": 47,
+        "components": 966
+      }
+    },
+    {
+      "repo": "mfts/papermark",
+      "designSystem": "shadcn",
+      "codeFiles": 1335,
+      "metrics": {
+        "colors": 42,
+        "greys": 9,
+        "spacing": 71,
+        "typefaces": 0,
+        "fontSizes": 30,
+        "radii": 20,
+        "shadows": 1,
+        "exactDuplicates": 24,
+        "inlineStyles": 171,
+        "components": 779
+      }
+    },
+    {
+      "repo": "elie222/inbox-zero",
+      "designSystem": "custom",
+      "codeFiles": 1713,
+      "metrics": {
+        "colors": 154,
+        "greys": 24,
+        "spacing": 48,
+        "typefaces": 0,
+        "fontSizes": 28,
+        "radii": 21,
+        "shadows": 0,
+        "exactDuplicates": 22,
+        "inlineStyles": 29,
+        "components": 826
+      }
+    },
+    {
+      "repo": "linkwarden/linkwarden",
+      "designSystem": "custom",
+      "codeFiles": 450,
+      "metrics": {
+        "colors": 49,
+        "greys": 8,
+        "spacing": 31,
+        "typefaces": 0,
+        "fontSizes": 12,
+        "radii": 9,
+        "shadows": 0,
+        "exactDuplicates": 7,
+        "inlineStyles": 80,
+        "components": 184
+      }
+    },
+    {
+      "repo": "umami-software/umami",
+      "designSystem": "custom",
+      "codeFiles": 892,
+      "metrics": {
+        "colors": 48,
+        "greys": 8,
+        "spacing": 39,
+        "typefaces": 0,
+        "fontSizes": 4,
+        "radii": 11,
+        "shadows": 2,
+        "exactDuplicates": 0,
+        "inlineStyles": 202,
+        "components": 418
+      }
+    },
+    {
+      "repo": "twentyhq/twenty",
+      "designSystem": "library",
+      "codeFiles": 14836,
+      "metrics": {
+        "colors": 1689,
+        "greys": 111,
+        "spacing": 40,
+        "typefaces": 3,
+        "fontSizes": 23,
+        "radii": 33,
+        "shadows": 28,
+        "exactDuplicates": 25,
+        "inlineStyles": 203,
+        "components": 2163
+      }
+    },
+    {
+      "repo": "langfuse/langfuse",
+      "designSystem": "custom",
+      "codeFiles": 2681,
+      "metrics": {
+        "colors": 120,
+        "greys": 4,
+        "spacing": 52,
+        "typefaces": 0,
+        "fontSizes": 18,
+        "radii": 10,
+        "shadows": 0,
+        "exactDuplicates": 7,
+        "inlineStyles": 163,
+        "components": 1039
+      }
+    },
+    {
+      "repo": "teableio/teable",
+      "designSystem": "custom",
+      "codeFiles": 4709,
+      "metrics": {
+        "colors": 246,
+        "greys": 34,
+        "spacing": 86,
+        "typefaces": 3,
+        "fontSizes": 35,
+        "radii": 24,
+        "shadows": 10,
+        "exactDuplicates": 46,
+        "inlineStyles": 123,
+        "components": 1229
+      }
+    },
+    {
+      "repo": "makeplane/plane",
+      "designSystem": "custom",
+      "codeFiles": 3086,
+      "metrics": {
+        "colors": 403,
+        "greys": 32,
+        "spacing": 108,
+        "typefaces": 2,
+        "fontSizes": 24,
+        "radii": 21,
+        "shadows": 4,
+        "exactDuplicates": 99,
+        "inlineStyles": 177,
+        "components": 1654
+      }
+    },
+    {
+      "repo": "FlowiseAI/Flowise",
+      "designSystem": "library",
+      "codeFiles": 1677,
+      "metrics": {
+        "colors": 197,
+        "greys": 39,
+        "spacing": 70,
+        "typefaces": 3,
+        "fontSizes": 18,
+        "radii": 12,
+        "shadows": 5,
+        "exactDuplicates": 19,
+        "inlineStyles": 1521,
+        "components": 378
+      }
+    },
+    {
+      "repo": "lobehub/lobe-chat",
+      "designSystem": "library",
+      "codeFiles": 7990,
+      "metrics": {
+        "colors": 290,
+        "greys": 35,
+        "spacing": 66,
+        "typefaces": 1,
+        "fontSizes": 2,
+        "radii": 1,
+        "shadows": 0,
+        "exactDuplicates": 187,
+        "inlineStyles": 3672,
+        "components": 2505
+      }
+    },
+    {
+      "repo": "danny-avila/LibreChat",
+      "designSystem": "custom",
+      "codeFiles": 2394,
+      "metrics": {
+        "colors": 174,
+        "greys": 30,
+        "spacing": 112,
+        "typefaces": 5,
+        "fontSizes": 39,
+        "radii": 26,
+        "shadows": 16,
+        "exactDuplicates": 38,
+        "inlineStyles": 181,
+        "components": 965
+      }
+    },
+    {
+      "repo": "triggerdotdev/trigger.dev",
+      "designSystem": "custom",
+      "codeFiles": 2290,
+      "metrics": {
+        "colors": 146,
+        "greys": 20,
+        "spacing": 58,
+        "typefaces": 0,
+        "fontSizes": 21,
+        "radii": 16,
+        "shadows": 0,
+        "exactDuplicates": 13,
+        "inlineStyles": 149,
+        "components": 916
+      }
+    },
+    {
+      "repo": "vercel/commerce",
+      "designSystem": "custom",
+      "codeFiles": 66,
+      "metrics": {
+        "colors": 0,
+        "greys": 0,
+        "spacing": 12,
+        "typefaces": 0,
+        "fontSizes": 10,
+        "radii": 5,
+        "shadows": 0,
+        "exactDuplicates": 0,
+        "inlineStyles": 0,
+        "components": 36
+      }
+    }
+  ]
+}

@@ -76,6 +76,12 @@ function percentile(metric, value) {
 }
 const ideal = (metric) => bench?.ideal2026?.[metric]?.value ?? null;
 const median = (metric) => bench?.stats?.[metric]?.median ?? null;
+const refMedian = (metric) => bench?.referenceSystems?.stats?.[metric]?.median ?? null;
+const refLine = (metric) => {
+  const rm = refMedian(metric);
+  if (rm === null || (rm === 0 && !ZERO_IDEAL.has(metric))) return null;
+  return `Reputable systems: ${n(rm)}`;
+};
 
 // Clickable file paths — vscode:// opens the file straight in the editor.
 const fileLink = (f) => `<a class="path" href="vscode://file/${encodeURI(`${h.repo}/${f}`)}">${esc(f)}</a>`;
@@ -86,11 +92,11 @@ const offenders = h.tokens.offenders ?? [];
 
 // Verdict severity: what a real design system would need vs what we found.
 const findings = [];
-if (typefaces.length > 3) findings.push(`${typefaces.length} typefaces, brands use 2`);
+if (typefaces.length > 3) findings.push(`${typefaces.length} typefaces, brands use 2 or 3`);
 else if (typefaces.length && fontFamilies.length > 6) findings.push(`${typefaces.length} typeface${typefaces.length > 1 ? 's' : ''} declared ${fontFamilies.length} different ways`);
-if (colors.length > 24) findings.push(`${n(colors.length)} distinct colours, a design system needs ~20`);
-if (greys.length > 6) findings.push(`${greys.length} shades of grey doing the job of 5`);
-if (spacingTotal > 12) findings.push(`${spacingTotal} spacing values where a scale has 8`);
+if (colors.length > 24) findings.push(`${n(colors.length)} distinct colours, a design system needs ~24`);
+if (greys.length > 13) findings.push(`${greys.length} shades of grey doing the job of 13`);
+if (spacingTotal > 35) findings.push(`${spacingTotal} spacing values where a scale has 35`);
 if (exactDupes.length > 0) findings.push(`${exactDupes.length} component${exactDupes.length > 1 ? 's' : ''} implemented more than once`);
 if (inline.count > 20) findings.push(`${n(inline.count)} inline style blocks bypassing every system`);
 if (agentFiles.length === 0) findings.push(`no agent rules, so your AI is guessing`);
@@ -136,7 +142,7 @@ function spacingBars() {
     <div class="bar-row"><span class="bar-label">${esc(s.label)}</span>
     <div class="bar" style="width:${Math.max(2, Math.round((s.count / max) * 100))}%"></div>
     <span class="bar-count">${n(s.count)}</span></div>`).join('');
-  return `<section><h2>${n(spacingTotal)} spacing values <span class="dim">a scale needs ~8 (Tailwind steps marked ·)</span></h2>${rows}</section>`;
+  return `<section><h2>${n(spacingTotal)} spacing values <span class="dim">a scale needs ~35 (Tailwind steps marked ·)</span></h2>${rows}</section>`;
 }
 
 function duplicatesSection() {
@@ -161,9 +167,9 @@ function duplicatesSection() {
 function typographySection() {
   if (!fontFamilies.length && !fontSizeTotal && !radiiTotal) return '';
   const mini = [
-    typefaces.length ? tile(typefaces.length, 'typefaces', 'typefaces', 'brands use 2') : null,
+    typefaces.length ? tile(typefaces.length, 'typefaces', 'typefaces', 'brands use 2 or 3') : null,
     fontSizeTotal ? tile(fontSizeTotal, 'font sizes', 'fontSizes', 'a type scale has 6–8') : null,
-    radiiTotal ? tile(radiiTotal, 'border radii', 'radii', 'a system has 3–4') : null,
+    radiiTotal ? tile(radiiTotal, 'border radii', 'radii', 'a system has up to 10') : null,
     shadows.length ? tile(shadows.length, 'shadow styles', 'shadows', '2–3 elevations') : null,
   ].filter(Boolean);
   const fams = fontFamilies.slice(0, 8).map((f) =>
@@ -173,7 +179,8 @@ function typographySection() {
       ${ICONS[s.health]}
       <div class="num">${s.num}</div><div class="lab">${s.label}</div>
       <div class="target">${s.ideal}</div>
-      ${s.avg ? `<div class="avg">${s.avg}</div>` : ''}</div>`).join('')}</div>
+      ${s.avg ? `<div class="avg">${s.avg}</div>` : ''}
+  ${s.ref ? `<div class="avg ref">${s.ref}</div>` : ''}</div>`).join('')}</div>
     ${fontFamilies.length > 1 ? `<h3>${typefaces.length} typeface${typefaces.length === 1 ? '' : 's'}, declared ${fontFamilies.length} different ways <span class="dim">every distinct declaration is a chance for the next one to be wrong</span></h3><div class="cards">${fams}</div>` : ''}
   </section>`;
 }
@@ -264,15 +271,16 @@ function tile(value, label, metric, fallbackTarget) {
     num: n(value), label, health,
     ideal: iv !== null ? `${arrow}Ideal Design System: ${ZERO_IDEAL.has(metric) ? iv : `~${iv}`}` : fallbackTarget,
     avg: mv ? `Avg Design System: ${n(mv)}${pct !== null && pct >= 60 && health !== 'good' ? ` · more than ${pct}% of them` : ''}` : null,
+    ref: refLine(metric),
   };
 }
 const bigStats = [
-  tile(colors.length, 'distinct colours', 'colors', 'a system needs ~20'),
-  tile(greys.length, 'shades of grey', 'greys', '5–7 is a scale'),
-  tile(spacingTotal, 'spacing values', 'spacing', 'a scale has ~8'),
+  tile(colors.length, 'distinct colours', 'colors', 'a system needs ~24'),
+  tile(greys.length, 'shades of grey', 'greys', 'a scale has up to 13'),
+  tile(spacingTotal, 'spacing values', 'spacing', 'a scale has ~35'),
   tile(exactDupes.length, 'duplicated components', 'exactDuplicates', 'should be 0'),
   tile(inline.count, 'inline style blocks', 'inlineStyles', 'invisible to any system'),
-  { num: String(reusable.length), label: 'components defined', health: 'info', ideal: 'the raw material', avg: median('components') ? `Avg Design System: ${n(median('components'))}` : null },
+  { num: String(reusable.length), label: 'components defined', health: 'info', ideal: 'the raw material', avg: median('components') ? `Avg Design System: ${n(median('components'))}` : null, ref: refLine('components') },
 ];
 
 // A repo with essentially no colour/spacing signal most likely has no design
@@ -311,6 +319,7 @@ const html = `<!doctype html>
   .stat.st-warn .target { color:var(--warn); }
   .stat.st-good .target { color:var(--ok); }
   .stat .avg { font-size:11px; margin-top:3px; color:var(--dim); border-top:1px solid var(--line); padding-top:5px; }
+  .stat .avg.ref { border-top:none; padding-top:0; margin-top:2px; }
   .ic { position:absolute; top:12px; right:12px; width:22px; height:22px; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
   .ic-good { stroke:var(--ok); stroke-dasharray:26; stroke-dashoffset:26; animation:ic-draw .55s ease .35s forwards; }
   .ic-warn { stroke:var(--warn); animation:ic-pulse 1.9s ease-in-out infinite; }
@@ -376,13 +385,14 @@ ${agentSection()}
   ${ICONS[s.health]}
   <div class="num">${s.num}</div><div class="lab">${s.label}</div>
   <div class="target">${s.ideal}</div>
-  ${s.avg ? `<div class="avg">${s.avg}</div>` : ''}</div>`).join('')}</div>
+  ${s.avg ? `<div class="avg">${s.avg}</div>` : ''}
+  ${s.ref ? `<div class="avg ref">${s.ref}</div>` : ''}</div>`).join('')}</div>
 
 ${colors.length ? (() => {
   const tokens = colors.filter((c) => c.isToken).length;
   const strays = colors.length - tokens;
   return `<section><h2>${n(colors.length)} colours in one product <span class="dim">sized by how often each is used</span></h2>
-<p class="note">A healthy product palette is <b>~12–24 colours</b>: one brand hue with a few tints, one accent, 5–7 greys, and status colours.
+<p class="note">A healthy product palette is <b>up to ~24 colours</b>: one brand hue with a few tints, one accent, up to 13 greys, and status colours.
 ${tokens ? `Only <b>${n(tokens)}</b> of these are deliberately defined as CSS variables (tokens). The other <b>${n(strays)}</b> are hardcoded strays no system knows about.`
          : `None of these are defined as CSS variables. Every single one is a hardcoded value.`}</p>
 ${greyStrip()}

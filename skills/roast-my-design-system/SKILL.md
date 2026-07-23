@@ -27,7 +27,7 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 
 4. **Read `/tmp/roast-harvest.json`** (it is structured JSON; read only the summary-level fields, not every colour entry) and deliver the roast in chat:
    - Open with the single most damning number (typefaces, colours, or duplicates; pick the worst).
-   - Then a tight list: distinct colours (vs ideal ~20), greys (vs 5–7), spacing values (vs ~8), duplicated components with one real file-path pair as the receipt, inline style blocks, typefaces.
+   - Then a tight list: distinct colours (vs ideal ~24), greys (vs up to 13), spacing values (vs ~35), duplicated components with one real file-path pair as the receipt, inline style blocks, typefaces.
    - Compare against the benchmark the way the page does: the median of 27 scanned public repos has 112 colours, 15 greys, 48 spacing values, 19 duplicated components. If this repo is worse than the median, say so plainly.
    - Tone: deadpan, factual, no insults at the *person*, the roast is aimed at the repo. Every number you state must come from the JSON; never invent or estimate.
    - If the scan found almost nothing (no colours, no spacing), do not roast: say the styling likely lives outside this repo (CDN, parent repo) and the roast doesn't apply.

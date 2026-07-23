@@ -4,7 +4,7 @@
 
 Point it at your codebase and it counts every colour, grey, spacing value, typeface, duplicated component and inline style you actually ship. Then it compares you against an Ideal Design System and against 27 scanned public repos, roasts you in chat, and generates a shareable HTML diagnosis with real file paths.
 
-> *"7 typefaces, brands use 2. 398 distinct colours, a design system needs ~20. 82 shades of grey doing the job of 5. Messier than the median of 27 scanned repos on 6 of 6 core metrics. And the median repo is already a mess."*
+> *"7 typefaces, brands use 2 or 3. 398 distinct colours, a design system needs ~24. 82 shades of grey doing the job of 13. Messier than the median of 27 scanned repos on 6 of 6 core metrics. And the median repo is already a mess."*
 > — the roast of a real, popular open-source repo
 
 ## Why this exists
@@ -64,11 +64,11 @@ You get the roast in chat plus `design-system-roast.html` at your repo root: a s
 
 | Metric | Ideal Design System | Median of 27 scanned repos |
 |---|---|---|
-| Distinct colours | ~20 | 112 |
-| Shades of grey | 5–7 | 15 |
-| Spacing values | ~8 | 48 |
-| Typefaces | 2 | 0 declared |
-| Border radii | 3–4 | 12 |
+| Distinct colours | ~24 | 112 |
+| Shades of grey | up to 13 | 15 |
+| Spacing values | ~35 | 48 |
+| Typefaces | 2–3 | 0 declared |
+| Border radii | up to 10 | 12 |
 | Duplicated components | 0 | 19 |
 | Inline style blocks | 0 | 116 |
 

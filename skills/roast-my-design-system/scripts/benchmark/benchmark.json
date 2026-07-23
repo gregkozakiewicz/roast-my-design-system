@@ -3,32 +3,32 @@
   "repoCount": 27,
   "ideal2026": {
     "colors": {
-      "value": 20,
-      "note": "12–24: brand hue + tints, accent, greys, status"
+      "value": 24,
+      "note": "12-24: brand hue + tints, accent, greys, status"
     },
     "greys": {
-      "value": 6,
-      "note": "5–7 steps"
+      "value": 13,
+      "note": "up to 13 tones (Material neutral palette)"
     },
     "spacing": {
-      "value": 8,
-      "note": "one scale, ~8 steps"
+      "value": 35,
+      "note": "one scale (Tailwind ships ~35 named steps)"
     },
     "typefaces": {
-      "value": 2,
-      "note": "one for UI, one accent (code/display)"
+      "value": 3,
+      "note": "sans for UI, serif accent, mono for code"
     },
     "fontSizes": {
-      "value": 8,
-      "note": "a type scale, 6–8 steps"
+      "value": 10,
+      "note": "a type scale, up to 10 steps"
     },
     "radii": {
-      "value": 4,
-      "note": "sm / md / lg / full"
+      "value": 10,
+      "note": "up to a 10-step corner scale"
     },
     "shadows": {
-      "value": 3,
-      "note": "2–3 elevation levels"
+      "value": 6,
+      "note": "up to 6 elevation levels (0-5)"
     },
     "exactDuplicates": {
       "value": 0,
@@ -37,6 +37,38 @@
     "inlineStyles": {
       "value": 0,
       "note": "styling belongs to the system"
+    },
+    "zIndexes": {
+      "value": 6,
+      "note": "a fixed layer scale, ~6 layers"
+    },
+    "fontWeights": {
+      "value": 4,
+      "note": "regular, medium, semibold, bold"
+    },
+    "lineHeights": {
+      "value": 5,
+      "note": "~1.5 body, ~1.2-1.3 headings"
+    },
+    "breakpoints": {
+      "value": 5,
+      "note": "Tailwind 5, Bootstrap 6, Carbon 5"
+    },
+    "animationDurations": {
+      "value": 6,
+      "note": "a few named durations, 160-360ms"
+    },
+    "easings": {
+      "value": 4,
+      "note": "in, out, in-out, linear"
+    },
+    "borderWidths": {
+      "value": 2,
+      "note": "hairline + emphasis"
+    },
+    "opacities": {
+      "value": 5,
+      "note": "disabled, overlay, hover tints"
     }
   },
   "stats": {
@@ -851,5 +883,354 @@
         "components": 36
       }
     }
-  ]
+  ],
+  "referenceSystems": {
+    "builtAt": "2026-07-23T23:01:35.860Z",
+    "count": 10,
+    "note": "Curated scoped scans of reputable public design systems. Not comparable head-to-head with product repos: see per-system notes.",
+    "stats": {
+      "colors": {
+        "values": [
+          0,
+          2,
+          12,
+          16,
+          20,
+          71,
+          102,
+          114,
+          265,
+          514
+        ],
+        "median": 46
+      },
+      "greys": {
+        "values": [
+          0,
+          0,
+          1,
+          1,
+          2,
+          13,
+          15,
+          15,
+          18,
+          19
+        ],
+        "median": 8
+      },
+      "spacing": {
+        "values": [
+          0,
+          0,
+          1,
+          2,
+          16,
+          20,
+          22,
+          24,
+          28,
+          31
+        ],
+        "median": 18
+      },
+      "typefaces": {
+        "values": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          3,
+          5,
+          6,
+          8
+        ],
+        "median": 1
+      },
+      "fontSizes": {
+        "values": [
+          0,
+          0,
+          0,
+          4,
+          5,
+          6,
+          15,
+          19,
+          24,
+          26
+        ],
+        "median": 6
+      },
+      "radii": {
+        "values": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          4,
+          9,
+          24,
+          30
+        ],
+        "median": 2
+      },
+      "shadows": {
+        "values": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          22,
+          35,
+          44,
+          54
+        ],
+        "median": 1
+      },
+      "exactDuplicates": {
+        "values": [
+          0,
+          0,
+          0,
+          2,
+          6,
+          13,
+          15,
+          19,
+          28,
+          168
+        ],
+        "median": 10
+      },
+      "inlineStyles": {
+        "values": [
+          0,
+          3,
+          3,
+          17,
+          19,
+          26,
+          31,
+          36,
+          87,
+          1137
+        ],
+        "median": 23
+      },
+      "components": {
+        "values": [
+          0,
+          170,
+          234,
+          247,
+          327,
+          331,
+          510,
+          711,
+          811,
+          1389
+        ],
+        "median": 329
+      }
+    },
+    "systems": [
+      {
+        "name": "shadcn/ui",
+        "repo": "shadcn-ui/ui",
+        "scope": "apps/v4/registry/new-york-v4/ui",
+        "note": "zero raw values by design; tokens live in one theme file, components use semantic utilities",
+        "codeFiles": 62,
+        "metrics": {
+          "colors": 0,
+          "greys": 0,
+          "spacing": 20,
+          "typefaces": 0,
+          "fontSizes": 6,
+          "radii": 9,
+          "shadows": 0,
+          "exactDuplicates": 0,
+          "inlineStyles": 3,
+          "components": 331
+        }
+      },
+      {
+        "name": "Primer",
+        "repo": "primer/react",
+        "scope": "packages/react/src",
+        "note": "colour count inflated by hex fallbacks in var() and vendored multi-theme palettes",
+        "codeFiles": 446,
+        "metrics": {
+          "colors": 514,
+          "greys": 18,
+          "spacing": 31,
+          "typefaces": 0,
+          "fontSizes": 26,
+          "radii": 24,
+          "shadows": 35,
+          "exactDuplicates": 13,
+          "inlineStyles": 26,
+          "components": 234
+        }
+      },
+      {
+        "name": "Polaris",
+        "repo": "Shopify/polaris",
+        "scope": "polaris-react/src",
+        "note": "tokens live in the separate polaris-tokens package outside this scope",
+        "codeFiles": 653,
+        "metrics": {
+          "colors": 20,
+          "greys": 1,
+          "spacing": 16,
+          "typefaces": 0,
+          "fontSizes": 24,
+          "radii": 30,
+          "shadows": 44,
+          "exactDuplicates": 15,
+          "inlineStyles": 31,
+          "components": 247
+        }
+      },
+      {
+        "name": "Carbon",
+        "repo": "carbon-design-system/carbon",
+        "scope": "packages/react/src",
+        "note": "styling lives in separate Sass packages, so colour and radii counts are near zero",
+        "codeFiles": 516,
+        "metrics": {
+          "colors": 16,
+          "greys": 0,
+          "spacing": 22,
+          "typefaces": 8,
+          "fontSizes": 4,
+          "radii": 0,
+          "shadows": 1,
+          "exactDuplicates": 6,
+          "inlineStyles": 19,
+          "components": 327
+        }
+      },
+      {
+        "name": "Material UI",
+        "repo": "mui/material-ui",
+        "scope": "packages/mui-material/src",
+        "note": "colour count is the reference palette shipped as JS; CSS-in-JS theme values are invisible",
+        "codeFiles": 978,
+        "metrics": {
+          "colors": 265,
+          "greys": 19,
+          "spacing": 0,
+          "typefaces": 0,
+          "fontSizes": 0,
+          "radii": 0,
+          "shadows": 0,
+          "exactDuplicates": 2,
+          "inlineStyles": 17,
+          "components": 170
+        }
+      },
+      {
+        "name": "Chakra UI",
+        "repo": "chakra-ui/chakra-ui",
+        "scope": "packages/react/src",
+        "note": "colour count is the token definitions themselves; CSS-in-JS hides spacing and radii",
+        "codeFiles": 492,
+        "metrics": {
+          "colors": 114,
+          "greys": 15,
+          "spacing": 0,
+          "typefaces": 0,
+          "fontSizes": 0,
+          "radii": 0,
+          "shadows": 0,
+          "exactDuplicates": 0,
+          "inlineStyles": 3,
+          "components": 711
+        }
+      },
+      {
+        "name": "Ant Design",
+        "repo": "ant-design/ant-design",
+        "scope": "components",
+        "note": "inline style count is dominated by demos co-located with components",
+        "codeFiles": 2109,
+        "metrics": {
+          "colors": 71,
+          "greys": 13,
+          "spacing": 28,
+          "typefaces": 1,
+          "fontSizes": 5,
+          "radii": 0,
+          "shadows": 0,
+          "exactDuplicates": 19,
+          "inlineStyles": 1137,
+          "components": 1389
+        }
+      },
+      {
+        "name": "GOV.UK Frontend",
+        "repo": "alphagov/govuk-frontend",
+        "scope": "packages/govuk-frontend/src",
+        "note": "Nunjucks + Sass, so component count is zero by scanner definition; colours are the full government palette",
+        "codeFiles": 24,
+        "metrics": {
+          "colors": 102,
+          "greys": 15,
+          "spacing": 24,
+          "typefaces": 3,
+          "fontSizes": 15,
+          "radii": 3,
+          "shadows": 22,
+          "exactDuplicates": 0,
+          "inlineStyles": 0,
+          "components": 0
+        }
+      },
+      {
+        "name": "Adobe Spectrum",
+        "repo": "adobe/react-spectrum",
+        "scope": "packages/@react-spectrum",
+        "note": "styling lives in separate spectrum-css packages; duplicate count is mostly re-export patterns",
+        "codeFiles": 827,
+        "metrics": {
+          "colors": 2,
+          "greys": 1,
+          "spacing": 1,
+          "typefaces": 5,
+          "fontSizes": 0,
+          "radii": 0,
+          "shadows": 0,
+          "exactDuplicates": 168,
+          "inlineStyles": 36,
+          "components": 811
+        }
+      },
+      {
+        "name": "Cloudscape",
+        "repo": "cloudscape-design/components",
+        "scope": "src",
+        "note": "token-driven SCSS keeps colours low; shadow count comes from elevation and motion scss",
+        "codeFiles": 1219,
+        "metrics": {
+          "colors": 12,
+          "greys": 2,
+          "spacing": 2,
+          "typefaces": 6,
+          "fontSizes": 19,
+          "radii": 4,
+          "shadows": 54,
+          "exactDuplicates": 28,
+          "inlineStyles": 87,
+          "components": 510
+        }
+      }
+    ]
+  }
 }

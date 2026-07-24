@@ -225,18 +225,20 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       for (const m of cls.matchAll(/[a-z][\w-]*-\[(-?\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|pt))\]/g)) twArbitrary.add(`[${m[1]}]`, f);
     }
 
-    // Inline styles: count blocks + harvest colours/lengths inside them.
-    // Dynamic blocks and render-to-image surfaces are legitimate, not counted.
-    const blocks = renderToImage ? []
-      : inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()) && isStaticInline(b));
-    if (blocks.length) {
-      inlineStyleCount += blocks.length;
-      inlineStyleFiles.set(f, (inlineStyleFiles.get(f) ?? 0) + blocks.length);
-      for (const b of blocks) {
-        for (const m of b.matchAll(HEX_RE)) colors.add(normalizeHex(m[0]), f);
-        for (const m of b.matchAll(FUNC_COLOR_RE)) colors.add(m[0].replace(/\s+/g, ' ').toLowerCase(), f);
-        for (const m of b.matchAll(LENGTH_RE)) spacing.add(m[0], f);
-      }
+    // Inline styles: dynamic blocks and render-to-image surfaces are
+    // legitimate STYLING (not counted as blocks), but any hardcoded colour or
+    // length inside them is still a hardcoded value — harvest those from every
+    // non-trivial block; count only the all-literal blocks.
+    const allBlocks = inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()));
+    const staticBlocks = renderToImage ? [] : allBlocks.filter(isStaticInline);
+    if (staticBlocks.length) {
+      inlineStyleCount += staticBlocks.length;
+      inlineStyleFiles.set(f, (inlineStyleFiles.get(f) ?? 0) + staticBlocks.length);
+    }
+    for (const b of allBlocks) {
+      for (const m of b.matchAll(HEX_RE)) colors.add(normalizeHex(m[0]), f);
+      for (const m of b.matchAll(FUNC_COLOR_RE)) colors.add(m[0].replace(/\s+/g, ' ').toLowerCase(), f);
+      for (const m of b.matchAll(LENGTH_RE)) spacing.add(m[0], f);
     }
 
     // Raw hex colours in code outside class strings (styled-components, consts)

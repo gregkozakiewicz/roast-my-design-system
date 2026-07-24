@@ -119,8 +119,18 @@ export function profileRepo(root, files) {
 
   const styling = STYLING_DEPS.filter((s) => deps[s.pkg]).map((s) => s.label);
 
+  // The git remote is a far better identity than package.json's name field
+  // ("chatbot" vs "vercel/ai-chatbot"). Parsed from .git/config, no git exec.
+  let remoteSlug = null;
+  try {
+    const gitConfig = readFileSync(join(root, '.git/config'), 'utf8');
+    const m = gitConfig.match(/url\s*=\s*(?:https?:\/\/|git@)([^\/:]+)[\/:]([^\s\/]+\/[^\s\/]+?)(?:\.git)?\s*$/m);
+    if (m && /github|gitlab|bitbucket|codeberg/.test(m[1])) remoteSlug = m[2];
+  } catch { /* not a clone, or no remote: fall back to pkg name */ }
+
   return {
-    name: pkg.name || null,
+    name: remoteSlug || pkg.name || null,
+    pkgName: pkg.name || null,
     monorepo,
     framework,
     typescript: Boolean(deps.typescript || existsSync(join(root, 'tsconfig.json'))),

@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.1.5';
+const VERSION = '3.2.0';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -182,22 +182,28 @@ const radiiTotal = (h.tokens.radii ?? []).length + (h.tokens.tailwind?.radii ?? 
 const shadows = h.tokens.shadows ?? [];
 const offenders = h.tokens.offenders ?? [];
 
-// Verdict severity: what a real design system would need vs what we found.
-const findings = [];
-if (typefaces.length > 3) findings.push(`${typefaces.length} typefaces, brands use 2 or 3`);
-else if (typefaces.length && fontFamilies.length > 6) findings.push(`${typefaces.length} typeface${typefaces.length > 1 ? 's' : ''} declared ${fontFamilies.length} different ways`);
-if (tokenLed ? colorStrays > 24 : colors.length > 24) findings.push(tokenLed
+// Verdict severity: a finding earns a summary slot only when it is
+// meaningfully over the bar (a repo one grey over the ideal is not a
+// headline), and the three slots go to the worst offences, not the first
+// three metrics in file order.
+const candidates = [];
+const effColors = tokenLed ? colorStrays : colors.length;
+const effGreys = tokenLed ? greyStrays : greys.length;
+if (typefaces.length > 3) candidates.push({ ratio: typefaces.length / 3, text: `${typefaces.length} typefaces, brands use 2 or 3` });
+else if (typefaces.length && fontFamilies.length > 6) candidates.push({ ratio: fontFamilies.length / 6, text: `${typefaces.length} typeface${typefaces.length > 1 ? 's' : ''} declared ${fontFamilies.length} different ways` });
+if (effColors > 24 * 1.25) candidates.push({ ratio: effColors / 24, text: tokenLed
   ? `${n(colorStrays)} hardcoded colours outside the token set`
-  : `${n(colors.length)} distinct colours, a design system needs ~24`);
-if ((tokenLed ? greyStrays : greys.length) > 13) findings.push(tokenLed
+  : `${n(colors.length)} distinct colours, a design system needs ~24` });
+if (effGreys > 13 * 1.25) candidates.push({ ratio: effGreys / 13, text: tokenLed
   ? `${greyStrays} hardcoded greys outside the token set`
-  : `${greys.length} shades of grey doing the job of 13`);
-if (spacingTotal > 12) findings.push(`${spacingTotal} off-scale spacing values where a dozen would do`);
-if (iconCollisions.length >= 5) findings.push(`two icon sets collide on ${iconCollisions.length} names`);
-if (hardDupes.length > 0) findings.push(`${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once`);
-if (inline.count > 20) findings.push(`${n(inline.count)} inline style blocks bypassing every system`);
-if (arbitraryCount >= 20) findings.push(`${n(arbitraryCount)} arbitrary values like ${arbitrary[0].value} punched through the Tailwind scale`);
-if (agentFiles.length === 0) findings.push(`no agent rules, so your AI is guessing`);
+  : `${greys.length} shades of grey doing the job of 13` });
+if (spacingTotal > 15) candidates.push({ ratio: spacingTotal / 12, text: `${spacingTotal} off-scale spacing values where a dozen would do` });
+if (iconCollisions.length >= 5) candidates.push({ ratio: 1 + iconCollisions.length / 8, text: `two icon sets collide on ${iconCollisions.length} names` });
+if (hardDupes.length > 0) candidates.push({ ratio: 1 + hardDupes.length / 5, text: `${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once` });
+if (inline.count > 20) candidates.push({ ratio: inline.count / 20, text: `${n(inline.count)} inline style blocks bypassing every system` });
+if (arbitraryCount >= 20) candidates.push({ ratio: arbitraryCount / 30, text: `${n(arbitraryCount)} arbitrary values like ${arbitrary[0].value} punched through the Tailwind scale` });
+if (agentFiles.length === 0) candidates.push({ ratio: 1.3, text: `no agent rules, so your AI is guessing` });
+const findings = candidates.sort((a, b) => b.ratio - a.ratio).map((c) => c.text);
 
 let verdict = findings.length === 0
   ? 'This repo is in good shape. The gap is documentation: your agent still can\'t see the system.'
@@ -815,9 +821,11 @@ const html = `<!doctype html>
   </div>
 </header>
 
-${agentSection()}
+${whereToStartSection()}
 
 <div class="stats">${bigStats.map((s) => statTile(s)).join('')}</div>
+
+${agentSection()}
 
 <section style="margin-top:16px">${paletteSection()}</section>
 
@@ -829,7 +837,6 @@ ${duplicatesSection()}
 ${inlineSection()}
 </div>
 ${componentsSection()}
-${whereToStartSection()}
 
 <footer>
   <div class="foot-left">

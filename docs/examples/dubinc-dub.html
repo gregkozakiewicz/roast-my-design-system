@@ -277,13 +277,25 @@
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">102 distinct colours, a design system needs ~24. 14 shades of grey doing the job of 13. 54 off-scale spacing values where a dozen would do. Messier than the median of 29 scanned repos on 5 of 6 core metrics. And the median repo is already a mess.</div>
+    <div class="verdict">470 arbitrary values like [10px] punched through the Tailwind scale. 54 off-scale spacing values where a dozen would do. 102 distinct colours, a design system needs ~24. Messier than the median of 29 scanned repos on 5 of 6 core metrics. And the median repo is already a mess.</div>
   </div>
 </header>
 
-<section class="glass pad agent">
-    <div class="sec-head"><h2>What your AI agent sees today</h2></div>
-    <p class="sub">No <span class="mono">CLAUDE.md</span>, no <span class="mono">AGENTS.md</span>, no <span class="mono">.cursorrules</span>. Every time your AI builds UI here, it guesses, from everything below. This is why its output looks almost-but-not-quite right.</p></section>
+<section class="glass pad">
+    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks to increase your score.</p></div>
+    <div class="ledger">
+      <div class="ledger-row start-row">
+        <span class="ledger-idx">01</span>
+        <div class="start-body"><div class="start-title">Give your repeated bracket values names</div><div class="sub">[10px] appears 17 times, which reads as a decision, not drift. If it is one, name it in packages/tailwind-config/themes.css so the next component (and your agent) can reach for it; 31 more repeated values deserve the same look. The 72 values used once are worth a pass: keep the deliberate ones (optical nudges like the 11 under 4px, one-off layout widths) and round the accidents to a neighbouring step.</div></div>
+      </div>
+      <div class="ledger-row start-row">
+        <span class="ledger-idx">02</span>
+        <div class="start-body"><div class="start-title">Crown the canonical &lt;FormControl&gt;</div><div class="sub">16 component names have competing implementations. Start with &lt;FormControl&gt;: apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx vs apps/web/ui/submitted-leads/form-fields/form-control.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.</div></div>
+      </div>
+      <div class="ledger-row start-row">
+        <span class="ledger-idx">03</span>
+        <div class="start-body"><div class="start-title">Write the agent rules file</div><div class="sub">No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.</div></div>
+      </div></div></section>
 
 <div class="stats"><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -310,6 +322,10 @@
   <div class="num">1376</div><div class="lab">components defined</div>
   <div class="rows"><div class="row"><span class="rlab">the raw material</span><span class="rval"> </span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">779 </span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">292 </span></div></div>
 </div></div>
+
+<section class="glass pad agent">
+    <div class="sec-head"><h2>What your AI agent sees today</h2></div>
+    <p class="sub">No <span class="mono">CLAUDE.md</span>, no <span class="mono">AGENTS.md</span>, no <span class="mono">.cursorrules</span>. Every time your AI builds UI here, it guesses, from everything below. This is why its output looks almost-but-not-quite right.</p></section>
 
 <section style="margin-top:16px"><section class="palette-grid">
   <div class="glass pal-hero grad">
@@ -637,26 +653,11 @@
     <td><span class="pill pill-mint">64×</span></td>
     <td class="path">packages/ui/src/popover.tsx</td>
     <td><span class="chip chip-xs">content</span> <span class="chip chip-xs">align</span> <span class="chip chip-xs">side</span> <span class="chip chip-xs">openPopover</span> <span class="chip chip-xs">setOpenPopover</span></td></tr></tbody></table></div></section>
-<section class="glass pad">
-    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks to increase your score.</p></div>
-    <div class="ledger">
-      <div class="ledger-row start-row">
-        <span class="ledger-idx">01</span>
-        <div class="start-body"><div class="start-title">Give your repeated bracket values names</div><div class="sub">[10px] appears 17 times, which reads as a decision, not drift. If it is one, name it in packages/tailwind-config/themes.css so the next component (and your agent) can reach for it; 31 more repeated values deserve the same look. The 72 values used once are worth a pass: keep the deliberate ones (optical nudges like the 11 under 4px, one-off layout widths) and round the accidents to a neighbouring step.</div></div>
-      </div>
-      <div class="ledger-row start-row">
-        <span class="ledger-idx">02</span>
-        <div class="start-body"><div class="start-title">Crown the canonical &lt;FormControl&gt;</div><div class="sub">16 component names have competing implementations. Start with &lt;FormControl&gt;: apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx vs apps/web/ui/submitted-leads/form-fields/form-control.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.</div></div>
-      </div>
-      <div class="ledger-row start-row">
-        <span class="ledger-idx">03</span>
-        <div class="start-body"><div class="start-title">Write the agent rules file</div><div class="sub">No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.</div></div>
-      </div></div></section>
 
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a>, a free skill for Claude Code and Codex</div>
-    <div class="foot-sub"><span class="ver">ver. 3.1.5</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
+    <div class="foot-sub"><span class="ver">ver. 3.2.0</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

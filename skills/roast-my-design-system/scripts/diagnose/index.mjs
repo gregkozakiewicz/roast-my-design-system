@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.1.3';
+const VERSION = '3.1.4';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -497,8 +497,18 @@ function whereToStartSection() {
   if (iconCollisions.length >= 5) c.push({ score: 20 + iconCollisions.length * 3, title: 'Merge the two icon sets',
     sub: `${iconCollisions.length} icon names exist in both sets, so every import is a coin flip. Pick one home and rename or delete the rest. Receipt: ${esc(iconCollisions[0].files[0])} vs ${esc(iconCollisions[0].files[1])}.` });
   const strayOffender = offenders.find((o) => o.strayColors > 0);
-  if (colorStrays > 12) c.push({ score: colorStrays, title: `Tokenise the ${n(colorStrays)} stray colours`,
-    sub: `They are hardcoded where no token names them${strayOffender ? `; ${esc(strayOffender.file)} alone carries ${strayOffender.strayColors}` : ''}. Every one is a value your agent will happily copy.` });
+  if (colorStrays > 12) {
+    // When the top stray file lives beside the token definitions, say so:
+    // otherwise "your variables file is the top offender" reads like a bug.
+    const tf = h.tokens.tokenFile;
+    const besideTokens = strayOffender && tf && (strayOffender.file === tf
+      || strayOffender.file.split('/').slice(0, -1).join('/') === tf.split('/').slice(0, -1).join('/')
+      || /variables|tokens|theme/i.test(strayOffender.file));
+    c.push({ score: colorStrays, title: `Tokenise the ${n(colorStrays)} stray colours`,
+      sub: `They are hardcoded where no token names them${strayOffender ? (besideTokens
+        ? `, including ${strayOffender.strayColors} in ${esc(strayOffender.file)}, sitting right next to the token definitions. Those are the cheapest wins on this page`
+        : `; ${esc(strayOffender.file)} alone carries ${strayOffender.strayColors}`) : ''}. Every one is a value your agent will happily copy.` });
+  }
   if (inline.count > 10) { const worst = inline.files[0];
     c.push({ score: inline.count / 2, title: `Fold ${n(inline.count)} inline style blocks back into the system`,
       sub: `These are static values written as style attributes${worst ? `; start with ${esc(worst.file)} (${worst.count} blocks)` : ''}. Dynamic positioning was already excluded, so all of these could be classes or tokens today.` }); }
@@ -516,8 +526,18 @@ function whereToStartSection() {
         ? `${esc(top.value)} appears ${top.count} times, which reads as a decision, not drift. If it is one, name it${tokenFile ? ` in ${esc(tokenFile)}` : ' in the scale'} so the next component (and your agent) can reach for it${repeats.length > 1 ? `; ${repeats.length - 1} more repeated value${repeats.length > 2 ? 's' : ''} deserve the same look` : ''}. The ${singles} values used once are worth a pass: keep the deliberate ones (optical nudges${nudges ? ` like the ${nudges} under 4px` : ''}, one-off layout widths) and round the accidents to a neighbouring step.`
         : `${n(arbitraryCount)} bracket values sit outside the scale, almost all used once. Keep the deliberate ones (optical nudges, one-off widths) and round the rest to a neighbouring step.` });
   }
-  if (spacingTotal > 12 && arbitraryCount < 20) c.push({ score: spacingTotal / 2, title: `Collapse ${n(spacingTotal)} off-scale spacing values`,
-    sub: `A dozen deliberate exceptions is a system; ${n(spacingTotal)} is drift. Round each to its nearest scale step.` });
+  if (spacingTotal > 12 && arbitraryCount < 20) {
+    // "Round to the scale" is only advice when a scale exists. Without one,
+    // the first move is to define it, next to the tokens the repo already has.
+    const hasScale = twSpacing.length >= 5;
+    const tf = h.tokens.tokenFile;
+    c.push({ score: spacingTotal / 2, title: hasScale
+      ? `Fold ${n(spacingTotal)} off-scale spacing values back to the scale`
+      : `Define a spacing scale, then fold ${n(spacingTotal)} values into it`,
+      sub: hasScale
+        ? `${n(spacingTotal)} values sit outside the scale you already use. Keep the deliberate exceptions and round the accidents to a neighbouring step.`
+        : `${n(spacingTotal)} distinct spacing values and no named scale to hold them. Define ~8 steps${tf ? ` in ${esc(tf)}, next to the tokens you already keep there` : ''}, then migrate values as you touch each file. No mass rounding.` });
+  }
   const top3 = c.sort((a, b) => b.score - a.score).slice(0, 3);
   if (!top3.length) return '';
   return `<section class="glass pad">

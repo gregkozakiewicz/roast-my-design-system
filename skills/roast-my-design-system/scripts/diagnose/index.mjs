@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '2.0.3';
+const VERSION = '2.0.4';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -135,6 +135,13 @@ function percentile(metric, value) {
   const below = vals.filter((v) => v < value).length;
   return Math.round((below / vals.length) * 100);
 }
+// The flattering twin: what share of the scanned fleet is messier than you.
+function cleanerPct(metric, value) {
+  const vals = bench?.stats?.[metric]?.values;
+  if (!vals?.length) return null;
+  const above = vals.filter((v) => v > value).length;
+  return Math.round((above / vals.length) * 100);
+}
 const ideal = (metric) => bench?.ideal2026?.[metric]?.value ?? null;
 const median = (metric) => bench?.stats?.[metric]?.median ?? null;
 const refMedian = (metric) => bench?.referenceSystems?.stats?.[metric]?.median ?? null;
@@ -219,7 +226,10 @@ function tile(value, label, metric, fallbackTarget) {
   const rows = [];
   if (iv !== null) rows.push(row('Ideal Design System', ZERO_IDEAL.has(metric) ? String(iv) : `~${n(iv)}`, iv, value));
   else rows.push({ label: fallbackTarget, val: '', dir: '' });
-  if (mv) rows.push(row('Avg Design System', `${n(mv)}${pct !== null && pct >= 60 && health !== 'good' ? ` · messier than ${pct}%` : ''}`, mv, value));
+  const clean = cleanerPct(metric, value);
+  const avgNote = pct !== null && pct >= 60 && health !== 'good' ? ` · messier than ${pct}%`
+    : clean !== null && clean >= 60 ? ` · cleaner than ${clean}%` : '';
+  if (mv) rows.push(row('Avg Design System', `${n(mv)}${avgNote}`, mv, value));
   if (rm !== null && (rm > 0 || ZERO_IDEAL.has(metric))) rows.push(row('Reputable systems', n(rm), rm, value));
   return { num: n(value), label, health, rows };
 }

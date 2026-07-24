@@ -1,6 +1,6 @@
 ---
 name: roast-my-design-system
-description: Roast the current repo's design system with real data. Runs a deterministic scanner (no tokens, ~1s) that counts every colour, grey, spacing value, typeface, duplicated component and inline style, compares them against Ideal Design System norms and a 27-repo public benchmark, and generates a shareable HTML diagnosis. Use when the user asks to roast, check, audit, or diagnose their design system, design tokens, styling consistency, or asks "how bad is my CSS/design system".
+description: Roast the current repo's design system with real data. Runs a deterministic scanner (no tokens, ~1s) that counts every colour, grey, spacing value, typeface, duplicated component and inline style, compares them against Ideal Design System norms, a 29-repo public benchmark and 10 reputable design systems, and generates a shareable HTML diagnosis. Use when the user asks to roast, check, audit, or diagnose their design system, design tokens, styling consistency, or asks "how bad is my CSS/design system".
 ---
 
 # Roast my design system

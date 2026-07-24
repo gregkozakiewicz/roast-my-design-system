@@ -29,6 +29,8 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 /plugin install roast-my-design-system@roast-my-design-system
 ```
 
+If those commands error, your Claude Code is likely older than the plugin marketplace feature: update Claude Code and retry, or just use the manual route below (it works everywhere and installs the same skill).
+
 **Manual (Claude Code, any version):**
 
 ```bash

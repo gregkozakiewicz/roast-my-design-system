@@ -2,7 +2,7 @@
 
 **A Claude Code skill that roasts your repo's design system with real data.**
 
-Point it at your codebase and it counts every colour, grey, spacing value, typeface, duplicated component and inline style you actually ship. Then it compares you against an Ideal Design System, against 27 scanned public repos, and against 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…), roasts you in chat, and generates a shareable HTML diagnosis with real file paths.
+Run this skill on your codebase and it counts every colour, grey, spacing value, typeface, duplicated component and inline style. Then it compares you against an Ideal Design System, against 27 scanned public repos, and against 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…) and generates a shareable HTML diagnosis with real file paths: keep it as a report, or hand it back to Claude as the punch list for the fix.
 
 > *"7 typefaces, brands use 2 or 3. 398 distinct colours, a design system needs ~24. 82 shades of grey doing the job of 13. Messier than the median of 27 scanned repos on 6 of 6 core metrics. And the median repo is already a mess."*
 > — the roast of a real, popular open-source repo
@@ -10,7 +10,7 @@ Point it at your codebase and it counts every colour, grey, spacing value, typef
 ![The diagnosis report: health score, stat tiles with three yardsticks, dark theme](assets/screenshots_1.png)
 
 <details>
-<summary><ins><b>More Screenshots</b></ins> of the report: the palette forensics, the offender receipts, and the light theme (one file, built-in toggle)</summary>
+<summary><img src="assets/more-screenshots.svg" alt="More Screenshots" height="16"> of the report: the palette forensics, the offender receipts, and the light theme (one file, built-in toggle)</summary>
 
 ![Usage-weighted colour bar with hardcoded strays flagged, the grey ramp, and the spacing scale](assets/screenshots_2.png)
 

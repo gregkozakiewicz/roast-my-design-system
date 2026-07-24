@@ -87,7 +87,13 @@ function extractPropsHint(src, name) {
 function definedComponents(src) {
   const names = new Set();
   for (const m of src.matchAll(/export\s+(?:default\s+)?(?:async\s+)?function\s+([A-Z]\w*)/g)) names.add(m[1]);
-  for (const m of src.matchAll(/export\s+const\s+([A-Z]\w*)\s*(?::[^=]+)?=/g)) names.add(m[1]);
+  for (const m of src.matchAll(/export\s+const\s+([A-Z]\w*)\s*(?::[^=]+)?=\s*([^\s;]{1,40})/g)) {
+    // ALL_CAPS names are constants; a value starting with a literal
+    // ({...}, [...], "...", 42) is data, not a component
+    if (/^[A-Z][A-Z0-9_]+$/.test(m[1])) continue;
+    if (/^[\[{'"`0-9]/.test(m[2])) continue;
+    names.add(m[1]);
+  }
   // Class components (CRA/redux-era): `class Login extends React.Component`
   for (const m of src.matchAll(/class\s+([A-Z]\w*)\s+extends\s+(?:React\.)?(?:Pure)?Component/g)) names.add(m[1]);
   // `export default Foo` / `export default connect(...)(Foo)` — the LAST

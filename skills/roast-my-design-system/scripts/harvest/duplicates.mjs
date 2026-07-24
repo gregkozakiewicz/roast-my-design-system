@@ -95,12 +95,17 @@ export function findDuplicates(components, uiDir = null, root = null) {
       // real components elsewhere) — same-name there is deliberate, not a copy.
       if (d.files.some((f) => (perFile.get(f) ?? 0) >= 8)) { d.wrapped = true; continue; }
       const base = (f) => f.replace(/\.[jt]sx?$/, '').split('/').pop();
-      const importsName = (fromFile, name) => {
+      // Wrapper evidence must be strong: the same name imported ALIASED
+      // (`EmptyState as EmptyStateBlock`) — a bare same-name import next to a
+      // competing local definition would be a redeclaration error anyway, and
+      // a loose match here would excuse real duplicates.
+      const importsAliased = (fromFile, name, otherBase) => {
         let src; try { src = readFileSync(join(root, fromFile), 'utf8'); } catch { return false; }
-        return new RegExp(`import\\s*(?:type\\s*)?{[^}]*\\b${name}\\b[^}]*}\\s*from`).test(src);
+        return new RegExp(`import\\s*(?:type\\s*)?{[^}]*\\b${name}\\s+as\\s+\\w+[^}]*}\\s*from`).test(src)
+          || new RegExp(`import\\s*(?:type\\s*)?{[^}]*\\b${name}\\b[^}]*}\\s*from\\s*['"][^'"]*${otherBase}['"]`).test(src);
       };
       const [a, b] = d.files;
-      if (importsName(a, d.name) || importsName(b, d.name)) d.wrapped = true;
+      if (importsAliased(a, d.name, base(b)) || importsAliased(b, d.name, base(a))) d.wrapped = true;
     }
   }
 

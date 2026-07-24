@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '2.0.1';
+const VERSION = '2.0.2';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -171,14 +171,19 @@ if (bench && findings.length) {
 // Each tile is a mini scorecard: your number vs the Ideal Design System
 // target, the scanned-fleet average (the low bar) and the reputable-systems
 // median. Health drives the animated icon and colours:
-//   good  = within 5%–100% of ideal        → green checkmark (draws in)
-//   warn  = up to 20% over ideal           → amber alert circle (pulses)
-//   bad   = >20% over ideal, or basically absent (<5% of ideal, which smells
-//           like "no design system at all") → coral cross (shakes)
+//   good  = at or under the ideal          → green checkmark (draws in)
+//   warn  = over the ideal but better than the 27-repo median: "over the
+//           target, better than the average repo" → amber circle (pulses)
+//   bad   = worse than the median (and the median is already a mess), or
+//           basically absent (<5% of ideal)  → coral cross (shakes)
+// The absence rule is skipped for colours and greys: a low count there is
+// discipline, not a missing design system (a site with 0 pure greys is fine).
+// Where the median is missing or sits at/below ideal, warn caps at 1.5x ideal.
 // Zero-ideal metrics (duplicates, inline styles): 0 is good; a small tolerance
 // is warn; beyond that bad.
 const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles']);
 const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10 };
+const NO_ABSENCE_RULE = new Set(['colors', 'greys']);
 function healthOf(metric, value) {
   const iv = ideal(metric);
   if (iv === null) return 'info';
@@ -186,9 +191,11 @@ function healthOf(metric, value) {
     if (value === 0) return 'good';
     return value <= WARN_TOLERANCE[metric] ? 'warn' : 'bad';
   }
-  if (value < Math.max(1, iv * 0.05)) return 'bad';
+  if (!NO_ABSENCE_RULE.has(metric) && value < Math.max(1, iv * 0.05)) return 'bad';
   if (value <= iv) return 'good';
-  if (value <= iv * 1.2) return 'warn';
+  const mv = median(metric);
+  const warnCap = mv && mv > iv ? mv : iv * 1.5;
+  if (value <= warnCap) return 'warn';
   return 'bad';
 }
 const ICONS = {

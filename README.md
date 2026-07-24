@@ -79,9 +79,9 @@ You get the roast in chat plus `design-system-roast.html` at your repo root: a s
 
 Three real roasts of public repos, hosted as-is (the same self-contained HTML the skill generates):
 
-- **[excalidraw/excalidraw](https://pencilrebel.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)** — 237 colours, 49 greys, 3 typefaces declared 9 different ways
-- **[dubinc/dub](https://pencilrebel.github.io/roast-my-design-system/examples/dubinc-dub.html)** — 138 colours and 86 spacing values across a monorepo
-- **[vercel/ai-chatbot](https://pencilrebel.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)** — a small starter with 61 colours and 69 inline style blocks
+- **[excalidraw/excalidraw](https://pencilrebel.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**
+- **[dubinc/dub](https://pencilrebel.github.io/roast-my-design-system/examples/dubinc-dub.html)**
+- **[vercel/ai-chatbot](https://pencilrebel.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)**
 
 ## What it measures
 

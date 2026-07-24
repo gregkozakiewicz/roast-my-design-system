@@ -2,7 +2,7 @@
 
 **A Claude Code skill that roasts your repo's design system with real data.**
 
-Run this skill on your codebase and it counts every colour, grey, spacing value, typeface, duplicated component and inline style. Then it compares you against an Ideal Design System, against 27 scanned public repos, and against 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…) and generates a shareable HTML diagnosis with real file paths: keep it as a report, or hand it back to Claude as the punch list for the fix.
+Run this skill on your codebase and it counts every colour, grey, spacing value, typeface, duplicated component and inline style. Then it compares you against an Ideal Design System, against 27 scanned public repos, and against 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…) and generates a shareable HTML diagnosis with real file paths: **keep it as a report, or hand it back to Claude as the punch list for the fix.**
 
 ## Why this exists
 

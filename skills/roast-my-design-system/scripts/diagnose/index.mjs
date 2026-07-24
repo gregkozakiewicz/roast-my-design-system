@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '2.0.7';
+const VERSION = '2.0.8';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -136,6 +136,7 @@ const typefaces = distinctTypefaces(fontFamilies);
 const colorTokens = colors.filter((c) => c.isToken).length;
 const colorStrays = colors.length - colorTokens;
 const tokenLed = colorTokens >= colorStrays && colorTokens > 0;
+const greyStrays = greys.filter((c) => !c.isToken).length;
 
 // Arbitrary bracket values (p-[13px], text-[10px]) — scale erosion, counted.
 const arbitrary = h.tokens.tailwind?.arbitrary ?? [];
@@ -185,7 +186,9 @@ else if (typefaces.length && fontFamilies.length > 6) findings.push(`${typefaces
 if (tokenLed ? colorStrays > 24 : colors.length > 24) findings.push(tokenLed
   ? `${n(colorStrays)} hardcoded colours outside the token set`
   : `${n(colors.length)} distinct colours, a design system needs ~24`);
-if (greys.length > 13) findings.push(`${greys.length} shades of grey doing the job of 13`);
+if ((tokenLed ? greyStrays : greys.length) > 13) findings.push(tokenLed
+  ? `${greyStrays} hardcoded greys outside the token set`
+  : `${greys.length} shades of grey doing the job of 13`);
 if (spacingTotal > 35) findings.push(`${spacingTotal} spacing values where a scale has 35`);
 if (hardDupes.length > 0) findings.push(`${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once`);
 if (inline.count > 20) findings.push(`${n(inline.count)} inline style blocks bypassing every system`);
@@ -196,8 +199,8 @@ let verdict = findings.length === 0
   ? 'This repo is in good shape. The gap is documentation: your agent still can\'t see the system.'
   : findings.slice(0, 3).join('. ') + '.';
 if (bench && findings.length) {
-  const core = [['colors', colors.length], ['greys', greys.length], ['spacing', spacingTotal],
-    ['typefaces', typefaces.length], ['exactDuplicates', hardDupes.length], ['inlineStyles', inline.count]];
+  const core = [['colors', tokenLed ? colorStrays : colors.length], ['greys', tokenLed ? greyStrays : greys.length],
+    ['spacing', spacingTotal], ['typefaces', typefaces.length], ['exactDuplicates', hardDupes.length], ['inlineStyles', inline.count]];
   const worse = core.filter(([m, v]) => median(m) !== null && v > median(m)).length;
   if (worse >= 3) verdict += ` Messier than the median of ${bench.repoCount} scanned repos on ${worse} of ${core.length} core metrics. And the median repo is already a mess.`;
 }
@@ -264,7 +267,7 @@ function tile(value, label, metric, fallbackTarget, healthValue = value) {
 }
 const bigStats = [
   tile(colors.length, 'distinct colours', 'colors', 'a system needs ~24', tokenLed ? colorStrays : colors.length),
-  tile(greys.length, 'shades of grey', 'greys', 'a scale has up to 13'),
+  tile(greys.length, 'shades of grey', 'greys', 'a scale has up to 13', tokenLed ? greyStrays : greys.length),
   tile(spacingTotal, 'spacing values', 'spacing', 'a scale has ~35'),
   tile(hardDupes.length, 'duplicated components', 'exactDuplicates', 'should be 0'),
   tile(inline.count, 'inline style blocks', 'inlineStyles', 'invisible to any system'),

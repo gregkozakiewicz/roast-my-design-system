@@ -12,6 +12,9 @@ export function read(p) { try { return readFileSync(p, 'utf8'); } catch { return
 const SKIP_DIRS = new Set([
   'node_modules', '.next', '.git', 'dist', 'build', 'out', 'coverage',
   '.turbo', '.vercel', '.cache', 'storybook-static', 'public',
+  // Documentation sites (Docusaurus and friends) carry their own theme and
+  // demo fixtures — that styling is not the product's design language.
+  'docs', 'dev-docs', 'website', 'documentation',
   // Test/fixture surfaces are not the product's design language — counting a
   // story's `export const Default` 36× would poison the diagnosis numbers.
   '__tests__', '__mocks__', '__fixtures__', '__snapshots__',

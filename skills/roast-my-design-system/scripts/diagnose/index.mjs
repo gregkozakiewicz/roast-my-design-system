@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '2.0.5';
+const VERSION = '2.0.6';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -144,6 +144,17 @@ function cleanerPct(metric, value) {
 }
 const ideal = (metric) => bench?.ideal2026?.[metric]?.value ?? null;
 const median = (metric) => bench?.stats?.[metric]?.median ?? null;
+// A zero median reads as broken data ("Avg: 0 typefaces"), when it really
+// means "the median repo declares none". Fall back to the fleet mean there;
+// it stays an honest "Avg" and only zeroes out if literally every repo does.
+function displayAvg(metric) {
+  const mv = median(metric);
+  if (mv === null) return null;
+  if (mv !== 0) return mv;
+  const vals = bench?.stats?.[metric]?.values ?? [];
+  const mean = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+  return mean >= 0.5 ? Math.round(mean) : null;
+}
 const refMedian = (metric) => bench?.referenceSystems?.stats?.[metric]?.median ?? null;
 
 // Clickable file paths — vscode:// opens the file straight in the editor.
@@ -229,7 +240,8 @@ function tile(value, label, metric, fallbackTarget) {
   const clean = cleanerPct(metric, value);
   const avgNote = pct !== null && pct >= 60 && health !== 'good' ? ` · messier than ${pct}%`
     : clean !== null && clean >= 60 ? ` · cleaner than ${clean}%` : '';
-  if (mv !== null) rows.push(row('Avg Design System', `${n(mv)}${avgNote}`, mv, value));
+  const av = displayAvg(metric);
+  if (av !== null) rows.push(row('Avg Design System', `${n(av)}${avgNote}`, av, value));
   if (rm !== null && (rm > 0 || ZERO_IDEAL.has(metric))) rows.push(row('Reputable systems', n(rm), rm, value));
   return { num: n(value), label, health, rows };
 }

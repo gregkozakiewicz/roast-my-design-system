@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.1.2';
+const VERSION = '3.1.3';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -503,15 +503,18 @@ function whereToStartSection() {
     c.push({ score: inline.count / 2, title: `Fold ${n(inline.count)} inline style blocks back into the system`,
       sub: `These are static values written as style attributes${worst ? `; start with ${esc(worst.file)} (${worst.count} blocks)` : ''}. Dynamic positioning was already excluded, so all of these could be classes or tokens today.` }); }
   if (arbitraryCount >= 20) {
-    // Repeated brackets are de facto tokens wanting a name; singletons are
-    // drift. Same number, opposite remedies — say both.
+    // Repeated brackets read as decisions; singletons are worth a pass. Small
+    // px values are often deliberate optical nudges — the advice must not
+    // steamroll craft.
     const repeats = arbitrary.filter((a) => a.count >= 5);
+    const nudges = arbitrary.filter((a) => /^\[-?[0-3](?:\.\d+)?px\]$/.test(a.value)).length;
     const singles = arbitrary.filter((a) => a.count === 1).length;
     const top = arbitrary[0];
-    c.push({ score: arbitraryCount / 3, title: `Name the bracket values you clearly meant`,
+    const tokenFile = h.tokens.tokenFile;
+    c.push({ score: arbitraryCount / 3, title: `Give your repeated bracket values names`,
       sub: repeats.length
-        ? `${esc(top.value)} appears ${top.count} times: that is a token without a name, so promote it (and ${repeats.length > 1 ? `the other ${repeats.length - 1} repeat offender${repeats.length > 2 ? 's' : ''}` : 'any like it'}) into the scale. Then round the ${singles} one-off values to their nearest step, and leave genuine one-off layout widths alone.`
-        : `${n(arbitraryCount)} bracket values bypass the scale and almost all are one-offs: round each to its nearest step.` });
+        ? `${esc(top.value)} appears ${top.count} times, which reads as a decision, not drift. If it is one, name it${tokenFile ? ` in ${esc(tokenFile)}` : ' in the scale'} so the next component (and your agent) can reach for it${repeats.length > 1 ? `; ${repeats.length - 1} more repeated value${repeats.length > 2 ? 's' : ''} deserve the same look` : ''}. The ${singles} values used once are worth a pass: keep the deliberate ones (optical nudges${nudges ? ` like the ${nudges} under 4px` : ''}, one-off layout widths) and round the accidents to a neighbouring step.`
+        : `${n(arbitraryCount)} bracket values sit outside the scale, almost all used once. Keep the deliberate ones (optical nudges, one-off widths) and round the rest to a neighbouring step.` });
   }
   if (spacingTotal > 12 && arbitraryCount < 20) c.push({ score: spacingTotal / 2, title: `Collapse ${n(spacingTotal)} off-scale spacing values`,
     sub: `A dozen deliberate exceptions is a system; ${n(spacingTotal)} is drift. Round each to its nearest scale step.` });

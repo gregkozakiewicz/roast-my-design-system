@@ -134,9 +134,11 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // are deliberate tokens; everything else is a hardcoded stray. The diagnosis
   // hinges on this split.
   const tokenDefined = new Set();
+  const tokenDefsPerFile = new Map();
 
   const scanCssText = (text, file) => {
     for (const m of text.matchAll(/--[\w-]+\s*:\s*([^;{}]+)[;}]/g)) {
+      tokenDefsPerFile.set(file, (tokenDefsPerFile.get(file) ?? 0) + 1);
       for (const c of m[1].matchAll(HEX_RE)) tokenDefined.add(normalizeHex(c[0]));
       for (const c of m[1].matchAll(FUNC_COLOR_RE)) tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase());
     }
@@ -282,7 +284,10 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     .sort((a, b) => b.total - a.total)
     .slice(0, 10);
 
+  const tokenFile = [...tokenDefsPerFile.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+
   return {
+    tokenFile,
     colors: colorList,
     offenders: offenderList,
     greyCount: colorList.filter((c) => c.value.startsWith('#') && isGrey(c.value)).length,

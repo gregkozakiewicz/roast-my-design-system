@@ -8,6 +8,13 @@ Run this skill on your codebase and get three things: a health score for your de
 
 Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in your repo. If your repo has 112 colours and four Button implementations, your agent guesses which one is canonical, and it picks wrong half the time. That's why AI-generated UI looks *almost-but-not-quite* right. The first step to fixing it is seeing the mess measured.
 
+## Example use cases
+
+- **Pre-refactor audit.** Run `/roast-my-design-system` before a design-system cleanup to get the measured baseline: every colour, spacing value, duplicated component and inline style, with real file paths.
+- **Diagnosing almost-right AI output.** When Claude keeps generating UI that looks slightly off, the report shows which duplicated components and stray values it is imitating, and where the canonical ones live.
+- **Making the case without a meeting.** Drop the self-contained HTML report in Slack: a health score and three benchmarks (ideal norms, the 29-repo median, 10 reputable systems) argue for the design system for you.
+- **The fix loop.** Hand the report back to Claude as the punch list and work through the Where to start section, file by file.
+
 The full report for vercel/ai-chatbot, top to bottom:
 
 ![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](assets/report-full-dark.png)

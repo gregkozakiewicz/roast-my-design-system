@@ -1,13 +1,21 @@
 {
   "name": "roast-my-design-system",
-  "description": "Roast your repo's design system with real data: a deterministic scanner counts every colour, grey, spacing value, typeface, duplicated component and inline style, compares them against Ideal Design System norms and a 27-repo benchmark, and generates a shareable HTML diagnosis.",
+  "description": "Roast your repo's design system with real data: a deterministic scanner counts every colour, grey, spacing value, typeface, duplicated component and inline style, compares them against Ideal Design System norms, a 27-repo benchmark and 10 reputable design systems, and generates a shareable light/dark HTML diagnosis.",
   "version": "0.1.0",
   "author": {
     "name": "Greg Kozakiewicz",
-    "url": "https://github.com/pencilrebel"
+    "url": "https://gregkozakiewicz.com"
   },
   "homepage": "https://github.com/pencilrebel/roast-my-design-system",
   "repository": "pencilrebel/roast-my-design-system",
   "license": "MIT",
-  "keywords": ["design-system", "design-tokens", "css", "audit", "ui-consistency", "tailwind", "react"]
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "css",
+    "audit",
+    "ui-consistency",
+    "tailwind",
+    "react"
+  ]
 }

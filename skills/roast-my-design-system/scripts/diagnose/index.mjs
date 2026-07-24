@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '2.0.8';
+const VERSION = '3.0.0';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -114,11 +114,14 @@ const greysLight = greysSorted(bgLumOf(THEMES.light.pageBgHex));
 const nonGreys = colors.filter((c) => !isGreyHex(c.value));
 const spacing = h.tokens.spacing ?? [];
 const twSpacing = h.tokens.tailwind?.spacing ?? [];
-const spacingTotal = new Set([...spacing.map((s) => s.value), ...twSpacing.map((s) => `tw:${s.value}`)]).size;
+// Off-scale spacing only: CSS-declared values plus arbitrary brackets. Using
+// many steps of the sanctioned Tailwind scale is health, not sprawl.
+const spacingTotal = spacing.length + twSpacing.filter((v) => v.value.startsWith('[')).length;
 const exactDupes = h.duplicates.exactDuplicates ?? [];
 // A wrapped pair (one file imports the name from the other) is composition,
 // not competition — listed with a badge, but not counted as a duplicate.
 const hardDupes = exactDupes.filter((d) => !d.wrapped);
+const iconCollisions = h.duplicates.iconCollisions ?? [];
 const families = h.duplicates.families ?? [];
 const inline = h.tokens.inlineStyles ?? { count: 0, files: [] };
 const comps = h.components ?? [];
@@ -189,7 +192,8 @@ if (tokenLed ? colorStrays > 24 : colors.length > 24) findings.push(tokenLed
 if ((tokenLed ? greyStrays : greys.length) > 13) findings.push(tokenLed
   ? `${greyStrays} hardcoded greys outside the token set`
   : `${greys.length} shades of grey doing the job of 13`);
-if (spacingTotal > 35) findings.push(`${spacingTotal} spacing values where a scale has 35`);
+if (spacingTotal > 12) findings.push(`${spacingTotal} off-scale spacing values where a dozen would do`);
+if (iconCollisions.length >= 5) findings.push(`two icon sets collide on ${iconCollisions.length} names`);
 if (hardDupes.length > 0) findings.push(`${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once`);
 if (inline.count > 20) findings.push(`${n(inline.count)} inline style blocks bypassing every system`);
 if (arbitraryCount >= 20) findings.push(`${n(arbitraryCount)} arbitrary values like ${arbitrary[0].value} punched through the Tailwind scale`);
@@ -268,7 +272,7 @@ function tile(value, label, metric, fallbackTarget, healthValue = value) {
 const bigStats = [
   tile(colors.length, 'distinct colours', 'colors', 'a system needs ~24', tokenLed ? colorStrays : colors.length),
   tile(greys.length, 'shades of grey', 'greys', 'a scale has up to 13', tokenLed ? greyStrays : greys.length),
-  tile(spacingTotal, 'spacing values', 'spacing', 'a scale has ~35'),
+  tile(spacingTotal, 'off-scale spacing values', 'spacing', 'a dozen deliberate exceptions'),
   tile(hardDupes.length, 'duplicated components', 'exactDuplicates', 'should be 0'),
   tile(inline.count, 'inline style blocks', 'inlineStyles', 'invisible to any system'),
   { num: String(reusable.length), label: 'components defined', health: 'info',
@@ -365,12 +369,18 @@ function spacingBars() {
     <div class="receipts">${eyebrow(`${n(arbitraryCount)} arbitrary values punched through the scale, one bracket at a time`)}
     <div class="chips-row">${arbitrary.slice(0, 10).map((a) => `<span class="vchip bad" title="${esc(a.files?.[0]?.file ?? '')}">${esc(a.value)} ×${a.count}</span>`).join('')}${arbitrary.length > 10 ? `<span class="vchip dim">+${arbitrary.length - 10} more</span>` : ''}</div></div>` : '';
   return `<section class="glass pad">
-    ${sectionHead(`${n(spacingTotal)} spacing values`, `a scale allows ~35 · Tailwind steps marked ·${hasTw ? ' · off-scale values in coral' : ''}`)}
+    ${sectionHead(`${n(spacingTotal)} off-scale spacing values`, `a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral`)}
     <div class="bars">${rows}</div>${arb}</section>`;
 }
 
 function duplicatesSection() {
-  if (!exactDupes.length && !families.length) return '';
+  if (!exactDupes.length && !families.length && !iconCollisions.length) return '';
+  const iconCard = iconCollisions.length ? `
+    <div class="fam">
+      ${eyebrow(`two icon sets collide on ${iconCollisions.length} names · one problem, not ${iconCollisions.length}`)}
+      <div class="chips-row">${iconCollisions.slice(0, 16).map((d) => `<span class="vchip">&lt;${esc(d.name)}&gt;</span>`).join('')}${iconCollisions.length > 16 ? `<span class="vchip dim">+${iconCollisions.length - 16} more</span>` : ''}</div>
+      <p class="sub" style="margin-top:8px">${esc(iconCollisions[0].files[0])} vs ${esc(iconCollisions[0].files[1])}</p>
+    </div>` : '';
   const dupeCards = exactDupes.slice(0, 8).map((d) => `
     <div class="fam">
       ${eyebrow(`&lt;${esc(d.name)}&gt; · ${d.wrapped ? 'defined twice, one wraps the other' : `${d.files.length} implementations`}`)}
@@ -389,7 +399,7 @@ function duplicatesSection() {
     </div>`).join('');
   return `<div class="glass pad half">
     ${sectionHead('Duplicated components', 'every duplicate is a place where your agent has to guess which one is canonical, and it picks wrong half the time. Paths open in VS Code')}
-    <div class="fams">${dupeCards}${famCards}</div></div>`;
+    <div class="fams">${iconCard}${dupeCards}${famCards}</div></div>`;
 }
 
 function typographySection() {

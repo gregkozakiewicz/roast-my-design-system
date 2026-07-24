@@ -40,7 +40,13 @@ function rootOf(name) {
 }
 
 // Framework-boilerplate exports that recur by design, not by accident.
-const NOT_DUPLICATES = new Set(['Route', 'Layout', 'App', 'Providers', 'Provider']);
+const NOT_DUPLICATES = new Set(['Route', 'Layout', 'App', 'Providers', 'Provider',
+  // Next.js route-handler exports — HTTP verbs, never components.
+  'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']);
+
+// Route-colocated page fragments (app/**/form.tsx, header.tsx…) share names by
+// Next.js convention, not by duplication.
+const ROUTE_FRAGMENT_RE = /(^|\/)app\/.*\/(form|header|footer|nav|page|layout|loading|error|route)\.[jt]sx?$/;
 
 /**
  * @param components output of harvestComponents (non-page components matter most)
@@ -50,7 +56,11 @@ const NOT_DUPLICATES = new Set(['Route', 'Layout', 'App', 'Providers', 'Provider
  * @returns { exactDuplicates: [{name, files, wrapped?}], families: [{root, members: [{name, file, usageCount}]}] }
  */
 export function findDuplicates(components, uiDir = null, root = null) {
-  const comps = components.filter((c) => !c.isPage && !NOT_DUPLICATES.has(c.name));
+  // Email templates legitimately mirror web component names (email Footer !=
+  // web Footer); cross-matching them manufactures duplicates.
+  const EMAIL_PATH_RE = /(^|\/)emails?(\/|-)/i;
+  const comps = components.filter((c) => !c.isPage && !NOT_DUPLICATES.has(c.name)
+    && !ROUTE_FRAGMENT_RE.test(c.file) && !EMAIL_PATH_RE.test(c.file));
 
   // 1. exact same component name defined in >1 file
   const byName = new Map();
@@ -58,7 +68,7 @@ export function findDuplicates(components, uiDir = null, root = null) {
     if (!byName.has(c.name)) byName.set(c.name, []);
     byName.get(c.name).push(c);
   }
-  const exactDuplicates = [...byName.entries()]
+  let exactDuplicates = [...byName.entries()]
     .filter(([, defs]) => new Set(defs.map((d) => d.file)).size > 1)
     .map(([name, defs]) => ({
       name,
@@ -67,20 +77,30 @@ export function findDuplicates(components, uiDir = null, root = null) {
     }))
     .sort((a, b) => b.files.length - a.files.length);
 
+  // Same-name components living in different icons/ directories are ONE
+  // problem — two icon libraries colliding — not N separate duplicates.
+  const ICON_DIR_RE = /(^|\/)icons?\//i;
+  const iconCollisions = exactDuplicates.filter((d) => d.files.every((f) => ICON_DIR_RE.test(f)));
+  exactDuplicates = exactDuplicates.filter((d) => !iconCollisions.includes(d));
+
   // A "duplicate" where one file imports the same identifier from the other is
   // a wrapper/composition (memoized variant, styled passthrough) — still an
   // agent trap worth listing, but not a competing implementation.
+  const perFile = new Map();
+  for (const c of comps) perFile.set(c.file, (perFile.get(c.file) ?? 0) + 1);
   if (root) {
     for (const d of exactDuplicates) {
       if (d.files.length !== 2) continue;
+      // A file defining 8+ components is an API surface (menu-item variants of
+      // real components elsewhere) — same-name there is deliberate, not a copy.
+      if (d.files.some((f) => (perFile.get(f) ?? 0) >= 8)) { d.wrapped = true; continue; }
       const base = (f) => f.replace(/\.[jt]sx?$/, '').split('/').pop();
-      const importsFrom = (fromFile, name, otherBase) => {
+      const importsName = (fromFile, name) => {
         let src; try { src = readFileSync(join(root, fromFile), 'utf8'); } catch { return false; }
-        const re = new RegExp(`import\\s*(?:type\\s*)?{[^}]*\\b${name}\\b[^}]*}\\s*from\\s*['"][^'"]*${otherBase}['"]`);
-        return re.test(src);
+        return new RegExp(`import\\s*(?:type\\s*)?{[^}]*\\b${name}\\b[^}]*}\\s*from`).test(src);
       };
       const [a, b] = d.files;
-      if (importsFrom(a, d.name, base(b)) || importsFrom(b, d.name, base(a))) d.wrapped = true;
+      if (importsName(a, d.name) || importsName(b, d.name)) d.wrapped = true;
     }
   }
 
@@ -124,5 +144,5 @@ export function findDuplicates(components, uiDir = null, root = null) {
     .filter((f) => f.members.length <= 8)
     .sort((a, b) => b.members.length - a.members.length);
 
-  return { exactDuplicates, families };
+  return { exactDuplicates, iconCollisions, families };
 }

@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-07-23T13:55:14.855Z",
-  "repoCount": 27,
+  "builtAt": "2026-07-24T13:37:06.943Z",
+  "repoCount": 29,
   "ideal2026": {
     "colors": {
       "value": 24,
@@ -11,8 +11,8 @@
       "note": "up to 13 tones (Material neutral palette)"
     },
     "spacing": {
-      "value": 35,
-      "note": "one scale (Tailwind ships ~35 named steps)"
+      "value": 12,
+      "note": "off-scale values; a dozen deliberate exceptions"
     },
     "typefaces": {
       "value": 3,
@@ -77,105 +77,111 @@
         0,
         0,
         0,
-        2,
+        0,
         3,
+        32,
+        35,
         36,
-        42,
-        48,
-        49,
+        46,
+        47,
+        59,
         69,
-        79,
-        82,
-        89,
-        112,
-        120,
-        136,
-        138,
-        146,
-        154,
-        174,
-        197,
-        237,
-        246,
-        290,
-        398,
-        403,
-        1689
+        78,
+        88,
+        88,
+        108,
+        125,
+        134,
+        137,
+        147,
+        155,
+        168,
+        172,
+        205,
+        245,
+        271,
+        384,
+        399,
+        1673
       ],
-      "p25": 45,
-      "median": 112,
-      "p75": 186,
-      "p90": 333
+      "p25": 36,
+      "median": 88,
+      "p75": 168,
+      "p90": 294
     },
     "greys": {
       "values": [
         0,
         0,
         0,
-        2,
+        0,
+        0,
         2,
         3,
-        4,
+        3,
         5,
         8,
         8,
         8,
         9,
-        14,
+        12,
+        12,
         15,
-        17,
         18,
-        20,
-        24,
+        18,
+        23,
         30,
-        32,
+        30,
+        31,
         34,
-        35,
-        39,
-        48,
-        49,
-        82,
-        111
+        34,
+        34,
+        43,
+        46,
+        77,
+        105
       ],
-      "p25": 5,
-      "median": 15,
-      "p75": 33,
-      "p90": 48
+      "p25": 3,
+      "median": 12,
+      "p75": 31,
+      "p90": 44
     },
     "spacing": {
       "values": [
         0,
-        8,
-        11,
+        0,
+        2,
+        3,
+        5,
+        6,
+        9,
+        9,
+        10,
         12,
-        15,
         18,
+        20,
         21,
-        25,
+        23,
+        26,
+        28,
         30,
-        31,
-        39,
-        40,
-        42,
-        48,
+        33,
+        35,
+        41,
+        43,
+        46,
         52,
-        58,
-        66,
-        70,
-        70,
-        71,
-        74,
-        86,
-        86,
-        88,
-        108,
-        112,
-        158
+        56,
+        63,
+        67,
+        72,
+        84,
+        113
       ],
-      "p25": 23,
-      "median": 48,
-      "p75": 73,
-      "p90": 96
+      "p25": 9,
+      "median": 26,
+      "p75": 46,
+      "p90": 68
     },
     "typefaces": {
       "values": [
@@ -184,33 +190,35 @@
         0,
         0,
         0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        1,
+        1,
+        1,
         1,
         1,
         2,
         2,
         2,
+        2,
+        2,
         3,
         3,
         3,
         3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        5,
         5,
         6,
-        7
+        8,
+        9
       ],
-      "p25": 0,
-      "median": 0,
+      "p25": 1,
+      "median": 2,
       "p75": 3,
-      "p90": 4
+      "p90": 5
     },
     "fontSizes": {
       "values": [
@@ -225,6 +233,7 @@
         9,
         10,
         12,
+        12,
         13,
         14,
         18,
@@ -233,19 +242,20 @@
         22,
         23,
         24,
+        27,
+        27,
         28,
-        28,
-        30,
+        33,
         35,
         37,
         39,
-        40,
-        62
+        49,
+        61
       ],
       "p25": 7,
       "median": 18,
-      "p75": 28,
-      "p90": 38
+      "p75": 27,
+      "p90": 37
     },
     "radii": {
       "values": [
@@ -253,8 +263,8 @@
         0,
         0,
         1,
-        2,
-        5,
+        1,
+        4,
         7,
         8,
         8,
@@ -265,22 +275,24 @@
         12,
         12,
         12,
+        14,
         16,
+        19,
+        20,
         20,
         21,
-        21,
-        23,
+        22,
         24,
         25,
         26,
-        31,
+        30,
         33,
         62
       ],
       "p25": 8,
       "median": 12,
-      "p75": 22,
-      "p90": 28
+      "p75": 21,
+      "p90": 27
     },
     "shadows": {
       "values": [
@@ -302,6 +314,8 @@
         1,
         2,
         2,
+        2,
+        4,
         4,
         5,
         5,
@@ -313,9 +327,9 @@
         28
       ],
       "p25": 0,
-      "median": 0,
+      "median": 1,
       "p75": 5,
-      "p90": 12
+      "p90": 11
     },
     "exactDuplicates": {
       "values": [
@@ -326,66 +340,107 @@
         0,
         1,
         1,
+        1,
+        2,
+        3,
         4,
-        5,
         7,
         7,
-        13,
-        18,
+        8,
+        17,
+        17,
         19,
         21,
-        22,
-        24,
-        24,
+        21,
+        23,
         25,
-        32,
         38,
-        46,
-        74,
-        97,
-        99,
-        118,
+        45,
+        73,
+        93,
+        98,
+        103,
+        116,
         187
       ],
-      "p25": 3,
-      "median": 19,
-      "p75": 35,
-      "p90": 98
+      "p25": 1,
+      "median": 17,
+      "p75": 38,
+      "p90": 99
     },
     "inlineStyles": {
       "values": [
         0,
         0,
         0,
-        4,
-        6,
-        6,
+        0,
+        0,
+        2,
+        5,
+        7,
+        11,
+        17,
         22,
-        29,
-        31,
+        23,
+        36,
+        40,
+        42,
+        44,
+        45,
         47,
-        77,
-        80,
-        106,
-        116,
-        123,
-        137,
-        138,
-        149,
-        163,
-        171,
-        177,
-        181,
-        202,
-        203,
-        312,
-        1521,
-        3672
+        69,
+        70,
+        76,
+        79,
+        82,
+        117,
+        118,
+        119,
+        173,
+        1178,
+        2885
       ],
-      "p25": 26,
-      "median": 116,
-      "p75": 174,
-      "p90": 247
+      "p25": 7,
+      "median": 42,
+      "p75": 79,
+      "p90": 130
+    },
+    "arbitrary": {
+      "values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        4,
+        16,
+        26,
+        60,
+        85,
+        103,
+        123,
+        148,
+        154,
+        164,
+        228,
+        234,
+        321,
+        339,
+        398,
+        467,
+        470,
+        488,
+        561,
+        1751
+      ],
+      "p25": 0,
+      "median": 103,
+      "p75": 321,
+      "p90": 474
     },
     "components": {
       "values": [
@@ -398,64 +453,68 @@
         184,
         226,
         276,
-        359,
-        378,
+        315,
+        350,
+        350,
         418,
         620,
         779,
-        801,
+        794,
         826,
         916,
         965,
-        966,
-        1039,
+        972,
+        1033,
         1041,
+        1088,
         1229,
         1397,
-        1428,
+        1424,
         1654,
-        2163,
-        2505
+        2153,
+        2536
       ],
-      "p25": 205,
+      "p25": 226,
       "median": 779,
-      "p75": 1040,
-      "p90": 1518
+      "p75": 1041,
+      "p90": 1470
     }
   },
   "repos": [
     {
       "repo": "calcom/cal.com",
       "designSystem": "custom",
-      "codeFiles": 4382,
+      "codeFiles": 4341,
       "metrics": {
-        "colors": 398,
-        "greys": 82,
-        "spacing": 158,
-        "typefaces": 7,
-        "fontSizes": 62,
+        "colors": 384,
+        "greys": 77,
+        "spacing": 113,
+        "typefaces": 9,
+        "fontSizes": 61,
         "radii": 62,
         "shadows": 10,
-        "exactDuplicates": 118,
-        "inlineStyles": 137,
-        "components": 1428
+        "exactDuplicates": 116,
+        "inlineStyles": 79,
+        "arbitrary": 321,
+        "components": 1424
       }
     },
     {
       "repo": "excalidraw/excalidraw",
       "designSystem": "custom",
-      "codeFiles": 518,
+      "codeFiles": 500,
       "metrics": {
-        "colors": 237,
-        "greys": 49,
-        "spacing": 88,
+        "colors": 205,
+        "greys": 43,
+        "spacing": 84,
         "typefaces": 3,
-        "fontSizes": 37,
-        "radii": 31,
+        "fontSizes": 33,
+        "radii": 30,
         "shadows": 28,
-        "exactDuplicates": 5,
-        "inlineStyles": 138,
-        "components": 359
+        "exactDuplicates": 3,
+        "inlineStyles": 82,
+        "arbitrary": 0,
+        "components": 350
       }
     },
     {
@@ -463,15 +522,16 @@
       "designSystem": "library",
       "codeFiles": 107,
       "metrics": {
-        "colors": 112,
-        "greys": 48,
+        "colors": 108,
+        "greys": 46,
         "spacing": 18,
-        "typefaces": 2,
+        "typefaces": 4,
         "fontSizes": 7,
         "radii": 8,
         "shadows": 5,
         "exactDuplicates": 4,
-        "inlineStyles": 31,
+        "inlineStyles": 23,
+        "arbitrary": 0,
         "components": 51
       }
     },
@@ -480,15 +540,16 @@
       "designSystem": "custom",
       "codeFiles": 2075,
       "metrics": {
-        "colors": 89,
+        "colors": 88,
         "greys": 15,
-        "spacing": 15,
+        "spacing": 12,
         "typefaces": 0,
         "fontSizes": 0,
         "radii": 0,
         "shadows": 0,
-        "exactDuplicates": 24,
-        "inlineStyles": 106,
+        "exactDuplicates": 23,
+        "inlineStyles": 76,
+        "arbitrary": 0,
         "components": 620
       }
     },
@@ -499,13 +560,14 @@
       "metrics": {
         "colors": 69,
         "greys": 5,
-        "spacing": 8,
-        "typefaces": 0,
+        "spacing": 2,
+        "typefaces": 2,
         "fontSizes": 2,
         "radii": 0,
         "shadows": 0,
-        "exactDuplicates": 21,
-        "inlineStyles": 6,
+        "exactDuplicates": 2,
+        "inlineStyles": 0,
+        "arbitrary": 4,
         "components": 226
       }
     },
@@ -523,23 +585,25 @@
         "shadows": 0,
         "exactDuplicates": 0,
         "inlineStyles": 0,
+        "arbitrary": 0,
         "components": 25
       }
     },
     {
       "repo": "shadcn-ui/taxonomy",
       "designSystem": "shadcn",
-      "codeFiles": 131,
+      "codeFiles": 129,
       "metrics": {
-        "colors": 2,
-        "greys": 2,
-        "spacing": 25,
-        "typefaces": 0,
+        "colors": 0,
+        "greys": 0,
+        "spacing": 5,
+        "typefaces": 2,
         "fontSizes": 13,
         "radii": 7,
         "shadows": 1,
         "exactDuplicates": 0,
-        "inlineStyles": 6,
+        "inlineStyles": 0,
+        "arbitrary": 60,
         "components": 183
       }
     },
@@ -550,13 +614,14 @@
       "metrics": {
         "colors": 0,
         "greys": 0,
-        "spacing": 11,
+        "spacing": 0,
         "typefaces": 0,
         "fontSizes": 7,
-        "radii": 2,
+        "radii": 1,
         "shadows": 0,
         "exactDuplicates": 0,
         "inlineStyles": 0,
+        "arbitrary": 0,
         "components": 9
       }
     },
@@ -567,14 +632,33 @@
       "metrics": {
         "colors": 36,
         "greys": 8,
-        "spacing": 21,
-        "typefaces": 1,
+        "spacing": 10,
+        "typefaces": 5,
         "fontSizes": 5,
         "radii": 11,
         "shadows": 2,
         "exactDuplicates": 1,
-        "inlineStyles": 4,
+        "inlineStyles": 2,
+        "arbitrary": 16,
         "components": 62
+      }
+    },
+    {
+      "repo": "vercel/ai-chatbot",
+      "designSystem": "shadcn",
+      "codeFiles": 146,
+      "metrics": {
+        "colors": 59,
+        "greys": 0,
+        "spacing": 6,
+        "typefaces": 3,
+        "fontSizes": 12,
+        "radii": 14,
+        "shadows": 4,
+        "exactDuplicates": 1,
+        "inlineStyles": 7,
+        "arbitrary": 103,
+        "components": 315
       }
     },
     {
@@ -584,82 +668,87 @@
       "metrics": {
         "colors": 3,
         "greys": 3,
-        "spacing": 42,
-        "typefaces": 0,
+        "spacing": 23,
+        "typefaces": 1,
         "fontSizes": 9,
         "radii": 8,
         "shadows": 0,
         "exactDuplicates": 1,
-        "inlineStyles": 22,
+        "inlineStyles": 11,
+        "arbitrary": 148,
         "components": 276
       }
     },
     {
       "repo": "documenso/documenso",
       "designSystem": "custom",
-      "codeFiles": 1938,
+      "codeFiles": 1905,
       "metrics": {
-        "colors": 82,
-        "greys": 17,
-        "spacing": 70,
+        "colors": 32,
+        "greys": 12,
+        "spacing": 26,
         "typefaces": 6,
         "fontSizes": 22,
         "radii": 12,
         "shadows": 0,
-        "exactDuplicates": 18,
-        "inlineStyles": 116,
-        "components": 801
+        "exactDuplicates": 17,
+        "inlineStyles": 69,
+        "arbitrary": 234,
+        "components": 794
       }
     },
     {
       "repo": "dubinc/dub",
       "designSystem": "custom",
-      "codeFiles": 3513,
+      "codeFiles": 3510,
       "metrics": {
-        "colors": 138,
-        "greys": 14,
-        "spacing": 86,
-        "typefaces": 0,
-        "fontSizes": 40,
-        "radii": 23,
+        "colors": 88,
+        "greys": 12,
+        "spacing": 41,
+        "typefaces": 3,
+        "fontSizes": 37,
+        "radii": 22,
         "shadows": 0,
-        "exactDuplicates": 32,
-        "inlineStyles": 312,
+        "exactDuplicates": 17,
+        "inlineStyles": 47,
+        "arbitrary": 470,
         "components": 1397
       }
     },
     {
       "repo": "formbricks/formbricks",
       "designSystem": "custom",
-      "codeFiles": 1861,
+      "codeFiles": 1857,
       "metrics": {
-        "colors": 136,
+        "colors": 134,
         "greys": 18,
-        "spacing": 74,
+        "spacing": 35,
         "typefaces": 2,
         "fontSizes": 28,
         "radii": 25,
         "shadows": 6,
-        "exactDuplicates": 74,
-        "inlineStyles": 77,
+        "exactDuplicates": 73,
+        "inlineStyles": 17,
+        "arbitrary": 154,
         "components": 1041
       }
     },
     {
       "repo": "openstatusHQ/openstatus",
       "designSystem": "custom",
-      "codeFiles": 1742,
+      "codeFiles": 1885,
       "metrics": {
-        "colors": 79,
+        "colors": 78,
         "greys": 2,
-        "spacing": 30,
-        "typefaces": 0,
+        "spacing": 9,
+        "typefaces": 3,
         "fontSizes": 14,
         "radii": 12,
         "shadows": 0,
-        "exactDuplicates": 97,
-        "inlineStyles": 47,
-        "components": 966
+        "exactDuplicates": 93,
+        "inlineStyles": 119,
+        "arbitrary": 164,
+        "components": 1088
       }
     },
     {
@@ -667,32 +756,34 @@
       "designSystem": "shadcn",
       "codeFiles": 1335,
       "metrics": {
-        "colors": 42,
+        "colors": 35,
         "greys": 9,
-        "spacing": 71,
-        "typefaces": 0,
-        "fontSizes": 30,
-        "radii": 20,
+        "spacing": 43,
+        "typefaces": 1,
+        "fontSizes": 27,
+        "radii": 19,
         "shadows": 1,
-        "exactDuplicates": 24,
-        "inlineStyles": 171,
+        "exactDuplicates": 21,
+        "inlineStyles": 45,
+        "arbitrary": 398,
         "components": 779
       }
     },
     {
       "repo": "elie222/inbox-zero",
       "designSystem": "custom",
-      "codeFiles": 1713,
+      "codeFiles": 1716,
       "metrics": {
-        "colors": 154,
-        "greys": 24,
-        "spacing": 48,
-        "typefaces": 0,
-        "fontSizes": 28,
-        "radii": 21,
+        "colors": 147,
+        "greys": 23,
+        "spacing": 21,
+        "typefaces": 3,
+        "fontSizes": 27,
+        "radii": 20,
         "shadows": 0,
-        "exactDuplicates": 22,
-        "inlineStyles": 29,
+        "exactDuplicates": 21,
+        "inlineStyles": 5,
+        "arbitrary": 123,
         "components": 826
       }
     },
@@ -701,15 +792,16 @@
       "designSystem": "custom",
       "codeFiles": 450,
       "metrics": {
-        "colors": 49,
+        "colors": 46,
         "greys": 8,
-        "spacing": 31,
-        "typefaces": 0,
+        "spacing": 9,
+        "typefaces": 2,
         "fontSizes": 12,
         "radii": 9,
         "shadows": 0,
         "exactDuplicates": 7,
-        "inlineStyles": 80,
+        "inlineStyles": 42,
+        "arbitrary": 85,
         "components": 184
       }
     },
@@ -718,50 +810,53 @@
       "designSystem": "custom",
       "codeFiles": 892,
       "metrics": {
-        "colors": 48,
+        "colors": 47,
         "greys": 8,
-        "spacing": 39,
-        "typefaces": 0,
+        "spacing": 33,
+        "typefaces": 1,
         "fontSizes": 4,
         "radii": 11,
         "shadows": 2,
         "exactDuplicates": 0,
-        "inlineStyles": 202,
+        "inlineStyles": 173,
+        "arbitrary": 1,
         "components": 418
       }
     },
     {
       "repo": "twentyhq/twenty",
       "designSystem": "library",
-      "codeFiles": 14836,
+      "codeFiles": 14776,
       "metrics": {
-        "colors": 1689,
-        "greys": 111,
-        "spacing": 40,
-        "typefaces": 3,
+        "colors": 1673,
+        "greys": 105,
+        "spacing": 30,
+        "typefaces": 8,
         "fontSizes": 23,
         "radii": 33,
         "shadows": 28,
         "exactDuplicates": 25,
-        "inlineStyles": 203,
-        "components": 2163
+        "inlineStyles": 118,
+        "arbitrary": 0,
+        "components": 2153
       }
     },
     {
       "repo": "langfuse/langfuse",
       "designSystem": "custom",
-      "codeFiles": 2681,
+      "codeFiles": 2694,
       "metrics": {
-        "colors": 120,
-        "greys": 4,
-        "spacing": 52,
+        "colors": 125,
+        "greys": 3,
+        "spacing": 20,
         "typefaces": 0,
         "fontSizes": 18,
         "radii": 10,
         "shadows": 0,
         "exactDuplicates": 7,
-        "inlineStyles": 163,
-        "components": 1039
+        "inlineStyles": 40,
+        "arbitrary": 339,
+        "components": 1033
       }
     },
     {
@@ -769,15 +864,16 @@
       "designSystem": "custom",
       "codeFiles": 4709,
       "metrics": {
-        "colors": 246,
+        "colors": 245,
         "greys": 34,
-        "spacing": 86,
+        "spacing": 63,
         "typefaces": 3,
         "fontSizes": 35,
         "radii": 24,
         "shadows": 10,
-        "exactDuplicates": 46,
-        "inlineStyles": 123,
+        "exactDuplicates": 45,
+        "inlineStyles": 36,
+        "arbitrary": 467,
         "components": 1229
       }
     },
@@ -786,50 +882,53 @@
       "designSystem": "custom",
       "codeFiles": 3086,
       "metrics": {
-        "colors": 403,
-        "greys": 32,
-        "spacing": 108,
+        "colors": 399,
+        "greys": 30,
+        "spacing": 72,
         "typefaces": 2,
         "fontSizes": 24,
         "radii": 21,
         "shadows": 4,
-        "exactDuplicates": 99,
-        "inlineStyles": 177,
+        "exactDuplicates": 98,
+        "inlineStyles": 22,
+        "arbitrary": 561,
         "components": 1654
       }
     },
     {
       "repo": "FlowiseAI/Flowise",
       "designSystem": "library",
-      "codeFiles": 1677,
+      "codeFiles": 1650,
       "metrics": {
-        "colors": 197,
-        "greys": 39,
-        "spacing": 70,
+        "colors": 155,
+        "greys": 34,
+        "spacing": 46,
         "typefaces": 3,
         "fontSizes": 18,
         "radii": 12,
         "shadows": 5,
         "exactDuplicates": 19,
-        "inlineStyles": 1521,
-        "components": 378
+        "inlineStyles": 1178,
+        "arbitrary": 0,
+        "components": 350
       }
     },
     {
       "repo": "lobehub/lobe-chat",
       "designSystem": "library",
-      "codeFiles": 7990,
+      "codeFiles": 8013,
       "metrics": {
-        "colors": 290,
-        "greys": 35,
-        "spacing": 66,
+        "colors": 271,
+        "greys": 34,
+        "spacing": 52,
         "typefaces": 1,
         "fontSizes": 2,
         "radii": 1,
         "shadows": 0,
         "exactDuplicates": 187,
-        "inlineStyles": 3672,
-        "components": 2505
+        "inlineStyles": 2885,
+        "arbitrary": 0,
+        "components": 2536
       }
     },
     {
@@ -837,32 +936,52 @@
       "designSystem": "custom",
       "codeFiles": 2394,
       "metrics": {
-        "colors": 174,
+        "colors": 172,
         "greys": 30,
-        "spacing": 112,
+        "spacing": 67,
         "typefaces": 5,
         "fontSizes": 39,
         "radii": 26,
         "shadows": 16,
         "exactDuplicates": 38,
-        "inlineStyles": 181,
+        "inlineStyles": 70,
+        "arbitrary": 488,
         "components": 965
+      }
+    },
+    {
+      "repo": "midday-ai/midday",
+      "designSystem": "custom",
+      "codeFiles": 1762,
+      "metrics": {
+        "colors": 168,
+        "greys": 31,
+        "spacing": 56,
+        "typefaces": 3,
+        "fontSizes": 49,
+        "radii": 20,
+        "shadows": 2,
+        "exactDuplicates": 103,
+        "inlineStyles": 117,
+        "arbitrary": 1751,
+        "components": 972
       }
     },
     {
       "repo": "triggerdotdev/trigger.dev",
       "designSystem": "custom",
-      "codeFiles": 2290,
+      "codeFiles": 2283,
       "metrics": {
-        "colors": 146,
-        "greys": 20,
-        "spacing": 58,
+        "colors": 137,
+        "greys": 18,
+        "spacing": 28,
         "typefaces": 0,
         "fontSizes": 21,
         "radii": 16,
         "shadows": 0,
-        "exactDuplicates": 13,
-        "inlineStyles": 149,
+        "exactDuplicates": 8,
+        "inlineStyles": 44,
+        "arbitrary": 228,
         "components": 916
       }
     },
@@ -873,19 +992,20 @@
       "metrics": {
         "colors": 0,
         "greys": 0,
-        "spacing": 12,
-        "typefaces": 0,
+        "spacing": 3,
+        "typefaces": 1,
         "fontSizes": 10,
-        "radii": 5,
+        "radii": 4,
         "shadows": 0,
         "exactDuplicates": 0,
         "inlineStyles": 0,
+        "arbitrary": 26,
         "components": 36
       }
     }
   ],
   "referenceSystems": {
-    "builtAt": "2026-07-23T23:01:35.860Z",
+    "builtAt": "2026-07-24T13:37:09.100Z",
     "count": 10,
     "note": "Curated scoped scans of reputable public design systems. Not comparable head-to-head with product repos: see per-system notes.",
     "stats": {
@@ -896,13 +1016,13 @@
           12,
           16,
           20,
-          71,
+          27,
           102,
           114,
           265,
           514
         ],
-        "median": 46
+        "median": 24
       },
       "greys": {
         "values": [
@@ -911,28 +1031,28 @@
           1,
           1,
           2,
-          13,
+          8,
           15,
           15,
           18,
           19
         ],
-        "median": 8
+        "median": 5
       },
       "spacing": {
         "values": [
           0,
           0,
-          1,
-          2,
+          0,
+          0,
+          3,
+          8,
           16,
-          20,
           22,
           24,
-          28,
           31
         ],
-        "median": 18
+        "median": 6
       },
       "typefaces": {
         "values": [
@@ -1003,7 +1123,7 @@
           6,
           13,
           15,
-          19,
+          18,
           28,
           168
         ],
@@ -1012,17 +1132,17 @@
       "inlineStyles": {
         "values": [
           0,
-          3,
-          3,
+          1,
+          1,
+          10,
+          10,
+          11,
+          14,
           17,
-          19,
-          26,
-          31,
-          36,
-          87,
-          1137
+          22,
+          24
         ],
-        "median": 23
+        "median": 11
       },
       "components": {
         "values": [
@@ -1030,14 +1150,14 @@
           170,
           234,
           247,
-          327,
+          258,
+          326,
           331,
           510,
           711,
-          811,
-          1389
+          811
         ],
-        "median": 329
+        "median": 292
       }
     },
     "systems": [
@@ -1050,13 +1170,13 @@
         "metrics": {
           "colors": 0,
           "greys": 0,
-          "spacing": 20,
+          "spacing": 3,
           "typefaces": 0,
           "fontSizes": 6,
           "radii": 9,
           "shadows": 0,
           "exactDuplicates": 0,
-          "inlineStyles": 3,
+          "inlineStyles": 1,
           "components": 331
         }
       },
@@ -1075,7 +1195,7 @@
           "radii": 24,
           "shadows": 35,
           "exactDuplicates": 13,
-          "inlineStyles": 26,
+          "inlineStyles": 14,
           "components": 234
         }
       },
@@ -1094,7 +1214,7 @@
           "radii": 30,
           "shadows": 44,
           "exactDuplicates": 15,
-          "inlineStyles": 31,
+          "inlineStyles": 10,
           "components": 247
         }
       },
@@ -1103,7 +1223,7 @@
         "repo": "carbon-design-system/carbon",
         "scope": "packages/react/src",
         "note": "styling lives in separate Sass packages, so colour and radii counts are near zero",
-        "codeFiles": 516,
+        "codeFiles": 515,
         "metrics": {
           "colors": 16,
           "greys": 0,
@@ -1113,8 +1233,8 @@
           "radii": 0,
           "shadows": 1,
           "exactDuplicates": 6,
-          "inlineStyles": 19,
-          "components": 327
+          "inlineStyles": 17,
+          "components": 326
         }
       },
       {
@@ -1132,7 +1252,7 @@
           "radii": 0,
           "shadows": 0,
           "exactDuplicates": 2,
-          "inlineStyles": 17,
+          "inlineStyles": 10,
           "components": 170
         }
       },
@@ -1151,7 +1271,7 @@
           "radii": 0,
           "shadows": 0,
           "exactDuplicates": 0,
-          "inlineStyles": 3,
+          "inlineStyles": 1,
           "components": 711
         }
       },
@@ -1160,18 +1280,18 @@
         "repo": "ant-design/ant-design",
         "scope": "components",
         "note": "inline style count is dominated by demos co-located with components",
-        "codeFiles": 2109,
+        "codeFiles": 954,
         "metrics": {
-          "colors": 71,
-          "greys": 13,
-          "spacing": 28,
+          "colors": 27,
+          "greys": 8,
+          "spacing": 8,
           "typefaces": 1,
           "fontSizes": 5,
           "radii": 0,
           "shadows": 0,
-          "exactDuplicates": 19,
-          "inlineStyles": 1137,
-          "components": 1389
+          "exactDuplicates": 18,
+          "inlineStyles": 24,
+          "components": 258
         }
       },
       {
@@ -1202,13 +1322,13 @@
         "metrics": {
           "colors": 2,
           "greys": 1,
-          "spacing": 1,
+          "spacing": 0,
           "typefaces": 5,
           "fontSizes": 0,
           "radii": 0,
           "shadows": 0,
           "exactDuplicates": 168,
-          "inlineStyles": 36,
+          "inlineStyles": 11,
           "components": 811
         }
       },
@@ -1221,13 +1341,13 @@
         "metrics": {
           "colors": 12,
           "greys": 2,
-          "spacing": 2,
+          "spacing": 0,
           "typefaces": 6,
           "fontSizes": 19,
           "radii": 4,
           "shadows": 54,
           "exactDuplicates": 28,
-          "inlineStyles": 87,
+          "inlineStyles": 22,
           "components": 510
         }
       }

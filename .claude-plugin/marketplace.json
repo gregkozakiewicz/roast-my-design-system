@@ -1,6 +1,6 @@
 {
   "name": "roast-my-design-system",
-  "description": "Roast your repo's design system with real data: deterministic scan, Ideal Design System norms, 27-repo benchmark, 10 reputable systems, shareable light/dark HTML diagnosis.",
+  "description": "Roast your repo's design system with real data: deterministic scan, Ideal Design System norms, 29-repo benchmark, 10 reputable systems, shareable light/dark HTML diagnosis.",
   "owner": {
     "name": "Greg Kozakiewicz",
     "url": "https://github.com/pencilrebel"
@@ -8,8 +8,8 @@
   "plugins": [
     {
       "name": "roast-my-design-system",
-      "description": "Roast your repo's design system with real data: deterministic scan, Ideal Design System norms, 27-repo benchmark, 10 reputable systems, shareable light/dark HTML diagnosis.",
-      "version": "2.0.8",
+      "description": "Roast your repo's design system with real data: deterministic scan, Ideal Design System norms, 29-repo benchmark, 10 reputable systems, shareable light/dark HTML diagnosis.",
+      "version": "3.0.0",
       "author": {
         "name": "Greg Kozakiewicz",
         "url": "https://github.com/pencilrebel"

@@ -86,6 +86,24 @@ function classStrings(src) {
 // bypassing the system" — counting it hands a sharp dev the whole rebuttal.
 const TRIVIAL_INLINE_RE = /^\{?\s*(?:(?:\.\.\.[\w.]+|(?:color|fill|stroke)\s*:\s*['"]?(?:currentcolor|inherit)['"]?)\s*,?\s*)*\}?$/i;
 
+// A style block whose values are runtime expressions (translate(\`\${x}px\`),
+// width: sidebarWidth, ternaries) CANNOT be static CSS — that's dynamic
+// positioning/theming, not a style crime. Only all-literal blocks count.
+function isStaticInline(block) {
+  const inner = block.trim().replace(/^\{/, '').replace(/\}$/, '');
+  if (inner.includes('${')) return false;
+  // every value must start like a literal: quote, number, negative, hex
+  for (const m of inner.matchAll(/[\w-]+\s*:\s*([^,{}]+)/g)) {
+    const v = m[1].trim();
+    if (!/^["'0-9#-]/.test(v)) return false;
+  }
+  return true;
+}
+
+// Render-to-image surfaces (satori OG cards, react-pdf invoices) have inline
+// styles as their ONLY styling mechanism — same honesty rule as email.
+const RENDER_TO_IMAGE_RE = /ImageResponse|from ['"]satori['"]|from ['"]@react-pdf|next\/og/;
+
 /** Extract inline style objects: style={{ ... }} */
 function inlineStyleBlocks(src) {
   const out = [];
@@ -129,7 +147,12 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     }
     for (const m of text.matchAll(RADIUS_PROPS)) radii.add(m[1].trim(), file);
     for (const m of text.matchAll(FONTSIZE_PROPS)) fontSizes.add(m[1].trim(), file);
-    for (const m of text.matchAll(FONTFAMILY_PROPS)) fontFamilies.add(m[1].trim().replace(/\s+/g, ' '), file);
+    for (const m of text.matchAll(FONTFAMILY_PROPS)) {
+      const v = m[1].trim().replace(/\s+/g, ' ');
+      // var(--x) and inherit are disciplined token usage, not declarations
+      if (/^(var\(--[\w-]+\)|inherit)$/i.test(v)) continue;
+      fontFamilies.add(v, file);
+    }
     for (const m of text.matchAll(SHADOW_PROPS)) shadows.add(m[1].trim().replace(/\s+/g, ' '), file);
   };
 
@@ -145,7 +168,14 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   const EXEMPT_RE = /email|(^|[/.])print([/.]|$)/i;
   // SVG artwork components (logos, badges, illustrated icons) carry hex that
   // is drawing, not styling — same honesty rule as email templates.
-  const ARTWORK_RE = /(^|\/)[\w.-]*(icon|logo|badge|illustration|shield|artwork)[\w.-]*\.(tsx|jsx)$/i;
+  const ARTWORK_RE = /(^|\/)[\w.-]*(icon|logo|badge|illustration|shield|artwork|graphic|background)[\w.-]*\.(tsx|jsx)$/i;
+  // A component that is mostly SVG markup (theme-preview mocks, decorative
+  // scenes) is drawing, not styling — regardless of its filename.
+  const svgHeavy = (src) => (src.match(/<(?:svg|path|rect|circle|ellipse|polygon|mask|defs)\b/g) ?? []).length >= 15;
+  // Canvas/scene renderers draw pixels; their colour literals are not UI styling.
+  const RENDERER_PATH_RE = /(^|\/)(renderers?|scene|canvas)\/|renderElement|DebugCanvas/i;
+  // Colour-picker palettes and design-field option lists are user-facing data.
+  const PALETTE_FILE_RE = /(color-picker|colour-picker|palette|design-fields|swatch)/i;
 
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx|ts|js)$/.test(f)) continue;
@@ -153,12 +183,36 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     let src; try { src = readFileSync(join(root, f), 'utf8'); } catch { continue; }
 
     // A Tailwind config's colours ARE the token layer (the tailwind-native
-    // equivalent of --var definitions).
+    // equivalent of --var definitions). Its fontFamily block is the typeface
+    // declaration for the whole app.
     if (/(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f)) {
       for (const m of src.matchAll(HEX_RE)) { tokenDefined.add(normalizeHex(m[0])); colors.add(normalizeHex(m[0]), f); }
+      const famBlock = src.match(/fontFamily\s*:\s*\{([\s\S]*?)\n\s*\}/);
+      if (famBlock) {
+        // one declaration per stack: the first non-var name; fallbacks in the
+        // same array are not additional "ways" of declaring a font
+        for (const arr of famBlock[1].matchAll(/\[([^\]]+)\]/g)) {
+          const first = [...arr[1].matchAll(/["']([^"']+)["']/g)].map((x) => x[1])
+            .find((v) => !v.startsWith('var(') && !/^--/.test(v));
+          if (first) fontFamilies.add(first, f);
+        }
+      }
       continue;
     }
-    if (ARTWORK_RE.test(f)) continue;
+    // next/font and geist load typefaces without a font-family declaration —
+    // reporting "0 typefaces" for a repo shipping .woff2 loaders is wrong.
+    for (const m of src.matchAll(/import\s*\{\s*([^}]+)\}\s*from\s*["']next\/font\/google["']/g)) {
+      for (const name of m[1].split(',')) { const t = name.trim().split(/\s+as\s+/)[0].trim(); if (t) fontFamilies.add(t.replace(/_/g, ' '), f); }
+    }
+    for (const m of src.matchAll(/localFont\s*\(\s*\{[\s\S]{0,600}?variable\s*:\s*["']--font-([\w-]+)["']/g)) {
+      fontFamilies.add(m[1].replace(/-/g, ' '), f);
+    }
+    if (/from\s*["']geist\/font/.test(src)) fontFamilies.add('Geist', f);
+    if (PALETTE_FILE_RE.test(f)) {
+      for (const m of src.matchAll(HEX_RE)) tokenDefined.add(normalizeHex(m[0]));
+    }
+    if (ARTWORK_RE.test(f) || RENDERER_PATH_RE.test(f) || svgHeavy(src)) continue;
+    const renderToImage = RENDER_TO_IMAGE_RE.test(src) || /(^|\/)api\/og\//.test(f);
 
     // Tailwind classes
     for (const cls of classStrings(src)) {
@@ -171,8 +225,10 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       for (const m of cls.matchAll(/[a-z][\w-]*-\[(-?\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|pt))\]/g)) twArbitrary.add(`[${m[1]}]`, f);
     }
 
-    // Inline styles: count blocks + harvest colours/lengths inside them
-    const blocks = inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()));
+    // Inline styles: count blocks + harvest colours/lengths inside them.
+    // Dynamic blocks and render-to-image surfaces are legitimate, not counted.
+    const blocks = renderToImage ? []
+      : inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()) && isStaticInline(b));
     if (blocks.length) {
       inlineStyleCount += blocks.length;
       inlineStyleFiles.set(f, (inlineStyleFiles.get(f) ?? 0) + blocks.length);

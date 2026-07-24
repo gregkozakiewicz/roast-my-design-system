@@ -2,7 +2,7 @@
 
 ## A Claude Code skill that roasts your repo's design system with real data.
 
-Run this skill on your codebase and it counts every colour, grey, spacing value, typeface, duplicated component and inline style. Then it compares you against an Ideal Design System, against 27 scanned public repos, and against 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…) and generates a shareable HTML diagnosis with real file paths: **keep it as a report, or hand it back to Claude as the punch list for the fix.**
+Run this skill on your codebase and it counts every colour, grey, spacing value, typeface, duplicated component and inline style. Then it compares you against an Ideal Design System, against 29 scanned public repos, and against 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…) and generates a shareable HTML diagnosis with real file paths: **keep it as a report, or hand it back to Claude as the punch list for the fix.**
 
 ## Why this exists
 
@@ -22,7 +22,7 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 - **Read-only.** Nothing in your repo is modified. The only outputs are a temp JSON and the HTML report.
 - **No network, no telemetry.** Everything runs locally. Nothing about your code leaves your machine.
 - **Honest exclusions.** Test files, Storybook stories, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality.
-- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 27 public React repos (cal.com, excalidraw, outline, twenty, dub, langfuse…). Median: 112 colours, 15 greys, 48 spacing values, 19 duplicated components.
+- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 29 public React repos (cal.com, excalidraw, outline, twenty, dub, langfuse…). Median: 88 colours, 12 greys, 17 duplicated components, 42 inline style blocks.
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
 
 ## Install
@@ -69,7 +69,7 @@ Open Claude Code in the repo you want roasted and type:
 You get the roast in chat plus `design-system-roast.html` at your repo root: a self-contained page (open it, Slack it, email it, no external requests) with:
 
 - a **health score** computed from how your numbers sit against the ideal
-- stat tiles comparing you to all three yardsticks: Ideal, the 27-repo average, and the reputable systems
+- stat tiles comparing you to all three yardsticks: Ideal, the 29-repo average, and the reputable systems
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the spacing scale, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger
 
@@ -83,15 +83,15 @@ Three real roasts of public repos, hosted as-is (the same self-contained HTML th
 
 ## What it measures
 
-| Metric | Ideal Design System | Median of 27 scanned repos | Median of 10 reputable systems |
+| Metric | Ideal Design System | Median of 29 scanned repos | Median of 10 reputable systems |
 |---|---|---|---|
-| Distinct colours | ~24 | 112 | 46 |
-| Shades of grey | up to 13 | 15 | 8 |
-| Spacing values | ~35 | 48 | 18 |
-| Typefaces | 2–3 | 0 declared | 1 |
+| Distinct colours | ~24 | 88 | 24 |
+| Shades of grey | up to 13 | 12 | 5 |
+| Off-scale spacing values | ~12 | 26 | 6 |
+| Typefaces | 2–3 | 2 | 1 |
 | Border radii | up to 10 | 12 | 2 |
-| Duplicated components | 0 | 19 | 10 |
-| Inline style blocks | 0 | 116 | 23 |
+| Duplicated components | 0 | 17 | 10 |
+| Inline style blocks | 0 | 42 | 11 |
 
 Yes, the median repo is already a mess. That's the point.
 

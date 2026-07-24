@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.1.4';
+const VERSION = '3.1.5';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -296,7 +296,7 @@ const noSystemLikely = colors.length === 0 || (colors.length < 3 && spacingTotal
 const DIR = {
   down: '<span class="dir d-down">▼</span>',
   up: '<span class="dir d-up">▲</span>',
-  eq: '<span class="dir d-eq">–</span>',
+  eq: '<span class="dir d-eq">=</span>',
   '': '',
 };
 const statTile = (s) => `<div class="stat glass st-${s.health}">
@@ -406,9 +406,9 @@ function typographySection() {
   if (!fontFamilies.length && !fontSizeTotal && !radiiTotal) return '';
   const mini = [
     typefaces.length ? tile(typefaces.length, 'typefaces', 'typefaces', 'brands use 2 or 3') : null,
-    fontSizeTotal ? tile(fontSizeTotal, 'font sizes', 'fontSizes', 'a type scale has 6–8') : null,
+    fontSizeTotal ? tile(fontSizeTotal, 'font sizes', 'fontSizes', 'a type scale has 6 to 8') : null,
     radiiTotal ? tile(radiiTotal, 'border radii', 'radii', 'a system has up to 10') : null,
-    shadows.length ? tile(shadows.length, 'shadow styles', 'shadows', '2–3 elevations') : null,
+    shadows.length ? tile(shadows.length, 'shadow styles', 'shadows', '2 to 3 elevations') : null,
   ].filter(Boolean);
   const sizeChips = [...(h.tokens.fontSizes ?? []).map((v) => ({ label: v.value, count: v.count })),
     ...(h.tokens.tailwind?.textSizes ?? []).map((v) => ({ label: `·${v.value}`, count: v.count }))]
@@ -464,7 +464,7 @@ function componentsSection() {
     <tr><td class="mono strong">&lt;${esc(c.name)}&gt;</td>
     <td><span class="pill pill-mint">${c.usageCount}×</span></td>
     <td class="path">${esc(c.file)}</td>
-    <td>${c.propsHint?.named?.length ? c.propsHint.named.slice(0, 5).map((p) => `<span class="chip chip-xs">${esc(p)}</span>`).join(' ') : '<span class="dim">—</span>'}</td></tr>`).join('');
+    <td>${c.propsHint?.named?.length ? c.propsHint.named.slice(0, 5).map((p) => `<span class="chip chip-xs">${esc(p)}</span>`).join(' ') : '<span class="dim">none</span>'}</td></tr>`).join('');
   return `<section class="glass pad">
     ${sectionHead('What you actually use', 'top components by adoption · the real system, buried in here')}
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
@@ -541,7 +541,7 @@ function whereToStartSection() {
   const top3 = c.sort((a, b) => b.score - a.score).slice(0, 3);
   if (!top3.length) return '';
   return `<section class="glass pad">
-    ${sectionHead('Where to start', `${top3.length === 1 ? 'one move' : top3.length === 2 ? 'two moves' : 'three moves'}, from this repo's own numbers. The full sequenced plan is a job for a human (or a paid tool)`)}
+    ${sectionHead('Where to start', `${['One tweak', 'Two tweaks', 'Three tweaks'][top3.length - 1]} to increase your score.`)}
     <div class="ledger">${top3.map((item, i) => `
       <div class="ledger-row start-row">
         <span class="ledger-idx">${String(i + 1).padStart(2, '0')}</span>

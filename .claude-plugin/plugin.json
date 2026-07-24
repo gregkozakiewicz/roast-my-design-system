@@ -1,7 +1,7 @@
 {
   "name": "roast-my-design-system",
   "description": "Roast your repo's design system with real data: a deterministic scanner counts every colour, grey, spacing value, typeface, duplicated component and inline style, compares them against Ideal Design System norms, a 29-repo benchmark and 10 reputable design systems, and generates a shareable light/dark HTML diagnosis.",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "author": {
     "name": "Greg Kozakiewicz",
     "url": "https://gregkozakiewicz.com"

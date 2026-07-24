@@ -4,6 +4,10 @@
 
 Run this skill on your codebase and it counts every colour, grey, spacing value, typeface, duplicated component and inline style. Then it compares you against an Ideal Design System, against 27 scanned public repos, and against 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…) and generates a shareable HTML diagnosis with real file paths: keep it as a report, or hand it back to Claude as the punch list for the fix.
 
+## Why this exists
+
+Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in your repo. If your repo has 112 colours and four Button implementations, your agent guesses which one is canonical, and it picks wrong half the time. That's why AI-generated UI looks *almost-but-not-quite* right. The first step to fixing it is seeing the mess measured.
+
 ![The diagnosis report: health score, stat tiles with three yardsticks, dark theme](assets/screenshots_1.png)
 
 ![Usage-weighted colour bar with hardcoded strays flagged, the grey ramp, and the spacing scale](assets/screenshots_2.png)
@@ -11,10 +15,6 @@ Run this skill on your codebase and it counts every colour, grey, spacing value,
 ![Worst-offender files ledger, duplicated component receipts, and inline style blocks with real file paths](assets/screenshots_3.png)
 
 ![The same report in light mode](assets/screenshots_4.png)
-
-## Why this exists
-
-Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in your repo. If your repo has 112 colours and four Button implementations, your agent guesses which one is canonical, and it picks wrong half the time. That's why AI-generated UI looks *almost-but-not-quite* right. The first step to fixing it is seeing the mess measured.
 
 ## What makes the numbers trustworthy
 

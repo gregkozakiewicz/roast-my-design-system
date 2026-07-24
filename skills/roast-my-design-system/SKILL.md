@@ -30,6 +30,7 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
    - Then a tight list: distinct colours (vs ideal ~24), greys (vs up to 13), off-scale spacing values (vs ~12), duplicated components with one real file-path pair as the receipt, inline style blocks, typefaces.
    - Compare against the benchmark the way the page does: the median of 29 scanned public repos has 88 colours, 12 greys, 26 off-scale spacing values, 17 duplicated components, 42 inline style blocks. If this repo is worse than the median, say so plainly.
    - Tone: deadpan, factual, no insults at the *person*, the roast is aimed at the repo. Every number you state must come from the JSON; never invent or estimate.
+   - When suggesting a fix, switch to calm and assume intent: a value used many times is a decision without a name, not a mistake, and small pixel nudges or one-off layout widths may be deliberate craft. Recommend naming and consolidating, never blind deletion.
    - If the scan found almost nothing (no colours, no spacing), do not roast: say the styling likely lives outside this repo (CDN, parent repo) and the roast doesn't apply.
 
 5. **Point them at the page**: tell the user `design-system-roast.html` was created at the repo root and is self-contained (openable directly, shareable as a file). Offer to open it.

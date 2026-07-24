@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 /**
  * Duplicate detection — the "4 Button implementations" finder. Two signals:
  *
@@ -42,9 +45,11 @@ const NOT_DUPLICATES = new Set(['Route', 'Layout', 'App', 'Providers', 'Provider
 /**
  * @param components output of harvestComponents (non-page components matter most)
  * @param uiDir the design-system dir if one exists (e.g. "src/components/ui")
- * @returns { exactDuplicates: [{name, files}], families: [{root, members: [{name, file, usageCount}]}] }
+ * @param root repo root; when given, same-name pairs where one file imports the
+ *   name from the other are tagged wrapped:true (composition, not competition)
+ * @returns { exactDuplicates: [{name, files, wrapped?}], families: [{root, members: [{name, file, usageCount}]}] }
  */
-export function findDuplicates(components, uiDir = null) {
+export function findDuplicates(components, uiDir = null, root = null) {
   const comps = components.filter((c) => !c.isPage && !NOT_DUPLICATES.has(c.name));
 
   // 1. exact same component name defined in >1 file
@@ -61,6 +66,23 @@ export function findDuplicates(components, uiDir = null) {
       totalUsages: defs.reduce((s, d) => s + d.usageCount, 0),
     }))
     .sort((a, b) => b.files.length - a.files.length);
+
+  // A "duplicate" where one file imports the same identifier from the other is
+  // a wrapper/composition (memoized variant, styled passthrough) — still an
+  // agent trap worth listing, but not a competing implementation.
+  if (root) {
+    for (const d of exactDuplicates) {
+      if (d.files.length !== 2) continue;
+      const base = (f) => f.replace(/\.[jt]sx?$/, '').split('/').pop();
+      const importsFrom = (fromFile, name, otherBase) => {
+        let src; try { src = readFileSync(join(root, fromFile), 'utf8'); } catch { return false; }
+        const re = new RegExp(`import\\s*(?:type\\s*)?{[^}]*\\b${name}\\b[^}]*}\\s*from\\s*['"][^'"]*${otherBase}['"]`);
+        return re.test(src);
+      };
+      const [a, b] = d.files;
+      if (importsFrom(a, d.name, base(b)) || importsFrom(b, d.name, base(a))) d.wrapped = true;
+    }
+  }
 
   // 2. name families around a shared root (only interesting with >1 distinct component)
   const byRoot = new Map();
@@ -97,6 +119,9 @@ export function findDuplicates(components, uiDir = null) {
       f.members = [...canonical, ...outside];
       return true;
     })
+    // Past ~8 members a "family" is a generic word (Input matching 37
+    // components), not a consolidation target — noise that costs credibility.
+    .filter((f) => f.members.length <= 8)
     .sort((a, b) => b.members.length - a.members.length);
 
   return { exactDuplicates, families };

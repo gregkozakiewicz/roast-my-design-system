@@ -202,6 +202,14 @@
   .pill-coral { background:var(--coral-soft); color:var(--coral); }
   .pill-amber { background:var(--amber-soft); color:var(--amber); }
 
+  /* value receipts */
+  .receipts { margin-top:18px; }
+  .chips-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .vchip { font:11.5px var(--mono); color:var(--text); border:1px solid var(--line); background:var(--chip-bg);
+    border-radius:99px; padding:2px 10px; }
+  .vchip.bad { color:var(--coral); border-color:var(--coral-soft); background:var(--coral-soft); }
+  .vchip.dim { color:var(--dim2); }
+
   /* two-up cards, families, mini-cards */
   .two-up { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }
   @media (max-width:860px) { .two-up { grid-template-columns:1fr; } }
@@ -253,7 +261,7 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 2216ms · 3,514 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 2373ms · 3,514 code files</div>
       <h1>Design System Diagnosis</h1>
       <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-07-24</div>
     </div>
@@ -290,7 +298,7 @@
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">19 · messier than 70% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">10 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">312</div><div class="lab">inline style blocks</div>
+  <div class="num">311</div><div class="lab">inline style blocks</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">116 · messier than 89% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">23 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-info">
   
@@ -326,7 +334,7 @@
 </section></section>
 
 <section class="glass pad">
-    <div class="sec-head"><h2>86 spacing values</h2><p class="sub">a scale needs ~35 · Tailwind steps marked · · raw px values off the scale in coral</p></div>
+    <div class="sec-head"><h2>86 spacing values</h2><p class="sub">a scale allows ~35 · Tailwind steps marked · · off-scale values in coral</p></div>
     <div class="bars">
     <div class="bar-row"><span class="bar-label">·2</span>
     <div class="bar-track"><div class="bar" style="width:100%"></div></div>
@@ -381,7 +389,9 @@
     <span class="bar-count">26</span></div>
     <div class="bar-row"><span class="bar-label off">0px</span>
     <div class="bar-track"><div class="bar bar-off" style="width:2%"></div></div>
-    <span class="bar-count">21</span></div></div></section>
+    <span class="bar-count">21</span></div></div>
+    <div class="receipts"><div class="eyebrow">501 arbitrary values punched through the scale, one bracket at a time</div>
+    <div class="chips-row"><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×18</span><span class="vchip bad" title="apps/web/ui/analytics/device-section.tsx">[300px] ×17</span><span class="vchip bad" title="apps/web/app/app.dub.co/(onboarding)/onboarding/(steps)/plan/plan-selector.tsx">[0.625rem] ×17</span><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×16</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[50px] ×15</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×14</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×11</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(dashboard)/rewind/2025/share-rewind-modal.tsx">[500px] ×10</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[80px] ×9</span><span class="vchip dim">+153 more</span></div></div></section>
 <section>
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-bad">
@@ -393,6 +403,8 @@
   <div class="num">23</div><div class="lab">border radii</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">12 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
+    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×1784</span><span class="vchip">·xs ×658</span><span class="vchip">·lg ×207</span><span class="vchip">·base ×173</span><span class="vchip">·xl ×63</span><span class="vchip">·3xl ×12</span><span class="vchip">·[0.625rem] ×9</span><span class="vchip">·2xl ×8</span><span class="vchip">·5xl ×8</span><span class="vchip">·4xl ×8</span><span class="vchip">·[13px] ×7</span><span class="vchip">·[0.8125rem] ×6</span><span class="vchip">·[0.7rem] ×5</span><span class="vchip">·[var(--brand)] ×4</span></div></div>
+    <div class="receipts"><div class="eyebrow">the radii, by use</div><div class="chips-row"><span class="vchip">·md ×919</span><span class="vchip">·lg ×571</span><span class="vchip">·full ×413</span><span class="vchip">·xl ×209</span><span class="vchip">·default ×208</span><span class="vchip">·none ×46</span><span class="vchip">·2xl ×46</span><span class="vchip">·sm ×31</span><span class="vchip">·[inherit] ×24</span><span class="vchip">·[10px] ×14</span><span class="vchip">·[0.625rem] ×8</span><span class="vchip">999px ×3</span><span class="vchip">50% ×2</span><span class="vchip">·[6px] ×2</span></div></div>
     
   </section>
 <section class="glass pad">
@@ -499,49 +511,49 @@
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">card family · 57 variants</div>
+      <div class="eyebrow">avatar family · 7 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AnalyticsCard&gt;</div><div class="mc-path">apps/web/ui/analytics/analytics-card.tsx</div></div><span class="pill pill-mint">used 5×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgramOverviewCard&gt;</div><div class="mc-path">apps/web/ui/partners/overview/program-overview-card.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ResourceCard&gt;</div><div class="mc-path">apps/web/ui/partners/resources/resource-card.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SimpleLinkCard&gt;</div><div class="mc-path">apps/web/ui/links/simple-link-card.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CardList&gt;</div><div class="mc-path">packages/ui/src/card-list/card-list.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ContentLinkCard&gt;</div><div class="mc-path">packages/ui/src/nav/content/shared.tsx</div></div><span class="pill pill-mint">used 3×</span></div>
-      <div class="mini-card dim">…and 51 more</div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PartnerAvatar&gt;</div><div class="mc-path">apps/web/ui/partners/partner-avatar.tsx</div></div><span class="pill pill-mint">used 54×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;UserAvatar&gt;</div><div class="mc-path">apps/web/ui/users/user-avatar.tsx</div></div><span class="pill pill-mint">used 24×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CustomerAvatar&gt;</div><div class="mc-path">apps/web/ui/customers/customer-avatar.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TokenAvatar&gt;</div><div class="mc-path">apps/web/ui/token-avatar.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Avatar&gt;</div><div class="mc-path">packages/ui/src/avatar.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ActivityLogUserAvatar&gt;</div><div class="mc-path">apps/web/ui/activity-logs/activity-entry-chips.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      <div class="mini-card dim">…and 1 more</div>
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">form family · 45 variants</div>
+      <div class="eyebrow">dropdown family · 7 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FormControl&gt;</div><div class="mc-path">apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx</div></div><span class="pill pill-mint">used 19×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FormControl&gt;</div><div class="mc-path">apps/web/ui/submitted-leads/form-fields/form-control.tsx</div></div><span class="pill pill-mint">used 19×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Form&gt;</div><div class="mc-path">apps/web/app/app.dub.co/(onboarding)/onboarding/(steps)/program/form.tsx</div></div><span class="pill pill-mint">used 15×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Form&gt;</div><div class="mc-path">apps/web/app/app.dub.co/(onboarding)/onboarding/(steps)/workspace/form.tsx</div></div><span class="pill pill-mint">used 15×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Form&gt;</div><div class="mc-path">packages/ui/src/form.tsx</div></div><span class="pill pill-mint">used 15×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PartnerPlatformsForm&gt;</div><div class="mc-path">apps/web/ui/partners/partner-platforms-form.tsx</div></div><span class="pill pill-mint">used 3×</span></div>
-      <div class="mini-card dim">…and 39 more</div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FolderDropdown&gt;</div><div class="mc-path">apps/web/ui/folders/folder-dropdown.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PartnerProgramDropdown&gt;</div><div class="mc-path">apps/web/ui/layout/sidebar/partner-program-dropdown.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;UserDropdown&gt;</div><div class="mc-path">apps/web/ui/layout/sidebar/user-dropdown.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MoreDropdown&gt;</div><div class="mc-path">apps/web/ui/links/link-builder/more-dropdown.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PayoutMethodDropdown&gt;</div><div class="mc-path">apps/web/ui/partners/payouts/payout-method-dropdown.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SubmittedLeadStatusDropdown&gt;</div><div class="mc-path">apps/web/ui/submitted-leads/submitted-lead-status-dropdown.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      <div class="mini-card dim">…and 1 more</div>
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">button family · 43 variants</div>
+      <div class="eyebrow">progress family · 6 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Button&gt;</div><div class="mc-path">packages/ui/src/button.tsx</div></div><span class="pill pill-mint">used 710×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CopyButton&gt;</div><div class="mc-path">packages/ui/src/copy-button.tsx</div></div><span class="pill pill-mint">used 20×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ButtonTooltip&gt;</div><div class="mc-path">packages/ui/src/tooltip.tsx</div></div><span class="pill pill-mint">used 14×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ButtonLink&gt;</div><div class="mc-path">apps/web/ui/placeholders/button-link.tsx</div></div><span class="pill pill-mint">used 12×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FilterButtonTableRow&gt;</div><div class="mc-path">apps/web/ui/shared/filter-button-table-row.tsx</div></div><span class="pill pill-mint">used 7×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ConnectPayoutButton&gt;</div><div class="mc-path">apps/web/ui/partners/payouts/connect-payout-button.tsx</div></div><span class="pill pill-mint">used 4×</span></div>
-      <div class="mini-card dim">…and 37 more</div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StepProgressBar&gt;</div><div class="mc-path">apps/web/ui/partners/merge-accounts/step-progress-bar.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;BountyProgressBarRow&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-progress-bar-row.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgressCircle&gt;</div><div class="mc-path">packages/ui/src/progress-circle.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PerformanceBountyProgress&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-performance.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SubmissionBountyProgress&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-performance.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgressBar&gt;</div><div class="mc-path">packages/ui/src/progress-bar.tsx</div></div></div>
+      
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">link family · 35 variants</div>
+      <div class="eyebrow">header family · 6 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Link&gt;</div><div class="mc-path">apps/web/ui/shared/icons/link.tsx</div></div><span class="pill pill-mint">used 513×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LinkLogo&gt;</div><div class="mc-path">packages/ui/src/link-logo.tsx</div></div><span class="pill pill-mint">used 36×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ConditionalLink&gt;</div><div class="mc-path">apps/web/ui/shared/conditional-link.tsx</div></div><span class="pill pill-mint">used 7×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LinkBuilder&gt;</div><div class="mc-path">apps/web/ui/modals/link-builder/index.tsx</div></div><span class="pill pill-mint">used 7×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LinkBuilderProvider&gt;</div><div class="mc-path">apps/web/ui/links/link-builder/link-builder-provider.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LinkFeatureButtons&gt;</div><div class="mc-path">apps/web/ui/links/link-builder/link-feature-buttons.tsx</div></div><span class="pill pill-mint">used 3×</span></div>
-      <div class="mini-card dim">…and 29 more</div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LinkBuilderHeader&gt;</div><div class="mc-path">apps/web/ui/links/link-builder/link-builder-header.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PageContentHeader&gt;</div><div class="mc-path">apps/web/ui/layout/page-content/page-content-header.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ApplyHeader&gt;</div><div class="mc-path">apps/web/app/(ee)/partners.dub.co/(apply)/[programSlug]/(default)/header.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MarketplaceProgramHeaderControls&gt;</div><div class="mc-path">apps/web/ui/program-marketplace/marketplace-program-header-controls.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgramOnboardingHeader&gt;</div><div class="mc-path">apps/web/app/(ee)/app.dub.co/(new-program)/header.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;WebhookHeader&gt;</div><div class="mc-path">apps/web/ui/webhooks/webhook-header.tsx</div></div></div>
+      
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">modal family · 32 variants</div>
+      <div class="eyebrow">popover family · 5 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Modal&gt;</div><div class="mc-path">packages/ui/src/modal.tsx</div></div><span class="pill pill-mint">used 165×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ModalHero&gt;</div><div class="mc-path">apps/web/ui/shared/modal-hero.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;GenerateLanderModal&gt;</div><div class="mc-path">apps/web/ui/partners/groups/design/application-form/modals/generate-lander-modal.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;GenerateLanderModal&gt;</div><div class="mc-path">apps/web/ui/partners/groups/design/lander/modals/generate-lander-modal.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SlackSupportInviteModal&gt;</div><div class="mc-path">apps/web/ui/workspaces/slack-support-invite-modal.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AddBlockModal&gt;</div><div class="mc-path">apps/web/ui/partners/groups/design/lander/modals/add-block-modal.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
-      <div class="mini-card dim">…and 26 more</div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Popover&gt;</div><div class="mc-path">packages/ui/src/popover.tsx</div></div><span class="pill pill-mint">used 64×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DurationPopoverContent&gt;</div><div class="mc-path">apps/web/ui/shared/duration-popover-content.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CopyPopover&gt;</div><div class="mc-path">apps/web/ui/modals/qr-code-design-fields.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CustomersMenuPopover&gt;</div><div class="mc-path">apps/web/ui/customers/customers-menu-popover.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DownloadPopover&gt;</div><div class="mc-path">apps/web/ui/modals/qr-code-design-fields.tsx</div></div></div>
+      
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">badge family · 32 variants</div>
+      <div class="eyebrow">menu family · 5 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StatusBadge&gt;</div><div class="mc-path">packages/ui/src/status-badge.tsx</div></div><span class="pill pill-mint">used 47×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;InlineBadgePopover&gt;</div><div class="mc-path">apps/web/ui/shared/inline-badge-popover.tsx</div></div><span class="pill pill-mint">used 28×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Badge&gt;</div><div class="mc-path">packages/ui/src/badge.tsx</div></div><span class="pill pill-mint">used 26×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;InlineBadgePopoverMenu&gt;</div><div class="mc-path">apps/web/ui/shared/inline-badge-popover.tsx</div></div><span class="pill pill-mint">used 16×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;BadgeCheck2&gt;</div><div class="mc-path">packages/ui/src/icons/nucleo/badge-check2.tsx</div></div><span class="pill pill-mint">used 10×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProBadgeTooltip&gt;</div><div class="mc-path">apps/web/ui/shared/pro-badge-tooltip.tsx</div></div><span class="pill pill-mint">used 10×</span></div>
-      <div class="mini-card dim">…and 26 more</div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;IconMenu&gt;</div><div class="mc-path">packages/ui/src/icon-menu.tsx</div></div><span class="pill pill-mint">used 16×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MenuItem&gt;</div><div class="mc-path">packages/ui/src/menu-item.tsx</div></div><span class="pill pill-mint">used 14×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CommissionRowMenu&gt;</div><div class="mc-path">apps/web/ui/partners/commission-row-menu.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PayoutRowMenu&gt;</div><div class="mc-path">apps/web/ui/partners/payout-row-menu.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SubscriptionMenu&gt;</div><div class="mc-path">apps/web/ui/workspaces/subscription-menu.tsx</div></div></div>
+      
       </div>
     </div></div></div>
 <div class="glass pad half">
-    <div class="sec-head"><h2>312 inline style blocks</h2><p class="sub">styling no system can see</p></div>
+    <div class="sec-head"><h2>311 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
         <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/dubinc-dub/apps/web/ui/partners/groups/design/previews/portal-preview.tsx">apps/web/ui/partners/groups/design/previews/portal-preview.tsx</a><span class="mc-count">×109</span></div>
@@ -615,7 +627,7 @@
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a>, a free skill for Claude Code and Codex</div>
-    <div class="foot-sub"><span class="ver">ver. 2.0.6</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
+    <div class="foot-sub"><span class="ver">ver. 2.0.7</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

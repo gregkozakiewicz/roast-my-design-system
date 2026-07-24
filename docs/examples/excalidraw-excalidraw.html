@@ -202,6 +202,14 @@
   .pill-coral { background:var(--coral-soft); color:var(--coral); }
   .pill-amber { background:var(--amber-soft); color:var(--amber); }
 
+  /* value receipts */
+  .receipts { margin-top:18px; }
+  .chips-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .vchip { font:11.5px var(--mono); color:var(--text); border:1px solid var(--line); background:var(--chip-bg);
+    border-radius:99px; padding:2px 10px; }
+  .vchip.bad { color:var(--coral); border-color:var(--coral-soft); background:var(--coral-soft); }
+  .vchip.dim { color:var(--dim2); }
+
   /* two-up cards, families, mini-cards */
   .two-up { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }
   @media (max-width:860px) { .two-up { grid-template-columns:1fr; } }
@@ -253,7 +261,7 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 392ms · 522 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 424ms · 522 code files</div>
       <h1>Design System Diagnosis</h1>
       <div class="meta"><span class="mono">excalidraw/excalidraw</span> · scanned 2026-07-24</div>
     </div>
@@ -326,7 +334,7 @@
 </section></section>
 
 <section class="glass pad">
-    <div class="sec-head"><h2>88 spacing values</h2><p class="sub">a scale needs ~35 · Tailwind steps marked · · raw px values off the scale in coral</p></div>
+    <div class="sec-head"><h2>88 spacing values</h2><p class="sub">a scale allows ~35 · Tailwind steps marked · · off-scale values in coral</p></div>
     <div class="bars">
     <div class="bar-row"><span class="bar-label off">0.5rem</span>
     <div class="bar-track"><div class="bar bar-off" style="width:100%"></div></div>
@@ -401,6 +409,8 @@
   <div class="num">28</div><div class="lab">shadow styles</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~6 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">4 · messier than 93% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
+    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">0.875rem ×27</span><span class="vchip">0.75rem ×26</span><span class="vchip">1rem ×11</span><span class="vchip">0.625rem ×6</span><span class="vchip">12px ×5</span><span class="vchip">1.25rem ×5</span><span class="vchip">1.125rem ×5</span><span class="vchip">0.8em ×5</span><span class="vchip">10px ×4</span><span class="vchip">0.9rem ×4</span><span class="vchip">0.8333rem ×3</span><span class="vchip">14px ×3</span><span class="vchip">20px ×2</span><span class="vchip">1.3125rem ×2</span></div></div>
+    <div class="receipts"><div class="eyebrow">the radii, by use</div><div class="chips-row"><span class="vchip">var(--border-radius-lg) ×35</span><span class="vchip">var(--border-radius-md) ×15</span><span class="vchip">4px ×15</span><span class="vchip">0.5rem ×9</span><span class="vchip">0 !important ×9</span><span class="vchip">50% ×8</span><span class="vchip">var(--border-radius-lg) !important ×8</span><span class="vchip">0 ×5</span><span class="vchip">12px ×5</span><span class="vchip">var(--space-factor) ×4</span><span class="vchip">8px ×4</span><span class="vchip">100% ×4</span><span class="vchip">var(--radius) ×3</span><span class="vchip">10px ×3</span></div></div>
     <div class="glass pad" style="margin-top:16px"><div class="sec-head"><h2>3 typefaces, declared 9 different ways</h2><p class="sub">every distinct declaration is a chance for the next one to be wrong</p></div><div class="fam-rows"><div class="mini-card"><span class="mc-path">&quot;Assistant&quot;</span><span class="pill pill-coral">×15</span></div><div class="mini-card"><span class="mc-path">inherit</span><span class="pill pill-coral">×14</span></div><div class="mini-card"><span class="mc-path">var(--ui-font)</span><span class="pill pill-coral">×12</span></div><div class="mini-card"><span class="mc-path">monospace</span><span class="pill pill-coral">×8</span></div><div class="mini-card"><span class="mc-path">sans-serif</span><span class="pill pill-mint">×2</span></div><div class="mini-card"><span class="mc-path">&quot;Cascadia&quot;</span><span class="pill pill-mint">×2</span></div><div class="mini-card"><span class="mc-path">Cascadia</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">var(--font-family)</span><span class="pill pill-mint">×1</span></div></div></div>
   </section>
 <section class="glass pad">
@@ -486,45 +496,45 @@
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">button family · 30 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;IconButton&gt;</div><div class="mc-path">packages/excalidraw/components/IconButton.tsx</div></div><span class="pill pill-mint">used 44×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FilledButton&gt;</div><div class="mc-path">packages/excalidraw/components/FilledButton.tsx</div></div><span class="pill pill-mint">used 14×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Button&gt;</div><div class="mc-path">packages/excalidraw/components/Button.tsx</div></div><span class="pill pill-mint">used 11×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DialogActionButton&gt;</div><div class="mc-path">packages/excalidraw/components/DialogActionButton.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ElementCanvasButton&gt;</div><div class="mc-path">packages/excalidraw/components/MagicButton.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PenModeButton&gt;</div><div class="mc-path">packages/excalidraw/components/PenModeButton.tsx</div></div><span class="pill pill-mint">used 3×</span></div>
-      <div class="mini-card dim">…and 24 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">modal family · 23 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Dialog&gt;</div><div class="mc-path">packages/excalidraw/components/Dialog.tsx</div></div><span class="pill pill-mint">used 13×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TTDDialogPanel&gt;</div><div class="mc-path">packages/excalidraw/components/TTDDialog/TTDDialogPanel.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ErrorDialog&gt;</div><div class="mc-path">packages/excalidraw/components/ErrorDialog.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TTDDialog&gt;</div><div class="mc-path">packages/excalidraw/components/TTDDialog/TTDDialog.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ConfirmDialog&gt;</div><div class="mc-path">packages/excalidraw/components/ConfirmDialog.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;OverwriteConfirmDialog&gt;</div><div class="mc-path">packages/excalidraw/components/OverwriteConfirm/OverwriteConfirm.tsx</div></div><span class="pill pill-mint">used 2×</span></div>
-      <div class="mini-card dim">…and 17 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">menu family · 20 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LibraryMenuSection&gt;</div><div class="mc-path">packages/excalidraw/components/LibraryMenuSection.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MenuItemContent&gt;</div><div class="mc-path">packages/excalidraw/components/dropdownMenu/DropdownMenuItemContent.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LibraryMenuSectionGrid&gt;</div><div class="mc-path">packages/excalidraw/components/LibraryMenuSection.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MainMenu&gt;</div><div class="mc-path">packages/excalidraw/components/main-menu/MainMenu.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LibraryMenuControlButtons&gt;</div><div class="mc-path">packages/excalidraw/components/LibraryMenuControlButtons.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AppMainMenu&gt;</div><div class="mc-path">excalidraw-app/components/AppMainMenu.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
-      <div class="mini-card dim">…and 14 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">dropdown family · 10 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownMenuItem&gt;</div><div class="mc-path">packages/excalidraw/components/dropdownMenu/DropdownMenuItem.tsx</div></div><span class="pill pill-mint">used 11×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownMenuItemCheckbox&gt;</div><div class="mc-path">packages/excalidraw/components/dropdownMenu/DropdownMenuItemCheckbox.tsx</div></div><span class="pill pill-mint">used 8×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownMenu&gt;</div><div class="mc-path">packages/excalidraw/components/dropdownMenu/DropdownMenu.tsx</div></div><span class="pill pill-mint">used 5×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownMenuItemLink&gt;</div><div class="mc-path">packages/excalidraw/components/dropdownMenu/DropdownMenuItemLink.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownMenuItemContentRadio&gt;</div><div class="mc-path">packages/excalidraw/components/dropdownMenu/DropdownMenuItemContentRadio.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownMenuSub&gt;</div><div class="mc-path">packages/excalidraw/components/dropdownMenu/DropdownMenuSub.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
-      <div class="mini-card dim">…and 4 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">sidebar family · 10 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DefaultSidebar&gt;</div><div class="mc-path">packages/excalidraw/components/DefaultSidebar.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Sidebar&gt;</div><div class="mc-path">examples/with-script-in-browser/components/sidebar/ExampleSidebar.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Sidebar&gt;</div><div class="mc-path">packages/excalidraw/components/Sidebar/Sidebar.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AppSidebar&gt;</div><div class="mc-path">excalidraw-app/components/AppSidebar.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SidebarInner&gt;</div><div class="mc-path">packages/excalidraw/components/Sidebar/Sidebar.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SidebarTab&gt;</div><div class="mc-path">packages/excalidraw/components/Sidebar/SidebarTab.tsx</div></div></div>
-      <div class="mini-card dim">…and 4 more</div>
-      </div>
-    </div>
-    <div class="fam">
       <div class="eyebrow">list family · 7 variants</div>
       <div class="fam-rows">
       <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ScrollableList&gt;</div><div class="mc-path">packages/excalidraw/components/ScrollableList.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;UserList&gt;</div><div class="mc-path">packages/excalidraw/components/UserList.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CustomColorList&gt;</div><div class="mc-path">packages/excalidraw/components/ColorPicker/CustomColorList.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FontPickerList&gt;</div><div class="mc-path">packages/excalidraw/components/FontPicker/FontPickerList.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LanguageList&gt;</div><div class="mc-path">excalidraw-app/app-language/LanguageList.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PickerColorList&gt;</div><div class="mc-path">packages/excalidraw/components/ColorPicker/PickerColorList.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
       <div class="mini-card dim">…and 1 more</div>
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">footer family · 6 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Footer&gt;</div><div class="mc-path">packages/excalidraw/components/footer/Footer.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CustomFooter&gt;</div><div class="mc-path">examples/with-script-in-browser/components/CustomFooter.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AppFooter&gt;</div><div class="mc-path">excalidraw-app/components/AppFooter.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DebugFooter&gt;</div><div class="mc-path">excalidraw-app/components/DebugCanvas.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MobileFooter&gt;</div><div class="mc-path">examples/with-script-in-browser/components/MobileFooter.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FooterCenter&gt;</div><div class="mc-path">packages/excalidraw/components/footer/FooterCenter.tsx</div></div></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">popover family · 5 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PropertiesPopover&gt;</div><div class="mc-path">packages/excalidraw/components/PropertiesPopover.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ToolPopover&gt;</div><div class="mc-path">packages/excalidraw/components/ToolPopover.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FreedrawToolPopover&gt;</div><div class="mc-path">packages/excalidraw/components/Tools.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SelectionToolPopover&gt;</div><div class="mc-path">packages/excalidraw/components/Tools.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Popover&gt;</div><div class="mc-path">packages/excalidraw/components/Popover.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">input family · 4 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StatsDragInput&gt;</div><div class="mc-path">packages/excalidraw/components/Stats/DragInput.tsx</div></div><span class="pill pill-mint">used 5×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ColorInput&gt;</div><div class="mc-path">packages/excalidraw/components/ColorPicker/ColorInput.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TTDDialogInput&gt;</div><div class="mc-path">packages/excalidraw/components/TTDDialog/TTDDialogInput.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DimensionDragInput&gt;</div><div class="mc-path">packages/excalidraw/components/Stats/Dimension.tsx</div></div></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">toggle family · 4 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DarkModeToggle&gt;</div><div class="mc-path">packages/excalidraw/components/DarkModeToggle.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PreferencesToggleGridModeItem&gt;</div><div class="mc-path">packages/excalidraw/components/main-menu/DefaultItems.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PreferencesToggleZenModeItem&gt;</div><div class="mc-path">packages/excalidraw/components/main-menu/DefaultItems.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ToggleTheme&gt;</div><div class="mc-path">packages/excalidraw/components/main-menu/DefaultItems.tsx</div></div></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">radio family · 2 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;RadioSelection&gt;</div><div class="mc-path">packages/excalidraw/components/RadioSelection.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;RadioGroup&gt;</div><div class="mc-path">packages/excalidraw/components/RadioGroup.tsx</div></div><span class="pill pill-mint">used 2×</span></div>
+      
       </div>
     </div></div></div>
 <div class="glass pad half">
@@ -602,7 +612,7 @@
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a>, a free skill for Claude Code and Codex</div>
-    <div class="foot-sub"><span class="ver">ver. 2.0.6</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
+    <div class="foot-sub"><span class="ver">ver. 2.0.7</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

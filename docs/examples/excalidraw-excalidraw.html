@@ -277,13 +277,25 @@
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">42 hardcoded colours outside the token set. 84 off-scale spacing values where a dozen would do. 82 inline style blocks bypassing every system. Messier than the median of 29 scanned repos on 3 of 6 core metrics. And the median repo is already a mess.</div>
+    <div class="verdict">84 off-scale spacing values where a dozen would do. 82 inline style blocks bypassing every system. 42 hardcoded colours outside the token set. Messier than the median of 29 scanned repos on 3 of 6 core metrics. And the median repo is already a mess.</div>
   </div>
 </header>
 
-<section class="glass pad agent">
-    <div class="sec-head"><h2>What your AI agent sees today</h2></div>
-    <p class="sub">Your agent reads <span class="mono">CLAUDE.md</span>, <span class="mono">.github/copilot-instructions.md</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">CLAUDE.md · Claude Code</span><span class="chip chip-agent">.github/copilot-instructions.md · GitHub Copilot</span></div></section>
+<section class="glass pad">
+    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks to increase your score.</p></div>
+    <div class="ledger">
+      <div class="ledger-row start-row">
+        <span class="ledger-idx">01</span>
+        <div class="start-body"><div class="start-title">Tokenise the 42 stray colours</div><div class="sub">They are hardcoded where no token names them, including 11 in packages/excalidraw/css/variables.module.scss, sitting right next to the token definitions. Those are the cheapest wins on this page. Every one is a value your agent will happily copy.</div></div>
+      </div>
+      <div class="ledger-row start-row">
+        <span class="ledger-idx">02</span>
+        <div class="start-body"><div class="start-title">Define a spacing scale, then fold 84 values into it</div><div class="sub">84 distinct spacing values and no named scale to hold them. Define ~8 steps in packages/excalidraw/css/theme.scss, next to the tokens you already keep there, then migrate values as you touch each file. No mass rounding.</div></div>
+      </div>
+      <div class="ledger-row start-row">
+        <span class="ledger-idx">03</span>
+        <div class="start-body"><div class="start-title">Fold 82 inline style blocks back into the system</div><div class="sub">These are static values written as style attributes; start with packages/excalidraw/components/PublishLibrary.tsx (7 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div></div>
+      </div></div></section>
 
 <div class="stats"><div class="stat glass st-warn">
   <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
@@ -310,6 +322,10 @@
   <div class="num">342</div><div class="lab">components defined</div>
   <div class="rows"><div class="row"><span class="rlab">the raw material</span><span class="rval"> </span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">779 </span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">292 </span></div></div>
 </div></div>
+
+<section class="glass pad agent">
+    <div class="sec-head"><h2>What your AI agent sees today</h2></div>
+    <p class="sub">Your agent reads <span class="mono">CLAUDE.md</span>, <span class="mono">.github/copilot-instructions.md</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">CLAUDE.md · Claude Code</span><span class="chip chip-agent">.github/copilot-instructions.md · GitHub Copilot</span></div></section>
 
 <section style="margin-top:16px"><section class="palette-grid">
   <div class="glass pal-hero grad">
@@ -599,26 +615,11 @@
     <td><span class="pill pill-mint">8×</span></td>
     <td class="path">packages/excalidraw/components/dropdownMenu/DropdownMenuItemCheckbox.tsx</td>
     <td><span class="dim">none</span></td></tr></tbody></table></div></section>
-<section class="glass pad">
-    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks to increase your score.</p></div>
-    <div class="ledger">
-      <div class="ledger-row start-row">
-        <span class="ledger-idx">01</span>
-        <div class="start-body"><div class="start-title">Tokenise the 42 stray colours</div><div class="sub">They are hardcoded where no token names them, including 11 in packages/excalidraw/css/variables.module.scss, sitting right next to the token definitions. Those are the cheapest wins on this page. Every one is a value your agent will happily copy.</div></div>
-      </div>
-      <div class="ledger-row start-row">
-        <span class="ledger-idx">02</span>
-        <div class="start-body"><div class="start-title">Define a spacing scale, then fold 84 values into it</div><div class="sub">84 distinct spacing values and no named scale to hold them. Define ~8 steps in packages/excalidraw/css/theme.scss, next to the tokens you already keep there, then migrate values as you touch each file. No mass rounding.</div></div>
-      </div>
-      <div class="ledger-row start-row">
-        <span class="ledger-idx">03</span>
-        <div class="start-body"><div class="start-title">Fold 82 inline style blocks back into the system</div><div class="sub">These are static values written as style attributes; start with packages/excalidraw/components/PublishLibrary.tsx (7 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div></div>
-      </div></div></section>
 
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a>, a free skill for Claude Code and Codex</div>
-    <div class="foot-sub"><span class="ver">ver. 3.1.5</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
+    <div class="foot-sub"><span class="ver">ver. 3.2.0</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

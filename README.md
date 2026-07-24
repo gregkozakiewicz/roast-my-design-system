@@ -7,14 +7,16 @@ Point it at your codebase and it counts every colour, grey, spacing value, typef
 > *"7 typefaces, brands use 2 or 3. 398 distinct colours, a design system needs ~24. 82 shades of grey doing the job of 13. Messier than the median of 27 scanned repos on 6 of 6 core metrics. And the median repo is already a mess."*
 > — the roast of a real, popular open-source repo
 
-![The diagnosis report: health score, stat tiles with three yardsticks, dark theme](assets/report-dark.png)
+![The diagnosis report: health score, stat tiles with three yardsticks, dark theme](assets/screenshots_1.png)
 
 <details>
-<summary><ins><b>More Screenshots</b></ins> of the report: the palette forensics, and the light theme (one file, built-in toggle)</summary>
+<summary><ins><b>More Screenshots</b></ins> of the report: the palette forensics, the offender receipts, and the light theme (one file, built-in toggle)</summary>
 
-![Usage-weighted colour bar with hardcoded strays flagged, the grey ramp, and off-scale spacing values in coral](assets/report-palette.png)
+![Usage-weighted colour bar with hardcoded strays flagged, the grey ramp, and the spacing scale](assets/screenshots_2.png)
 
-![The same report in light mode](assets/report-light.png)
+![Worst-offender files ledger, duplicated component receipts, and inline style blocks with real file paths](assets/screenshots_3.png)
+
+![The same report in light mode](assets/screenshots_4.png)
 
 </details>
 

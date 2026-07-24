@@ -81,6 +81,11 @@ function classStrings(src) {
   return out;
 }
 
+// An inline style that only pipes currentcolor/inherit through (the standard
+// SVG icon-inheritance pattern, often 60x in one glyph file) is not "styling
+// bypassing the system" — counting it hands a sharp dev the whole rebuttal.
+const TRIVIAL_INLINE_RE = /^\{?\s*(?:(?:\.\.\.[\w.]+|(?:color|fill|stroke)\s*:\s*['"]?(?:currentcolor|inherit)['"]?)\s*,?\s*)*\}?$/i;
+
 /** Extract inline style objects: style={{ ... }} */
 function inlineStyleBlocks(src) {
   const out = [];
@@ -103,6 +108,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   const colors = new Tally(), spacing = new Tally(), radii = new Tally(),
         fontSizes = new Tally(), fontFamilies = new Tally(), shadows = new Tally();
   const twColors = new Tally(), twSpacing = new Tally(), twRadii = new Tally(), twTextSizes = new Tally();
+  const twArbitrary = new Tally();
   let inlineStyleCount = 0;
   const inlineStyleFiles = new Map();
 
@@ -149,10 +155,13 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       for (const m of cls.matchAll(TW_SPACING_RE)) twSpacing.add(m[1], f);
       for (const m of cls.matchAll(TW_RADIUS_RE)) twRadii.add(m[1] ?? 'default', f);
       for (const m of cls.matchAll(TW_TEXTSIZE_RE)) twTextSizes.add(m[1], f);
+      // Arbitrary length values (p-[13px], text-[10px], w-[257px]) — the
+      // Tailwind-era way a scale erodes, one bracket at a time.
+      for (const m of cls.matchAll(/[a-z][\w-]*-\[(-?\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|pt))\]/g)) twArbitrary.add(`[${m[1]}]`, f);
     }
 
     // Inline styles: count blocks + harvest colours/lengths inside them
-    const blocks = inlineStyleBlocks(src);
+    const blocks = inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()));
     if (blocks.length) {
       inlineStyleCount += blocks.length;
       inlineStyleFiles.set(f, (inlineStyleFiles.get(f) ?? 0) + blocks.length);
@@ -207,6 +216,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       spacing: twSpacing.toJSON(),
       radii: twRadii.toJSON(),
       textSizes: twTextSizes.toJSON(),
+      arbitrary: twArbitrary.toJSON(),
     },
     inlineStyles: {
       count: inlineStyleCount,

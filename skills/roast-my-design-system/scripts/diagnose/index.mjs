@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '2.0.6';
+const VERSION = '2.0.7';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -116,6 +116,9 @@ const spacing = h.tokens.spacing ?? [];
 const twSpacing = h.tokens.tailwind?.spacing ?? [];
 const spacingTotal = new Set([...spacing.map((s) => s.value), ...twSpacing.map((s) => `tw:${s.value}`)]).size;
 const exactDupes = h.duplicates.exactDuplicates ?? [];
+// A wrapped pair (one file imports the name from the other) is composition,
+// not competition — listed with a badge, but not counted as a duplicate.
+const hardDupes = exactDupes.filter((d) => !d.wrapped);
 const families = h.duplicates.families ?? [];
 const inline = h.tokens.inlineStyles ?? { count: 0, files: [] };
 const comps = h.components ?? [];
@@ -126,6 +129,17 @@ const ds = h.profile?.designSystem ?? { kind: 'none' };
 
 const fontFamilies = h.tokens.fontFamilies ?? [];
 const typefaces = distinctTypefaces(fontFamilies);
+
+// Token-led repos (shadcn/Tailwind semantic setups) hold most of their colours
+// as deliberate CSS-variable tokens; judging them on the total punishes the
+// exact architecture the ideal recommends. Health rides on the strays instead.
+const colorTokens = colors.filter((c) => c.isToken).length;
+const colorStrays = colors.length - colorTokens;
+const tokenLed = colorTokens >= colorStrays && colorTokens > 0;
+
+// Arbitrary bracket values (p-[13px], text-[10px]) — scale erosion, counted.
+const arbitrary = h.tokens.tailwind?.arbitrary ?? [];
+const arbitraryCount = arbitrary.reduce((sum, a) => sum + a.count, 0);
 
 // Benchmark helpers: for a metric value, where does this repo sit among the
 // scanned fleet? ("more colours than 90% of scanned repos")
@@ -168,11 +182,14 @@ const offenders = h.tokens.offenders ?? [];
 const findings = [];
 if (typefaces.length > 3) findings.push(`${typefaces.length} typefaces, brands use 2 or 3`);
 else if (typefaces.length && fontFamilies.length > 6) findings.push(`${typefaces.length} typeface${typefaces.length > 1 ? 's' : ''} declared ${fontFamilies.length} different ways`);
-if (colors.length > 24) findings.push(`${n(colors.length)} distinct colours, a design system needs ~24`);
+if (tokenLed ? colorStrays > 24 : colors.length > 24) findings.push(tokenLed
+  ? `${n(colorStrays)} hardcoded colours outside the token set`
+  : `${n(colors.length)} distinct colours, a design system needs ~24`);
 if (greys.length > 13) findings.push(`${greys.length} shades of grey doing the job of 13`);
 if (spacingTotal > 35) findings.push(`${spacingTotal} spacing values where a scale has 35`);
-if (exactDupes.length > 0) findings.push(`${exactDupes.length} component${exactDupes.length > 1 ? 's' : ''} implemented more than once`);
+if (hardDupes.length > 0) findings.push(`${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once`);
 if (inline.count > 20) findings.push(`${n(inline.count)} inline style blocks bypassing every system`);
+if (arbitraryCount >= 20) findings.push(`${n(arbitraryCount)} arbitrary values like ${arbitrary[0].value} punched through the Tailwind scale`);
 if (agentFiles.length === 0) findings.push(`no agent rules, so your AI is guessing`);
 
 let verdict = findings.length === 0
@@ -180,7 +197,7 @@ let verdict = findings.length === 0
   : findings.slice(0, 3).join('. ') + '.';
 if (bench && findings.length) {
   const core = [['colors', colors.length], ['greys', greys.length], ['spacing', spacingTotal],
-    ['typefaces', typefaces.length], ['exactDuplicates', exactDupes.length], ['inlineStyles', inline.count]];
+    ['typefaces', typefaces.length], ['exactDuplicates', hardDupes.length], ['inlineStyles', inline.count]];
   const worse = core.filter(([m, v]) => median(m) !== null && v > median(m)).length;
   if (worse >= 3) verdict += ` Messier than the median of ${bench.repoCount} scanned repos on ${worse} of ${core.length} core metrics. And the median repo is already a mess.`;
 }
@@ -230,8 +247,8 @@ function row(label, valText, refVal, value) {
   if (value === refVal) return { label, val: valText, dir: 'eq' };
   return { label, val: valText, dir: value < refVal ? 'down' : 'up' };
 }
-function tile(value, label, metric, fallbackTarget) {
-  const health = healthOf(metric, value);
+function tile(value, label, metric, fallbackTarget, healthValue = value) {
+  const health = healthOf(metric, healthValue);
   const iv = ideal(metric), mv = median(metric), rm = refMedian(metric);
   const pct = percentile(metric, value);
   const rows = [];
@@ -246,10 +263,10 @@ function tile(value, label, metric, fallbackTarget) {
   return { num: n(value), label, health, rows };
 }
 const bigStats = [
-  tile(colors.length, 'distinct colours', 'colors', 'a system needs ~24'),
+  tile(colors.length, 'distinct colours', 'colors', 'a system needs ~24', tokenLed ? colorStrays : colors.length),
   tile(greys.length, 'shades of grey', 'greys', 'a scale has up to 13'),
   tile(spacingTotal, 'spacing values', 'spacing', 'a scale has ~35'),
-  tile(exactDupes.length, 'duplicated components', 'exactDuplicates', 'should be 0'),
+  tile(hardDupes.length, 'duplicated components', 'exactDuplicates', 'should be 0'),
   tile(inline.count, 'inline style blocks', 'inlineStyles', 'invisible to any system'),
   { num: String(reusable.length), label: 'components defined', health: 'info',
     rows: [ { label: 'the raw material', val: '', dir: '' },
@@ -333,7 +350,7 @@ function paletteSection() {
 function spacingBars() {
   const hasTw = twSpacing.length > 0;
   const merged = [...spacing.map((s) => ({ label: s.value, count: s.count, off: hasTw })),
-                  ...twSpacing.map((s) => ({ label: `·${s.value}`, count: s.count, off: false }))]
+                  ...twSpacing.map((s) => ({ label: `·${s.value}`, count: s.count, off: s.value.startsWith('[') }))]
     .sort((a, b) => b.count - a.count).slice(0, 18);
   if (!merged.length) return '';
   const max = merged[0].count;
@@ -341,16 +358,19 @@ function spacingBars() {
     <div class="bar-row"><span class="bar-label${s.off ? ' off' : ''}">${esc(s.label)}</span>
     <div class="bar-track"><div class="bar${s.off ? ' bar-off' : ''}" style="width:${Math.max(2, Math.round((s.count / max) * 100))}%"></div></div>
     <span class="bar-count">${n(s.count)}</span></div>`).join('');
+  const arb = arbitraryCount ? `
+    <div class="receipts">${eyebrow(`${n(arbitraryCount)} arbitrary values punched through the scale, one bracket at a time`)}
+    <div class="chips-row">${arbitrary.slice(0, 10).map((a) => `<span class="vchip bad" title="${esc(a.files?.[0]?.file ?? '')}">${esc(a.value)} ×${a.count}</span>`).join('')}${arbitrary.length > 10 ? `<span class="vchip dim">+${arbitrary.length - 10} more</span>` : ''}</div></div>` : '';
   return `<section class="glass pad">
-    ${sectionHead(`${n(spacingTotal)} spacing values`, `a scale needs ~35 · Tailwind steps marked ·${hasTw ? ' · raw px values off the scale in coral' : ''}`)}
-    <div class="bars">${rows}</div></section>`;
+    ${sectionHead(`${n(spacingTotal)} spacing values`, `a scale allows ~35 · Tailwind steps marked ·${hasTw ? ' · off-scale values in coral' : ''}`)}
+    <div class="bars">${rows}</div>${arb}</section>`;
 }
 
 function duplicatesSection() {
   if (!exactDupes.length && !families.length) return '';
   const dupeCards = exactDupes.slice(0, 8).map((d) => `
     <div class="fam">
-      ${eyebrow(`&lt;${esc(d.name)}&gt; · ${d.files.length} implementations`)}
+      ${eyebrow(`&lt;${esc(d.name)}&gt; · ${d.wrapped ? 'defined twice, one wraps the other' : `${d.files.length} implementations`}`)}
       <div class="fam-rows">
       ${d.files.slice(0, 6).map((f) => `<div class="mini-card">${fileLink(f)}</div>`).join('')}
       ${d.files.length > 6 ? `<div class="mini-card dim">…and ${d.files.length - 6} more</div>` : ''}
@@ -377,11 +397,21 @@ function typographySection() {
     radiiTotal ? tile(radiiTotal, 'border radii', 'radii', 'a system has up to 10') : null,
     shadows.length ? tile(shadows.length, 'shadow styles', 'shadows', '2–3 elevations') : null,
   ].filter(Boolean);
+  const sizeChips = [...(h.tokens.fontSizes ?? []).map((v) => ({ label: v.value, count: v.count })),
+    ...(h.tokens.tailwind?.textSizes ?? []).map((v) => ({ label: `·${v.value}`, count: v.count }))]
+    .sort((a, b) => b.count - a.count).slice(0, 14);
+  const radiiChips = [...(h.tokens.radii ?? []).map((v) => ({ label: v.value, count: v.count })),
+    ...(h.tokens.tailwind?.radii ?? []).map((v) => ({ label: `·${v.value}`, count: v.count }))]
+    .sort((a, b) => b.count - a.count).slice(0, 14);
+  const receipts = (title, chips) => chips.length < 2 ? '' :
+    `<div class="receipts">${eyebrow(title)}<div class="chips-row">${chips.map((c) => `<span class="vchip">${esc(String(c.label))} ×${c.count}</span>`).join('')}</div></div>`;
   const fams = fontFamilies.slice(0, 8).map((f) =>
     `<div class="mini-card"><span class="mc-path">${esc(f.value.slice(0, 70))}</span><span class="pill${f.count > 2 ? ' pill-coral' : ' pill-mint'}">×${f.count}</span></div>`).join('');
   return `<section>
     ${sectionHead('Typography &amp; shape', '')}
     <div class="stats minis">${mini.map((s) => statTile(s)).join('')}</div>
+    ${receipts('the font sizes, by use', sizeChips)}
+    ${receipts('the radii, by use', radiiChips)}
     ${fontFamilies.length > 1 ? `<div class="glass pad" style="margin-top:16px">${sectionHead(`${typefaces.length} typeface${typefaces.length === 1 ? '' : 's'}, declared ${fontFamilies.length} different ways`, 'every distinct declaration is a chance for the next one to be wrong')}<div class="fam-rows">${fams}</div></div>` : ''}
   </section>`;
 }
@@ -613,6 +643,14 @@ const html = `<!doctype html>
   .pill-mint { background:var(--ok-soft); color:var(--ok); }
   .pill-coral { background:var(--coral-soft); color:var(--coral); }
   .pill-amber { background:var(--amber-soft); color:var(--amber); }
+
+  /* value receipts */
+  .receipts { margin-top:18px; }
+  .chips-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .vchip { font:11.5px var(--mono); color:var(--text); border:1px solid var(--line); background:var(--chip-bg);
+    border-radius:99px; padding:2px 10px; }
+  .vchip.bad { color:var(--coral); border-color:var(--coral-soft); background:var(--coral-soft); }
+  .vchip.dim { color:var(--dim2); }
 
   /* two-up cards, families, mini-cards */
   .two-up { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }

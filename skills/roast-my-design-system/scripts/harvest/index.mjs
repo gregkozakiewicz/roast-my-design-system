@@ -32,7 +32,7 @@ const files = walkRepo(target);
 const profile = profileRepo(target, files);
 const { components } = harvestComponents(target, files.code);
 const tokens = harvestTokens(target, files.styles, files.code);
-const duplicates = findDuplicates(components, profile.uiDir);
+const duplicates = findDuplicates(components, profile.uiDir, target);
 const context = harvestContext(target);
 
 const harvest = {

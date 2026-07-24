@@ -202,6 +202,14 @@
   .pill-coral { background:var(--coral-soft); color:var(--coral); }
   .pill-amber { background:var(--amber-soft); color:var(--amber); }
 
+  /* value receipts */
+  .receipts { margin-top:18px; }
+  .chips-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .vchip { font:11.5px var(--mono); color:var(--text); border:1px solid var(--line); background:var(--chip-bg);
+    border-radius:99px; padding:2px 10px; }
+  .vchip.bad { color:var(--coral); border-color:var(--coral-soft); background:var(--coral-soft); }
+  .vchip.dim { color:var(--dim2); }
+
   /* two-up cards, families, mini-cards */
   .two-up { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }
   @media (max-width:860px) { .two-up { grid-template-columns:1fr; } }
@@ -253,18 +261,18 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 107ms · 146 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 100ms · 146 code files</div>
       <h1>Design System Diagnosis</h1>
       <div class="meta"><span class="mono">vercel/ai-chatbot</span> · scanned 2026-07-24</div>
     </div>
-    <div class="score"><div class="eyebrow">Health score</div><div class="val">64<span class="slash">/</span><span class="of">100</span></div></div>
+    <div class="score"><div class="eyebrow">Health score</div><div class="val">91<span class="slash">/</span><span class="of">100</span></div></div>
   </div>
   <div class="chips"><span class="chip">next</span><span class="chip">TypeScript</span><span class="chip">Tailwind CSS</span><span class="chip">CVA</span><span class="chip">shadcn/ui</span><span class="chip chip-agent">.cursor/rules</span></div>
   
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">61 distinct colours, a design system needs ~24. 1 component implemented more than once. 69 inline style blocks bypassing every system.</div>
+    <div class="verdict">104 arbitrary values like [13px] punched through the Tailwind scale.</div>
   </div>
 </header>
 
@@ -272,8 +280,8 @@
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
     <p class="sub">Your agent reads <span class="mono">.cursor/rules</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">.cursor/rules · Cursor</span></div></section>
 
-<div class="stats"><div class="stat glass st-warn">
-  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
+<div class="stats"><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
   <div class="num">61</div><div class="lab">distinct colours</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~24 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">112 · cleaner than 67% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">46 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-good">
@@ -284,14 +292,14 @@
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
   <div class="num">26</div><div class="lab">spacing values</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~35 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">48 · cleaner than 70% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">18 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <div class="num">0</div><div class="lab">duplicated components</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">–</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">19 · cleaner than 81% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">10 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-warn">
   <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
-  <div class="num">1</div><div class="lab">duplicated components</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">19 · cleaner than 74% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">10 <span class="dir d-down">▼</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">69</div><div class="lab">inline style blocks</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">116 · cleaner than 63% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">23 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">9</div><div class="lab">inline style blocks</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">116 · cleaner than 78% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">23 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-info">
   
   <div class="num">315</div><div class="lab">components defined</div>
@@ -319,7 +327,7 @@
 </section></section>
 
 <section class="glass pad">
-    <div class="sec-head"><h2>26 spacing values</h2><p class="sub">a scale needs ~35 · Tailwind steps marked · · raw px values off the scale in coral</p></div>
+    <div class="sec-head"><h2>26 spacing values</h2><p class="sub">a scale allows ~35 · Tailwind steps marked · · off-scale values in coral</p></div>
     <div class="bars">
     <div class="bar-row"><span class="bar-label">·2</span>
     <div class="bar-track"><div class="bar" style="width:100%"></div></div>
@@ -374,7 +382,9 @@
     <span class="bar-count">3</span></div>
     <div class="bar-row"><span class="bar-label">·10</span>
     <div class="bar-track"><div class="bar" style="width:3%"></div></div>
-    <span class="bar-count">3</span></div></div></section>
+    <span class="bar-count">3</span></div></div>
+    <div class="receipts"><div class="eyebrow">104 arbitrary values punched through the scale, one bracket at a time</div>
+    <div class="chips-row"><span class="vchip bad" title="components/chat/sidebar-user-nav.tsx">[13px] ×26</span><span class="vchip bad" title="components/chat/sidebar-history.tsx">[10px] ×12</span><span class="vchip bad" title="components/ui/input-group.tsx">[3px] ×10</span><span class="vchip bad" title="components/chat/sidebar-history.tsx">[0.12em] ×9</span><span class="vchip bad" title="components/chat/multimodal-input.tsx">[12px] ×7</span><span class="vchip bad" title="artifacts/code/client.tsx">[200px] ×5</span><span class="vchip bad" title="components/ai-elements/reasoning.tsx">[11px] ×4</span><span class="vchip bad" title="components/chat/artifact-messages.tsx">[24px] ×4</span><span class="vchip bad" title="components/chat/document-preview.tsx">[257px] ×4</span><span class="vchip bad" title="components/chat/document-preview.tsx">[450px] ×3</span><span class="vchip dim">+17 more</span></div></div></section>
 <section>
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
@@ -394,6 +404,8 @@
   <div class="num">4</div><div class="lab">shadow styles</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~6 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">4 <span class="dir d-eq">–</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
+    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×44</span><span class="vchip">·xs ×30</span><span class="vchip">·[13px] ×25</span><span class="vchip">·[10px] ×12</span><span class="vchip">·[12px] ×5</span><span class="vchip">·[11px] ×4</span><span class="vchip">·base ×4</span><span class="vchip">·2xl ×3</span><span class="vchip">·3xl ×2</span><span class="vchip">·lg ×2</span><span class="vchip">·[var(--shiki-dark)] ×1</span><span class="vchip">·xl ×1</span></div></div>
+    <div class="receipts"><div class="eyebrow">the radii, by use</div><div class="chips-row"><span class="vchip">·md ×31</span><span class="vchip">·lg ×30</span><span class="vchip">·2xl ×18</span><span class="vchip">·xl ×18</span><span class="vchip">·full ×17</span><span class="vchip">·default ×13</span><span class="vchip">·none ×3</span><span class="vchip">·sm ×2</span><span class="vchip">·[12px] ×2</span><span class="vchip">2px ×1</span><span class="vchip">9999px ×1</span><span class="vchip">·3xl ×1</span><span class="vchip">·[inherit] ×1</span><span class="vchip">·[2px] ×1</span></div></div>
     
   </section>
 <section class="glass pad">
@@ -401,14 +413,6 @@
     <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/icons.tsx">components/chat/icons.tsx</a>
-      <span class="ledger-pills">
-        
-        <span class="pill pill-coral">60 inline</span>
-      </span>
-    </div>
-    <div class="ledger-row">
-      <span class="ledger-idx">02</span>
       <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/app/globals.css">app/globals.css</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">11 stray colours</span>
@@ -416,7 +420,7 @@
       </span>
     </div>
     <div class="ledger-row">
-      <span class="ledger-idx">03</span>
+      <span class="ledger-idx">02</span>
       <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/sidebar-user-nav.tsx">components/chat/sidebar-user-nav.tsx</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">2 stray colours</span>
@@ -424,7 +428,7 @@
       </span>
     </div>
     <div class="ledger-row">
-      <span class="ledger-idx">04</span>
+      <span class="ledger-idx">03</span>
       <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a>
       <span class="ledger-pills">
         
@@ -432,8 +436,16 @@
       </span>
     </div>
     <div class="ledger-row">
-      <span class="ledger-idx">05</span>
+      <span class="ledger-idx">04</span>
       <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a>
+      <span class="ledger-pills">
+        
+        <span class="pill pill-coral">1 inline</span>
+      </span>
+    </div>
+    <div class="ledger-row">
+      <span class="ledger-idx">05</span>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">1 inline</span>
@@ -444,17 +456,10 @@
     <div class="sec-head"><h2>Duplicated components</h2><p class="sub">every duplicate is a place where your agent has to guess which one is canonical, and it picks wrong half the time. Paths open in VS Code</p></div>
     <div class="fams">
     <div class="fam">
-      <div class="eyebrow">&lt;MessageActions&gt; · 2 implementations</div>
+      <div class="eyebrow">&lt;MessageActions&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
       <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/ai-elements/message.tsx">components/ai-elements/message.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/message-actions.tsx">components/chat/message-actions.tsx</a></div>
       
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">input family · 37 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Input&gt;</div><div class="mc-path">components/ui/input.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ToolInput&gt;</div><div class="mc-path">components/ai-elements/tool.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ModelSelectorInput&gt;</div><div class="mc-path">components/ai-elements/model-selector.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MultimodalInput&gt;</div><div class="mc-path">components/chat/multimodal-input.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PromptInput&gt;</div><div class="mc-path">components/ai-elements/prompt-input.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PromptInputFooter&gt;</div><div class="mc-path">components/ai-elements/prompt-input.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
-      <div class="mini-card dim">…and 31 more</div>
       </div>
     </div>
     <div class="fam">
@@ -486,31 +491,31 @@
       </div>
     </div></div></div>
 <div class="glass pad half">
-    <div class="sec-head"><h2>69 inline style blocks</h2><p class="sub">styling no system can see</p></div>
+    <div class="sec-head"><h2>9 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/icons.tsx">components/chat/icons.tsx</a><span class="mc-count">×60</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a><span class="mc-count">×2</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a><span class="mc-count">×2</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:3%"></div></div>
-      </div>
-      <div class="mini-card col">
         <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a><span class="mc-count">×1</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:2%"></div></div>
+        <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div>
       <div class="mini-card col">
         <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a><span class="mc-count">×1</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:2%"></div></div>
+        <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div>
       <div class="mini-card col">
         <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/multimodal-input.tsx">components/chat/multimodal-input.tsx</a><span class="mc-count">×1</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:2%"></div></div>
+        <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div>
       <div class="mini-card col">
         <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/sheet-editor.tsx">components/chat/sheet-editor.tsx</a><span class="mc-count">×1</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:2%"></div></div>
+        <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
+      </div>
+      <div class="mini-card col">
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/fea4dc01-beb1-4c17-ac91-53d7bc506b1f/scratchpad/examples/vercel-ai-chatbot/components/chat/sidebar-user-nav.tsx">components/chat/sidebar-user-nav.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div></div></div>
 </div>
 <section class="glass pad">
@@ -560,7 +565,7 @@
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a>, a free skill for Claude Code and Codex</div>
-    <div class="foot-sub"><span class="ver">ver. 2.0.6</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
+    <div class="foot-sub"><span class="ver">ver. 2.0.7</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com">Greg Kozakiewicz</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

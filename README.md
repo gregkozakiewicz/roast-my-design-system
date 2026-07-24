@@ -7,6 +7,17 @@ Point it at your codebase and it counts every colour, grey, spacing value, typef
 > *"7 typefaces, brands use 2 or 3. 398 distinct colours, a design system needs ~24. 82 shades of grey doing the job of 13. Messier than the median of 27 scanned repos on 6 of 6 core metrics. And the median repo is already a mess."*
 > — the roast of a real, popular open-source repo
 
+![The diagnosis report: health score, stat tiles with three yardsticks, dark theme](assets/report-dark.png)
+
+<details>
+<summary>More of the report: the palette forensics, and the light theme (one file, built-in toggle)</summary>
+
+![Usage-weighted colour bar with hardcoded strays flagged, the grey ramp, and off-scale spacing values in coral](assets/report-palette.png)
+
+![The same report in light mode](assets/report-light.png)
+
+</details>
+
 ## Why this exists
 
 Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in your repo. If your repo has 112 colours and four Button implementations, your agent guesses which one is canonical, and it picks wrong half the time. That's why AI-generated UI looks *almost-but-not-quite* right. The first step to fixing it is seeing the mess measured.

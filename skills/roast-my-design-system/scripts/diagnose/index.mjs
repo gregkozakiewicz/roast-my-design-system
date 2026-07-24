@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.1.0';
+const VERSION = '3.1.1';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -488,8 +488,17 @@ function whereToStartSection() {
   if (inline.count > 10) { const worst = inline.files[0];
     c.push({ score: inline.count / 2, title: `Fold ${n(inline.count)} inline style blocks back into the system`,
       sub: `These are static values written as style attributes${worst ? `; start with ${esc(worst.file)} (${worst.count} blocks)` : ''}. Dynamic positioning was already excluded, so all of these could be classes or tokens today.` }); }
-  if (arbitraryCount >= 20) c.push({ score: arbitraryCount / 3, title: `Retire ${n(arbitraryCount)} arbitrary bracket values`,
-    sub: `${esc(arbitrary[0].value)} and friends bypass the scale one bracket at a time. Most have an on-scale neighbour one step away.` });
+  if (arbitraryCount >= 20) {
+    // Repeated brackets are de facto tokens wanting a name; singletons are
+    // drift. Same number, opposite remedies — say both.
+    const repeats = arbitrary.filter((a) => a.count >= 5);
+    const singles = arbitrary.filter((a) => a.count === 1).length;
+    const top = arbitrary[0];
+    c.push({ score: arbitraryCount / 3, title: `Name the bracket values you clearly meant`,
+      sub: repeats.length
+        ? `${esc(top.value)} appears ${top.count} times: that is a token without a name, so promote it (and ${repeats.length > 1 ? `the other ${repeats.length - 1} repeat offender${repeats.length > 2 ? 's' : ''}` : 'any like it'}) into the scale. Then round the ${singles} one-off values to their nearest step, and leave genuine one-off layout widths alone.`
+        : `${n(arbitraryCount)} bracket values bypass the scale and almost all are one-offs: round each to its nearest step.` });
+  }
   if (spacingTotal > 12 && arbitraryCount < 20) c.push({ score: spacingTotal / 2, title: `Collapse ${n(spacingTotal)} off-scale spacing values`,
     sub: `A dozen deliberate exceptions is a system; ${n(spacingTotal)} is drift. Round each to its nearest scale step.` });
   const top3 = c.sort((a, b) => b.score - a.score).slice(0, 3);

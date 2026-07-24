@@ -1,4 +1,4 @@
-# 🔥 roast-my-design-system
+# roast-my-design-system
 
 ## A Claude Code skill that roasts your repo's design system with real data.
 

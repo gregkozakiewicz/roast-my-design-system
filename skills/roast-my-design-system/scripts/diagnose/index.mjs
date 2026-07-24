@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.0.2';
+const VERSION = '3.1.0';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -470,6 +470,39 @@ function componentsSection() {
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
 }
 
+// "Where to start" — at most three moves, every one derived from this repo's
+// own numbers with a receipt. Deliberately shallow: a starting push, not a
+// remediation plan.
+function whereToStartSection() {
+  const c = [];
+  if (agentFiles.length === 0) c.push({ score: 60, title: 'Write the agent rules file',
+    sub: `No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.` });
+  if (hardDupes.length > 0) { const d = hardDupes[0];
+    c.push({ score: 25 + hardDupes.length * 4, title: `Crown the canonical &lt;${esc(d.name)}&gt;`,
+      sub: `${hardDupes.length} component name${hardDupes.length > 1 ? 's have' : ' has'} competing implementations. Start with &lt;${esc(d.name)}&gt;: ${esc(d.files[0])} vs ${esc(d.files[1] ?? '')}. Keep one, re-export it from one home, delete the rest.` }); }
+  if (iconCollisions.length >= 5) c.push({ score: 20 + iconCollisions.length * 3, title: 'Merge the two icon sets',
+    sub: `${iconCollisions.length} icon names exist in both sets, so every import is a coin flip. Pick one home and rename or delete the rest. Receipt: ${esc(iconCollisions[0].files[0])} vs ${esc(iconCollisions[0].files[1])}.` });
+  const strayOffender = offenders.find((o) => o.strayColors > 0);
+  if (colorStrays > 12) c.push({ score: colorStrays, title: `Tokenise the ${n(colorStrays)} stray colours`,
+    sub: `They are hardcoded where no token names them${strayOffender ? `; ${esc(strayOffender.file)} alone carries ${strayOffender.strayColors}` : ''}. Every one is a value your agent will happily copy.` });
+  if (inline.count > 10) { const worst = inline.files[0];
+    c.push({ score: inline.count / 2, title: `Fold ${n(inline.count)} inline style blocks back into the system`,
+      sub: `These are static values written as style attributes${worst ? `; start with ${esc(worst.file)} (${worst.count} blocks)` : ''}. Dynamic positioning was already excluded, so all of these could be classes or tokens today.` }); }
+  if (arbitraryCount >= 20) c.push({ score: arbitraryCount / 3, title: `Retire ${n(arbitraryCount)} arbitrary bracket values`,
+    sub: `${esc(arbitrary[0].value)} and friends bypass the scale one bracket at a time. Most have an on-scale neighbour one step away.` });
+  if (spacingTotal > 12 && arbitraryCount < 20) c.push({ score: spacingTotal / 2, title: `Collapse ${n(spacingTotal)} off-scale spacing values`,
+    sub: `A dozen deliberate exceptions is a system; ${n(spacingTotal)} is drift. Round each to its nearest scale step.` });
+  const top3 = c.sort((a, b) => b.score - a.score).slice(0, 3);
+  if (!top3.length) return '';
+  return `<section class="glass pad">
+    ${sectionHead('Where to start', `${top3.length === 1 ? 'one move' : top3.length === 2 ? 'two moves' : 'three moves'}, from this repo's own numbers. The full sequenced plan is a job for a human (or a paid tool)`)}
+    <div class="ledger">${top3.map((item, i) => `
+      <div class="ledger-row start-row">
+        <span class="ledger-idx">${String(i + 1).padStart(2, '0')}</span>
+        <div class="start-body"><div class="start-title">${item.title}</div><div class="sub">${item.sub}</div></div>
+      </div>`).join('')}</div></section>`;
+}
+
 function agentSection() {
   const have = agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)} · ${esc(c.tool ?? c.kind)}</span>`).join('');
   const msg = agentFiles.length
@@ -652,6 +685,11 @@ const html = `<!doctype html>
   .ledger-row a.path { font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ledger-pills { margin-left:auto; display:flex; gap:8px; flex-shrink:0; }
 
+  .start-row { align-items:flex-start; }
+  .start-body { min-width:0; }
+  .start-title { font:600 15px/1.4 var(--disp); }
+  .start-row .sub { margin-top:2px; overflow-wrap:anywhere; }
+
   .pill { border-radius:99px; padding:3px 10px; font:500 10.5px/1.5 var(--sans); white-space:nowrap; }
   .pill-mint { background:var(--ok-soft); color:var(--ok); }
   .pill-coral { background:var(--coral-soft); color:var(--coral); }
@@ -745,6 +783,7 @@ ${duplicatesSection()}
 ${inlineSection()}
 </div>
 ${componentsSection()}
+${whereToStartSection()}
 
 <footer>
   <div class="foot-left">

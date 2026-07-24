@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.1.1';
+const VERSION = '3.1.2';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -477,9 +477,23 @@ function whereToStartSection() {
   const c = [];
   if (agentFiles.length === 0) c.push({ score: 60, title: 'Write the agent rules file',
     sub: `No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.` });
-  if (hardDupes.length > 0) { const d = hardDupes[0];
+  if (hardDupes.length > 0) {
+    // Pick the pair with the strongest copy-paste evidence: sibling files in
+    // app code (same basename, neither in a shared package) are true
+    // duplicates; a library-vs-app pair may be an intentional override, and
+    // "delete one" is dangerous advice there.
+    const inLibrary = (f) => /(^|\/)packages\//.test(f) || /(^|\/)components\/ui\//.test(f);
+    const strength = (d) => {
+      const bases = d.files.map((f) => f.split('/').pop());
+      let sc = 0;
+      if (new Set(bases).size === 1) sc += 2;
+      if (!d.files.some(inLibrary)) sc += 3;
+      return sc;
+    };
+    const d = [...hardDupes].sort((a, b) => strength(b) - strength(a))[0];
     c.push({ score: 25 + hardDupes.length * 4, title: `Crown the canonical &lt;${esc(d.name)}&gt;`,
-      sub: `${hardDupes.length} component name${hardDupes.length > 1 ? 's have' : ' has'} competing implementations. Start with &lt;${esc(d.name)}&gt;: ${esc(d.files[0])} vs ${esc(d.files[1] ?? '')}. Keep one, re-export it from one home, delete the rest.` }); }
+      sub: `${hardDupes.length} component name${hardDupes.length > 1 ? 's have' : ' has'} competing implementations. Start with &lt;${esc(d.name)}&gt;: ${esc(d.files[0])} vs ${esc(d.files[1] ?? '')}. Decide which one is canonical, re-export it from one home, and rename or fold in the other.` });
+  }
   if (iconCollisions.length >= 5) c.push({ score: 20 + iconCollisions.length * 3, title: 'Merge the two icon sets',
     sub: `${iconCollisions.length} icon names exist in both sets, so every import is a coin flip. Pick one home and rename or delete the rest. Receipt: ${esc(iconCollisions[0].files[0])} vs ${esc(iconCollisions[0].files[1])}.` });
   const strayOffender = offenders.find((o) => o.strayColors > 0);

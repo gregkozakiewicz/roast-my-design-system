@@ -73,6 +73,14 @@ You get the roast in chat plus `design-system-roast.html` at your repo root: a s
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the spacing scale, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger
 
+## Live examples
+
+Three real roasts of public repos, hosted as-is (the same self-contained HTML the skill generates):
+
+- **[excalidraw/excalidraw](https://pencilrebel.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)** — 237 colours, 49 greys, 3 typefaces declared 9 different ways
+- **[dubinc/dub](https://pencilrebel.github.io/roast-my-design-system/examples/dubinc-dub.html)** — 138 colours and 86 spacing values across a monorepo
+- **[vercel/ai-chatbot](https://pencilrebel.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)** — a small starter with 61 colours and 69 inline style blocks
+
 ## What it measures
 
 | Metric | Ideal Design System | Median of 27 scanned repos | Median of 10 reputable systems |

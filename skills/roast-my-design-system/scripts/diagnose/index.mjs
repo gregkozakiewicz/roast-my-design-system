@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '2.0.2';
+const VERSION = '2.0.3';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -219,7 +219,7 @@ function tile(value, label, metric, fallbackTarget) {
   const rows = [];
   if (iv !== null) rows.push(row('Ideal Design System', ZERO_IDEAL.has(metric) ? String(iv) : `~${n(iv)}`, iv, value));
   else rows.push({ label: fallbackTarget, val: '', dir: '' });
-  if (mv) rows.push(row('Avg Design System', `${n(mv)}${pct !== null && pct >= 60 && health !== 'good' ? ` · beats ${pct}%` : ''}`, mv, value));
+  if (mv) rows.push(row('Avg Design System', `${n(mv)}${pct !== null && pct >= 60 && health !== 'good' ? ` · messier than ${pct}%` : ''}`, mv, value));
   if (rm !== null && (rm > 0 || ZERO_IDEAL.has(metric))) rows.push(row('Reputable systems', n(rm), rm, value));
   return { num: n(value), label, health, rows };
 }

@@ -10,7 +10,7 @@ Point it at your codebase and it counts every colour, grey, spacing value, typef
 ![The diagnosis report: health score, stat tiles with three yardsticks, dark theme](assets/report-dark.png)
 
 <details>
-<summary>$\color{#0969da}{\underline{\textsf{More Screenshots}}}$ of the report: the palette forensics, and the light theme (one file, built-in toggle)</summary>
+<summary><ins><b>More Screenshots</b></ins> of the report: the palette forensics, and the light theme (one file, built-in toggle)</summary>
 
 ![Usage-weighted colour bar with hardcoded strays flagged, the grey ramp, and off-scale spacing values in coral](assets/report-palette.png)
 

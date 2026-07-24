@@ -10,7 +10,7 @@ Run this skill on your codebase and it counts every colour, grey, spacing value,
 ![The diagnosis report: health score, stat tiles with three yardsticks, dark theme](assets/screenshots_1.png)
 
 <details>
-<summary><img src="assets/more-screenshots.svg" alt="More Screenshots" height="16"> of the report: the palette forensics, the offender receipts, and the light theme (one file, built-in toggle)</summary>
+<summary><picture><img src="assets/more-screenshots.svg" alt="More Screenshots" height="16"></picture> of the report: the palette forensics, the offender receipts, and the light theme (one file, built-in toggle)</summary>
 
 ![Usage-weighted colour bar with hardcoded strays flagged, the grey ramp, and the spacing scale](assets/screenshots_2.png)
 

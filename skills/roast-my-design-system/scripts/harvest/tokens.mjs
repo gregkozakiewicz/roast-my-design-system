@@ -143,11 +143,22 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // correct practice, not mess. Counting them would hand a sharp dev an easy
   // reason to discredit the whole report.
   const EXEMPT_RE = /email|(^|[/.])print([/.]|$)/i;
+  // SVG artwork components (logos, badges, illustrated icons) carry hex that
+  // is drawing, not styling — same honesty rule as email templates.
+  const ARTWORK_RE = /(^|\/)[\w.-]*(icon|logo|badge|illustration|shield|artwork)[\w.-]*\.(tsx|jsx)$/i;
 
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx|ts|js)$/.test(f)) continue;
     if (EXEMPT_RE.test(f)) continue;
     let src; try { src = readFileSync(join(root, f), 'utf8'); } catch { continue; }
+
+    // A Tailwind config's colours ARE the token layer (the tailwind-native
+    // equivalent of --var definitions).
+    if (/(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f)) {
+      for (const m of src.matchAll(HEX_RE)) { tokenDefined.add(normalizeHex(m[0])); colors.add(normalizeHex(m[0]), f); }
+      continue;
+    }
+    if (ARTWORK_RE.test(f)) continue;
 
     // Tailwind classes
     for (const cls of classStrings(src)) {
@@ -180,6 +191,17 @@ export function harvestTokens(root, styleFiles, codeFiles) {
         colors.add(normalizeHex(m[0]), f);
       }
     }
+  }
+
+  // A code file defining 15+ distinct colours is a deliberate palette
+  // (drawing swatches, avatar generators, chart scales) — the MUI lesson:
+  // definitions are architecture, not strays.
+  const perFileDistinct = new Map();
+  for (const e of colors.map.values()) {
+    for (const [file] of e.files) perFileDistinct.set(file, (perFileDistinct.get(file) ?? 0) + 1);
+  }
+  for (const e of colors.map.values()) {
+    if ([...e.files.keys()].some((f) => /\.[jt]sx?$/.test(f) && perFileDistinct.get(f) >= 15)) tokenDefined.add(e.value);
   }
 
   const colorList = colors.toJSON().map((c) => ({ ...c, isToken: tokenDefined.has(c.value) }));

@@ -4,12 +4,22 @@
 <meta name="description" content="A Claude Code + Codex skill that roasts your repo's design system with real data: a health score, the receipts behind it, and the first fixes ranked by payoff.">
 <style>
   :root { --bg:#020617; --card:rgba(15,23,42,.6); --line:rgba(51,65,85,.7); --text:#f1f5f9; --dim:#94a3b8; --dim2:#64748b; --mint:#2dd4bf;
+    --glow1:rgba(45,212,191,.08); --glow2:rgba(56,189,248,.06);
     --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace; }
+  html[data-theme="light"] { --bg:#eeecfb; --card:rgba(255,255,255,.6); --line:rgba(15,15,26,.1); --text:#0f0f1a; --dim:#6b6b85; --dim2:#9494ad;
+    --mint:#5a44f0; --glow1:#d8d1f7; --glow2:#e8e3fb; }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { color:var(--text); font:16px/1.6 'Manrope',ui-sans-serif,system-ui,sans-serif; background:var(--bg); }
   body::before { content:''; position:fixed; inset:0; z-index:-1; background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(45,212,191,.08) 0%, transparent 60%),
-    radial-gradient(900px 500px at 100% 10%, rgba(56,189,248,.06) 0%, transparent 55%), var(--bg); }
+    radial-gradient(1200px 600px at 10% -10%, var(--glow1) 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 10%, var(--glow2) 0%, transparent 55%), var(--bg); }
+  .theme-toggle { position:fixed; top:18px; right:18px; width:40px; height:40px; border-radius:99px; border:1px solid var(--line);
+    background:var(--card); display:grid; place-items:center; cursor:pointer; color:var(--dim); }
+  .theme-toggle:hover { color:var(--text); }
+  .theme-toggle svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .theme-toggle .moon { display:none; }
+  html[data-theme="light"] .theme-toggle .moon { display:block; }
+  html[data-theme="light"] .theme-toggle .sun { display:none; }
   main { max-width:640px; margin:0 auto; padding:56px 24px 64px; }
   .kicker { font:700 10.5px/1 sans-serif; letter-spacing:.16em; text-transform:uppercase; color:var(--mint); }
   h1 { font:700 30px/1.2 'Sora','Manrope',sans-serif; letter-spacing:-.02em; margin:10px 0 12px; }
@@ -29,7 +39,13 @@
   footer { margin-top:36px; border-top:1px solid var(--line); padding-top:18px; font-size:12.5px; color:var(--dim2); }
   footer a { color:var(--mint); text-decoration:none; font-weight:700; }
   footer a:hover { text-decoration:underline; }
-</style></head><body><main>
+</style></head><body>
+<button class="theme-toggle" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
+  <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
+  <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+</button>
+<script>try{var t=localStorage.getItem('roast-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<main>
 <div class="kicker">roast-my-design-system</div>
 <h1>Your design system, measured.</h1>
 <p class="lead">A free Claude Code + Codex skill. A deterministic scanner reads your repo and returns three things: <b>a health score</b>, <b>the receipts behind it</b> (every colour, spacing value, duplicated component and inline style, with real file paths), and <b>the first fixes ranked by payoff</b>. Benchmarked against 29 public repos and 10 reputable design systems. Read only, no network, one shareable HTML report.</p>

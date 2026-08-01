@@ -24,11 +24,11 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 
 The full report for vercel/ai-chatbot, top to bottom:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=3.5.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=3.5.1)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=3.5.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=3.5.1)
 
 ## What makes the numbers trustworthy
 
@@ -127,4 +127,4 @@ Yes, the median repo is already a mess. That's the point.
 
 MIT
 
-Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.5.0"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.5.0" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.
+Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.5.1"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.5.1" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.

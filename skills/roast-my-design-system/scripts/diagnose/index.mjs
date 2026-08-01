@@ -34,7 +34,7 @@ const GK_MASK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 const GK_MARK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==';
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.5.0';
+const VERSION = '3.5.1';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -834,13 +834,18 @@ const html = `<!doctype html>
   .gift-stage { position:relative; display:grid; place-items:center; min-height:120px; }
   .gift-stage.open { min-height:0; }
   .gift[hidden] { display:none; }
-  .gift { background:none; border:0; cursor:pointer; display:grid; place-items:center; gap:9px; padding:14px; color:var(--dim);
+  .gift { position:relative; background:none; border:0; cursor:pointer; display:grid; place-items:center; gap:9px; padding:14px; color:var(--dim);
     transition:transform .25s ease, opacity .25s ease, filter .25s ease; }
   .gift svg { width:72px; height:72px; }
   .gift .ribbon { stroke:var(--accent); }
   .gift:hover { transform:translateY(-3px) scale(1.04); color:var(--text); }
   .gift.gone { transform:scale(.5); opacity:0; filter:blur(5px); }
   .gift-hint { font:700 10px/1 var(--sans); letter-spacing:.18em; text-transform:uppercase; }
+  .gift::after { content:'your agent rules file, generated from this scan'; position:absolute; top:100%; left:50%;
+    transform:translateX(-50%); white-space:nowrap; font:400 11.5px/1 var(--sans); letter-spacing:0; text-transform:none;
+    color:var(--dim2); opacity:0; transition:opacity .3s ease .6s; pointer-events:none; }
+  .gift:hover::after { opacity:1; }
+  .gift.gone::after { opacity:0; transition:none; }
   .gift-pop { position:absolute; inset:0; pointer-events:none; }
   .gift-pop i { position:absolute; left:50%; top:42%; width:7px; height:10px; border-radius:2px; opacity:0;
     animation:gpop .85s cubic-bezier(.16,.8,.32,1) forwards; }

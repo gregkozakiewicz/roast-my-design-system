@@ -25,6 +25,11 @@
   h1 { font:700 30px/1.2 'Sora','Manrope',sans-serif; letter-spacing:-.02em; margin:10px 0 12px; }
   p.lead { color:var(--dim); font-size:15.5px; }
   p.lead b { color:var(--text); }
+  .lead-list { list-style:none; margin:14px 0 0; }
+  .lead-list li { position:relative; padding-left:22px; margin-top:9px; color:var(--dim); font-size:14.5px; }
+  .lead-list li::before { content:''; position:absolute; left:2px; top:8px; width:7px; height:7px; border-radius:99px; background:var(--mint); }
+  .lead-list b { color:var(--text); }
+  p.lead-close { color:var(--dim2); font-size:13px; margin-top:14px; }
   .install { margin:22px 0 6px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 18px;
     font:13px/1.9 var(--mono); color:var(--dim); overflow-x:auto; white-space:nowrap; }
   .install b { color:var(--mint); font-weight:400; }
@@ -50,7 +55,14 @@
 <main>
 <div class="kicker">roast-my-design-system</div>
 <h1>Your design system, measured.</h1>
-<p class="lead">Free, <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a> and as a Claude Code + Codex skill. A deterministic scanner reads your repo and returns four things: <b>a health score</b>, <b>the receipts behind it</b> (every colour, spacing value, duplicated component and inline style, with real file paths), <b>the first fixes ranked by payoff</b>, and <b>the agent rules that stop the mess coming back</b>, generated from your own code for CLAUDE.md or .cursor/rules. Benchmarked against 30 public repos and 10 reputable design systems. Read only, no network, one shareable HTML report.</p>
+<p class="lead">Free, <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a> and as a Claude Code + Codex skill. A deterministic scanner reads your repo and returns four things:</p>
+<ul class="lead-list">
+<li><b>A health score you can defend in a meeting.</b> 0-100, benchmarked against Ideal Design System norms, 30 public repos and 10 reputable design systems.</li>
+<li><b>The receipts behind it.</b> Every colour, spacing value, duplicated component and inline style, with real file paths.</li>
+<li><b>The first fixes ranked by payoff.</b> A Where to start list derived from your own numbers.</li>
+<li><b>Rules that stop the mess coming back.</b> A generated design-system-rules.md for your CLAUDE.md or .cursor/rules, so your AI agent follows your system instead of guessing at it.</li>
+</ul>
+<p class="lead-close">Read only, no network, one shareable HTML report.</p>
 <div class="kicker" style="margin-top:26px">Run it with npx</div>
 <div class="install"><b>npx</b> roast-my-design-system</div>
 <p class="sub">One command in any repo. No install, no Claude needed.</p>

@@ -6,6 +6,7 @@
  * write design-system-roast.html, open it, print the score.
  *
  *   npx roast-my-design-system [path] [--theme dark|light] [--out report.html] [--no-open]
+ *                              [--rules] [--json]
  */
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, readFileSync, existsSync, statSync } from 'node:fs';
@@ -42,12 +43,17 @@ Usage: npx roast-my-design-system [path] [options]
   --theme <t>     dark | light (default: dark)
   --out <file>    report path (default: design-system-roast.html in the repo)
   --no-open       write the report without opening it
+  --rules         also write design-system-rules.md: agent rules (for
+                  CLAUDE.md / .cursor/rules) generated from the scan
+  --json          print the scan summary as JSON on stdout (implies --no-open)
 
 Read-only scan. No network, no telemetry, nothing leaves your machine.`);
   process.exit(0);
 }
 
-const noOpen = flag('no-open') === true;
+const wantRules = flag('rules') === true;
+const asJson = flag('json') === true;
+const noOpen = flag('no-open') === true || asJson;
 const theme = opt('theme', 'dark');
 const target = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
 if (!existsSync(target) || !statSync(target).isDirectory()) {
@@ -61,30 +67,45 @@ const harvestPath = join(tmp, 'harvest.json');
 const summaryPath = join(tmp, 'summary.json');
 
 function run(script, args) {
-  const r = spawnSync(process.execPath, [join(SCRIPTS, script), ...args], { stdio: 'inherit' });
+  // --json keeps stdout clean for the JSON payload; child chatter is dropped
+  const r = spawnSync(process.execPath, [join(SCRIPTS, script), ...args], { stdio: asJson ? 'ignore' : 'inherit' });
   if (r.status !== 0) {
     rmSync(tmp, { recursive: true, force: true });
     process.exit(r.status ?? 1);
   }
 }
+const say = (s) => { if (!asJson) console.log(s); };
 
-console.log(`roast-my-design-system ${VERSION} · read-only scan, nothing leaves your machine\n`);
+say(`roast-my-design-system ${VERSION} · read-only scan, nothing leaves your machine\n`);
 run('harvest/index.mjs', [target, '--out', harvestPath]);
-console.log('');
+say('');
 run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath]);
+
+const rulesPath = resolve(join(target, 'design-system-rules.md'));
+if (wantRules) {
+  say('');
+  run('rules/index.mjs', [harvestPath, '--out', rulesPath]);
+}
 
 let summary = null;
 try { summary = JSON.parse(readFileSync(summaryPath, 'utf8')); } catch { /* report still exists */ }
 rmSync(tmp, { recursive: true, force: true });
 
-if (summary) {
+if (asJson) {
+  console.log(JSON.stringify({ ...(summary ?? { report: outPath }), ...(wantRules ? { rules: rulesPath } : {}) }, null, 2));
+} else if (summary) {
   const bad = summary.tiles.filter((t) => t.health === 'bad');
   if (bad.length) {
     console.log(`\n  worst offenders: ${bad.map((t) => `${t.value} ${t.label}`).join(' · ')}`);
   }
 }
 
-console.log(`\nWant the fixes, not just the roast? The free Claude Code skill runs this same
+if (wantRules && !asJson) {
+  console.log(`\n  design-system-rules.md is ready: paste it into CLAUDE.md or .cursor/rules
+  so your AI agent stops repeating this repo's mistakes.`);
+}
+
+say(`\nWant the fixes, not just the roast? The free Claude Code skill runs this same
 scan, then walks the punch list with you: https://github.com/pencilrebel/roast-my-design-system`);
 
 if (!noOpen) {

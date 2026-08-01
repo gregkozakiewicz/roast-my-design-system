@@ -1,0 +1,45 @@
+# Publishes to npm when a version tag (v3.4.0 style) is pushed.
+# Uses npm Trusted Publishing: no tokens, no secrets — npmjs.com is configured
+# to trust this exact workflow, and npm attaches provenance automatically
+# (the "built and signed from this commit" badge on the package page).
+name: publish
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write # OIDC token for npm trusted publishing
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs a recent npm
+      - run: npm install -g npm@latest
+
+      # The tag must match package.json — catches a forgotten version bump
+      - name: Check tag matches package.json
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          TAG=${GITHUB_REF_NAME#v}
+          if [ "$PKG" != "$TAG" ]; then
+            echo "Tag v$TAG does not match package.json $PKG" >&2
+            exit 1
+          fi
+
+      # Smoke test: the CLI must run on a real directory before we ship it
+      - name: Smoke test
+        run: |
+          node bin/roast.mjs . --no-open --out /tmp/self-roast.html
+          test -s /tmp/self-roast.html
+
+      - run: npm publish

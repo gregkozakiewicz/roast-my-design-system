@@ -1,2 +1,7 @@
 .DS_Store
 node_modules/
+
+# Local tooling and settings, never part of the shipped skill
+.agents/
+.claude/
+skills-lock.json

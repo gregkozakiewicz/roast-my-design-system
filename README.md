@@ -4,7 +4,12 @@
 
 ## A Claude Code skill that roasts your repo's design system with real data.
 
-Run this skill on your codebase and get three things: a health score for your design system, the receipts behind it (every colour, spacing value, duplicated component and inline style, with real file paths), and the first fixes ranked by payoff. It benchmarks you against an Ideal Design System, 30 scanned public repos, and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…), and generates one shareable HTML report: **keep it as the audit, or hand it to Claude as the punch list for the fix.**
+Run this skill on your codebase and get, in about a second:
+
+- **A health score you can defend in a meeting.** 0-100, deterministic, benchmarked against Ideal Design System norms, 30 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
+- **The receipts behind it.** Every colour, spacing value, typeface, duplicated component and inline style, with real file paths, in one self-contained HTML report you can open, Slack or email.
+- **The first fixes ranked by payoff.** A "Where to start" list derived from your own numbers: keep the report as the audit, or hand it to Claude as the punch list for the fix.
+- **Rules that stop the mess coming back.** A generated `design-system-rules.md` for your CLAUDE.md or .cursor/rules: canonical components, your token file, known duplicates to avoid, so your AI agent follows your system instead of guessing at it.
 
 ## Why this exists
 
@@ -43,7 +48,7 @@ The same report in light mode (one file, built-in toggle):
 npx roast-my-design-system
 ```
 
-Run it inside any repo. Same scanner, same report, straight from npm. Add `--theme light`, `--out <file>` or `--no-open` if you want them. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.
+Run it inside any repo. Same scanner, same report, straight from npm. Add `--rules` to also generate the agent rules file, `--json` for a machine-readable summary, or `--theme light`, `--out <file>`, `--no-open` as you like. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.
 
 **Claude Code (recommended):**
 
@@ -91,6 +96,8 @@ You get the roast in chat plus `design-system-roast.html` at your repo root: a s
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the off-scale spacing receipts, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger
 - a **Where to start** close: up to three moves derived from your repo's own numbers, each with a file-path receipt
+
+After the roast, the skill offers `design-system-rules.md`: the agent-rules file generated from the same scan, ready for your CLAUDE.md, `.cursor/rules` or AGENTS.md.
 
 ## Live examples
 

@@ -1,6 +1,6 @@
 {
   "name": "roast-my-design-system",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Roast your design system with real data. A deterministic, zero-dependency scanner that counts every colour, grey, spacing value, typeface, duplicated component, inline style and arbitrary Tailwind value in your repo, scores it 0-100 against Ideal Design System norms and a 30-repo benchmark, and generates a shareable HTML diagnosis.",
   "keywords": [
     "design-system",

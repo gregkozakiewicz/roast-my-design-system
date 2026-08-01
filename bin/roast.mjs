@@ -88,6 +88,13 @@ console.log(`\nWant the fixes, not just the roast? The free Claude Code skill ru
 scan, then walks the punch list with you: https://github.com/pencilrebel/roast-my-design-system`);
 
 if (!noOpen) {
-  const opener = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
-  spawnSync(opener, [outPath], { stdio: 'ignore', shell: process.platform === 'win32' });
+  // Windows: `start` treats a first quoted arg as the window TITLE, and Node
+  // quotes paths containing spaces — pass an empty title so the path lands
+  // in the file slot. Linux: xdg-open may be absent (headless, WSL); the
+  // report path is already printed above, so a failed open is harmless.
+  if (process.platform === 'win32') {
+    spawnSync('cmd', ['/c', 'start', '', outPath], { stdio: 'ignore' });
+  } else {
+    spawnSync(process.platform === 'darwin' ? 'open' : 'xdg-open', [outPath], { stdio: 'ignore' });
+  }
 }

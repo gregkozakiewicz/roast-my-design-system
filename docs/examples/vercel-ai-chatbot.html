@@ -253,6 +253,36 @@
   footer .brand { color:var(--accent); font-weight:700; text-decoration:none; }
   footer .brand:hover { text-decoration:underline; }
   footer .creds { display:flex; gap:16px; font:700 9.5px/1.6 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--dim2); }
+  .gift-sec { margin-top:16px; }
+  .gift-stage { position:relative; display:grid; place-items:center; min-height:120px; }
+  .gift-stage.open { min-height:0; }
+  .gift[hidden] { display:none; }
+  .gift { background:none; border:0; cursor:pointer; display:grid; place-items:center; gap:9px; padding:14px; color:var(--dim);
+    transition:transform .25s ease, opacity .25s ease, filter .25s ease; }
+  .gift svg { width:72px; height:72px; }
+  .gift .ribbon { stroke:var(--accent); }
+  .gift:hover { transform:translateY(-3px) scale(1.04); color:var(--text); }
+  .gift.gone { transform:scale(.5); opacity:0; filter:blur(5px); }
+  .gift-hint { font:700 10px/1 var(--sans); letter-spacing:.18em; text-transform:uppercase; }
+  .gift-pop { position:absolute; inset:0; pointer-events:none; }
+  .gift-pop i { position:absolute; left:50%; top:42%; width:7px; height:10px; border-radius:2px; opacity:0;
+    animation:gpop .85s cubic-bezier(.16,.8,.32,1) forwards; }
+  @keyframes gpop { 0% { opacity:1; transform:translate(0,0) rotate(0); } 100% { opacity:0; transform:translate(var(--dx),var(--dy)) rotate(var(--rot)); } }
+  .gift-reveal { width:100%; }
+  .gift-reveal.in { animation:greveal .5s ease both; }
+  @keyframes greveal { from { opacity:0; transform:translateY(8px) scale(.985); } to { opacity:1; transform:none; } }
+  .gift-head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+  .gift-count { color:var(--dim2); font-size:12.5px; }
+  .gift-md { max-height:340px; overflow:auto; background:var(--chip-bg); border:1px solid var(--line-soft); border-radius:12px;
+    padding:16px 18px; font:12px/1.7 var(--mono); color:var(--dim); white-space:pre-wrap; }
+  .gift-actions { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+  .gbtn { font:700 12.5px/1 var(--sans); padding:11px 16px; border-radius:10px; border:1px solid var(--accent);
+    background:var(--accent); color:var(--card-solid); cursor:pointer; }
+  .gbtn:hover { filter:brightness(1.08); }
+  .gbtn.ghost { background:transparent; color:var(--accent); }
+  .gift-sub { color:var(--dim2); font-size:12.5px; margin-top:10px; }
+  @media print { .gift, .gift-pop { display:none !important; } .gift-reveal[hidden] { display:block !important; } }
+  @media (prefers-reduced-motion: reduce) { .gift, .gift-reveal.in, .gift-pop i { transition:none !important; animation:none !important; } }
   .author { color:var(--accent); font-weight:700; text-decoration:none; }
   .gk-mark { display:inline-block; width:15px; height:15px; margin-right:5px; vertical-align:-3px;
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
@@ -290,6 +320,80 @@
         <span class="ledger-idx">01</span>
         <div class="start-body"><div class="start-title">Give your repeated bracket values names</div><div class="sub">[13px] appears 26 times, which reads as a decision, not drift. If it is one, name it in app/globals.css so the next component (and your agent) can reach for it; 5 more repeated values deserve the same look. The 14 values used once are worth a pass: keep the deliberate ones (optical nudges like the 4 under 4px, one-off layout widths) and round the accidents to a neighbouring step.</div></div>
       </div></div></section>
+
+<section class="glass pad gift-sec">
+    <div class="sec-head"><h2>You sat through the roast</h2><p class="sub">so you get a present.</p></div>
+    <div class="gift-stage">
+      <button class="gift" id="gift" aria-label="Unwrap your generated agent rules file">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="10" y="26" width="44" height="30" rx="4"/>
+          <rect x="6" y="17" width="52" height="9" rx="3"/>
+          <path class="ribbon" d="M32 26 v30"/>
+          <path class="ribbon" d="M32 17 c-9 1 -13 -8 -7 -11 c5 -2 8 4 7 11 c-1 -7 2 -13 7 -11 c6 3 2 12 -7 11z"/>
+        </svg>
+        <span class="gift-hint">unwrap</span>
+      </button>
+      <div class="gift-pop" id="gift-pop" aria-hidden="true"></div>
+      <div class="gift-reveal" id="gift-reveal" hidden>
+        <div class="gift-head"><span class="mono strong">design-system-rules.md</span>
+          <span class="gift-count">11 rules generated from this scan, every one with a receipt</span></div>
+        <pre class="gift-md" id="gift-md">## Design system rules
+
+&lt;!-- Generated by roast-my-design-system from a scan of vercel/ai-chatbot on 2026-08-01.
+     Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
+     npx roast-my-design-system --rules --&gt;
+
+Follow these rules when writing or editing UI in this repo. Every rule below was derived from a scan of this codebase, with real paths and usage counts.
+
+### Colours and tokens
+
+- Design tokens live in `app/globals.css`. Reach for an existing token before inventing any value.
+- Never hardcode colour values in components. The palette already has 49 tokens; the scan still found 12 hardcoded colours sitting next to them. Do not add more.
+- This repo uses shadcn/ui; its components live in `components/ui`. Prefer extending it over building parallel pieces.
+
+### Canonical components
+
+- Use these existing components instead of writing new ones:
+  - `&lt;Button&gt;` from `components/ui/button.tsx` (used 25x · props: variant, size, asChild)
+  - `&lt;Tooltip&gt;` from `components/ui/tooltip.tsx` (used 10x)
+  - `&lt;TooltipContent&gt;` from `components/ui/tooltip.tsx` (used 10x · props: sideOffset)
+  - `&lt;TooltipTrigger&gt;` from `components/ui/tooltip.tsx` (used 10x)
+  - `&lt;DropdownMenuItem&gt;` from `components/ui/dropdown-menu.tsx` (used 8x · props: inset, variant)
+  - `&lt;LoaderIcon&gt;` from `components/chat/icons.tsx` (used 8x · props: size)
+  - `&lt;SidebarMenuButton&gt;` from `components/ui/sidebar.tsx` (used 7x · props: asChild, isActive, variant, size)
+  - `&lt;CopyIcon&gt;` from `components/chat/icons.tsx` (used 6x · props: size)
+
+### Known duplicates: do not make it worse
+
+- `&lt;MessageActions&gt;` is defined twice and one wraps the other; do not create a third.
+
+### Spacing and sizing
+
+- Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
+- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 103 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
+- Avoid new one-off CSS spacing values; 2 off-scale values are already in play.
+
+### Typography
+
+- The repo uses 3 typefaces: SF Mono, Geist, Geist Mono. Do not introduce another, and do not re-declare font stacks by hand; use the existing setup.
+
+### Styling discipline
+
+- Never write `style={{ ... }}` for static values; styling belongs to classes and tokens where the system can see it.
+  (7 static inline blocks already exist; do not add to them.)
+- Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
+
+---
+*Generated by [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system). Rescan after refactors to keep these rules honest.*
+</pre>
+        <div class="gift-actions">
+          <button class="gbtn" id="gift-copy">Copy the rules</button>
+          <button class="gbtn ghost" id="gift-dl">Download the file</button>
+        </div>
+        <div class="gift-sub">Paste into CLAUDE.md, .cursor/rules or AGENTS.md. From then on your AI agent follows your system instead of guessing at it.</div>
+      </div>
+    </div>
+  </section>
 
 <div class="stats"><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -580,8 +684,49 @@
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a>, a free skill for Claude Code and Codex</div>
-    <div class="foot-sub"><span class="ver">ver. 3.4.0</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com"><span class="gk-mark"></span>Greg Kozakiewicz</a></div>
+    <div class="foot-sub"><span class="ver">ver. 3.5.0</span> · built and designed by <a class="author" href="https://gregkozakiewicz.com"><span class="gk-mark"></span>Greg Kozakiewicz</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>
+<script>
+(function(){
+  var gift=document.getElementById('gift'); if(!gift) return;
+  var reveal=document.getElementById('gift-reveal'), pop=document.getElementById('gift-pop');
+  var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gift.addEventListener('click', function(){
+    if(!reduce && pop){
+      var colors=['var(--accent)','var(--coral)','var(--amber)','var(--text)'];
+      for(var i=0;i<26;i++){
+        var f=document.createElement('i');
+        var a=Math.random()*Math.PI*2, v=46+Math.random()*84;
+        f.style.setProperty('--dx',(Math.cos(a)*v)+'px');
+        f.style.setProperty('--dy',(Math.sin(a)*v-56)+'px');
+        f.style.setProperty('--rot',(Math.random()*540-270)+'deg');
+        f.style.background=colors[i%4];
+        f.style.animationDelay=(Math.random()*80)+'ms';
+        pop.appendChild(f);
+      }
+      setTimeout(function(){ pop.innerHTML=''; },1000);
+    }
+    gift.classList.add('gone');
+    setTimeout(function(){ gift.hidden=true; gift.parentNode.classList.add('open'); reveal.hidden=false; reveal.classList.add('in'); }, reduce?0:240);
+  },{once:true});
+  var copyBtn=document.getElementById('gift-copy');
+  function rulesText(){ return document.getElementById('gift-md').textContent; }
+  copyBtn.addEventListener('click', function(){
+    var done=function(){ copyBtn.textContent='Copied'; setTimeout(function(){ copyBtn.textContent='Copy the rules'; },1600); };
+    var fallback=function(){ var ta=document.createElement('textarea'); ta.value=rulesText(); document.body.appendChild(ta);
+      ta.select(); try{ document.execCommand('copy'); }catch(e){} ta.remove(); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(rulesText()).then(done, function(){ fallback(); done(); }); }
+    else { fallback(); done(); }
+  });
+  document.getElementById('gift-dl').addEventListener('click', function(){
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([rulesText()],{type:'text/markdown'}));
+    a.download='design-system-rules.md';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+  });
+})();
+</script>
 </div></body></html>

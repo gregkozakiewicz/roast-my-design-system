@@ -11,6 +11,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, basename, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
+import { rulesMarkdown } from '../rules/build.mjs';
 
 // The benchmark (Ideal-2026 norms + scanned-repo stats) ships next to the
 // code so the page works offline; degrade gracefully when absent.
@@ -33,7 +34,7 @@ const GK_MASK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 const GK_MARK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==';
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.4.0';
+const VERSION = '3.5.0';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -483,6 +484,38 @@ function componentsSection() {
 // "Where to start" — at most three moves, every one derived from this repo's
 // own numbers with a receipt. Deliberately shallow: a starting push, not a
 // remediation plan.
+// The present. The report ends the diagnosis arc with a gift: the agent
+// rules file generated from this same scan, wrapped behind one click.
+// Embedded so the report stays a single self-contained shareable file.
+function giftSection() {
+  const { text: rulesText, ruleCount } = rulesMarkdown(h);
+  return `<section class="glass pad gift-sec">
+    ${sectionHead('You sat through the roast', 'so you get a present.')}
+    <div class="gift-stage">
+      <button class="gift" id="gift" aria-label="Unwrap your generated agent rules file">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="10" y="26" width="44" height="30" rx="4"/>
+          <rect x="6" y="17" width="52" height="9" rx="3"/>
+          <path class="ribbon" d="M32 26 v30"/>
+          <path class="ribbon" d="M32 17 c-9 1 -13 -8 -7 -11 c5 -2 8 4 7 11 c-1 -7 2 -13 7 -11 c6 3 2 12 -7 11z"/>
+        </svg>
+        <span class="gift-hint">unwrap</span>
+      </button>
+      <div class="gift-pop" id="gift-pop" aria-hidden="true"></div>
+      <div class="gift-reveal" id="gift-reveal" hidden>
+        <div class="gift-head"><span class="mono strong">design-system-rules.md</span>
+          <span class="gift-count">${ruleCount} rules generated from this scan, every one with a receipt</span></div>
+        <pre class="gift-md" id="gift-md">${esc(rulesText)}</pre>
+        <div class="gift-actions">
+          <button class="gbtn" id="gift-copy">Copy the rules</button>
+          <button class="gbtn ghost" id="gift-dl">Download the file</button>
+        </div>
+        <div class="gift-sub">Paste into CLAUDE.md, .cursor/rules or AGENTS.md. From then on your AI agent follows your system instead of guessing at it.</div>
+      </div>
+    </div>
+  </section>`;
+}
+
 function whereToStartSection() {
   const c = [];
   if (agentFiles.length === 0) c.push({ score: 60, title: 'Write the agent rules file',
@@ -797,6 +830,36 @@ const html = `<!doctype html>
   footer .brand { color:var(--accent); font-weight:700; text-decoration:none; }
   footer .brand:hover { text-decoration:underline; }
   footer .creds { display:flex; gap:16px; font:700 9.5px/1.6 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--dim2); }
+  .gift-sec { margin-top:16px; }
+  .gift-stage { position:relative; display:grid; place-items:center; min-height:120px; }
+  .gift-stage.open { min-height:0; }
+  .gift[hidden] { display:none; }
+  .gift { background:none; border:0; cursor:pointer; display:grid; place-items:center; gap:9px; padding:14px; color:var(--dim);
+    transition:transform .25s ease, opacity .25s ease, filter .25s ease; }
+  .gift svg { width:72px; height:72px; }
+  .gift .ribbon { stroke:var(--accent); }
+  .gift:hover { transform:translateY(-3px) scale(1.04); color:var(--text); }
+  .gift.gone { transform:scale(.5); opacity:0; filter:blur(5px); }
+  .gift-hint { font:700 10px/1 var(--sans); letter-spacing:.18em; text-transform:uppercase; }
+  .gift-pop { position:absolute; inset:0; pointer-events:none; }
+  .gift-pop i { position:absolute; left:50%; top:42%; width:7px; height:10px; border-radius:2px; opacity:0;
+    animation:gpop .85s cubic-bezier(.16,.8,.32,1) forwards; }
+  @keyframes gpop { 0% { opacity:1; transform:translate(0,0) rotate(0); } 100% { opacity:0; transform:translate(var(--dx),var(--dy)) rotate(var(--rot)); } }
+  .gift-reveal { width:100%; }
+  .gift-reveal.in { animation:greveal .5s ease both; }
+  @keyframes greveal { from { opacity:0; transform:translateY(8px) scale(.985); } to { opacity:1; transform:none; } }
+  .gift-head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+  .gift-count { color:var(--dim2); font-size:12.5px; }
+  .gift-md { max-height:340px; overflow:auto; background:var(--chip-bg); border:1px solid var(--line-soft); border-radius:12px;
+    padding:16px 18px; font:12px/1.7 var(--mono); color:var(--dim); white-space:pre-wrap; }
+  .gift-actions { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+  .gbtn { font:700 12.5px/1 var(--sans); padding:11px 16px; border-radius:10px; border:1px solid var(--accent);
+    background:var(--accent); color:var(--card-solid); cursor:pointer; }
+  .gbtn:hover { filter:brightness(1.08); }
+  .gbtn.ghost { background:transparent; color:var(--accent); }
+  .gift-sub { color:var(--dim2); font-size:12.5px; margin-top:10px; }
+  @media print { .gift, .gift-pop { display:none !important; } .gift-reveal[hidden] { display:block !important; } }
+  @media (prefers-reduced-motion: reduce) { .gift, .gift-reveal.in, .gift-pop i { transition:none !important; animation:none !important; } }
   .author { color:var(--accent); font-weight:700; text-decoration:none; }
   .gk-mark { display:inline-block; width:15px; height:15px; margin-right:5px; vertical-align:-3px;
     background:currentColor; -webkit-mask:url(${GK_MASK}) center/contain no-repeat; mask:url(${GK_MASK}) center/contain no-repeat; }
@@ -829,6 +892,8 @@ const html = `<!doctype html>
 
 ${whereToStartSection()}
 
+${giftSection()}
+
 <div class="stats">${bigStats.map((s) => statTile(s)).join('')}</div>
 
 ${agentSection()}
@@ -851,6 +916,47 @@ ${componentsSection()}
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>
+<script>
+(function(){
+  var gift=document.getElementById('gift'); if(!gift) return;
+  var reveal=document.getElementById('gift-reveal'), pop=document.getElementById('gift-pop');
+  var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gift.addEventListener('click', function(){
+    if(!reduce && pop){
+      var colors=['var(--accent)','var(--coral)','var(--amber)','var(--text)'];
+      for(var i=0;i<26;i++){
+        var f=document.createElement('i');
+        var a=Math.random()*Math.PI*2, v=46+Math.random()*84;
+        f.style.setProperty('--dx',(Math.cos(a)*v)+'px');
+        f.style.setProperty('--dy',(Math.sin(a)*v-56)+'px');
+        f.style.setProperty('--rot',(Math.random()*540-270)+'deg');
+        f.style.background=colors[i%4];
+        f.style.animationDelay=(Math.random()*80)+'ms';
+        pop.appendChild(f);
+      }
+      setTimeout(function(){ pop.innerHTML=''; },1000);
+    }
+    gift.classList.add('gone');
+    setTimeout(function(){ gift.hidden=true; gift.parentNode.classList.add('open'); reveal.hidden=false; reveal.classList.add('in'); }, reduce?0:240);
+  },{once:true});
+  var copyBtn=document.getElementById('gift-copy');
+  function rulesText(){ return document.getElementById('gift-md').textContent; }
+  copyBtn.addEventListener('click', function(){
+    var done=function(){ copyBtn.textContent='Copied'; setTimeout(function(){ copyBtn.textContent='Copy the rules'; },1600); };
+    var fallback=function(){ var ta=document.createElement('textarea'); ta.value=rulesText(); document.body.appendChild(ta);
+      ta.select(); try{ document.execCommand('copy'); }catch(e){} ta.remove(); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(rulesText()).then(done, function(){ fallback(); done(); }); }
+    else { fallback(); done(); }
+  });
+  document.getElementById('gift-dl').addEventListener('click', function(){
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([rulesText()],{type:'text/markdown'}));
+    a.download='design-system-rules.md';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+  });
+})();
+</script>
 </div></body></html>`;
 
 writeFileSync(outPath, html);

@@ -23,7 +23,7 @@
   "author": "Greg Kozakiewicz (https://gregkozakiewicz.com)",
   "type": "module",
   "bin": {
-    "roast-my-design-system": "./bin/roast.mjs"
+    "roast-my-design-system": "bin/roast.mjs"
   },
   "files": [
     "bin/",

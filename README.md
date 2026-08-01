@@ -126,4 +126,4 @@ Yes, the median repo is already a mess. That's the point.
 
 MIT
 
-Built and designed by [Greg Kozakiewicz](https://gregkozakiewicz.com).
+Built and designed by <a href="https://gregkozakiewicz.com"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.4.0" height="15" alt="GK mark"> Greg Kozakiewicz</a>.

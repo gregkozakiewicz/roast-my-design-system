@@ -17,11 +17,11 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 
 The full report for vercel/ai-chatbot, top to bottom:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](assets/report-full-dark.png)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](assets/report-light-hero.png)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png)
 
 ## What makes the numbers trustworthy
 
@@ -34,6 +34,14 @@ The same report in light mode (one file, built-in toggle):
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
 
 ## Install
+
+**No install, no Claude needed — just try it:**
+
+```bash
+npx roast-my-design-system
+```
+
+Run it inside any repo. Same scanner, same report, straight from npm. Add `--theme light`, `--out <file>` or `--no-open` if you want them. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.
 
 **Claude Code (recommended):**
 

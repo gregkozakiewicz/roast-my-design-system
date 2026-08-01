@@ -1,0 +1,35 @@
+{
+  "name": "roast-my-design-system",
+  "version": "3.2.0",
+  "description": "Roast your design system with real data. A deterministic, zero-dependency scanner that counts every colour, grey, spacing value, typeface, duplicated component and inline style in your repo, scores it 0-100 against Ideal Design System norms and a 29-repo benchmark, and generates a shareable HTML diagnosis.",
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "css",
+    "audit",
+    "lint",
+    "tailwind",
+    "ui",
+    "claude-code",
+    "developer-tools"
+  ],
+  "homepage": "https://pencilrebel.github.io/roast-my-design-system/",
+  "bugs": "https://github.com/pencilrebel/roast-my-design-system/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pencilrebel/roast-my-design-system.git"
+  },
+  "license": "MIT",
+  "author": "Greg Kozakiewicz (https://gregkozakiewicz.com)",
+  "type": "module",
+  "bin": {
+    "roast-my-design-system": "./bin/roast.mjs"
+  },
+  "files": [
+    "bin/",
+    "skills/roast-my-design-system/scripts/"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

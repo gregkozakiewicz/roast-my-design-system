@@ -1,5 +1,7 @@
 # roast-my-design-system
 
+[![npm](https://img.shields.io/npm/v/roast-my-design-system?color=2dd4bf&label=npm)](https://www.npmjs.com/package/roast-my-design-system) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 ## A Claude Code skill that roasts your repo's design system with real data.
 
 Run this skill on your codebase and get three things: a health score for your design system, the receipts behind it (every colour, spacing value, duplicated component and inline style, with real file paths), and the first fixes ranked by payoff. It benchmarks you against an Ideal Design System, 29 scanned public repos, and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…), and generates one shareable HTML report: **keep it as the audit, or hand it to Claude as the punch list for the fix.**

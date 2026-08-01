@@ -28,7 +28,7 @@ const outPath = resolve(arg('out', 'diagnosis.html'));
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.2.0';
+const VERSION = '3.3.0';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -231,7 +231,9 @@ if (bench && findings.length) {
 // is warn; beyond that bad.
 const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles']);
 const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10 };
-const NO_ABSENCE_RULE = new Set(['colors', 'greys']);
+// Absence rule also skipped for arbitrary values: zero brackets is discipline
+// (nine of ten reputable systems sit at 0, including Tailwind-native shadcn/ui).
+const NO_ABSENCE_RULE = new Set(['colors', 'greys', 'arbitrary']);
 function healthOf(metric, value) {
   const iv = ideal(metric);
   if (iv === null) return 'info';
@@ -272,7 +274,7 @@ function tile(value, label, metric, fallbackTarget, healthValue = value) {
     : clean !== null && clean >= 60 ? ` · cleaner than ${clean}%` : '';
   const av = displayAvg(metric);
   if (av !== null) rows.push(row('Avg Design System', `${n(av)}${avgNote}`, av, value));
-  if (rm !== null && (rm > 0 || ZERO_IDEAL.has(metric))) rows.push(row('Reputable systems', n(rm), rm, value));
+  if (rm !== null && (rm > 0 || ZERO_IDEAL.has(metric) || metric === 'arbitrary')) rows.push(row('Reputable systems', n(rm), rm, value));
   return { num: n(value), label, health, rows };
 }
 const bigStats = [
@@ -281,10 +283,7 @@ const bigStats = [
   tile(spacingTotal, 'off-scale spacing values', 'spacing', 'a dozen deliberate exceptions'),
   tile(hardDupes.length, 'duplicated components', 'exactDuplicates', 'should be 0'),
   tile(inline.count, 'inline style blocks', 'inlineStyles', 'invisible to any system'),
-  { num: String(reusable.length), label: 'components defined', health: 'info',
-    rows: [ { label: 'the raw material', val: '', dir: '' },
-      ...(median('components') ? [{ label: 'Avg Design System', val: n(median('components')), dir: '' }] : []),
-      ...(refMedian('components') ? [{ label: 'Reputable systems', val: n(refMedian('components')), dir: '' }] : []) ] },
+  tile(arbitraryCount, 'arbitrary bracket values', 'arbitrary', 'a handful of deliberate exceptions'),
 ];
 
 // Health score for the hero: the scored tiles averaged (good 100 / warn 55 / bad 10).
@@ -472,7 +471,7 @@ function componentsSection() {
     <td class="path">${esc(c.file)}</td>
     <td>${c.propsHint?.named?.length ? c.propsHint.named.slice(0, 5).map((p) => `<span class="chip chip-xs">${esc(p)}</span>`).join(' ') : '<span class="dim">none</span>'}</td></tr>`).join('');
   return `<section class="glass pad">
-    ${sectionHead('What you actually use', 'top components by adoption · the real system, buried in here')}
+    ${sectionHead('What you actually use', `${n(reusable.length)} components defined · top by adoption · the real system, buried in here`)}
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
 }
 

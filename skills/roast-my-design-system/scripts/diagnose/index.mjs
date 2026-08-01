@@ -848,6 +848,23 @@ ${componentsSection()}
 </div></body></html>`;
 
 writeFileSync(outPath, html);
+
+// Machine-readable summary for wrappers (the npx CLI reads this instead of
+// parsing the HTML): --summary <path> writes score, verdict and per-tile health.
+const summaryPath = arg('summary', null);
+if (summaryPath) {
+  writeFileSync(resolve(summaryPath), JSON.stringify({
+    repo: repoName,
+    version: VERSION,
+    score: healthScore,
+    noSystemLikely,
+    verdict,
+    tiles: bigStats.map((s) => ({ label: s.label, value: s.num, health: s.health })),
+    report: outPath,
+  }, null, 2));
+}
+
 console.log(`✓ Diagnosis for ${repoName}`);
+if (healthScore !== null) console.log(`  score: ${healthScore}/100`);
 console.log(`  verdict: ${verdict}`);
 console.log(`  → ${outPath}`);

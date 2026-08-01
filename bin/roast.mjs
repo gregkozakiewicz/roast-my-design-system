@@ -103,6 +103,9 @@ if (asJson) {
 if (wantRules && !asJson) {
   console.log(`\n  design-system-rules.md is ready: paste it into CLAUDE.md or .cursor/rules
   so your AI agent stops repeating this repo's mistakes.`);
+} else if (!asJson) {
+  console.log(`\n  there is a present wrapped inside the report: your agent rules file,
+  generated from this scan. Or run with --rules to write it straight to disk.`);
 }
 
 say(`\nWant the fixes, not just the roast? The free Claude Code skill runs this same

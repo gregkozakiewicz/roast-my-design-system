@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-07-24T13:37:06.943Z",
-  "repoCount": 29,
+  "builtAt": "2026-08-01T17:38:24.498Z",
+  "repoCount": 30,
   "ideal2026": {
     "colors": {
       "value": 24,
@@ -37,6 +37,10 @@
     "inlineStyles": {
       "value": 0,
       "note": "styling belongs to the system"
+    },
+    "arbitrary": {
+      "value": 20,
+      "note": "bracket escape hatches; a handful of deliberate exceptions"
     },
     "zIndexes": {
       "value": 6,
@@ -77,37 +81,38 @@
         0,
         0,
         0,
-        0,
+        2,
         3,
-        32,
-        35,
+        26,
         36,
-        46,
-        47,
-        59,
+        36,
+        42,
+        48,
+        50,
+        61,
         69,
         78,
-        88,
-        88,
-        108,
-        125,
-        134,
+        89,
+        102,
+        112,
         137,
-        147,
-        155,
-        168,
-        172,
-        205,
-        245,
-        271,
-        384,
-        399,
-        1673
+        142,
+        154,
+        169,
+        169,
+        170,
+        174,
+        206,
+        246,
+        302,
+        385,
+        403,
+        1645
       ],
-      "p25": 36,
-      "median": 88,
-      "p75": 168,
-      "p90": 294
+      "p25": 38,
+      "median": 96,
+      "p75": 170,
+      "p90": 310
     },
     "greys": {
       "values": [
@@ -115,35 +120,36 @@
         0,
         0,
         0,
-        0,
+        2,
         2,
         3,
-        3,
+        4,
+        4,
         5,
         8,
         8,
-        8,
         9,
-        12,
-        12,
+        9,
+        13,
+        14,
         15,
         18,
         18,
-        23,
-        30,
+        24,
         30,
         31,
+        32,
         34,
-        34,
-        34,
-        43,
-        46,
+        35,
+        37,
+        44,
+        48,
         77,
-        105
+        100
       ],
-      "p25": 3,
-      "median": 12,
-      "p75": 31,
+      "p25": 4,
+      "median": 14,
+      "p75": 32,
       "p90": 44
     },
     "spacing": {
@@ -152,36 +158,37 @@
         0,
         2,
         3,
-        5,
+        6,
+        6,
         6,
         9,
-        9,
         10,
-        12,
+        11,
+        15,
         18,
-        20,
-        21,
-        23,
-        26,
+        22,
+        24,
+        25,
         28,
-        30,
-        33,
-        35,
-        41,
-        43,
-        46,
-        52,
-        56,
-        63,
-        67,
-        72,
+        31,
+        34,
+        37,
+        50,
+        51,
+        54,
+        55,
+        59,
+        61,
+        64,
+        78,
+        82,
         84,
-        113
+        121
       ],
       "p25": 9,
-      "median": 26,
-      "p75": 46,
-      "p90": 68
+      "median": 27,
+      "p75": 55,
+      "p90": 78
     },
     "typefaces": {
       "values": [
@@ -200,6 +207,7 @@
         2,
         2,
         2,
+        2,
         3,
         3,
         3,
@@ -212,7 +220,7 @@
         5,
         5,
         6,
-        8,
+        7,
         9
       ],
       "p25": 1,
@@ -232,15 +240,16 @@
         7,
         9,
         10,
+        11,
         12,
         12,
         13,
         14,
         18,
-        18,
-        21,
+        20,
+        20,
         22,
-        23,
+        22,
         24,
         27,
         27,
@@ -252,8 +261,8 @@
         49,
         61
       ],
-      "p25": 7,
-      "median": 18,
+      "p25": 8,
+      "median": 16,
       "p75": 27,
       "p90": 37
     },
@@ -268,6 +277,7 @@
         7,
         8,
         8,
+        9,
         9,
         10,
         11,
@@ -285,17 +295,18 @@
         24,
         25,
         26,
+        26,
         30,
-        33,
         62
       ],
       "p25": 8,
       "median": 12,
       "p75": 21,
-      "p90": 27
+      "p90": 26
     },
     "shadows": {
       "values": [
+        0,
         0,
         0,
         0,
@@ -323,8 +334,8 @@
         10,
         10,
         16,
-        28,
-        28
+        19,
+        29
       ],
       "p25": 0,
       "median": 1,
@@ -347,26 +358,27 @@
         7,
         7,
         8,
+        10,
         17,
         17,
         19,
+        20,
         21,
-        21,
+        22,
         23,
-        25,
         38,
         45,
-        73,
-        93,
-        98,
+        59,
+        92,
+        95,
         103,
-        116,
+        115,
         187
       ],
       "p25": 1,
-      "median": 17,
-      "p75": 38,
-      "p90": 99
+      "median": 14,
+      "p75": 34,
+      "p90": 96
     },
     "inlineStyles": {
       "values": [
@@ -379,31 +391,32 @@
         5,
         7,
         11,
-        17,
+        18,
         22,
         23,
-        36,
-        40,
+        23,
+        37,
+        41,
         42,
-        44,
-        45,
+        46,
         47,
+        51,
         69,
-        70,
+        71,
         76,
         79,
         82,
         117,
-        118,
         119,
+        122,
         173,
         1178,
-        2885
+        2914
       ],
-      "p25": 7,
+      "p25": 8,
       "median": 42,
-      "p75": 79,
-      "p90": 130
+      "p75": 78,
+      "p90": 127
     },
     "arbitrary": {
       "values": [
@@ -419,65 +432,67 @@
         4,
         16,
         26,
+        27,
         60,
-        85,
+        78,
         103,
-        123,
+        125,
         148,
-        154,
         164,
-        228,
+        164,
         234,
+        271,
         321,
-        339,
-        398,
-        467,
+        374,
+        407,
+        468,
         470,
-        488,
+        492,
         561,
         1751
       ],
       "p25": 0,
-      "median": 103,
-      "p75": 321,
-      "p90": 474
+      "median": 91,
+      "p75": 309,
+      "p90": 472
     },
     "components": {
       "values": [
         9,
         25,
         36,
-        51,
-        62,
-        183,
-        184,
-        226,
-        276,
+        50,
+        60,
+        182,
+        190,
+        220,
+        272,
         315,
+        342,
         350,
-        350,
-        418,
-        620,
-        779,
-        794,
-        826,
-        916,
-        965,
-        972,
-        1033,
-        1041,
-        1088,
-        1229,
-        1397,
-        1424,
-        1654,
-        2153,
-        2536
+        417,
+        546,
+        629,
+        777,
+        790,
+        834,
+        936,
+        940,
+        961,
+        970,
+        1043,
+        1081,
+        1216,
+        1379,
+        1414,
+        1619,
+        2133,
+        2549
       ],
-      "p25": 226,
-      "median": 779,
-      "p75": 1041,
-      "p90": 1470
+      "p25": 233,
+      "median": 703,
+      "p75": 1025,
+      "p90": 1435
     }
   },
   "repos": [
@@ -486,35 +501,35 @@
       "designSystem": "custom",
       "codeFiles": 4341,
       "metrics": {
-        "colors": 384,
+        "colors": 385,
         "greys": 77,
-        "spacing": 113,
+        "spacing": 121,
         "typefaces": 9,
         "fontSizes": 61,
         "radii": 62,
         "shadows": 10,
-        "exactDuplicates": 116,
+        "exactDuplicates": 115,
         "inlineStyles": 79,
         "arbitrary": 321,
-        "components": 1424
+        "components": 1414
       }
     },
     {
       "repo": "excalidraw/excalidraw",
       "designSystem": "custom",
-      "codeFiles": 500,
+      "codeFiles": 502,
       "metrics": {
-        "colors": 205,
-        "greys": 43,
+        "colors": 206,
+        "greys": 44,
         "spacing": 84,
         "typefaces": 3,
         "fontSizes": 33,
         "radii": 30,
-        "shadows": 28,
+        "shadows": 29,
         "exactDuplicates": 3,
         "inlineStyles": 82,
         "arbitrary": 0,
-        "components": 350
+        "components": 342
       }
     },
     {
@@ -522,8 +537,8 @@
       "designSystem": "library",
       "codeFiles": 107,
       "metrics": {
-        "colors": 108,
-        "greys": 46,
+        "colors": 112,
+        "greys": 48,
         "spacing": 18,
         "typefaces": 4,
         "fontSizes": 7,
@@ -532,17 +547,17 @@
         "exactDuplicates": 4,
         "inlineStyles": 23,
         "arbitrary": 0,
-        "components": 51
+        "components": 50
       }
     },
     {
       "repo": "outline/outline",
       "designSystem": "custom",
-      "codeFiles": 2075,
+      "codeFiles": 2100,
       "metrics": {
-        "colors": 88,
+        "colors": 89,
         "greys": 15,
-        "spacing": 12,
+        "spacing": 15,
         "typefaces": 0,
         "fontSizes": 0,
         "radii": 0,
@@ -550,13 +565,13 @@
         "exactDuplicates": 23,
         "inlineStyles": 76,
         "arbitrary": 0,
-        "components": 620
+        "components": 629
       }
     },
     {
       "repo": "nodejs/nodejs.org",
       "designSystem": "custom",
-      "codeFiles": 370,
+      "codeFiles": 384,
       "metrics": {
         "colors": 69,
         "greys": 5,
@@ -568,7 +583,7 @@
         "exactDuplicates": 2,
         "inlineStyles": 0,
         "arbitrary": 4,
-        "components": 226
+        "components": 220
       }
     },
     {
@@ -594,9 +609,9 @@
       "designSystem": "shadcn",
       "codeFiles": 129,
       "metrics": {
-        "colors": 0,
-        "greys": 0,
-        "spacing": 5,
+        "colors": 2,
+        "greys": 2,
+        "spacing": 6,
         "typefaces": 2,
         "fontSizes": 13,
         "radii": 7,
@@ -604,7 +619,7 @@
         "exactDuplicates": 0,
         "inlineStyles": 0,
         "arbitrary": 60,
-        "components": 183
+        "components": 182
       }
     },
     {
@@ -640,7 +655,7 @@
         "exactDuplicates": 1,
         "inlineStyles": 2,
         "arbitrary": 16,
-        "components": 62
+        "components": 60
       }
     },
     {
@@ -648,7 +663,7 @@
       "designSystem": "shadcn",
       "codeFiles": 146,
       "metrics": {
-        "colors": 59,
+        "colors": 61,
         "greys": 0,
         "spacing": 6,
         "typefaces": 3,
@@ -668,7 +683,7 @@
       "metrics": {
         "colors": 3,
         "greys": 3,
-        "spacing": 23,
+        "spacing": 25,
         "typefaces": 1,
         "fontSizes": 9,
         "radii": 8,
@@ -676,17 +691,17 @@
         "exactDuplicates": 1,
         "inlineStyles": 11,
         "arbitrary": 148,
-        "components": 276
+        "components": 272
       }
     },
     {
       "repo": "documenso/documenso",
       "designSystem": "custom",
-      "codeFiles": 1905,
+      "codeFiles": 1906,
       "metrics": {
-        "colors": 32,
-        "greys": 12,
-        "spacing": 26,
+        "colors": 36,
+        "greys": 13,
+        "spacing": 34,
         "typefaces": 6,
         "fontSizes": 22,
         "radii": 12,
@@ -694,17 +709,17 @@
         "exactDuplicates": 17,
         "inlineStyles": 69,
         "arbitrary": 234,
-        "components": 794
+        "components": 790
       }
     },
     {
       "repo": "dubinc/dub",
       "designSystem": "custom",
-      "codeFiles": 3510,
+      "codeFiles": 3523,
       "metrics": {
-        "colors": 88,
-        "greys": 12,
-        "spacing": 41,
+        "colors": 102,
+        "greys": 14,
+        "spacing": 54,
         "typefaces": 3,
         "fontSizes": 37,
         "radii": 22,
@@ -712,31 +727,31 @@
         "exactDuplicates": 17,
         "inlineStyles": 47,
         "arbitrary": 470,
-        "components": 1397
+        "components": 1379
       }
     },
     {
       "repo": "formbricks/formbricks",
       "designSystem": "custom",
-      "codeFiles": 1857,
+      "codeFiles": 2051,
       "metrics": {
-        "colors": 134,
+        "colors": 142,
         "greys": 18,
-        "spacing": 35,
+        "spacing": 51,
         "typefaces": 2,
         "fontSizes": 28,
         "radii": 25,
         "shadows": 6,
-        "exactDuplicates": 73,
-        "inlineStyles": 17,
-        "arbitrary": 154,
-        "components": 1041
+        "exactDuplicates": 59,
+        "inlineStyles": 18,
+        "arbitrary": 164,
+        "components": 940
       }
     },
     {
       "repo": "openstatusHQ/openstatus",
       "designSystem": "custom",
-      "codeFiles": 1885,
+      "codeFiles": 1916,
       "metrics": {
         "colors": 78,
         "greys": 2,
@@ -745,64 +760,82 @@
         "fontSizes": 14,
         "radii": 12,
         "shadows": 0,
-        "exactDuplicates": 93,
+        "exactDuplicates": 92,
         "inlineStyles": 119,
         "arbitrary": 164,
-        "components": 1088
+        "components": 1081
+      }
+    },
+    {
+      "repo": "lukevella/rallly",
+      "designSystem": "custom",
+      "codeFiles": 689,
+      "metrics": {
+        "colors": 26,
+        "greys": 4,
+        "spacing": 11,
+        "typefaces": 2,
+        "fontSizes": 12,
+        "radii": 9,
+        "shadows": 0,
+        "exactDuplicates": 10,
+        "inlineStyles": 23,
+        "arbitrary": 27,
+        "components": 546
       }
     },
     {
       "repo": "mfts/papermark",
       "designSystem": "shadcn",
-      "codeFiles": 1335,
+      "codeFiles": 1354,
       "metrics": {
-        "colors": 35,
+        "colors": 42,
         "greys": 9,
-        "spacing": 43,
+        "spacing": 50,
         "typefaces": 1,
         "fontSizes": 27,
         "radii": 19,
         "shadows": 1,
-        "exactDuplicates": 21,
-        "inlineStyles": 45,
-        "arbitrary": 398,
-        "components": 779
+        "exactDuplicates": 20,
+        "inlineStyles": 46,
+        "arbitrary": 407,
+        "components": 777
       }
     },
     {
       "repo": "elie222/inbox-zero",
       "designSystem": "custom",
-      "codeFiles": 1716,
+      "codeFiles": 1808,
       "metrics": {
-        "colors": 147,
-        "greys": 23,
-        "spacing": 21,
+        "colors": 154,
+        "greys": 24,
+        "spacing": 22,
         "typefaces": 3,
         "fontSizes": 27,
         "radii": 20,
         "shadows": 0,
         "exactDuplicates": 21,
         "inlineStyles": 5,
-        "arbitrary": 123,
-        "components": 826
+        "arbitrary": 125,
+        "components": 834
       }
     },
     {
       "repo": "linkwarden/linkwarden",
       "designSystem": "custom",
-      "codeFiles": 450,
+      "codeFiles": 462,
       "metrics": {
-        "colors": 46,
-        "greys": 8,
-        "spacing": 9,
+        "colors": 50,
+        "greys": 9,
+        "spacing": 6,
         "typefaces": 2,
-        "fontSizes": 12,
+        "fontSizes": 11,
         "radii": 9,
         "shadows": 0,
         "exactDuplicates": 7,
-        "inlineStyles": 42,
-        "arbitrary": 85,
-        "components": 184
+        "inlineStyles": 41,
+        "arbitrary": 78,
+        "components": 190
       }
     },
     {
@@ -810,9 +843,9 @@
       "designSystem": "custom",
       "codeFiles": 892,
       "metrics": {
-        "colors": 47,
+        "colors": 48,
         "greys": 8,
-        "spacing": 33,
+        "spacing": 37,
         "typefaces": 1,
         "fontSizes": 4,
         "radii": 11,
@@ -820,61 +853,61 @@
         "exactDuplicates": 0,
         "inlineStyles": 173,
         "arbitrary": 1,
-        "components": 418
+        "components": 417
       }
     },
     {
       "repo": "twentyhq/twenty",
       "designSystem": "library",
-      "codeFiles": 14776,
+      "codeFiles": 15125,
       "metrics": {
-        "colors": 1673,
-        "greys": 105,
-        "spacing": 30,
-        "typefaces": 8,
-        "fontSizes": 23,
-        "radii": 33,
-        "shadows": 28,
-        "exactDuplicates": 25,
-        "inlineStyles": 118,
+        "colors": 1645,
+        "greys": 100,
+        "spacing": 24,
+        "typefaces": 7,
+        "fontSizes": 20,
+        "radii": 26,
+        "shadows": 19,
+        "exactDuplicates": 22,
+        "inlineStyles": 122,
         "arbitrary": 0,
-        "components": 2153
+        "components": 2133
       }
     },
     {
       "repo": "langfuse/langfuse",
       "designSystem": "custom",
-      "codeFiles": 2694,
+      "codeFiles": 2758,
       "metrics": {
-        "colors": 125,
-        "greys": 3,
-        "spacing": 20,
+        "colors": 170,
+        "greys": 4,
+        "spacing": 28,
         "typefaces": 0,
-        "fontSizes": 18,
+        "fontSizes": 20,
         "radii": 10,
         "shadows": 0,
         "exactDuplicates": 7,
-        "inlineStyles": 40,
-        "arbitrary": 339,
-        "components": 1033
+        "inlineStyles": 42,
+        "arbitrary": 374,
+        "components": 1043
       }
     },
     {
       "repo": "teableio/teable",
       "designSystem": "custom",
-      "codeFiles": 4709,
+      "codeFiles": 4742,
       "metrics": {
-        "colors": 245,
+        "colors": 246,
         "greys": 34,
-        "spacing": 63,
+        "spacing": 64,
         "typefaces": 3,
         "fontSizes": 35,
         "radii": 24,
         "shadows": 10,
         "exactDuplicates": 45,
-        "inlineStyles": 36,
-        "arbitrary": 467,
-        "components": 1229
+        "inlineStyles": 37,
+        "arbitrary": 468,
+        "components": 1216
       }
     },
     {
@@ -882,27 +915,27 @@
       "designSystem": "custom",
       "codeFiles": 3086,
       "metrics": {
-        "colors": 399,
-        "greys": 30,
-        "spacing": 72,
+        "colors": 403,
+        "greys": 32,
+        "spacing": 78,
         "typefaces": 2,
         "fontSizes": 24,
         "radii": 21,
         "shadows": 4,
-        "exactDuplicates": 98,
+        "exactDuplicates": 95,
         "inlineStyles": 22,
         "arbitrary": 561,
-        "components": 1654
+        "components": 1619
       }
     },
     {
       "repo": "FlowiseAI/Flowise",
       "designSystem": "library",
-      "codeFiles": 1650,
+      "codeFiles": 1651,
       "metrics": {
-        "colors": 155,
-        "greys": 34,
-        "spacing": 46,
+        "colors": 169,
+        "greys": 35,
+        "spacing": 55,
         "typefaces": 3,
         "fontSizes": 18,
         "radii": 12,
@@ -916,37 +949,37 @@
     {
       "repo": "lobehub/lobe-chat",
       "designSystem": "library",
-      "codeFiles": 8013,
+      "codeFiles": 8299,
       "metrics": {
-        "colors": 271,
-        "greys": 34,
-        "spacing": 52,
+        "colors": 302,
+        "greys": 37,
+        "spacing": 61,
         "typefaces": 1,
         "fontSizes": 2,
         "radii": 1,
         "shadows": 0,
         "exactDuplicates": 187,
-        "inlineStyles": 2885,
+        "inlineStyles": 2914,
         "arbitrary": 0,
-        "components": 2536
+        "components": 2549
       }
     },
     {
       "repo": "danny-avila/LibreChat",
       "designSystem": "custom",
-      "codeFiles": 2394,
+      "codeFiles": 2424,
       "metrics": {
-        "colors": 172,
+        "colors": 174,
         "greys": 30,
-        "spacing": 67,
+        "spacing": 82,
         "typefaces": 5,
         "fontSizes": 39,
         "radii": 26,
         "shadows": 16,
         "exactDuplicates": 38,
-        "inlineStyles": 70,
-        "arbitrary": 488,
-        "components": 965
+        "inlineStyles": 71,
+        "arbitrary": 492,
+        "components": 961
       }
     },
     {
@@ -954,9 +987,9 @@
       "designSystem": "custom",
       "codeFiles": 1762,
       "metrics": {
-        "colors": 168,
+        "colors": 169,
         "greys": 31,
-        "spacing": 56,
+        "spacing": 59,
         "typefaces": 3,
         "fontSizes": 49,
         "radii": 20,
@@ -964,25 +997,25 @@
         "exactDuplicates": 103,
         "inlineStyles": 117,
         "arbitrary": 1751,
-        "components": 972
+        "components": 970
       }
     },
     {
       "repo": "triggerdotdev/trigger.dev",
       "designSystem": "custom",
-      "codeFiles": 2283,
+      "codeFiles": 2354,
       "metrics": {
         "colors": 137,
         "greys": 18,
-        "spacing": 28,
+        "spacing": 31,
         "typefaces": 0,
-        "fontSizes": 21,
+        "fontSizes": 22,
         "radii": 16,
         "shadows": 0,
         "exactDuplicates": 8,
-        "inlineStyles": 44,
-        "arbitrary": 228,
-        "components": 916
+        "inlineStyles": 51,
+        "arbitrary": 271,
+        "components": 936
       }
     },
     {
@@ -1005,7 +1038,7 @@
     }
   ],
   "referenceSystems": {
-    "builtAt": "2026-07-24T13:37:09.100Z",
+    "builtAt": "2026-08-01T17:38:26.401Z",
     "count": 10,
     "note": "Curated scoped scans of reputable public design systems. Not comparable head-to-head with product repos: see per-system notes.",
     "stats": {
@@ -1043,8 +1076,8 @@
         "values": [
           0,
           0,
-          0,
-          0,
+          1,
+          2,
           3,
           8,
           16,
@@ -1123,9 +1156,9 @@
           6,
           13,
           15,
-          18,
+          17,
           28,
-          168
+          170
         ],
         "median": 10
       },
@@ -1136,28 +1169,43 @@
           1,
           10,
           10,
-          11,
+          14,
           14,
           17,
           22,
           24
         ],
-        "median": 11
+        "median": 12
+      },
+      "arbitrary": {
+        "values": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          35
+        ],
+        "median": 0
       },
       "components": {
         "values": [
           0,
           170,
-          234,
-          247,
-          258,
-          326,
+          228,
+          243,
+          246,
+          314,
           331,
-          510,
+          508,
           711,
-          811
+          819
         ],
-        "median": 292
+        "median": 280
       }
     },
     "systems": [
@@ -1177,6 +1225,7 @@
           "shadows": 0,
           "exactDuplicates": 0,
           "inlineStyles": 1,
+          "arbitrary": 35,
           "components": 331
         }
       },
@@ -1196,7 +1245,8 @@
           "shadows": 35,
           "exactDuplicates": 13,
           "inlineStyles": 14,
-          "components": 234
+          "arbitrary": 0,
+          "components": 228
         }
       },
       {
@@ -1215,7 +1265,8 @@
           "shadows": 44,
           "exactDuplicates": 15,
           "inlineStyles": 10,
-          "components": 247
+          "arbitrary": 0,
+          "components": 243
         }
       },
       {
@@ -1223,7 +1274,7 @@
         "repo": "carbon-design-system/carbon",
         "scope": "packages/react/src",
         "note": "styling lives in separate Sass packages, so colour and radii counts are near zero",
-        "codeFiles": 515,
+        "codeFiles": 518,
         "metrics": {
           "colors": 16,
           "greys": 0,
@@ -1234,7 +1285,8 @@
           "shadows": 1,
           "exactDuplicates": 6,
           "inlineStyles": 17,
-          "components": 326
+          "arbitrary": 0,
+          "components": 314
         }
       },
       {
@@ -1242,7 +1294,7 @@
         "repo": "mui/material-ui",
         "scope": "packages/mui-material/src",
         "note": "colour count is the reference palette shipped as JS; CSS-in-JS theme values are invisible",
-        "codeFiles": 978,
+        "codeFiles": 979,
         "metrics": {
           "colors": 265,
           "greys": 19,
@@ -1253,6 +1305,7 @@
           "shadows": 0,
           "exactDuplicates": 2,
           "inlineStyles": 10,
+          "arbitrary": 0,
           "components": 170
         }
       },
@@ -1272,6 +1325,7 @@
           "shadows": 0,
           "exactDuplicates": 0,
           "inlineStyles": 1,
+          "arbitrary": 0,
           "components": 711
         }
       },
@@ -1289,9 +1343,10 @@
           "fontSizes": 5,
           "radii": 0,
           "shadows": 0,
-          "exactDuplicates": 18,
+          "exactDuplicates": 17,
           "inlineStyles": 24,
-          "components": 258
+          "arbitrary": 0,
+          "components": 246
         }
       },
       {
@@ -1310,6 +1365,7 @@
           "shadows": 22,
           "exactDuplicates": 0,
           "inlineStyles": 0,
+          "arbitrary": 0,
           "components": 0
         }
       },
@@ -1318,18 +1374,19 @@
         "repo": "adobe/react-spectrum",
         "scope": "packages/@react-spectrum",
         "note": "styling lives in separate spectrum-css packages; duplicate count is mostly re-export patterns",
-        "codeFiles": 827,
+        "codeFiles": 832,
         "metrics": {
           "colors": 2,
           "greys": 1,
-          "spacing": 0,
+          "spacing": 1,
           "typefaces": 5,
           "fontSizes": 0,
           "radii": 0,
           "shadows": 0,
-          "exactDuplicates": 168,
-          "inlineStyles": 11,
-          "components": 811
+          "exactDuplicates": 170,
+          "inlineStyles": 14,
+          "arbitrary": 0,
+          "components": 819
         }
       },
       {
@@ -1337,18 +1394,19 @@
         "repo": "cloudscape-design/components",
         "scope": "src",
         "note": "token-driven SCSS keeps colours low; shadow count comes from elevation and motion scss",
-        "codeFiles": 1219,
+        "codeFiles": 1224,
         "metrics": {
           "colors": 12,
           "greys": 2,
-          "spacing": 0,
+          "spacing": 2,
           "typefaces": 6,
           "fontSizes": 19,
           "radii": 4,
           "shadows": 54,
           "exactDuplicates": 28,
           "inlineStyles": 22,
-          "components": 510
+          "arbitrary": 0,
+          "components": 508
         }
       }
     ]

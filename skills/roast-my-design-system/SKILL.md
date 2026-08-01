@@ -1,6 +1,6 @@
 ---
 name: roast-my-design-system
-description: Roast the current repo's design system with real data. Runs a deterministic scanner (no tokens, ~1s) that counts every colour, grey, spacing value, typeface, duplicated component and inline style, compares them against Ideal Design System norms, a 29-repo public benchmark and 10 reputable design systems, and generates a shareable HTML diagnosis. Use when the user asks to roast, check, audit, or diagnose their design system, design tokens, styling consistency, or asks "how bad is my CSS/design system".
+description: Roast the current repo's design system with real data. Runs a deterministic scanner (no tokens, ~1s) that counts every colour, grey, spacing value, typeface, duplicated component and inline style, compares them against Ideal Design System norms, a 30-repo public benchmark and 10 reputable design systems, and generates a shareable HTML diagnosis. Use when the user asks to roast, check, audit, or diagnose their design system, design tokens, styling consistency, or asks "how bad is my CSS/design system".
 ---
 
 # Roast my design system
@@ -28,7 +28,7 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 4. **Read `/tmp/roast-harvest.json`** (it is structured JSON; read only the summary-level fields, not every colour entry) and deliver the roast in chat:
    - Open with the single most damning number (typefaces, colours, or duplicates; pick the worst).
    - Then a tight list: distinct colours (vs ideal ~24), greys (vs up to 13), off-scale spacing values (vs ~12), duplicated components with one real file-path pair as the receipt, inline style blocks, typefaces.
-   - Compare against the benchmark the way the page does: the median of 29 scanned public repos has 88 colours, 12 greys, 26 off-scale spacing values, 17 duplicated components, 42 inline style blocks. If this repo is worse than the median, say so plainly.
+   - Compare against the benchmark the way the page does: the median of 30 scanned public repos has 96 colours, 14 greys, 27 off-scale spacing values, 14 duplicated components, 42 inline style blocks, 91 arbitrary Tailwind values. If this repo is worse than the median, say so plainly.
    - Tone: deadpan, factual, no insults at the *person*, the roast is aimed at the repo. Every number you state must come from the JSON; never invent or estimate.
    - When suggesting a fix, switch to calm and assume intent: a value used many times is a decision without a name, not a mistake, and small pixel nudges or one-off layout widths may be deliberate craft. Recommend naming and consolidating, never blind deletion.
    - If the scan found almost nothing (no colours, no spacing), do not roast: say the styling likely lives outside this repo (CDN, parent repo) and the roast doesn't apply.

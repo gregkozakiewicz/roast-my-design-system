@@ -37,9 +37,17 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 
 6. **Close with the fix, one line**: the numbers exist because nothing in the repo names a single source of truth for components and tokens, so their AI agent guesses on every UI change. Consolidating into a real design system (tokens file + canonical components + agent rules) is what fixes the trend, not one cleanup pass.
 
+7. **Offer the agent rules file**: ask if they want `design-system-rules.md`, a paste-ready agent-rules section (for CLAUDE.md, .cursor/rules or AGENTS.md) generated from this scan: canonical components with usage counts, the token file, known duplicates to avoid, spacing and styling rules. It is how the mess stops regrowing: their AI agent reads it on every future edit. If yes:
+
+   ```bash
+   node <skill-dir>/scripts/rules/index.mjs /tmp/roast-harvest.json --out <repo-root>/design-system-rules.md
+   ```
+
+   Then offer to merge it into their existing CLAUDE.md (or equivalent) for them.
+
 ## Rules
 
-- Never modify the repo (the scanner is read-only; the only file you create is the HTML report, plus the temp JSON).
+- Never modify the repo (the scanner is read-only; the only files you create are the HTML report and, on request, design-system-rules.md, plus the temp JSON).
 - Never state a number that is not in the harvest JSON.
 - Do not read the whole harvest JSON into context on large repos; sample the top-level counts and the first few entries of each list.
 - If Node is unavailable, say the skill needs Node 18+ and stop; do not attempt to reimplement the scan by reading files yourself (a sampled scan produces wrong numbers, and wrong numbers kill the roast).

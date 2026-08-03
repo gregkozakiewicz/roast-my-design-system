@@ -7,7 +7,7 @@
 Run this skill on your codebase and get, in about a second:
 
 - **A health score you can defend in a meeting.** 0-100, deterministic, benchmarked against Ideal Design System norms, 30 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
-- **The receipts behind it.** Every colour, spacing value, typeface, duplicated component and inline style, with real file paths, in one self-contained HTML report you can open, Slack or email.
+- **The receipts behind it.** Every colour and its near-identical twin, every spacing value, typeface, duplicated or never-imported component, inline style and !important, with real file paths, in one self-contained HTML report you can open, Slack or email.
 - **The first fixes ranked by payoff.** A "Where to start" list derived from your own numbers: keep the report as the audit, or hand it to Claude as the punch list for the fix.
 - **Rules that stop the mess coming back.** A generated `design-system-rules.md` for your CLAUDE.md or .cursor/rules: canonical components, your token file, known duplicates to avoid, so your AI agent follows your system instead of guessing at it.
 

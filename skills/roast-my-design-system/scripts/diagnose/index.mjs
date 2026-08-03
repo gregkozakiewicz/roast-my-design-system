@@ -12,6 +12,7 @@ import { resolve, basename, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { rulesMarkdown } from '../rules/build.mjs';
+import { nearColorPairs } from '../lib/nearpairs.mjs';
 
 // The benchmark (Ideal-2026 norms + scanned-repo stats) ships next to the
 // code so the page works offline; degrade gracefully when absent.
@@ -34,7 +35,7 @@ const GK_MASK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 const GK_MARK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==';
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.5.1';
+const VERSION = '3.6.0';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -151,6 +152,22 @@ const greyStrays = greys.filter((c) => !c.isToken).length;
 const arbitrary = h.tokens.tailwind?.arbitrary ?? [];
 const arbitraryCount = arbitrary.reduce((sum, a) => sum + a.count, 0);
 
+// !important declarations: the cascade admitting defeat.
+const important = h.tokens.important ?? { count: 0, files: [] };
+
+const nearPairs = nearColorPairs(colors);
+
+// Components defined but never imported — scoped to the design-system
+// directory, where "nobody imports this" is meaningful. File-local
+// subcomponents elsewhere legitimately never get imported by name.
+const dsDirRe = h.profile?.uiDir
+  ? new RegExp(`^${h.profile.uiDir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`)
+  : /(^|\/)(packages\/ui|design-system|ui-kit)\//;
+const usedFiles = new Set(reusable.filter((c) => c.usageCount > 0).map((c) => c.file));
+const neverImported = reusable.filter((c) => !c.usageCount && dsDirRe.test(c.file)
+  && !/(^|\/)icons?\//.test(c.file)          // glyph sets are deliberately complete
+  && !usedFiles.has(c.file));                 // compound API: an adopted file's sub-exports are surface, not dead
+
 // Benchmark helpers: for a metric value, where does this repo sit among the
 // scanned fleet? ("more colours than 90% of scanned repos")
 function percentile(metric, value) {
@@ -204,6 +221,8 @@ if (effGreys > 13 * 1.25) candidates.push({ ratio: effGreys / 13, text: tokenLed
   ? `${greyStrays} hardcoded greys outside the token set`
   : `${greys.length} shades of grey doing the job of 13` });
 if (spacingTotal > 15) candidates.push({ ratio: spacingTotal / 12, text: `${spacingTotal} off-scale spacing values where a dozen would do` });
+if (nearPairs.length >= 3) candidates.push({ ratio: 1 + nearPairs.length / 6, text: `${nearPairs.length} colour pairs are nearly identical (${nearPairs[0].a.value} next to ${nearPairs[0].b.value}), copy-paste, not decisions` });
+if (important.count >= 10) candidates.push({ ratio: 1 + important.count / 30, text: `${n(important.count)} !important declarations, the cascade admitting defeat` });
 if (iconCollisions.length >= 5) candidates.push({ ratio: 1 + iconCollisions.length / 8, text: `two icon sets collide on ${iconCollisions.length} names` });
 if (hardDupes.length > 0) candidates.push({ ratio: 1 + hardDupes.length / 5, text: `${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once` });
 if (inline.count > 20) candidates.push({ ratio: inline.count / 20, text: `${n(inline.count)} inline style blocks bypassing every system` });
@@ -361,6 +380,9 @@ function paletteSection() {
     </div>
     <div class="usage-bar">${cells}${restCell}</div>
     ${ramp}
+    ${nearPairs.length ? `
+    <div class="receipts">${eyebrow(`${nearPairs.length} nearly identical pair${nearPairs.length === 1 ? '' : 's'} · copy-paste, not decisions`)}
+    <div class="chips-row">${nearPairs.slice(0, 8).map((pr) => `<span class="vchip" title="every channel within ${pr.d} of its twin"><i class="ndot" style="background:${esc(pr.a.value)}"></i>${esc(pr.a.value)} ×${pr.a.count} <b class="nsim">≈</b> <i class="ndot" style="background:${esc(pr.b.value)}"></i>${esc(pr.b.value)} ×${pr.b.count}</span>`).join('')}${nearPairs.length > 8 ? `<span class="vchip dim">+${nearPairs.length - 8} more</span>` : ''}</div></div>` : ''}
   </div>
 </section>`;
 }
@@ -457,20 +479,24 @@ function offendersSection() {
 }
 
 function inlineSection() {
-  if (inline.count < 5) return '';
+  if (inline.count < 5 && important.count < 5) return '';
   const max = Math.max(...inline.files.slice(0, 6).map((f) => f.count), 1);
-  return `<div class="glass pad half">
-    ${sectionHead(`${n(inline.count)} inline style blocks`, 'styling no system can see')}
-    <div class="fam-rows">${inline.files.slice(0, 6).map((f) => `
+  const importantRow = important.count ? `
+    <div class="receipts">${eyebrow(`${n(important.count)} !important declaration${important.count === 1 ? '' : 's'} · the cascade admitting defeat`)}
+    <div class="chips-row">${important.files.map((f) => `<span class="vchip bad" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('')}</div></div>` : '';
+  const blocks = inline.count >= 5 ? `<div class="fam-rows">${inline.files.slice(0, 6).map((f) => `
       <div class="mini-card col">
         <div class="mc-row">${fileLink(f.file)}<span class="mc-count">×${f.count}</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:${Math.round((f.count / max) * 100)}%"></div></div>
-      </div>`).join('')}</div></div>`;
+      </div>`).join('')}</div>` : '';
+  return `<div class="glass pad half">
+    ${sectionHead(inline.count >= 5 ? `${n(inline.count)} inline style blocks` : `${n(important.count)} !important declarations`, 'styling no system can see')}
+    ${blocks}${importantRow}</div>`;
 }
 
 function componentsSection() {
   const top = reusable.filter((c) => c.usageCount > 0).slice(0, 10);
-  if (!top.length) return '';
+  if (!top.length && neverImported.length < 2) return '';
   const rows = top.map((c) => `
     <tr><td class="mono strong">&lt;${esc(c.name)}&gt;</td>
     <td><span class="pill pill-mint">${c.usageCount}×</span></td>
@@ -478,7 +504,11 @@ function componentsSection() {
     <td>${c.propsHint?.named?.length ? c.propsHint.named.slice(0, 5).map((p) => `<span class="chip chip-xs">${esc(p)}</span>`).join(' ') : '<span class="dim">none</span>'}</td></tr>`).join('');
   return `<section class="glass pad">
     ${sectionHead('What you actually use', `${n(reusable.length)} components defined · top by adoption · the real system, buried in here`)}
-    <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+    ${top.length ? `<div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div>` : ''}
+    ${neverImported.length >= 2 ? `
+    <div class="receipts">${eyebrow(`${n(neverImported.length)} components defined but never imported · candidates for deletion, or the system nobody found`)}
+    <div class="chips-row">${neverImported.slice(0, 8).map((c) => `<span class="vchip" title="${esc(c.file)}">&lt;${esc(c.name)}&gt;</span>`).join('')}${neverImported.length > 8 ? `<span class="vchip dim">+${neverImported.length - 8} more</span>` : ''}</div>
+    <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>` : ''}</section>`;
 }
 
 // "Where to start" — at most three moves, every one derived from this repo's
@@ -830,6 +860,8 @@ const html = `<!doctype html>
   footer .brand { color:var(--accent); font-weight:700; text-decoration:none; }
   footer .brand:hover { text-decoration:underline; }
   footer .creds { display:flex; gap:16px; font:700 9.5px/1.6 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--dim2); }
+  .ndot { display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:4px; vertical-align:-1px; box-shadow:inset 0 0 0 1px var(--cell-ring); }
+  .nsim { color:var(--dim2); font-weight:400; padding:0 2px; }
   .gift-sec { margin-top:16px; }
   .gift-stage { position:relative; display:grid; place-items:center; min-height:120px; }
   .gift-stage.open { min-height:0; }

@@ -128,6 +128,8 @@ Yes, the median repo is already a mess. That's the point.
 
 ## License
 
-MIT
+MIT. The code is yours to fork, modify and redistribute; the copyright notice travels with it.
+
+**roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://pencilrebel.github.io/roast-my-design-system/brand.html).
 
 Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.7.0"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.7.0" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.

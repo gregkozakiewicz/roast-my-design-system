@@ -33,11 +33,13 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
    - When suggesting a fix, switch to calm and assume intent: a value used many times is a decision without a name, not a mistake, and small pixel nudges or one-off layout widths may be deliberate craft. Recommend naming and consolidating, never blind deletion.
    - If the scan found almost nothing (no colours, no spacing), do not roast: say the styling likely lives outside this repo (CDN, parent repo) and the roast doesn't apply.
 
-5. **Point them at the page**: tell the user `design-system-roast.html` was created at the repo root and is self-contained (openable directly, shareable as a file). Offer to open it.
+5. **For monorepos, name the split**: if the harvest JSON has a `packages` array with scored entries, say which package is cleanest and which is worst, with their scores. The pattern is usually that the shared UI package is disciplined and the app carries the mess; if that holds here, say so plainly, because it tells them where to look.
 
-6. **Close with the fix, one line**: the numbers exist because nothing in the repo names a single source of truth for components and tokens, so their AI agent guesses on every UI change. Consolidating into a real design system (tokens file + canonical components + agent rules) is what fixes the trend, not one cleanup pass.
+6. **Point them at the page**: tell the user `design-system-roast.html` was created at the repo root and is self-contained (openable directly, shareable as a file). Offer to open it.
 
-7. **Offer the agent rules file**: ask if they want `design-system-rules.md`, a paste-ready agent-rules section (for CLAUDE.md, .cursor/rules or AGENTS.md) generated from this scan: canonical components with usage counts, the token file, known duplicates to avoid, spacing and styling rules. It is how the mess stops regrowing: their AI agent reads it on every future edit. If yes:
+7. **Close with the fix, one line**: the numbers exist because nothing in the repo names a single source of truth for components and tokens, so their AI agent guesses on every UI change. Consolidating into a real design system (tokens file + canonical components + agent rules) is what fixes the trend, not one cleanup pass.
+
+8. **Offer the agent rules file**: ask if they want `design-system-rules.md`, a paste-ready agent-rules section (for CLAUDE.md, .cursor/rules or AGENTS.md) generated from this scan: canonical components with usage counts, the token file, known duplicates to avoid, spacing and styling rules. It is how the mess stops regrowing: their AI agent reads it on every future edit. If yes:
 
    ```bash
    node <skill-dir>/scripts/rules/index.mjs /tmp/roast-harvest.json --out <repo-root>/design-system-rules.md

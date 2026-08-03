@@ -36,7 +36,7 @@ const GK_MASK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 const GK_MARK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==';
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.8.0';
+const VERSION = '3.9.0';
 
 // Report identity. The scan id is a stable digest of this scan's shape, salted
 // with the report namespace, so the same repo scanned twice reads the same and
@@ -280,14 +280,16 @@ const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10, nearPairs: 2, imp
 // Absence rule also skipped for arbitrary values: zero brackets is discipline
 // (nine of ten reputable systems sit at 0, including Tailwind-native shadcn/ui).
 const NO_ABSENCE_RULE = new Set(['colors', 'greys', 'arbitrary']);
-function healthOf(metric, value) {
+function healthOf(metric, value, opts = {}) {
   const iv = ideal(metric);
   if (iv === null) return 'info';
   if (ZERO_IDEAL.has(metric)) {
     if (value === 0) return 'good';
     return value <= WARN_TOLERANCE[metric] ? 'warn' : 'bad';
   }
-  if (!NO_ABSENCE_RULE.has(metric) && value < Math.max(1, iv * 0.05)) return 'bad';
+  // "almost nothing found" reads as a missing design system for a whole repo,
+  // but a single package with no spacing values is just a small package.
+  if (!opts.noAbsence && !NO_ABSENCE_RULE.has(metric) && value < Math.max(1, iv * 0.05)) return 'bad';
   if (value <= iv) return 'good';
   const mv = median(metric);
   const warnCap = mv && mv > iv ? mv : iv * 1.5;
@@ -792,6 +794,61 @@ function whereToStartSection() {
       </div>`).join('')}</div></section>`;
 }
 
+// ---------- package by package ----------
+// One number for a monorepo hides which package is the problem. Each package
+// is judged on the same nine tiles, with usage counted repo-wide, so a shared
+// component another package imports is adopted rather than dead.
+const PKG_LABELS = {
+  colors: 'stray colours', greys: 'greys', spacing: 'off-scale spacing values',
+  exactDuplicates: 'duplicated components', inlineStyles: 'inline style blocks',
+  nearPairs: 'near-identical colour pairs', important: '!important declarations',
+  neverImported: 'components nobody imports', arbitrary: 'arbitrary bracket values',
+};
+function scorePackage(m) {
+  const tokenLed = m.colorTokens >= m.colorStrays && m.colorTokens > 0;
+  const vals = {
+    colors: tokenLed ? m.colorStrays : m.colors,
+    greys: tokenLed ? m.greyStrays : m.greys,
+    spacing: m.spacing,
+    exactDuplicates: m.exactDuplicates,
+    inlineStyles: m.inlineStyles,
+    nearPairs: m.nearPairs,
+    important: m.important,
+    neverImported: m.neverImported,
+    arbitrary: m.arbitrary,
+  };
+  const rows = Object.entries(vals).map(([metric, v]) => ({ metric, value: v, health: healthOf(metric, v, { noAbsence: true }) }));
+  const scored = rows.filter((r) => r.health in SCORE_OF);
+  if (!scored.length) return null;
+  const score = Math.round(scored.reduce((sum, r) => sum + SCORE_OF[r.health], 0) / scored.length);
+  // the worst finding: furthest past its ideal among the failing tiles
+  const over = (r) => { const iv = ideal(r.metric); return iv ? r.value / Math.max(iv, 1) : r.value; };
+  const worst = scored.filter((r) => r.health === 'bad').sort((a, b) => over(b) - over(a))[0]
+    ?? scored.filter((r) => r.health === 'warn').sort((a, b) => over(b) - over(a))[0];
+  return { score, worst };
+}
+function packagesSection() {
+  const pkgs = (h.packages ?? []).filter((p) => p.scored && p.metrics);
+  if (pkgs.length < 2) return '';
+  const rated = pkgs.map((p) => ({ ...p, ...scorePackage(p.metrics) })).filter((p) => p.score !== undefined && p.score !== null);
+  if (rated.length < 2) return '';
+  rated.sort((a, b) => a.score - b.score);
+  const shown = rated.slice(0, 10);
+  const band = (sc) => (sc >= 85 ? 'good' : sc >= 55 ? 'warn' : 'bad');
+  const skipped = (h.packages ?? []).length - rated.length;
+  const rows = shown.map((p) => `
+    <tr><td class="mono strong">${esc(p.dir)}</td>
+    <td><span class="pkg-score pkg-${band(p.score)}">${p.score}</span></td>
+    <td>${p.worst ? `${n(p.worst.value)} ${esc(PKG_LABELS[p.worst.metric] ?? p.worst.metric)}` : '<span class="dim">nothing over the line</span>'}</td>
+    <td class="dim">${n(p.codeFiles)} files</td></tr>`).join('');
+  return `<section class="glass pad">
+    ${sectionHead('Package by package', `${rated.length} package${rated.length === 1 ? '' : 's'} with enough UI to judge · the repo score above is the whole thing blended${skipped > 0 ? `, and ${skipped} package${skipped === 1 ? ' was' : 's were'} too small or too backend to score` : ''}`)}
+    <div class="tbl-wrap"><table><thead><tr><th>package</th><th>score</th><th>worst finding</th><th>size</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${rated.length > 10 ? `<div class="spec-more">and ${rated.length - 10} more</div>` : ''}
+    ${healthScore !== null && rated.length && Math.min(...rated.map((p) => p.score)) > healthScore
+      ? `<p class="sub" style="margin-top:12px">A repo scores below its own packages by arithmetic, not by accident: distinct values add up across packages, so the whole always carries more than any part. Read the package scores for where each team stands, and the repo score for what your agent sees when it looks at everything at once.</p>` : ''}</section>`;
+}
+
 function agentSection() {
   const have = agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)} · ${esc(c.tool ?? c.kind)}</span>`).join('');
   const msg = agentFiles.length
@@ -1031,6 +1088,11 @@ const html = `<!doctype html>
   footer .brand { color:var(--accent); font-weight:700; text-decoration:none; }
   footer .brand:hover { text-decoration:underline; }
   footer .creds { display:flex; gap:16px; font:700 9.5px/1.6 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--dim2); }
+  .pkg-score { display:inline-block; min-width:38px; text-align:center; font:700 12.5px/1 var(--sans);
+    padding:6px 8px; border-radius:8px; }
+  .pkg-good { background:var(--ok-soft); color:var(--ok); }
+  .pkg-warn { background:var(--amber-soft); color:var(--amber); }
+  .pkg-bad { background:var(--coral-soft); color:var(--coral); }
   .spec { margin-top:18px; }
   .spec-rows { display:grid; gap:2px; margin-top:8px; }
   .spec-type { display:flex; align-items:baseline; gap:16px; padding:5px 0; border-bottom:1px solid var(--line-soft); }
@@ -1126,6 +1188,8 @@ ${giftSection()}
 
 <div class="stats">${bigStats.map((s) => statTile(s)).join('')}</div>
 
+${packagesSection()}
+
 ${agentSection()}
 
 <section style="margin-top:16px">${paletteSection()}</section>
@@ -1202,6 +1266,10 @@ if (summaryPath) {
     noSystemLikely,
     verdict,
     tiles: bigStats.map((s) => ({ label: s.label, value: s.num, health: s.health })),
+    packages: (h.packages ?? []).filter((p) => p.scored && p.metrics)
+      .map((p) => ({ dir: p.dir, name: p.name, ...(scorePackage(p.metrics) ?? {}) }))
+      .filter((p) => p.score !== undefined)
+      .sort((a, b) => a.score - b.score),
     report: outPath,
   }, null, 2));
 }

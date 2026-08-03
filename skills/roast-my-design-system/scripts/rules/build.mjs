@@ -5,6 +5,7 @@
  * with a receipt from the scanned repo.
  */
 import { distinctTypefaces } from '../lib/typefaces.mjs';
+import { nearColorPairs } from './../lib/nearpairs.mjs';
 
 export function rulesMarkdown(h) {
 const repoName = h.profile?.name ?? 'this repo';
@@ -36,6 +37,8 @@ const repoName = h.profile?.name ?? 'this repo';
     } else if ((t.colors ?? []).length) {
       rule(`There is no token file yet. Until one exists, reuse the colours already in the codebase instead of introducing new ones (${t.colors.length} distinct colours are already in play).`);
     }
+    const near = nearColorPairs(t.colors ?? []);
+    if (near.length) rule(`Never eyeball a colour from memory: the scan found ${near.length} nearly identical pair${near.length === 1 ? '' : 's'} (like ${near[0].a.value} next to ${near[0].b.value}). Look the exact value up, or better, use its token.`);
     const ds = h.profile?.designSystem;
     if (ds?.kind && !['none', 'custom'].includes(ds.kind) && ds.confidence !== 'low') {
       rule(`This repo uses ${ds.name ?? ds.kind}${h.profile.uiDir ? `; its components live in \`${h.profile.uiDir}\`` : ''}. Prefer extending it over building parallel pieces.`);
@@ -84,7 +87,20 @@ const repoName = h.profile?.name ?? 'this repo';
     if (icons.length) rule(`Two icon sets collide on ${icons.length} name${icons.length === 1 ? '' : 's'}. Before adding any icon, check which set the surrounding file already imports and stay with it.`);
   }
   
-  // ---------- spacing ----------
+  // ---------- never-imported components ----------
+const dsDirRe = h.profile?.uiDir
+  ? new RegExp(`^${h.profile.uiDir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`)
+  : /(^|\/)(packages\/ui|design-system|ui-kit)\//;
+const usedFiles = new Set(reusable.filter((c) => c.usageCount > 0).map((c) => c.file));
+const neverImported = reusable.filter((c) => !c.usageCount && dsDirRe.test(c.file)
+  && !/(^|\/)icons?\//.test(c.file)          // glyph sets are deliberately complete
+  && !usedFiles.has(c.file));                 // compound API: an adopted file's sub-exports are surface, not dead
+if (neverImported.length >= 3) {
+  section('Components nobody imports');
+  rule(`${neverImported.length} components are defined but never imported (${neverImported.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…). Before writing any new component, check this list first; adopt one or flag it for deletion instead of adding another.`);
+}
+
+// ---------- spacing ----------
   const arbitrary = t.tailwind?.arbitrary ?? [];
   const arbCount = arbitrary.reduce((s, a) => s + a.count, 0);
   const offScale = (t.spacing ?? []).length;
@@ -106,6 +122,7 @@ const repoName = h.profile?.name ?? 'this repo';
   section('Styling discipline');
   rule(`Never write ${reusable.length ? '`style={{ ... }}`' : 'inline `style="..."` attributes'} for static values; styling belongs to classes and tokens where the system can see it.`);
   if ((t.inlineStyles?.count ?? 0) > 0) lines.push(`  (${t.inlineStyles.count} static inline block${t.inlineStyles.count === 1 ? '' : 's'} already exist; do not add to them.)`);
+  if ((t.important?.count ?? 0) >= 3) rule(`Never write !important; the scan found ${t.important.count} declaration${t.important.count === 1 ? '' : 's'} already. When a style does not apply, fix the selector or the source of the conflict instead of shouting over it.`);
   rule('Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.');
   
   lines.push('');

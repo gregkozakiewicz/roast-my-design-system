@@ -129,6 +129,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   const twArbitrary = new Tally();
   let inlineStyleCount = 0;
   const inlineStyleFiles = new Map();
+  // !important is the cascade admitting defeat; counted per style file.
+  const importantFiles = new Map();
 
   // Colours that appear in a CSS custom-property DEFINITION (--grey-100: #f5f5f5)
   // are deliberate tokens; everything else is a hardcoded stray. The diagnosis
@@ -137,6 +139,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   const tokenDefsPerFile = new Map();
 
   const scanCssText = (text, file) => {
+    const imp = (text.match(/!\s*important/gi) ?? []).length;
+    if (imp) importantFiles.set(file, (importantFiles.get(file) ?? 0) + imp);
     for (const m of text.matchAll(/--[\w-]+\s*:\s*([^;{}]+)[;}]/g)) {
       tokenDefsPerFile.set(file, (tokenDefsPerFile.get(file) ?? 0) + 1);
       for (const c of m[1].matchAll(HEX_RE)) tokenDefined.add(normalizeHex(c[0]));
@@ -302,6 +306,11 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       radii: twRadii.toJSON(),
       textSizes: twTextSizes.toJSON(),
       arbitrary: twArbitrary.toJSON(),
+    },
+    important: {
+      count: [...importantFiles.values()].reduce((a, b) => a + b, 0),
+      files: [...importantFiles.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
+        .map(([file, count]) => ({ file, count })),
     },
     inlineStyles: {
       count: inlineStyleCount,

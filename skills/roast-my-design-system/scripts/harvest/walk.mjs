@@ -29,8 +29,17 @@ const TEST_FILE_RE = /\.(test|spec|stories|story|cy)\.[cm]?[jt]sx?$/;
 const CODE_EXTS = new Set(['.tsx', '.jsx', '.ts', '.js', '.mjs', '.cjs']);
 const STYLE_EXTS = new Set(['.css', '.scss', '.sass', '.less']);
 
-/** Walk the repo, returning relative paths bucketed by role. Depth-capped. */
-export function walkRepo(root, maxDepth = 8) {
+/**
+ * Walk the repo, returning relative paths bucketed by role.
+ *
+ * Depth-capped as a guard against pathological trees, not as a scoping choice.
+ * The cap has to clear a monorepo's own overhead: two levels are spent reaching
+ * apps/web before the app's routes even begin, and a Next.js route can nest six
+ * deep on its own. At 8 that silently dropped 11-12% of the files in dub,
+ * twenty and formbricks. Measured across the fleet, file counts stop growing at
+ * 12; 14 leaves headroom. Single-package repos are unaffected either way.
+ */
+export function walkRepo(root, maxDepth = 14) {
   const files = { code: [], styles: [], other: [] };
   const recurse = (dir, depth) => {
     if (depth > maxDepth) return;

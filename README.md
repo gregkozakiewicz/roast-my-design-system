@@ -25,11 +25,11 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 
 The full report for vercel/ai-chatbot, top to bottom:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=3.9.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=3.10.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=3.9.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=3.10.0)
 
 ## What makes the numbers trustworthy
 
@@ -38,7 +38,7 @@ The same report in light mode (one file, built-in toggle):
 - **No network, no telemetry.** Everything runs locally. Nothing about your code leaves your machine.
 - **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality.
 - **Intent-aware counting (v3).** Runtime-computed inline styles, compound-component APIs and wrapper components are not crimes and are not counted as ones. Token-led repos are judged on their hardcoded strays, not their token architecture. Repeated arbitrary values are read as decisions without names, not drift.
-- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 30 public React repos (cal.com, excalidraw, outline, twenty, dub, langfuse…). Median: 96 colours, 14 greys, 14 duplicated components, 42 inline style blocks, 91 arbitrary Tailwind values.
+- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 30 public React repos (cal.com, excalidraw, outline, twenty, dub, langfuse…). Median: 96 colours, 14 greys, 14 duplicated components, 45 inline style blocks, 91 arbitrary Tailwind values.
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
 
 ## Install
@@ -119,9 +119,9 @@ Three real roasts of public repos, hosted as-is (the same self-contained HTML th
 | Typefaces | 2–3 | 2 | 1 |
 | Border radii | up to 10 | 12 | 2 |
 | Duplicated components | 0 | 14 | 10 |
-| Inline style blocks | 0 | 42 | 12 |
+| Inline style blocks | 0 | 45 | 12 |
 | Arbitrary Tailwind values | ~20 | 91 | 0 |
-| Near-identical colour pairs | 0 | 2 | 1 |
+| Near-identical colour pairs | 0 | 3 | 1 |
 | !important declarations | 0 | 5 | 3 |
 | Components never imported | 0 | 0 | 0 |
 
@@ -133,4 +133,4 @@ MIT. The code is yours to fork, modify and redistribute; the copyright notice tr
 
 **roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://pencilrebel.github.io/roast-my-design-system/brand.html).
 
-Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.9.0"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.9.0" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.
+Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.10.0"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.10.0" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.

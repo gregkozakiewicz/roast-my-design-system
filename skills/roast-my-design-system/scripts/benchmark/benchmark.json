@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-01T17:38:24.498Z",
+  "builtAt": "2026-08-03T16:33:32.652Z",
   "repoCount": 30,
   "ideal2026": {
     "colors": {
@@ -37,6 +37,18 @@
     "inlineStyles": {
       "value": 0,
       "note": "styling belongs to the system"
+    },
+    "nearPairs": {
+      "value": 0,
+      "note": "near-identical colours are copy-paste, not decisions"
+    },
+    "important": {
+      "value": 0,
+      "note": "!important is the cascade admitting defeat"
+    },
+    "neverImported": {
+      "value": 0,
+      "note": "a system component nobody imports is dead weight"
     },
     "arbitrary": {
       "value": 20,
@@ -104,7 +116,7 @@
         174,
         206,
         246,
-        302,
+        303,
         385,
         403,
         1645
@@ -112,7 +124,7 @@
       "p25": 38,
       "median": 96,
       "p75": 170,
-      "p90": 310
+      "p90": 311
     },
     "greys": {
       "values": [
@@ -373,7 +385,7 @@
         95,
         103,
         115,
-        187
+        189
       ],
       "p25": 1,
       "median": 14,
@@ -397,7 +409,7 @@
         23,
         37,
         41,
-        42,
+        43,
         46,
         47,
         51,
@@ -411,7 +423,7 @@
         122,
         173,
         1178,
-        2914
+        2923
       ],
       "p25": 8,
       "median": 42,
@@ -443,7 +455,7 @@
         234,
         271,
         321,
-        374,
+        380,
         407,
         468,
         470,
@@ -455,6 +467,120 @@
       "median": 91,
       "p75": 309,
       "p90": 472
+    },
+    "nearPairs": {
+      "values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        2,
+        9,
+        12,
+        13,
+        13,
+        15,
+        16,
+        23,
+        26,
+        30,
+        37,
+        47,
+        49,
+        70,
+        146
+      ],
+      "p25": 0,
+      "median": 2,
+      "p75": 21,
+      "p90": 47
+    },
+    "important": {
+      "values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        4,
+        5,
+        5,
+        6,
+        9,
+        9,
+        11,
+        12,
+        20,
+        35,
+        42,
+        42,
+        74,
+        83,
+        88,
+        161
+      ],
+      "p25": 0,
+      "median": 5,
+      "p75": 18,
+      "p90": 75
+    },
+    "neverImported": {
+      "values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        7,
+        10,
+        13,
+        22,
+        22,
+        26,
+        36,
+        39,
+        45,
+        94,
+        100
+      ],
+      "p25": 0,
+      "median": 0,
+      "p75": 20,
+      "p90": 40
     },
     "components": {
       "values": [
@@ -471,27 +597,27 @@
         342,
         350,
         417,
-        546,
-        629,
+        555,
+        637,
         777,
-        790,
-        834,
+        796,
+        836,
         936,
         940,
-        961,
+        962,
         970,
-        1043,
+        1052,
         1081,
         1216,
         1379,
         1414,
         1619,
-        2133,
-        2549
+        2134,
+        2566
       ],
       "p25": 233,
-      "median": 703,
-      "p75": 1025,
+      "median": 707,
+      "p75": 1032,
       "p90": 1435
     }
   },
@@ -511,6 +637,9 @@
         "exactDuplicates": 115,
         "inlineStyles": 79,
         "arbitrary": 321,
+        "nearPairs": 47,
+        "important": 161,
+        "neverImported": 39,
         "components": 1414
       }
     },
@@ -529,6 +658,9 @@
         "exactDuplicates": 3,
         "inlineStyles": 82,
         "arbitrary": 0,
+        "nearPairs": 49,
+        "important": 88,
+        "neverImported": 0,
         "components": 342
       }
     },
@@ -547,13 +679,16 @@
         "exactDuplicates": 4,
         "inlineStyles": 23,
         "arbitrary": 0,
+        "nearPairs": 37,
+        "important": 4,
+        "neverImported": 0,
         "components": 50
       }
     },
     {
       "repo": "outline/outline",
       "designSystem": "custom",
-      "codeFiles": 2100,
+      "codeFiles": 2122,
       "metrics": {
         "colors": 89,
         "greys": 15,
@@ -565,7 +700,10 @@
         "exactDuplicates": 23,
         "inlineStyles": 76,
         "arbitrary": 0,
-        "components": 629
+        "nearPairs": 1,
+        "important": 0,
+        "neverImported": 0,
+        "components": 637
       }
     },
     {
@@ -583,6 +721,9 @@
         "exactDuplicates": 2,
         "inlineStyles": 0,
         "arbitrary": 4,
+        "nearPairs": 0,
+        "important": 5,
+        "neverImported": 0,
         "components": 220
       }
     },
@@ -601,6 +742,9 @@
         "exactDuplicates": 0,
         "inlineStyles": 0,
         "arbitrary": 0,
+        "nearPairs": 0,
+        "important": 0,
+        "neverImported": 0,
         "components": 25
       }
     },
@@ -619,6 +763,9 @@
         "exactDuplicates": 0,
         "inlineStyles": 0,
         "arbitrary": 60,
+        "nearPairs": 0,
+        "important": 1,
+        "neverImported": 94,
         "components": 182
       }
     },
@@ -637,6 +784,9 @@
         "exactDuplicates": 0,
         "inlineStyles": 0,
         "arbitrary": 0,
+        "nearPairs": 0,
+        "important": 0,
+        "neverImported": 0,
         "components": 9
       }
     },
@@ -655,6 +805,9 @@
         "exactDuplicates": 1,
         "inlineStyles": 2,
         "arbitrary": 16,
+        "nearPairs": 0,
+        "important": 2,
+        "neverImported": 0,
         "components": 60
       }
     },
@@ -673,6 +826,9 @@
         "exactDuplicates": 1,
         "inlineStyles": 7,
         "arbitrary": 103,
+        "nearPairs": 0,
+        "important": 9,
+        "neverImported": 0,
         "components": 315
       }
     },
@@ -691,13 +847,16 @@
         "exactDuplicates": 1,
         "inlineStyles": 11,
         "arbitrary": 148,
+        "nearPairs": 0,
+        "important": 0,
+        "neverImported": 100,
         "components": 272
       }
     },
     {
       "repo": "documenso/documenso",
       "designSystem": "custom",
-      "codeFiles": 1906,
+      "codeFiles": 1912,
       "metrics": {
         "colors": 36,
         "greys": 13,
@@ -709,13 +868,16 @@
         "exactDuplicates": 17,
         "inlineStyles": 69,
         "arbitrary": 234,
-        "components": 790
+        "nearPairs": 15,
+        "important": 0,
+        "neverImported": 45,
+        "components": 796
       }
     },
     {
       "repo": "dubinc/dub",
       "designSystem": "custom",
-      "codeFiles": 3523,
+      "codeFiles": 3526,
       "metrics": {
         "colors": 102,
         "greys": 14,
@@ -727,6 +889,9 @@
         "exactDuplicates": 17,
         "inlineStyles": 47,
         "arbitrary": 470,
+        "nearPairs": 13,
+        "important": 1,
+        "neverImported": 22,
         "components": 1379
       }
     },
@@ -745,6 +910,9 @@
         "exactDuplicates": 59,
         "inlineStyles": 18,
         "arbitrary": 164,
+        "nearPairs": 13,
+        "important": 83,
+        "neverImported": 0,
         "components": 940
       }
     },
@@ -763,13 +931,16 @@
         "exactDuplicates": 92,
         "inlineStyles": 119,
         "arbitrary": 164,
+        "nearPairs": 0,
+        "important": 0,
+        "neverImported": 5,
         "components": 1081
       }
     },
     {
       "repo": "lukevella/rallly",
       "designSystem": "custom",
-      "codeFiles": 689,
+      "codeFiles": 692,
       "metrics": {
         "colors": 26,
         "greys": 4,
@@ -781,7 +952,10 @@
         "exactDuplicates": 10,
         "inlineStyles": 23,
         "arbitrary": 27,
-        "components": 546
+        "nearPairs": 2,
+        "important": 0,
+        "neverImported": 22,
+        "components": 555
       }
     },
     {
@@ -799,13 +973,16 @@
         "exactDuplicates": 20,
         "inlineStyles": 46,
         "arbitrary": 407,
+        "nearPairs": 0,
+        "important": 42,
+        "neverImported": 13,
         "components": 777
       }
     },
     {
       "repo": "elie222/inbox-zero",
       "designSystem": "custom",
-      "codeFiles": 1808,
+      "codeFiles": 1821,
       "metrics": {
         "colors": 154,
         "greys": 24,
@@ -817,7 +994,10 @@
         "exactDuplicates": 21,
         "inlineStyles": 5,
         "arbitrary": 125,
-        "components": 834
+        "nearPairs": 26,
+        "important": 6,
+        "neverImported": 0,
+        "components": 836
       }
     },
     {
@@ -835,6 +1015,9 @@
         "exactDuplicates": 7,
         "inlineStyles": 41,
         "arbitrary": 78,
+        "nearPairs": 0,
+        "important": 0,
+        "neverImported": 0,
         "components": 190
       }
     },
@@ -853,13 +1036,16 @@
         "exactDuplicates": 0,
         "inlineStyles": 173,
         "arbitrary": 1,
+        "nearPairs": 2,
+        "important": 5,
+        "neverImported": 0,
         "components": 417
       }
     },
     {
       "repo": "twentyhq/twenty",
       "designSystem": "library",
-      "codeFiles": 15125,
+      "codeFiles": 15132,
       "metrics": {
         "colors": 1645,
         "greys": 100,
@@ -871,13 +1057,16 @@
         "exactDuplicates": 22,
         "inlineStyles": 122,
         "arbitrary": 0,
-        "components": 2133
+        "nearPairs": 146,
+        "important": 9,
+        "neverImported": 0,
+        "components": 2134
       }
     },
     {
       "repo": "langfuse/langfuse",
       "designSystem": "custom",
-      "codeFiles": 2758,
+      "codeFiles": 2774,
       "metrics": {
         "colors": 170,
         "greys": 4,
@@ -887,9 +1076,12 @@
         "radii": 10,
         "shadows": 0,
         "exactDuplicates": 7,
-        "inlineStyles": 42,
-        "arbitrary": 374,
-        "components": 1043
+        "inlineStyles": 43,
+        "arbitrary": 380,
+        "nearPairs": 2,
+        "important": 12,
+        "neverImported": 10,
+        "components": 1052
       }
     },
     {
@@ -907,6 +1099,9 @@
         "exactDuplicates": 45,
         "inlineStyles": 37,
         "arbitrary": 468,
+        "nearPairs": 70,
+        "important": 42,
+        "neverImported": 0,
         "components": 1216
       }
     },
@@ -925,6 +1120,9 @@
         "exactDuplicates": 95,
         "inlineStyles": 22,
         "arbitrary": 561,
+        "nearPairs": 16,
+        "important": 74,
+        "neverImported": 7,
         "components": 1619
       }
     },
@@ -943,31 +1141,37 @@
         "exactDuplicates": 19,
         "inlineStyles": 1178,
         "arbitrary": 0,
+        "nearPairs": 23,
+        "important": 35,
+        "neverImported": 36,
         "components": 350
       }
     },
     {
       "repo": "lobehub/lobe-chat",
       "designSystem": "library",
-      "codeFiles": 8299,
+      "codeFiles": 8344,
       "metrics": {
-        "colors": 302,
+        "colors": 303,
         "greys": 37,
         "spacing": 61,
         "typefaces": 1,
         "fontSizes": 2,
         "radii": 1,
         "shadows": 0,
-        "exactDuplicates": 187,
-        "inlineStyles": 2914,
+        "exactDuplicates": 189,
+        "inlineStyles": 2923,
         "arbitrary": 0,
-        "components": 2549
+        "nearPairs": 9,
+        "important": 0,
+        "neverImported": 0,
+        "components": 2566
       }
     },
     {
       "repo": "danny-avila/LibreChat",
       "designSystem": "custom",
-      "codeFiles": 2424,
+      "codeFiles": 2430,
       "metrics": {
         "colors": 174,
         "greys": 30,
@@ -979,7 +1183,10 @@
         "exactDuplicates": 38,
         "inlineStyles": 71,
         "arbitrary": 492,
-        "components": 961
+        "nearPairs": 30,
+        "important": 20,
+        "neverImported": 0,
+        "components": 962
       }
     },
     {
@@ -997,13 +1204,16 @@
         "exactDuplicates": 103,
         "inlineStyles": 117,
         "arbitrary": 1751,
+        "nearPairs": 12,
+        "important": 0,
+        "neverImported": 26,
         "components": 970
       }
     },
     {
       "repo": "triggerdotdev/trigger.dev",
       "designSystem": "custom",
-      "codeFiles": 2354,
+      "codeFiles": 2366,
       "metrics": {
         "colors": 137,
         "greys": 18,
@@ -1015,6 +1225,9 @@
         "exactDuplicates": 8,
         "inlineStyles": 51,
         "arbitrary": 271,
+        "nearPairs": 1,
+        "important": 11,
+        "neverImported": 0,
         "components": 936
       }
     },
@@ -1033,12 +1246,15 @@
         "exactDuplicates": 0,
         "inlineStyles": 0,
         "arbitrary": 26,
+        "nearPairs": 0,
+        "important": 0,
+        "neverImported": 0,
         "components": 36
       }
     }
   ],
   "referenceSystems": {
-    "builtAt": "2026-08-01T17:38:26.401Z",
+    "builtAt": "2026-08-03T16:33:34.617Z",
     "count": 10,
     "note": "Curated scoped scans of reputable public design systems. Not comparable head-to-head with product repos: see per-system notes.",
     "stats": {
@@ -1192,6 +1408,51 @@
         ],
         "median": 0
       },
+      "nearPairs": {
+        "values": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          5,
+          33,
+          50
+        ],
+        "median": 1
+      },
+      "important": {
+        "values": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          4,
+          4,
+          30,
+          33,
+          61
+        ],
+        "median": 3
+      },
+      "neverImported": {
+        "values": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "median": 0
+      },
       "components": {
         "values": [
           0,
@@ -1226,6 +1487,9 @@
           "exactDuplicates": 0,
           "inlineStyles": 1,
           "arbitrary": 35,
+          "nearPairs": 0,
+          "important": 0,
+          "neverImported": 0,
           "components": 331
         }
       },
@@ -1246,6 +1510,9 @@
           "exactDuplicates": 13,
           "inlineStyles": 14,
           "arbitrary": 0,
+          "nearPairs": 5,
+          "important": 33,
+          "neverImported": 0,
           "components": 228
         }
       },
@@ -1266,6 +1533,9 @@
           "exactDuplicates": 15,
           "inlineStyles": 10,
           "arbitrary": 0,
+          "nearPairs": 0,
+          "important": 30,
+          "neverImported": 0,
           "components": 243
         }
       },
@@ -1286,6 +1556,9 @@
           "exactDuplicates": 6,
           "inlineStyles": 17,
           "arbitrary": 0,
+          "nearPairs": 1,
+          "important": 4,
+          "neverImported": 0,
           "components": 314
         }
       },
@@ -1306,6 +1579,9 @@
           "exactDuplicates": 2,
           "inlineStyles": 10,
           "arbitrary": 0,
+          "nearPairs": 50,
+          "important": 0,
+          "neverImported": 0,
           "components": 170
         }
       },
@@ -1326,6 +1602,9 @@
           "exactDuplicates": 0,
           "inlineStyles": 1,
           "arbitrary": 0,
+          "nearPairs": 1,
+          "important": 0,
+          "neverImported": 0,
           "components": 711
         }
       },
@@ -1346,6 +1625,9 @@
           "exactDuplicates": 17,
           "inlineStyles": 24,
           "arbitrary": 0,
+          "nearPairs": 1,
+          "important": 1,
+          "neverImported": 0,
           "components": 246
         }
       },
@@ -1366,6 +1648,9 @@
           "exactDuplicates": 0,
           "inlineStyles": 0,
           "arbitrary": 0,
+          "nearPairs": 33,
+          "important": 61,
+          "neverImported": 0,
           "components": 0
         }
       },
@@ -1386,6 +1671,9 @@
           "exactDuplicates": 170,
           "inlineStyles": 14,
           "arbitrary": 0,
+          "nearPairs": 0,
+          "important": 1,
+          "neverImported": 0,
           "components": 819
         }
       },
@@ -1406,6 +1694,9 @@
           "exactDuplicates": 28,
           "inlineStyles": 22,
           "arbitrary": 0,
+          "nearPairs": 0,
+          "important": 4,
+          "neverImported": 0,
           "components": 508
         }
       }

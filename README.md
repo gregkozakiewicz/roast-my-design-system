@@ -24,11 +24,11 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 
 The full report for vercel/ai-chatbot, top to bottom:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=3.6.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=3.7.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=3.6.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=3.7.0)
 
 ## What makes the numbers trustworthy
 
@@ -120,6 +120,9 @@ Three real roasts of public repos, hosted as-is (the same self-contained HTML th
 | Duplicated components | 0 | 14 | 10 |
 | Inline style blocks | 0 | 42 | 12 |
 | Arbitrary Tailwind values | ~20 | 91 | 0 |
+| Near-identical colour pairs | 0 | 2 | 1 |
+| !important declarations | 0 | 5 | 3 |
+| Components never imported | 0 | 0 | 0 |
 
 Yes, the median repo is already a mess. That's the point.
 
@@ -127,4 +130,4 @@ Yes, the median repo is already a mess. That's the point.
 
 MIT
 
-Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.6.0"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.6.0" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.
+Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.7.0"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.7.0" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.

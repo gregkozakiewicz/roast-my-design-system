@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand and attribution · roast-my-design-system</title>
+<meta name="description" content="How to use the roast-my-design-system name, mark and code. The software is MIT licensed; the name and logo are not.">
+<style>
+  :root { --bg:#020617; --card:rgba(15,23,42,.6); --line:rgba(51,65,85,.7); --text:#f1f5f9; --dim:#94a3b8; --dim2:#64748b; --mint:#2dd4bf;
+    --glow1:rgba(45,212,191,.08); --glow2:rgba(56,189,248,.06);
+    --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace; }
+  html[data-theme="light"] { --bg:#eeecfb; --card:rgba(255,255,255,.6); --line:rgba(15,15,26,.1); --text:#0f0f1a; --dim:#6b6b85; --dim2:#9494ad;
+    --mint:#5a44f0; --glow1:#d8d1f7; --glow2:#e8e3fb; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { color:var(--text); font:16px/1.6 'Manrope',ui-sans-serif,system-ui,sans-serif; background:var(--bg); }
+  body::before { content:''; position:fixed; inset:0; z-index:-1; background:
+    radial-gradient(1200px 600px at 10% -10%, var(--glow1) 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 10%, var(--glow2) 0%, transparent 55%), var(--bg); }
+  .theme-toggle { position:fixed; top:18px; right:18px; width:40px; height:40px; border-radius:99px; border:1px solid var(--line);
+    background:var(--card); display:grid; place-items:center; cursor:pointer; color:var(--dim); }
+  .theme-toggle:hover { color:var(--text); }
+  .theme-toggle svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .theme-toggle .moon { display:none; }
+  html[data-theme="light"] .theme-toggle .moon { display:block; }
+  html[data-theme="light"] .theme-toggle .sun { display:none; }
+  main { max-width:640px; margin:0 auto; padding:56px 24px 64px; }
+  .kicker { font:700 10.5px/1 sans-serif; letter-spacing:.16em; text-transform:uppercase; color:var(--mint); }
+  h1 { font:700 30px/1.2 'Sora','Manrope',sans-serif; letter-spacing:-.02em; margin:10px 0 12px; }
+  h2 { font:600 17px/1.3 'Sora','Manrope',sans-serif; margin:34px 0 8px; }
+  p { color:var(--dim); font-size:15px; margin-bottom:12px; }
+  p b, li b { color:var(--text); }
+  ul { list-style:none; margin:10px 0 12px; }
+  li { position:relative; padding-left:22px; margin-top:9px; color:var(--dim); font-size:14.5px; }
+  li::before { content:''; position:absolute; left:2px; top:8px; width:7px; height:7px; border-radius:99px; background:var(--mint); }
+  li.no::before { background:var(--dim2); }
+  a { color:var(--mint); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  code { font-family:var(--mono); font-size:13px; }
+  footer { margin-top:36px; border-top:1px solid var(--line); padding-top:18px; font-size:12.5px; color:var(--dim2); }
+  footer a { font-weight:700; }
+</style></head><body>
+<button class="theme-toggle" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
+  <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
+  <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+</button>
+<script>try{var t=localStorage.getItem('roast-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<main>
+<div class="kicker">roast-my-design-system</div>
+<h1>Brand and attribution</h1>
+<p>The software is free and open. The name and the mark are not part of that grant. This page says plainly what you may do with each, so nobody has to guess.</p>
+
+<h2>The code</h2>
+<p><b>roast-my-design-system is MIT licensed.</b> You may use it commercially, fork it, modify it, embed it in your own tooling and redistribute it, for free, forever. The one condition MIT sets is the one that matters here: <b>the copyright notice and licence text must travel with the code</b>, including in modified copies.</p>
+
+<h2>The name and the mark</h2>
+<p><b>roast-my-design-system</b>&trade; and the GK mark are trademarks of Greg Kozakiewicz, in use publicly since July 2026. A licence to the code is not a licence to the brand.</p>
+<ul>
+  <li><b>Fine, no permission needed:</b> saying your project is "built on roast-my-design-system", "a fork of roast-my-design-system", or "compatible with roast-my-design-system"; linking here; quoting the reports it generates.</li>
+  <li class="no"><b>Not fine:</b> publishing a fork, service or paid product <b>under this name</b> or a confusingly similar one; using the GK mark as your own logo; implying this project endorses, maintains or is affiliated with yours.</li>
+</ul>
+<p>If you fork it, give it your own name. That is better for you too: your users will find your docs instead of mine.</p>
+
+<h2>Attribution in generated reports</h2>
+<p>Every report the tool produces carries a footer crediting the project and its author, and every report carries an identifier that ties it to the version and scan that produced it. Removing that attribution from redistributed copies goes against the licence you received the code under.</p>
+
+<h2>Provenance</h2>
+<p>The canonical sources are the ones to trust: <a href="https://github.com/pencilrebel/roast-my-design-system">github.com/pencilrebel/roast-my-design-system</a> and <a href="https://www.npmjs.com/package/roast-my-design-system">the npm package</a>, which is published from that repository through a signed, automated pipeline. Every release carries a provenance attestation you can verify. Anything distributed under this name from anywhere else is not mine.</p>
+
+<h2>Questions, or permission</h2>
+<p>If you want to do something this page does not cover, ask. Most reasonable requests get a yes: <a href="mailto:pencilrebel@gmail.com">pencilrebel@gmail.com</a>.</p>
+
+<footer><a href="./">roast-my-design-system</a>&trade; · code MIT licensed · name and mark &copy; Greg Kozakiewicz · <a href="https://gregkozakiewicz.com">gregkozakiewicz.com</a></footer>
+</main></body></html>

@@ -17,7 +17,7 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
    node <skill-dir>/scripts/harvest/index.mjs <repo-root> --out /tmp/roast-harvest.json
    ```
 
-   `<skill-dir>` is this skill's own directory. The scan takes under 2 seconds even on 5,000-file monorepos. It reads the repo; it never writes to it.
+   `<skill-dir>` is this skill's own directory. The scan takes about a second on a normal repo and a few seconds on a large monorepo. It reads the repo; it never writes to it.
 
 3. **Generate the diagnosis page**:
 

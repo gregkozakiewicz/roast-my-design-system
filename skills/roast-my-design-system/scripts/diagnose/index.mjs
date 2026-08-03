@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { rulesMarkdown } from '../rules/build.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
+import { neverImportedComponents } from '../lib/neverimported.mjs';
 
 // The benchmark (Ideal-2026 norms + scanned-repo stats) ships next to the
 // code so the page works offline; degrade gracefully when absent.
@@ -35,7 +36,7 @@ const GK_MASK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 const GK_MARK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==';
 
 // Shown in the report footer; keep in step with plugin.json when releasing.
-const VERSION = '3.6.0';
+const VERSION = '3.7.0';
 
 // Two shipped skins, same layout: 'dark' (navy glass, mint accent) and
 // 'light' (lilac wash, white glass, violet accent). --theme picks one.
@@ -157,16 +158,7 @@ const important = h.tokens.important ?? { count: 0, files: [] };
 
 const nearPairs = nearColorPairs(colors);
 
-// Components defined but never imported — scoped to the design-system
-// directory, where "nobody imports this" is meaningful. File-local
-// subcomponents elsewhere legitimately never get imported by name.
-const dsDirRe = h.profile?.uiDir
-  ? new RegExp(`^${h.profile.uiDir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`)
-  : /(^|\/)(packages\/ui|design-system|ui-kit)\//;
-const usedFiles = new Set(reusable.filter((c) => c.usageCount > 0).map((c) => c.file));
-const neverImported = reusable.filter((c) => !c.usageCount && dsDirRe.test(c.file)
-  && !/(^|\/)icons?\//.test(c.file)          // glyph sets are deliberately complete
-  && !usedFiles.has(c.file));                 // compound API: an adopted file's sub-exports are surface, not dead
+const neverImported = neverImportedComponents(h.components, h.profile?.uiDir);
 
 // Benchmark helpers: for a metric value, where does this repo sit among the
 // scanned fleet? ("more colours than 90% of scanned repos")
@@ -254,8 +246,8 @@ if (bench && findings.length) {
 // Where the median is missing or sits at/below ideal, warn caps at 1.5x ideal.
 // Zero-ideal metrics (duplicates, inline styles): 0 is good; a small tolerance
 // is warn; beyond that bad.
-const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles']);
-const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10 };
+const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles', 'nearPairs', 'important', 'neverImported']);
+const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10, nearPairs: 2, important: 5, neverImported: 2 };
 // Absence rule also skipped for arbitrary values: zero brackets is discipline
 // (nine of ten reputable systems sit at 0, including Tailwind-native shadcn/ui).
 const NO_ABSENCE_RULE = new Set(['colors', 'greys', 'arbitrary']);
@@ -308,6 +300,9 @@ const bigStats = [
   tile(spacingTotal, 'off-scale spacing values', 'spacing', 'a dozen deliberate exceptions'),
   tile(hardDupes.length, 'duplicated components', 'exactDuplicates', 'should be 0'),
   tile(inline.count, 'inline style blocks', 'inlineStyles', 'invisible to any system'),
+  tile(nearPairs.length, 'near-identical colour pairs', 'nearPairs', 'copy-paste, not decisions'),
+  tile(important.count, '!important declarations', 'important', 'the cascade admitting defeat'),
+  tile(neverImported.length, 'components never imported', 'neverImported', 'the system nobody found'),
   tile(arbitraryCount, 'arbitrary bracket values', 'arbitrary', 'a handful of deliberate exceptions'),
 ];
 

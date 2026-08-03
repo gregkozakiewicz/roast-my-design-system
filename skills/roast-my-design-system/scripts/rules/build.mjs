@@ -6,6 +6,7 @@
  */
 import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { nearColorPairs } from './../lib/nearpairs.mjs';
+import { neverImportedComponents } from '../lib/neverimported.mjs';
 
 export function rulesMarkdown(h) {
 const repoName = h.profile?.name ?? 'this repo';
@@ -88,13 +89,7 @@ const repoName = h.profile?.name ?? 'this repo';
   }
   
   // ---------- never-imported components ----------
-const dsDirRe = h.profile?.uiDir
-  ? new RegExp(`^${h.profile.uiDir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`)
-  : /(^|\/)(packages\/ui|design-system|ui-kit)\//;
-const usedFiles = new Set(reusable.filter((c) => c.usageCount > 0).map((c) => c.file));
-const neverImported = reusable.filter((c) => !c.usageCount && dsDirRe.test(c.file)
-  && !/(^|\/)icons?\//.test(c.file)          // glyph sets are deliberately complete
-  && !usedFiles.has(c.file));                 // compound API: an adopted file's sub-exports are surface, not dead
+const neverImported = neverImportedComponents(h.components, h.profile?.uiDir);
 if (neverImported.length >= 3) {
   section('Components nobody imports');
   rule(`${neverImported.length} components are defined but never imported (${neverImported.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…). Before writing any new component, check this list first; adopt one or flag it for deletion instead of adding another.`);

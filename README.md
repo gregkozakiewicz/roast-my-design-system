@@ -7,6 +7,7 @@
 Run this skill on your codebase and get, in about a second:
 
 - **A health score you can defend in a meeting.** 0-100, deterministic, benchmarked against Ideal Design System norms, 30 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
+- **Per-package scores for monorepos.** One blended number hides which package is the problem: `packages/ui` scores 80 while `apps/web` scores 40, and now you can see it.
 - **The receipts behind it.** Every colour and its near-identical twin, every spacing value, typeface, duplicated or never-imported component, inline style and !important, with real file paths, in one self-contained HTML report you can open, Slack or email.
 - **The first fixes ranked by payoff.** A "Where to start" list derived from your own numbers: keep the report as the audit, or hand it to Claude as the punch list for the fix.
 - **Rules that stop the mess coming back.** A generated `design-system-rules.md` for your CLAUDE.md or .cursor/rules: canonical components, your token file, known duplicates to avoid, so your AI agent follows your system instead of guessing at it.
@@ -24,15 +25,15 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 
 The full report for vercel/ai-chatbot, top to bottom:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=3.8.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, three-yardstick tiles, palette forensics, spacing receipts, typography, offenders, duplicates, and the where-to-start close](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=3.9.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=3.8.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=3.9.0)
 
 ## What makes the numbers trustworthy
 
-- **Deterministic scanner, not AI sampling.** A zero-dependency Node script reads *every* file (a 5,000-file monorepo takes ~1.5s) and returns the same numbers every run. Claude narrates; it never counts.
+- **Deterministic scanner, not AI sampling.** A zero-dependency Node script reads *every* file (about a second on a normal repo, a few on a large monorepo) and returns the same numbers every run. Claude narrates; it never counts.
 - **Read-only.** Nothing in your repo is modified. The only outputs are a temp JSON and the HTML report.
 - **No network, no telemetry.** Everything runs locally. Nothing about your code leaves your machine.
 - **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality.
@@ -132,4 +133,4 @@ MIT. The code is yours to fork, modify and redistribute; the copyright notice tr
 
 **roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://pencilrebel.github.io/roast-my-design-system/brand.html).
 
-Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.8.0"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.8.0" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.
+Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.9.0"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.9.0" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.

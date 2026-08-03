@@ -14,6 +14,9 @@ import { harvestComponents } from './components.mjs';
 import { harvestTokens } from './tokens.mjs';
 import { findDuplicates } from './duplicates.mjs';
 import { harvestContext } from './context.mjs';
+import { resolveWorkspaces } from '../lib/workspaces.mjs';
+import { nearColorPairs } from '../lib/nearpairs.mjs';
+import { neverImportedComponents } from '../lib/neverimported.mjs';
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -35,6 +38,70 @@ const tokens = harvestTokens(target, files.styles, files.code);
 const duplicates = findDuplicates(components, profile.uiDir, target);
 const context = harvestContext(target);
 
+// ---------- per-package pass (monorepos) ----------
+// Styling is measured inside each package, but usage is counted repo-wide: a
+// component another package imports is adopted, not dead. Files are already
+// walked, so this re-reads each package's own files once, not the whole repo
+// per package. Packages with too little UI to judge are listed, never scored.
+const workspaces = resolveWorkspaces(target);
+const packages = [];
+if (workspaces.length > 1) {
+  const inDir = (f, dir) => f === dir || f.startsWith(`${dir}/`);
+  // deepest-first so apps/web/sub is attributed to itself, not to apps/web
+  const byDepth = [...workspaces].sort((a, b) => b.dir.split('/').length - a.dir.split('/').length);
+  const claimed = new Map();
+  const claim = (f) => byDepth.find((w) => inDir(f, w.dir))?.dir ?? null;
+  for (const f of files.code) { const d = claim(f); if (d) (claimed.get(d) ?? claimed.set(d, { code: [], styles: [] }).get(d)).code.push(f); }
+  for (const f of files.styles) { const d = claim(f); if (d) (claimed.get(d) ?? claimed.set(d, { code: [], styles: [] }).get(d)).styles.push(f); }
+
+  // Only packages that actually contain UI are worth reading twice: a backend
+  // or config package has no styling to judge, and scanning it would cost time
+  // to produce a meaningless perfect score. Biggest UI packages first, capped,
+  // so a 100-package monorepo cannot blow the scan budget.
+  const UI_RE = /\.(tsx|jsx|vue|svelte)$/;
+  const uiCount = (w) => {
+    const own = claimed.get(w.dir);
+    return own ? own.code.filter((f) => UI_RE.test(f)).length + own.styles.length : 0;
+  };
+  const candidates = workspaces
+    .map((w) => ({ w, ui: uiCount(w) }))
+    .sort((a, b) => b.ui - a.ui);
+  const scanning = new Set(candidates.filter((c) => c.ui >= 8).slice(0, 30).map((c) => c.w.dir));
+
+  for (const w of workspaces) {
+    const own = claimed.get(w.dir);
+    if (!own) continue;
+    const codeCount = own.code.length, styleCount = own.styles.length;
+    const entry = { name: w.name, dir: w.dir, codeFiles: codeCount, styleFiles: styleCount, scored: false };
+    if (!scanning.has(w.dir)) { packages.push(entry); continue; }
+    const t = harvestTokens(target, own.styles, own.code);
+    const comps = components.filter((c) => inDir(c.file, w.dir));
+    const dupes = duplicates.exactDuplicates.filter((d) => !d.wrapped
+      && d.files.every((f) => inDir(typeof f === 'string' ? f : f.file, w.dir)));
+    const colorTokens = t.colors.filter((c) => c.isToken).length;
+    const signal = t.colors.length + t.spacing.length + t.inlineStyles.count
+      + (t.tailwind.colors.length + t.tailwind.spacing.length);
+    if (signal < 5) { packages.push(entry); continue; }   // nothing to judge, so no verdict
+    entry.scored = true;
+    entry.metrics = {
+      colors: t.colors.length,
+      colorTokens,
+      colorStrays: t.colors.length - colorTokens,
+      greys: t.greyCount,
+      greyStrays: t.colors.filter((c) => !c.isToken && c.value.startsWith('#')).length,
+      spacing: t.spacing.length + t.tailwind.spacing.filter((v) => v.value.startsWith('[')).length,
+      exactDuplicates: dupes.length,
+      inlineStyles: t.inlineStyles.count,
+      nearPairs: nearColorPairs(t.colors).length,
+      important: t.important?.count ?? 0,
+      neverImported: neverImportedComponents(comps, null).length,
+      arbitrary: (t.tailwind.arbitrary ?? []).reduce((sum, a) => sum + a.count, 0),
+      components: comps.filter((c) => !c.isPage).length,
+    };
+    packages.push(entry);
+  }
+}
+
 const harvest = {
   repo: target,
   harvestedAt: new Date().toISOString(),
@@ -49,6 +116,7 @@ const harvest = {
   tokens,
   duplicates,
   context,
+  packages,
 };
 harvest.tookMs = Date.now() - t0;
 

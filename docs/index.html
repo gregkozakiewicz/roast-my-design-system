@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>roast-my-design-system · Your design system, measured. Score, receipts, fixes and agent rules</title>
-<meta name="description" content="Roast your repo's design system with real data. Free via npx or as a Claude Code + Codex skill: a health score, the receipts behind it, the first fixes ranked by payoff, and the agent rules file that stops the mess coming back. Live example reports inside.">
+<meta name="description" content="Roast your repo's design system with real data. Free via npx or as a Claude Code + Codex skill: a health score, package-by-package for monorepos, the receipts behind it, the first fixes ranked by payoff, and the agent rules file that stops the mess coming back. Live example reports inside.">
 <style>
   :root { --bg:#020617; --card:rgba(15,23,42,.6); --line:rgba(51,65,85,.7); --text:#f1f5f9; --dim:#94a3b8; --dim2:#64748b; --mint:#2dd4bf;
     --glow1:rgba(45,212,191,.08); --glow2:rgba(56,189,248,.06);
@@ -57,9 +57,9 @@
 <h1>Your design system, measured.</h1>
 <p class="lead">Free, <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a> and as a Claude Code + Codex skill. A deterministic scanner reads your repo and returns four things:</p>
 <ul class="lead-list">
-<li><b>A health score you can defend in a meeting.</b> 0-100, benchmarked against Ideal Design System norms, 30 public repos and 10 reputable design systems.</li>
-<li><b>The receipts behind it.</b> Every colour and its near-identical twin, every spacing value, duplicated or never-imported component, inline style and !important, with real file paths.</li>
-<li><b>The first fixes ranked by payoff.</b> A Where to start list derived from your own numbers.</li>
+<li><b>A health score you can defend in a meeting.</b> 0-100, benchmarked against Ideal Design System norms, 30 public repos and 10 reputable design systems. Monorepos are scored package by package, so the disciplined UI library and the messy app stop hiding behind one blended number.</li>
+<li><b>The receipts behind it.</b> Every colour and its near-identical twin, every spacing value, duplicated or never-imported component, inline style and !important, with real file paths. The values are rendered, not just counted: your type scale at real sizes, your radii as real corners.</li>
+<li><b>The first fixes ranked by payoff.</b> A Where to start list derived from your own numbers, with what each move is worth and where the score lands if you do them all: three tweaks, 55 becomes 85.</li>
 <li><b>Rules that stop the mess coming back.</b> A generated design-system-rules.md for your CLAUDE.md or .cursor/rules, so your AI agent follows your system instead of guessing at it.</li>
 </ul>
 <p class="lead-close">Read only, no network, one shareable HTML report.</p>

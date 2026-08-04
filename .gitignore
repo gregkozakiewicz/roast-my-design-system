@@ -5,3 +5,7 @@ node_modules/
 .agents/
 .claude/
 skills-lock.json
+
+# Scan output from running the tool on this repo
+design-system-roast.html
+design-system-rules.md

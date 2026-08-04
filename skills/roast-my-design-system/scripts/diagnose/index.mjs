@@ -908,6 +908,8 @@ const html = `<!doctype html>
   .score { text-align:right; }
   .score .eyebrow { color:var(--accent); }
   .score .val { font:700 44px/1.1 var(--disp); letter-spacing:-.02em; }
+  .score.muted .val { opacity:.35; }
+  .score.muted .note { font-size:12px; color:var(--dim); margin-top:2px; }
   .score .val .slash { color:var(--accent); }
   .score .val .of { font-size:26px; color:var(--dim); font-weight:600; }
 
@@ -1169,7 +1171,7 @@ const html = `<!doctype html>
       <h1>Design System Diagnosis</h1>
       <div class="meta"><span class="mono">${esc(repoName)}</span> · scanned ${esc((h.harvestedAt ?? '').slice(0, 10))}</div>
     </div>
-    ${healthScore !== null ? `<div class="score">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div></div>` : ''}
+    ${healthScore !== null ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note below</div>' : ''}</div>` : ''}
   </div>
   <div class="chips">${stack.map((s) => `<span class="chip">${esc(s)}</span>`).join('')}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>
   ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output).</span></div>` : ''}

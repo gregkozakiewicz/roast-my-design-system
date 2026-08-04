@@ -25,7 +25,14 @@ const repoName = h.profile?.name ?? 'this repo';
   lines.push('     Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:');
   lines.push('     npx roast-my-design-system --rules -->');
   lines.push('');
-  lines.push('Follow these rules when writing or editing UI in this repo. Every rule below was derived from a scan of this codebase, with real paths and usage counts.');
+  // Mirror of the report's "no design system" banner: with almost no colour or
+  // spacing signal there is nothing to derive receipts from, so the preamble
+  // must not claim any. Keep the two universal defaults, labelled as defaults.
+  const spacingSignal = (t.spacing ?? []).length + (t.tailwind?.spacing ?? []).filter((v) => v.value.startsWith('[')).length;
+  const noSystemLikely = (t.colors ?? []).length === 0 || ((t.colors ?? []).length < 3 && spacingSignal === 0);
+  lines.push(noSystemLikely
+    ? 'The scan found too little styling in this repo to derive repo-specific rules; there is most likely no design system in here yet. The rules below are universal defaults, not findings. Rescan once real UI lands and they will be rebuilt from receipts.'
+    : 'Follow these rules when writing or editing UI in this repo. Every rule below was derived from a scan of this codebase, with real paths and usage counts.');
   
   // ---------- tokens ----------
   const strays = (t.colors ?? []).filter((c) => !c.isToken);

@@ -250,7 +250,9 @@ if (agentFiles.length === 0) candidates.push({ ratio: 1.3, text: `no agent rules
 const findings = candidates.sort((a, b) => b.ratio - a.ratio).map((c) => c.text);
 
 let verdict = findings.length === 0
-  ? 'This repo is in good shape. The gap is documentation: your agent still can\'t see the system.'
+  ? (agentFiles.length > 0
+    ? 'This repo is in good shape, and your agent has rules to read. Keep them in step with the code.'
+    : 'This repo is in good shape. The gap is documentation: your agent still can\'t see the system.')
   : findings.slice(0, 3).join('. ') + '.';
 if (bench && findings.length) {
   const core = [['colors', tokenLed ? colorStrays : colors.length], ['greys', tokenLed ? greyStrays : greys.length],
@@ -266,28 +268,24 @@ if (bench && findings.length) {
 //   good  = at or under the ideal          → green checkmark (draws in)
 //   warn  = over the ideal but better than the 27-repo median: "over the
 //           target, better than the average repo" → amber circle (pulses)
-//   bad   = worse than the median (and the median is already a mess), or
-//           basically absent (<5% of ideal)  → coral cross (shakes)
-// The absence rule is skipped for colours and greys: a low count there is
-// discipline, not a missing design system (a site with 0 pure greys is fine).
+//   bad   = worse than the median (and the median is already a mess)
+//           → coral cross (shakes)
 // Where the median is missing or sits at/below ideal, warn caps at 1.5x ideal.
 // Zero-ideal metrics (duplicates, inline styles): 0 is good; a small tolerance
 // is warn; beyond that bad.
+// There used to be an absence rule here (basically nothing found = bad, on
+// the theory that an empty count means no design system). The noSystemLikely
+// guard now owns that judgement at report level, and for a repo with a real
+// system a zero is discipline, not absence — all spacing on tokens scored red.
 const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles', 'nearPairs', 'important', 'neverImported']);
 const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10, nearPairs: 2, important: 5, neverImported: 2 };
-// Absence rule also skipped for arbitrary values: zero brackets is discipline
-// (nine of ten reputable systems sit at 0, including Tailwind-native shadcn/ui).
-const NO_ABSENCE_RULE = new Set(['colors', 'greys', 'arbitrary']);
-function healthOf(metric, value, opts = {}) {
+function healthOf(metric, value) {
   const iv = ideal(metric);
   if (iv === null) return 'info';
   if (ZERO_IDEAL.has(metric)) {
     if (value === 0) return 'good';
     return value <= WARN_TOLERANCE[metric] ? 'warn' : 'bad';
   }
-  // "almost nothing found" reads as a missing design system for a whole repo,
-  // but a single package with no spacing values is just a small package.
-  if (!opts.noAbsence && !NO_ABSENCE_RULE.has(metric) && value < Math.max(1, iv * 0.05)) return 'bad';
   if (value <= iv) return 'good';
   const mv = median(metric);
   const warnCap = mv && mv > iv ? mv : iv * 1.5;
@@ -815,7 +813,7 @@ function scorePackage(m) {
     neverImported: m.neverImported,
     arbitrary: m.arbitrary,
   };
-  const rows = Object.entries(vals).map(([metric, v]) => ({ metric, value: v, health: healthOf(metric, v, { noAbsence: true }) }));
+  const rows = Object.entries(vals).map(([metric, v]) => ({ metric, value: v, health: healthOf(metric, v) }));
   const scored = rows.filter((r) => r.health in SCORE_OF);
   if (!scored.length) return null;
   const score = Math.round(scored.reduce((sum, r) => sum + SCORE_OF[r.health], 0) / scored.length);

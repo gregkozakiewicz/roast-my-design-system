@@ -81,6 +81,9 @@ if (workspaces.length > 1) {
     const colorTokens = t.colors.filter((c) => c.isToken).length;
     const signal = t.colors.length + t.spacing.length + t.inlineStyles.count
       + (t.tailwind.colors.length + t.tailwind.spacing.length);
+    // kept even when unscored: the report names packages with real components
+    // but no raw styling instead of hiding them
+    entry.uiComponents = comps.filter((c) => !c.isPage).length;
     if (signal < 5) { packages.push(entry); continue; }   // nothing to judge, so no verdict
     entry.scored = true;
     entry.metrics = {

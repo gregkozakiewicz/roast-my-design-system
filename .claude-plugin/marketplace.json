@@ -9,7 +9,7 @@
     {
       "name": "roast-my-design-system",
       "description": "Roast your repo's design system with real data: a health score, the receipts, and the first fixes ranked by payoff. Deterministic scan, 29-repo benchmark, 10 reputable systems, shareable light/dark HTML report.",
-      "version": "3.11.1",
+      "version": "3.12.0",
       "author": {
         "name": "Greg Kozakiewicz",
         "url": "https://github.com/pencilrebel"

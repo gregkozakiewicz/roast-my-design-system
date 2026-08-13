@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-08-03T22:23:05.232Z",
-  "repoCount": 30,
+  "builtAt": "2026-08-13T19:20:29.083Z",
+  "repoCount": 34,
   "ideal2026": {
     "colors": {
       "value": 24,
@@ -97,34 +97,38 @@
         3,
         26,
         36,
-        36,
+        38,
         42,
-        48,
+        47,
         50,
         61,
         69,
         87,
         89,
-        103,
+        104,
         112,
-        137,
-        145,
-        154,
+        147,
         169,
         169,
-        170,
-        174,
-        206,
+        172,
+        182,
+        184,
+        184,
+        208,
+        220,
         246,
-        303,
         385,
         403,
-        1649
+        458,
+        481,
+        765,
+        1253,
+        1653
       ],
-      "p25": 38,
-      "median": 96,
-      "p75": 170,
-      "p90": 311
+      "p25": 43,
+      "median": 130,
+      "p75": 217,
+      "p90": 474
     },
     "greys": {
       "values": [
@@ -143,26 +147,30 @@
         9,
         9,
         13,
-        14,
+        15,
         15,
         18,
-        18,
-        24,
         30,
         31,
         32,
+        32,
         34,
         35,
-        37,
+        44,
         44,
         48,
+        48,
         77,
-        100
+        91,
+        97,
+        100,
+        103,
+        104
       ],
       "p25": 4,
-      "median": 14,
-      "p75": 32,
-      "p90": 44
+      "median": 17,
+      "p75": 44,
+      "p90": 95
     },
     "spacing": {
       "values": [
@@ -176,31 +184,35 @@
         9,
         10,
         11,
-        15,
+        14,
         18,
         22,
         24,
         25,
-        28,
         31,
-        34,
-        37,
+        32,
+        36,
+        42,
         50,
         52,
+        54,
         55,
-        58,
         59,
-        61,
+        59,
+        62,
+        63,
         70,
+        73,
         78,
-        82,
         84,
-        121
+        113,
+        121,
+        233
       ],
-      "p25": 9,
-      "median": 27,
-      "p75": 57,
-      "p90": 78
+      "p25": 10,
+      "median": 34,
+      "p75": 61,
+      "p90": 82
     },
     "typefaces": {
       "values": [
@@ -228,17 +240,21 @@
         3,
         3,
         3,
+        3,
         4,
         5,
         5,
         6,
-        7,
-        9
+        6,
+        9,
+        11,
+        13,
+        18
       ],
       "p25": 1,
-      "median": 2,
-      "p75": 3,
-      "p90": 5
+      "median": 3,
+      "p75": 4,
+      "p90": 8
     },
     "fontSizes": {
       "values": [
@@ -246,7 +262,7 @@
         0,
         2,
         2,
-        4,
+        5,
         5,
         7,
         7,
@@ -261,22 +277,26 @@
         20,
         20,
         22,
-        22,
+        24,
+        24,
         24,
         27,
         27,
         28,
         33,
+        33,
         35,
         39,
         39,
+        44,
         49,
-        61
+        61,
+        77
       ],
-      "p25": 8,
-      "median": 16,
-      "p75": 27,
-      "p90": 39
+      "p25": 9,
+      "median": 20,
+      "p75": 32,
+      "p90": 43
     },
     "radii": {
       "values": [
@@ -294,27 +314,31 @@
         10,
         11,
         11,
+        11,
         12,
         12,
-        12,
+        13,
         14,
-        16,
+        17,
         19,
         20,
-        20,
         21,
+        21,
+        24,
+        25,
         25,
         25,
         25,
         26,
-        26,
-        30,
+        31,
+        37,
+        42,
         62
       ],
       "p25": 8,
-      "median": 12,
-      "p75": 21,
-      "p90": 26
+      "median": 13,
+      "p75": 25,
+      "p90": 29
     },
     "shadows": {
       "values": [
@@ -332,9 +356,9 @@
         0,
         0,
         0,
-        0,
         1,
         1,
+        2,
         2,
         2,
         2,
@@ -343,16 +367,20 @@
         5,
         5,
         6,
+        7,
         10,
         10,
+        15,
         16,
         19,
-        29
+        33,
+        35,
+        60
       ],
       "p25": 0,
-      "median": 1,
-      "p75": 5,
-      "p90": 11
+      "median": 2,
+      "p75": 7,
+      "p90": 18
     },
     "exactDuplicates": {
       "values": [
@@ -368,29 +396,33 @@
         3,
         4,
         7,
-        7,
+        8,
         8,
         10,
-        17,
+        16,
         19,
         20,
         21,
         23,
         23,
-        30,
         38,
+        39,
         61,
         65,
-        92,
+        91,
         99,
         103,
+        114,
         115,
-        208
+        119,
+        127,
+        208,
+        290
       ],
-      "p25": 1,
-      "median": 14,
-      "p75": 36,
-      "p90": 99
+      "p25": 2,
+      "median": 20,
+      "p75": 85,
+      "p90": 118
     },
     "inlineStyles": {
       "values": [
@@ -403,32 +435,36 @@
         5,
         7,
         11,
-        20,
+        22,
         23,
         23,
         26,
         41,
         43,
         46,
-        48,
+        47,
         51,
         57,
-        69,
-        71,
-        76,
+        70,
+        74,
+        75,
         79,
-        82,
+        83,
         117,
         119,
-        168,
-        173,
+        167,
+        194,
+        203,
+        216,
+        261,
+        697,
         1178,
-        3033
+        3170
       ],
-      "p25": 8,
-      "median": 45,
-      "p75": 78,
-      "p90": 169
+      "p25": 14,
+      "median": 49,
+      "p75": 119,
+      "p90": 247
     },
     "arbitrary": {
       "values": [
@@ -440,33 +476,37 @@
         0,
         0,
         0,
-        1,
+        0,
+        0,
+        2,
         4,
         16,
         26,
         28,
+        51,
         60,
-        78,
+        80,
         103,
-        125,
+        129,
         148,
         175,
         196,
-        234,
-        271,
+        253,
+        291,
         321,
-        380,
+        384,
         407,
-        492,
+        489,
         574,
         621,
         642,
-        1753
+        1753,
+        1847
       ],
       "p25": 0,
-      "median": 91,
-      "p75": 309,
-      "p90": 579
+      "median": 70,
+      "p75": 314,
+      "p90": 607
     },
     "nearPairs": {
       "values": [
@@ -486,25 +526,29 @@
         2,
         2,
         4,
-        9,
         12,
         13,
         14,
         15,
         16,
         23,
-        26,
-        30,
+        31,
         37,
+        42,
+        43,
         47,
-        49,
+        47,
+        53,
         70,
-        152
+        93,
+        144,
+        181,
+        210
       ],
       "p25": 0,
-      "median": 3,
-      "p75": 21,
-      "p90": 47
+      "median": 13,
+      "p75": 43,
+      "p90": 86
     },
     "important": {
       "values": [
@@ -524,25 +568,29 @@
         2,
         4,
         5,
-        5,
         6,
+        8,
         9,
-        9,
-        11,
+        10,
+        10,
         12,
-        20,
+        21,
+        25,
         35,
         42,
         42,
+        72,
         74,
         83,
-        88,
+        90,
+        98,
+        123,
         161
       ],
       "p25": 0,
-      "median": 5,
-      "p75": 18,
-      "p90": 75
+      "median": 7,
+      "p75": 40,
+      "p90": 88
     },
     "neverImported": {
       "values": [
@@ -564,6 +612,8 @@
         0,
         0,
         0,
+        0,
+        0,
         5,
         7,
         10,
@@ -571,16 +621,18 @@
         13,
         16,
         26,
+        34,
         36,
         39,
         45,
+        51,
         94,
         100
       ],
       "p25": 0,
       "median": 0,
-      "p75": 13,
-      "p90": 40
+      "p75": 15,
+      "p90": 43
     },
     "components": {
       "values": [
@@ -591,41 +643,45 @@
         60,
         182,
         190,
-        220,
+        219,
         272,
         315,
-        342,
+        344,
         350,
-        417,
-        606,
-        637,
-        777,
-        796,
-        836,
-        936,
-        962,
+        446,
+        603,
+        647,
+        775,
+        808,
+        860,
         970,
-        1046,
-        1052,
+        983,
+        1006,
+        1049,
+        1075,
         1081,
+        1344,
         1414,
         1456,
-        1551,
-        1708,
-        2530,
-        2669
+        1555,
+        1709,
+        2603,
+        2760,
+        2768,
+        3511,
+        4039
       ],
-      "p25": 233,
-      "median": 707,
-      "p75": 1051,
-      "p90": 1567
+      "p25": 283,
+      "median": 834,
+      "p75": 1397,
+      "p90": 2713
     }
   },
   "repos": [
     {
       "repo": "calcom/cal.com",
       "designSystem": "custom",
-      "codeFiles": 4389,
+      "codeFiles": 4392,
       "metrics": {
         "colors": 385,
         "greys": 77,
@@ -646,22 +702,22 @@
     {
       "repo": "excalidraw/excalidraw",
       "designSystem": "custom",
-      "codeFiles": 502,
+      "codeFiles": 506,
       "metrics": {
-        "colors": 206,
+        "colors": 208,
         "greys": 44,
         "spacing": 84,
         "typefaces": 3,
         "fontSizes": 33,
-        "radii": 30,
-        "shadows": 29,
+        "radii": 31,
+        "shadows": 35,
         "exactDuplicates": 3,
-        "inlineStyles": 82,
+        "inlineStyles": 83,
         "arbitrary": 0,
-        "nearPairs": 49,
-        "important": 88,
+        "nearPairs": 42,
+        "important": 90,
         "neverImported": 0,
-        "components": 342
+        "components": 344
       }
     },
     {
@@ -688,28 +744,28 @@
     {
       "repo": "outline/outline",
       "designSystem": "custom",
-      "codeFiles": 2122,
+      "codeFiles": 2137,
       "metrics": {
         "colors": 89,
         "greys": 15,
-        "spacing": 15,
+        "spacing": 14,
         "typefaces": 0,
         "fontSizes": 0,
         "radii": 0,
         "shadows": 0,
         "exactDuplicates": 23,
-        "inlineStyles": 76,
+        "inlineStyles": 75,
         "arbitrary": 0,
         "nearPairs": 1,
         "important": 0,
         "neverImported": 0,
-        "components": 637
+        "components": 647
       }
     },
     {
       "repo": "nodejs/nodejs.org",
       "designSystem": "custom",
-      "codeFiles": 384,
+      "codeFiles": 383,
       "metrics": {
         "colors": 69,
         "greys": 5,
@@ -724,7 +780,7 @@
         "nearPairs": 0,
         "important": 5,
         "neverImported": 0,
-        "components": 220
+        "components": 219
       }
     },
     {
@@ -856,51 +912,51 @@
     {
       "repo": "documenso/documenso",
       "designSystem": "custom",
-      "codeFiles": 1912,
+      "codeFiles": 1923,
       "metrics": {
-        "colors": 36,
+        "colors": 38,
         "greys": 13,
-        "spacing": 34,
+        "spacing": 36,
         "typefaces": 6,
-        "fontSizes": 22,
-        "radii": 12,
+        "fontSizes": 24,
+        "radii": 13,
         "shadows": 0,
-        "exactDuplicates": 17,
-        "inlineStyles": 69,
-        "arbitrary": 234,
+        "exactDuplicates": 16,
+        "inlineStyles": 74,
+        "arbitrary": 253,
         "nearPairs": 15,
         "important": 0,
         "neverImported": 45,
-        "components": 796
+        "components": 808
       }
     },
     {
       "repo": "dubinc/dub",
       "designSystem": "custom",
-      "codeFiles": 3974,
+      "codeFiles": 3999,
       "metrics": {
-        "colors": 103,
-        "greys": 14,
-        "spacing": 58,
+        "colors": 104,
+        "greys": 15,
+        "spacing": 59,
         "typefaces": 3,
         "fontSizes": 39,
         "radii": 25,
         "shadows": 0,
         "exactDuplicates": 23,
-        "inlineStyles": 48,
+        "inlineStyles": 47,
         "arbitrary": 621,
         "nearPairs": 14,
         "important": 1,
         "neverImported": 16,
-        "components": 1551
+        "components": 1555
       }
     },
     {
       "repo": "formbricks/formbricks",
       "designSystem": "custom",
-      "codeFiles": 2336,
+      "codeFiles": 2352,
       "metrics": {
-        "colors": 145,
+        "colors": 147,
         "greys": 18,
         "spacing": 52,
         "typefaces": 2,
@@ -908,18 +964,18 @@
         "radii": 25,
         "shadows": 6,
         "exactDuplicates": 61,
-        "inlineStyles": 20,
+        "inlineStyles": 22,
         "arbitrary": 196,
         "nearPairs": 13,
         "important": 83,
         "neverImported": 0,
-        "components": 1046
+        "components": 1049
       }
     },
     {
       "repo": "openstatusHQ/openstatus",
       "designSystem": "custom",
-      "codeFiles": 1948,
+      "codeFiles": 1967,
       "metrics": {
         "colors": 87,
         "greys": 4,
@@ -928,7 +984,7 @@
         "fontSizes": 14,
         "radii": 12,
         "shadows": 0,
-        "exactDuplicates": 92,
+        "exactDuplicates": 91,
         "inlineStyles": 119,
         "arbitrary": 175,
         "nearPairs": 4,
@@ -940,7 +996,7 @@
     {
       "repo": "lukevella/rallly",
       "designSystem": "custom",
-      "codeFiles": 734,
+      "codeFiles": 742,
       "metrics": {
         "colors": 26,
         "greys": 4,
@@ -955,13 +1011,13 @@
         "nearPairs": 2,
         "important": 0,
         "neverImported": 11,
-        "components": 606
+        "components": 603
       }
     },
     {
       "repo": "mfts/papermark",
       "designSystem": "shadcn",
-      "codeFiles": 1365,
+      "codeFiles": 1366,
       "metrics": {
         "colors": 42,
         "greys": 9,
@@ -976,34 +1032,34 @@
         "nearPairs": 0,
         "important": 42,
         "neverImported": 13,
-        "components": 777
+        "components": 775
       }
     },
     {
       "repo": "elie222/inbox-zero",
       "designSystem": "custom",
-      "codeFiles": 1822,
+      "codeFiles": 1896,
       "metrics": {
-        "colors": 154,
-        "greys": 24,
+        "colors": 184,
+        "greys": 32,
         "spacing": 22,
         "typefaces": 3,
         "fontSizes": 27,
-        "radii": 20,
+        "radii": 21,
         "shadows": 0,
         "exactDuplicates": 21,
         "inlineStyles": 5,
-        "arbitrary": 125,
-        "nearPairs": 26,
+        "arbitrary": 129,
+        "nearPairs": 47,
         "important": 6,
         "neverImported": 0,
-        "components": 836
+        "components": 860
       }
     },
     {
       "repo": "linkwarden/linkwarden",
       "designSystem": "custom",
-      "codeFiles": 462,
+      "codeFiles": 466,
       "metrics": {
         "colors": 50,
         "greys": 9,
@@ -1014,7 +1070,7 @@
         "shadows": 0,
         "exactDuplicates": 7,
         "inlineStyles": 41,
-        "arbitrary": 78,
+        "arbitrary": 80,
         "nearPairs": 0,
         "important": 0,
         "neverImported": 0,
@@ -1024,64 +1080,64 @@
     {
       "repo": "umami-software/umami",
       "designSystem": "custom",
-      "codeFiles": 892,
+      "codeFiles": 954,
       "metrics": {
-        "colors": 48,
+        "colors": 47,
         "greys": 8,
-        "spacing": 37,
+        "spacing": 42,
         "typefaces": 1,
-        "fontSizes": 4,
-        "radii": 11,
+        "fontSizes": 5,
+        "radii": 10,
         "shadows": 2,
         "exactDuplicates": 0,
-        "inlineStyles": 173,
-        "arbitrary": 1,
+        "inlineStyles": 203,
+        "arbitrary": 2,
         "nearPairs": 2,
-        "important": 5,
+        "important": 8,
         "neverImported": 0,
-        "components": 417
+        "components": 446
       }
     },
     {
       "repo": "twentyhq/twenty",
       "designSystem": "library",
-      "codeFiles": 17131,
+      "codeFiles": 18675,
       "metrics": {
-        "colors": 1649,
-        "greys": 100,
+        "colors": 1653,
+        "greys": 103,
         "spacing": 24,
-        "typefaces": 7,
+        "typefaces": 6,
         "fontSizes": 20,
         "radii": 26,
         "shadows": 19,
-        "exactDuplicates": 30,
-        "inlineStyles": 168,
+        "exactDuplicates": 39,
+        "inlineStyles": 167,
         "arbitrary": 0,
-        "nearPairs": 152,
-        "important": 9,
+        "nearPairs": 181,
+        "important": 10,
         "neverImported": 0,
-        "components": 2530
+        "components": 2603
       }
     },
     {
       "repo": "langfuse/langfuse",
       "designSystem": "custom",
-      "codeFiles": 2780,
+      "codeFiles": 2884,
       "metrics": {
-        "colors": 170,
+        "colors": 172,
         "greys": 4,
-        "spacing": 28,
+        "spacing": 31,
         "typefaces": 0,
         "fontSizes": 20,
-        "radii": 10,
+        "radii": 11,
         "shadows": 0,
-        "exactDuplicates": 7,
+        "exactDuplicates": 8,
         "inlineStyles": 43,
-        "arbitrary": 380,
+        "arbitrary": 384,
         "nearPairs": 2,
         "important": 12,
         "neverImported": 10,
-        "components": 1052
+        "components": 1075
       }
     },
     {
@@ -1108,7 +1164,7 @@
     {
       "repo": "makeplane/plane",
       "designSystem": "custom",
-      "codeFiles": 3271,
+      "codeFiles": 3273,
       "metrics": {
         "colors": 403,
         "greys": 32,
@@ -1123,13 +1179,13 @@
         "nearPairs": 16,
         "important": 74,
         "neverImported": 7,
-        "components": 1708
+        "components": 1709
       }
     },
     {
       "repo": "FlowiseAI/Flowise",
       "designSystem": "library",
-      "codeFiles": 1651,
+      "codeFiles": 1655,
       "metrics": {
         "colors": 169,
         "greys": 35,
@@ -1150,43 +1206,43 @@
     {
       "repo": "lobehub/lobe-chat",
       "designSystem": "library",
-      "codeFiles": 8458,
+      "codeFiles": 8857,
       "metrics": {
-        "colors": 303,
-        "greys": 37,
-        "spacing": 61,
+        "colors": 458,
+        "greys": 91,
+        "spacing": 62,
         "typefaces": 1,
         "fontSizes": 2,
         "radii": 1,
         "shadows": 0,
         "exactDuplicates": 208,
-        "inlineStyles": 3033,
+        "inlineStyles": 3170,
         "arbitrary": 0,
-        "nearPairs": 9,
+        "nearPairs": 43,
         "important": 0,
         "neverImported": 0,
-        "components": 2669
+        "components": 2768
       }
     },
     {
       "repo": "danny-avila/LibreChat",
       "designSystem": "custom",
-      "codeFiles": 2430,
+      "codeFiles": 2503,
       "metrics": {
-        "colors": 174,
+        "colors": 182,
         "greys": 30,
-        "spacing": 82,
-        "typefaces": 5,
+        "spacing": 73,
+        "typefaces": 3,
         "fontSizes": 39,
-        "radii": 26,
+        "radii": 25,
         "shadows": 16,
         "exactDuplicates": 38,
-        "inlineStyles": 71,
-        "arbitrary": 492,
-        "nearPairs": 30,
-        "important": 20,
+        "inlineStyles": 70,
+        "arbitrary": 489,
+        "nearPairs": 31,
+        "important": 21,
         "neverImported": 0,
-        "components": 962
+        "components": 983
       }
     },
     {
@@ -1213,22 +1269,22 @@
     {
       "repo": "triggerdotdev/trigger.dev",
       "designSystem": "custom",
-      "codeFiles": 2369,
+      "codeFiles": 2605,
       "metrics": {
-        "colors": 137,
-        "greys": 18,
-        "spacing": 31,
+        "colors": 184,
+        "greys": 44,
+        "spacing": 32,
         "typefaces": 0,
         "fontSizes": 22,
-        "radii": 16,
-        "shadows": 0,
+        "radii": 17,
+        "shadows": 2,
         "exactDuplicates": 8,
         "inlineStyles": 51,
-        "arbitrary": 271,
+        "arbitrary": 291,
         "nearPairs": 1,
-        "important": 11,
+        "important": 10,
         "neverImported": 0,
-        "components": 936
+        "components": 1006
       }
     },
     {
@@ -1251,10 +1307,94 @@
         "neverImported": 0,
         "components": 36
       }
+    },
+    {
+      "repo": "supabase/supabase",
+      "designSystem": "custom",
+      "codeFiles": 5729,
+      "metrics": {
+        "colors": 1253,
+        "greys": 100,
+        "spacing": 233,
+        "typefaces": 18,
+        "fontSizes": 77,
+        "radii": 37,
+        "shadows": 15,
+        "exactDuplicates": 290,
+        "inlineStyles": 261,
+        "arbitrary": 1847,
+        "nearPairs": 144,
+        "important": 98,
+        "neverImported": 51,
+        "components": 3511
+      }
+    },
+    {
+      "repo": "getsentry/sentry",
+      "designSystem": "custom",
+      "codeFiles": 6602,
+      "metrics": {
+        "colors": 220,
+        "greys": 48,
+        "spacing": 113,
+        "typefaces": 11,
+        "fontSizes": 44,
+        "radii": 42,
+        "shadows": 60,
+        "exactDuplicates": 114,
+        "inlineStyles": 697,
+        "arbitrary": 0,
+        "nearPairs": 210,
+        "important": 123,
+        "neverImported": 0,
+        "components": 4039
+      }
+    },
+    {
+      "repo": "appsmithorg/appsmith",
+      "designSystem": "custom",
+      "codeFiles": 4973,
+      "metrics": {
+        "colors": 481,
+        "greys": 97,
+        "spacing": 63,
+        "typefaces": 13,
+        "fontSizes": 33,
+        "radii": 24,
+        "shadows": 33,
+        "exactDuplicates": 127,
+        "inlineStyles": 216,
+        "arbitrary": 51,
+        "nearPairs": 53,
+        "important": 72,
+        "neverImported": 34,
+        "components": 1344
+      }
+    },
+    {
+      "repo": "grafana/grafana",
+      "designSystem": "custom",
+      "codeFiles": 6178,
+      "metrics": {
+        "colors": 765,
+        "greys": 104,
+        "spacing": 54,
+        "typefaces": 5,
+        "fontSizes": 24,
+        "radii": 11,
+        "shadows": 7,
+        "exactDuplicates": 119,
+        "inlineStyles": 194,
+        "arbitrary": 0,
+        "nearPairs": 93,
+        "important": 25,
+        "neverImported": 0,
+        "components": 2760
+      }
     }
   ],
   "referenceSystems": {
-    "builtAt": "2026-08-03T22:23:19.377Z",
+    "builtAt": "2026-08-13T19:20:49.292Z",
     "count": 10,
     "note": "Curated scoped scans of reputable public design systems. Not comparable head-to-head with product repos: see per-system notes.",
     "stats": {
@@ -1266,10 +1406,10 @@
           16,
           20,
           27,
-          102,
+          104,
           114,
           265,
-          514
+          317
         ],
         "median": 24
       },
@@ -1283,7 +1423,7 @@
           8,
           15,
           15,
-          18,
+          17,
           19
         ],
         "median": 5
@@ -1323,7 +1463,7 @@
           0,
           0,
           0,
-          4,
+          5,
           5,
           6,
           15,
@@ -1369,14 +1509,14 @@
           0,
           0,
           2,
-          6,
-          13,
+          9,
+          14,
           15,
           17,
           28,
-          170
+          167
         ],
-        "median": 10
+        "median": 12
       },
       "inlineStyles": {
         "values": [
@@ -1387,9 +1527,9 @@
           10,
           14,
           14,
-          17,
+          19,
           22,
-          24
+          22
         ],
         "median": 12
       },
@@ -1418,7 +1558,7 @@
           1,
           1,
           5,
-          33,
+          34,
           50
         ],
         "median": 1
@@ -1457,16 +1597,16 @@
         "values": [
           0,
           170,
-          228,
+          230,
           243,
-          246,
-          314,
+          247,
           331,
+          333,
           508,
           711,
-          819
+          815
         ],
-        "median": 280
+        "median": 289
       }
     },
     "systems": [
@@ -1498,22 +1638,22 @@
         "repo": "primer/react",
         "scope": "packages/react/src",
         "note": "colour count inflated by hex fallbacks in var() and vendored multi-theme palettes",
-        "codeFiles": 446,
+        "codeFiles": 438,
         "metrics": {
-          "colors": 514,
-          "greys": 18,
+          "colors": 317,
+          "greys": 17,
           "spacing": 31,
           "typefaces": 0,
           "fontSizes": 26,
           "radii": 24,
           "shadows": 35,
-          "exactDuplicates": 13,
+          "exactDuplicates": 14,
           "inlineStyles": 14,
           "arbitrary": 0,
           "nearPairs": 5,
           "important": 33,
           "neverImported": 0,
-          "components": 228
+          "components": 230
         }
       },
       {
@@ -1544,22 +1684,22 @@
         "repo": "carbon-design-system/carbon",
         "scope": "packages/react/src",
         "note": "styling lives in separate Sass packages, so colour and radii counts are near zero",
-        "codeFiles": 518,
+        "codeFiles": 555,
         "metrics": {
           "colors": 16,
           "greys": 0,
           "spacing": 22,
           "typefaces": 8,
-          "fontSizes": 4,
+          "fontSizes": 5,
           "radii": 0,
           "shadows": 1,
-          "exactDuplicates": 6,
-          "inlineStyles": 17,
+          "exactDuplicates": 9,
+          "inlineStyles": 19,
           "arbitrary": 0,
           "nearPairs": 1,
           "important": 4,
           "neverImported": 0,
-          "components": 314
+          "components": 333
         }
       },
       {
@@ -1613,7 +1753,7 @@
         "repo": "ant-design/ant-design",
         "scope": "components",
         "note": "inline style count is dominated by demos co-located with components",
-        "codeFiles": 954,
+        "codeFiles": 960,
         "metrics": {
           "colors": 27,
           "greys": 8,
@@ -1623,12 +1763,12 @@
           "radii": 0,
           "shadows": 0,
           "exactDuplicates": 17,
-          "inlineStyles": 24,
+          "inlineStyles": 22,
           "arbitrary": 0,
           "nearPairs": 1,
           "important": 1,
           "neverImported": 0,
-          "components": 246
+          "components": 247
         }
       },
       {
@@ -1638,7 +1778,7 @@
         "note": "Nunjucks + Sass, so component count is zero by scanner definition; colours are the full government palette",
         "codeFiles": 24,
         "metrics": {
-          "colors": 102,
+          "colors": 104,
           "greys": 15,
           "spacing": 24,
           "typefaces": 3,
@@ -1648,7 +1788,7 @@
           "exactDuplicates": 0,
           "inlineStyles": 0,
           "arbitrary": 0,
-          "nearPairs": 33,
+          "nearPairs": 34,
           "important": 61,
           "neverImported": 0,
           "components": 0
@@ -1668,13 +1808,13 @@
           "fontSizes": 0,
           "radii": 0,
           "shadows": 0,
-          "exactDuplicates": 170,
+          "exactDuplicates": 167,
           "inlineStyles": 14,
           "arbitrary": 0,
           "nearPairs": 0,
           "important": 1,
           "neverImported": 0,
-          "components": 819
+          "components": 815
         }
       },
       {

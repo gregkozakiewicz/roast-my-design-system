@@ -11,7 +11,7 @@ export function read(p) { try { return readFileSync(p, 'utf8'); } catch { return
 
 const SKIP_DIRS = new Set([
   'node_modules', '.next', '.git', 'dist', 'build', 'out', 'coverage',
-  '.turbo', '.vercel', '.cache', 'storybook-static', 'public',
+  '.turbo', '.vercel', '.cache', 'storybook-static',
   // Documentation sites (Docusaurus and friends) carry their own theme and
   // demo fixtures — that styling is not the product's design language.
   'docs', 'dev-docs', 'website', 'documentation',
@@ -25,6 +25,23 @@ const SKIP_DIRS = new Set([
 
 // Same idea at file granularity: Button.test.tsx / Button.stories.tsx / *.cy.ts
 const TEST_FILE_RE = /\.(test|spec|stories|story|cy)\.[cm]?[jt]sx?$/;
+
+// public/ is static assets in almost every repo — but grafana keeps its whole
+// frontend under public/app. Skip it only when a quick probe finds no real
+// component source inside (component extensions only, so a compiled .js bundle
+// someone committed never counts as source).
+const SOURCE_PROBE_RE = /\.(tsx|jsx|vue|svelte)$/;
+function hasComponentSource(dir, depth = 0) {
+  if (depth > 3) return false;
+  let entries = [];
+  try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return false; }
+  for (const e of entries) {
+    if (e.name.startsWith('.') || SKIP_DIRS.has(e.name)) continue;
+    if (e.isDirectory()) { if (hasComponentSource(join(dir, e.name), depth + 1)) return true; }
+    else if (SOURCE_PROBE_RE.test(e.name) && !TEST_FILE_RE.test(e.name)) return true;
+  }
+  return false;
+}
 
 const CODE_EXTS = new Set(['.tsx', '.jsx', '.ts', '.js', '.mjs', '.cjs']);
 const STYLE_EXTS = new Set(['.css', '.scss', '.sass', '.less']);
@@ -49,6 +66,7 @@ export function walkRepo(root, maxDepth = 14) {
       if (e.name.startsWith('.') && e.name !== '.cursorrules') continue;
       if (SKIP_DIRS.has(e.name)) continue;
       const p = join(dir, e.name);
+      if (e.name === 'public' && e.isDirectory() && !hasComponentSource(p)) continue;
       if (e.isDirectory()) { recurse(p, depth + 1); continue; }
       if (TEST_FILE_RE.test(e.name)) continue;
       const rel = relative(root, p).replaceAll('\\', '/');

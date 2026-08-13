@@ -825,22 +825,33 @@ function scorePackage(m) {
 }
 function packagesSection() {
   const pkgs = (h.packages ?? []).filter((p) => p.scored && p.metrics);
-  if (pkgs.length < 2) return '';
   const rated = pkgs.map((p) => ({ ...p, ...scorePackage(p.metrics) })).filter((p) => p.score !== undefined && p.score !== null);
-  if (rated.length < 2) return '';
+  // packages with real components but almost no raw styling: everything lives
+  // in tokens or props, so there is nothing to measure. Named, never judged.
+  // Icon sets and email packages stay hidden for the same reasons the scanner
+  // excludes them elsewhere; sandboxes and demo scaffolding are not the system.
+  const quiet = (h.packages ?? []).filter((p) => !p.scored && (p.uiComponents ?? 0) >= 5
+    && !/(^|[\/-])(icons?|emails?|sandbox(es)?|demos?|examples?|templates?|fixtures?|e2e|tests?)([\/-]|$)/.test(p.dir));
+  if (rated.length + quiet.length < 1) return '';
   rated.sort((a, b) => a.score - b.score);
-  const shown = rated.slice(0, 10);
+  quiet.sort((a, b) => (b.codeFiles ?? 0) - (a.codeFiles ?? 0));
   const band = (sc) => (sc >= 85 ? 'good' : sc >= 55 ? 'warn' : 'bad');
-  const skipped = (h.packages ?? []).length - rated.length;
-  const rows = shown.map((p) => `
+  const skipped = (h.packages ?? []).length - rated.length - quiet.length;
+  const shown = [...rated, ...quiet].slice(0, 10);
+  const rows = shown.map((p) => p.score !== undefined ? `
     <tr><td class="mono strong">${esc(p.dir)}</td>
     <td><span class="pkg-score pkg-${band(p.score)}">${p.score}</span></td>
     <td>${p.worst ? `${n(p.worst.value)} ${esc(PKG_LABELS[p.worst.metric] ?? p.worst.metric)}` : '<span class="dim">nothing over the line</span>'}</td>
+    <td class="dim">${n(p.codeFiles)} files</td></tr>` : `
+    <tr><td class="mono strong">${esc(p.dir)}</td>
+    <td><span class="pkg-quiet">too little raw styling to judge</span></td>
+    <td><span class="dim">${n(p.uiComponents)} components, nothing raw to measure</span></td>
     <td class="dim">${n(p.codeFiles)} files</td></tr>`).join('');
+  const overflow = rated.length + quiet.length - shown.length;
   return `<section class="glass pad">
     ${sectionHead('Package by package', `${rated.length} package${rated.length === 1 ? '' : 's'} with enough UI to judge · the repo score above is the whole thing blended${skipped > 0 ? `, and ${skipped} package${skipped === 1 ? ' was' : 's were'} too small or too backend to score` : ''}`)}
     <div class="tbl-wrap"><table><thead><tr><th>package</th><th>score</th><th>worst finding</th><th>size</th></tr></thead><tbody>${rows}</tbody></table></div>
-    ${rated.length > 10 ? `<div class="spec-more">and ${rated.length - 10} more</div>` : ''}
+    ${overflow > 0 ? `<div class="spec-more">and ${overflow} more</div>` : ''}
     ${healthScore !== null && rated.length && Math.min(...rated.map((p) => p.score)) > healthScore
       ? `<p class="sub" style="margin-top:12px">A repo scores below its own packages by arithmetic, not by accident: distinct values add up across packages, so the whole always carries more than any part. Read the package scores for where each team stands, and the repo score for what your agent sees when it looks at everything at once.</p>` : ''}</section>`;
 }
@@ -1091,6 +1102,7 @@ const html = `<!doctype html>
   .pkg-good { background:var(--ok-soft); color:var(--ok); }
   .pkg-warn { background:var(--amber-soft); color:var(--amber); }
   .pkg-bad { background:var(--coral-soft); color:var(--coral); }
+  .pkg-quiet { font:600 11.5px/1.3 var(--sans); color:var(--dim2); letter-spacing:.02em; }
   .spec { margin-top:18px; }
   .spec-rows { display:grid; gap:2px; margin-top:8px; }
   .spec-type { display:flex; align-items:baseline; gap:16px; padding:5px 0; border-bottom:1px solid var(--line-soft); }

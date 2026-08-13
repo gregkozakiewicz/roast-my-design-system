@@ -6,7 +6,7 @@
 
 Run this skill on your codebase and get, in about a second:
 
-- **A health score you can defend in a meeting.** 0-100, deterministic, benchmarked against Ideal Design System norms, 30 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
+- **A health score you can defend in a meeting.** 0-100, deterministic, benchmarked against Ideal Design System norms, 34 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
 - **Per-package scores for monorepos.** One blended number hides which package is the problem: `packages/ui` scores 80 while `apps/web` scores 40, and now you can see it.
 - **The receipts behind it.** Every colour and its near-identical twin, every spacing value, typeface, duplicated or never-imported component, inline style and !important, with real file paths, in one self-contained HTML report you can open, Slack or email.
 - **The first fixes ranked by payoff.** A "Where to start" list derived from your own numbers: keep the report as the audit, or hand it to Claude as the punch list for the fix.
@@ -20,7 +20,7 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 
 - **Pre-refactor audit.** Run `/roast-my-design-system` before a design-system cleanup to get the measured baseline: every colour, spacing value, duplicated component and inline style, with real file paths.
 - **Diagnosing almost-right AI output.** When Claude keeps generating UI that looks slightly off, the report shows which duplicated components and stray values it is imitating, and where the canonical ones live.
-- **Making the case without a meeting.** Drop the self-contained HTML report in Slack: a health score and three benchmarks (ideal norms, the 30-repo median, 10 reputable systems) argue for the design system for you.
+- **Making the case without a meeting.** Drop the self-contained HTML report in Slack: a health score and three benchmarks (ideal norms, the 34-repo median, 10 reputable systems) argue for the design system for you.
 - **The fix loop.** Hand the report back to Claude as the punch list and work through the Where to start section, file by file.
 
 The full report for vercel/ai-chatbot, top to bottom:
@@ -38,7 +38,7 @@ The same report in light mode (one file, built-in toggle):
 - **No network, no telemetry.** Everything runs locally. Nothing about your code leaves your machine.
 - **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality.
 - **Intent-aware counting (v3).** Runtime-computed inline styles, compound-component APIs and wrapper components are not crimes and are not counted as ones. Token-led repos are judged on their hardcoded strays, not their token architecture. Repeated arbitrary values are read as decisions without names, not drift.
-- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 30 public React repos (cal.com, excalidraw, outline, twenty, dub, langfuse…). Median: 96 colours, 14 greys, 14 duplicated components, 45 inline style blocks, 91 arbitrary Tailwind values.
+- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 34 public React repos (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…). Median: 130 colours, 17 greys, 20 duplicated components, 49 inline style blocks, 70 arbitrary Tailwind values.
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
 
 ## Install
@@ -93,7 +93,7 @@ Open Claude Code in the repo you want roasted and type:
 You get the roast in chat plus `design-system-roast.html` at your repo root: a self-contained page (open it, Slack it, email it, no external requests) with:
 
 - a **health score** computed from how your numbers sit against the ideal
-- stat tiles comparing you to all three yardsticks: Ideal, the 30-repo average, and the reputable systems
+- stat tiles comparing you to all three yardsticks: Ideal, the 34-repo average, and the reputable systems
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the off-scale spacing receipts, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger
 - a **Where to start** close: up to three moves derived from your repo's own numbers, each with a file-path receipt
@@ -111,18 +111,18 @@ Three real roasts of public repos, hosted as-is (the same self-contained HTML th
 
 ## What it measures
 
-| Metric | Ideal Design System | Median of 30 scanned repos | Median of 10 reputable systems |
+| Metric | Ideal Design System | Median of 34 scanned repos | Median of 10 reputable systems |
 |---|---|---|---|
-| Distinct colours | ~24 | 96 | 24 |
-| Shades of grey | up to 13 | 14 | 5 |
-| Off-scale spacing values | ~12 | 27 | 6 |
-| Typefaces | 2–3 | 2 | 1 |
-| Border radii | up to 10 | 12 | 2 |
-| Duplicated components | 0 | 14 | 10 |
-| Inline style blocks | 0 | 45 | 12 |
-| Arbitrary Tailwind values | ~20 | 91 | 0 |
-| Near-identical colour pairs | 0 | 3 | 1 |
-| !important declarations | 0 | 5 | 3 |
+| Distinct colours | ~24 | 130 | 24 |
+| Shades of grey | up to 13 | 17 | 5 |
+| Off-scale spacing values | ~12 | 34 | 6 |
+| Typefaces | 2–3 | 3 | 1 |
+| Border radii | up to 10 | 13 | 2 |
+| Duplicated components | 0 | 20 | 12 |
+| Inline style blocks | 0 | 49 | 12 |
+| Arbitrary Tailwind values | ~20 | 70 | 0 |
+| Near-identical colour pairs | 0 | 13 | 1 |
+| !important declarations | 0 | 7 | 3 |
 | Components never imported | 0 | 0 | 0 |
 
 Yes, the median repo is already a mess. That's the point.

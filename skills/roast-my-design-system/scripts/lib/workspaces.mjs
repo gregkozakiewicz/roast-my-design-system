@@ -22,6 +22,9 @@ function expand(root, pattern) {
     for (const d of dirs) {
       const abs = join(root, d);
       if (part === '*' || part === '**') {
+        // '**' matches zero or more segments (chakra declares packages/**/**,
+        // which must still match packages/react), so the current dir survives
+        if (part === '**' && d) next.push(d);
         let entries;
         try { entries = readdirSync(abs, { withFileTypes: true }); } catch { continue; }
         for (const e of entries) {
@@ -38,7 +41,7 @@ function expand(root, pattern) {
     }
     dirs = next;
   }
-  return dirs.filter((d) => { try { return statSync(join(root, d)).isDirectory(); } catch { return false; } });
+  return [...new Set(dirs)].filter((d) => { try { return statSync(join(root, d)).isDirectory(); } catch { return false; } });
 }
 
 /**

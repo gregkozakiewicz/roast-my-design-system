@@ -148,6 +148,8 @@ Three real roasts of public repos, hosted as-is (the same self-contained HTML th
 
 Yes, the median repo is already a mess. That's the point.
 
+**Your AI can write the UI. This makes sure it writes *your* UI.**
+
 ## License
 
 MIT. The code is yours to fork, modify and redistribute; the copyright notice travels with it.

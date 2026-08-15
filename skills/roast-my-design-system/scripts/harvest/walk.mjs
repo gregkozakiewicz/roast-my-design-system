@@ -56,8 +56,24 @@ const STYLE_EXTS = new Set(['.css', '.scss', '.sass', '.less']);
  * twenty and formbricks. Measured across the fleet, file counts stop growing at
  * 12; 14 leaves headroom. Single-package repos are unaffected either way.
  */
-export function walkRepo(root, maxDepth = 14) {
+export function walkRepo(root, maxDepth = 14, exclusions = null) {
   const files = { code: [], styles: [], other: [] };
+  const excluded = exclusions?.match ?? (() => null);
+  // An excluded directory is still walked once, just to count what the scan
+  // would otherwise have read — the harvest reports how many files each
+  // pattern removed, so an exclusion is always visible, never a silent trim.
+  const countExcluded = (dir, depth, hit) => {
+    if (depth > maxDepth) return;
+    let entries = [];
+    try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      if (e.name.startsWith('.') && e.name !== '.cursorrules') continue;
+      if (SKIP_DIRS.has(e.name)) continue;
+      if (e.isDirectory()) { countExcluded(join(dir, e.name), depth + 1, hit); continue; }
+      if (TEST_FILE_RE.test(e.name)) continue;
+      hit.files += 1;
+    }
+  };
   const recurse = (dir, depth) => {
     if (depth > maxDepth) return;
     let entries = [];
@@ -67,9 +83,15 @@ export function walkRepo(root, maxDepth = 14) {
       if (SKIP_DIRS.has(e.name)) continue;
       const p = join(dir, e.name);
       if (e.name === 'public' && e.isDirectory() && !hasComponentSource(p)) continue;
+      const rel = relative(root, p).replaceAll('\\', '/');
+      const hit = excluded(rel);
+      if (hit) {
+        if (e.isDirectory()) countExcluded(p, depth + 1, hit);
+        else if (!TEST_FILE_RE.test(e.name)) hit.files += 1;
+        continue;
+      }
       if (e.isDirectory()) { recurse(p, depth + 1); continue; }
       if (TEST_FILE_RE.test(e.name)) continue;
-      const rel = relative(root, p).replaceAll('\\', '/');
       const ext = extname(e.name);
       if (STYLE_EXTS.has(ext)) files.styles.push(rel);
       else if (CODE_EXTS.has(ext)) files.code.push(rel);

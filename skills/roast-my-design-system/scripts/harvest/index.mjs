@@ -6,6 +6,11 @@
  * one-screen summary (the seed of the step-2 diagnosis).
  *
  *   node src/harvest/index.mjs <repo-path> [--out harvest.json]
+ *                              [--exclude <path>] (repeatable, comma-separated ok)
+ *
+ * Exclusions also come from a .roastignore file at the repo root (one
+ * repo-relative path per line). Every active pattern lands in the harvest
+ * JSON with the number of files it removed — visible, never silent.
  */
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -15,6 +20,7 @@ import { harvestTokens } from './tokens.mjs';
 import { findDuplicates } from './duplicates.mjs';
 import { harvestContext } from './context.mjs';
 import { resolveWorkspaces } from '../lib/workspaces.mjs';
+import { loadExclusions } from '../lib/exclusions.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
@@ -22,6 +28,17 @@ import { neverImportedComponents } from '../lib/neverimported.mjs';
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
   return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
+}
+
+// --exclude is repeatable and each value may be comma-separated
+function argAll(name) {
+  const out = [];
+  for (let i = 2; i < process.argv.length; i++) {
+    if (process.argv[i] === `--${name}` && process.argv[i + 1]) {
+      out.push(...process.argv[i + 1].split(',').map((s) => s.trim()).filter(Boolean));
+    }
+  }
+  return out;
 }
 
 const target = process.argv[2] && !process.argv[2].startsWith('--') ? resolve(process.argv[2]) : null;
@@ -32,7 +49,8 @@ if (!target) {
 const outPath = resolve(arg('out', 'harvest.json'));
 
 const t0 = Date.now();
-const files = walkRepo(target);
+const exclusions = loadExclusions(target, argAll('exclude'));
+const files = walkRepo(target, 14, exclusions);
 const profile = profileRepo(target, files);
 const { components } = harvestComponents(target, files.code);
 const tokens = harvestTokens(target, files.styles, files.code);
@@ -125,6 +143,14 @@ const harvest = {
   context,
   staleRules,
   packages,
+  // Active user exclusions with per-pattern removal counts. Present only when
+  // something was excluded, so downstream renderers can trust its presence.
+  ...(exclusions.patterns.length ? {
+    exclusions: {
+      patterns: exclusions.patterns,
+      filesExcluded: exclusions.patterns.reduce((sum, p) => sum + p.files, 0),
+    },
+  } : {}),
 };
 harvest.tookMs = Date.now() - t0;
 
@@ -138,6 +164,10 @@ const top = (list, n = 5) => list.slice(0, n).map((e) => `${e.value} ×${e.count
 console.log(`\nHarvest: ${profile.name ?? target}`);
 console.log(`  framework: ${profile.framework}${profile.typescript ? ' + TS' : ''}   design system: ${profile.designSystem.kind}${profile.designSystem.name ? ` (${profile.designSystem.name})` : ''}   styling: ${profile.stylingDeps.join(', ') || 'none detected'}`);
 console.log(`  files: ${files.code.length} code, ${files.styles.length} style`);
+if (exclusions.patterns.length) {
+  const list = exclusions.patterns.map((p) => `${p.pattern} (${p.files} files, ${p.source})`).join(', ');
+  console.log(`  excluded by you: ${list}`);
+}
 console.log(`\n  components: ${components.length} defined (${nonPage.length} reusable, ${components.length - nonPage.length} pages)`);
 console.log(`  duplicates: ${duplicates.exactDuplicates.length} exact same-name, ${duplicates.families.length} name families`);
 for (const d of duplicates.exactDuplicates.slice(0, 3)) console.log(`    · ${d.name} defined in ${d.files.length} files`);

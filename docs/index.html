@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>roast-my-design-system · Your design system, measured. Score, receipts, fixes and agent rules</title>
-<meta name="description" content="Roast your repo's design system with real data. Free via npx or as a Claude Code + Codex skill: a health score, package-by-package for monorepos, the receipts behind it, the first fixes ranked by payoff, and the agent rules file that stops the mess coming back. Live example reports inside.">
+<meta name="description" content="Your AI can write the UI. This makes sure it writes your UI. Roast your repo's design system with real data, free via npx or as a Claude Code + Codex skill: a health score, package-by-package for monorepos, the receipts behind it, the first fixes ranked by payoff, and the agent rules file that stops the mess coming back. Live example reports inside.">
 <style>
   :root { --bg:#020617; --card:rgba(15,23,42,.6); --line:rgba(51,65,85,.7); --text:#f1f5f9; --dim:#94a3b8; --dim2:#64748b; --mint:#2dd4bf;
     --glow1:rgba(45,212,191,.08); --glow2:rgba(56,189,248,.06);
@@ -41,6 +41,13 @@
   a.card span { display:block; font-size:12.5px; color:var(--dim); margin-top:2px; }
   .score { font:700 20px/1 'Sora',sans-serif; color:var(--mint); flex-shrink:0; }
   .score i { font-style:normal; font-size:12px; color:var(--dim2); font-weight:600; }
+  .cmd-wrap { overflow-x:auto; margin:14px 0 6px; border:1px solid var(--line); border-radius:14px; }
+  table.cmd { width:100%; border-collapse:collapse; font-size:13px; line-height:1.55; }
+  table.cmd th { text-align:left; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim2); padding:12px 16px 8px; border-bottom:1px solid var(--line); }
+  table.cmd td { padding:10px 16px; border-bottom:1px solid var(--line); color:var(--dim); vertical-align:top; }
+  table.cmd tr:last-child td { border-bottom:none; }
+  table.cmd td:first-child { white-space:nowrap; color:var(--text); }
+  table.cmd code { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12.5px; }
   footer { margin-top:36px; border-top:1px solid var(--line); padding-top:18px; font-size:12.5px; color:var(--dim2); }
   footer a { color:var(--mint); text-decoration:none; font-weight:700; }
   footer a:hover { text-decoration:underline; }
@@ -55,7 +62,8 @@
 <main>
 <div class="kicker">roast-my-design-system</div>
 <h1>Your design system, measured.</h1>
-<p class="lead">Free, <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a> and as a Claude Code + Codex skill. A deterministic scanner reads your repo and returns four things:</p>
+<p class="lead"><b>Your AI can write the UI. This makes sure it writes your UI.</b></p>
+<p class="lead">A free CLI tool <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a>, and a Claude Code + Codex skill. A deterministic scanner reads your repo and returns four things:</p>
 <ul class="lead-list">
 <li><b>A health score you can defend in a meeting.</b> 0-100, benchmarked against Ideal Design System norms, 34 public repos and 10 reputable design systems. Monorepos are scored package by package, so the disciplined UI library and the messy app stop hiding behind one blended number.</li>
 <li><b>The receipts behind it.</b> Every colour and its near-identical twin, every spacing value, duplicated or never-imported component, inline style and !important, with real file paths. The values are rendered, not just counted: your type scale at real sizes, your radii as real corners.</li>
@@ -73,11 +81,32 @@
 <div class="install"><b>git clone</b> https://github.com/pencilrebel/roast-my-design-system.git<br><b>cp -r</b> roast-my-design-system/skills/roast-my-design-system ~/.claude/skills/</div>
 <p class="sub">Works everywhere, installs the same skill. Use ~/.codex/skills/ instead for OpenAI Codex.</p>
 
+<h2>Every command</h2>
+<p class="sub">One scan powers all of it; the flags decide what lands on disk. Combine freely.</p>
+<div class="cmd-wrap"><table class="cmd">
+<thead><tr><th>Command</th><th>What you get</th></tr></thead>
+<tbody>
+<tr><td><code>npx roast-my-design-system</code></td><td>The scan and design-system-roast.html, opened in your browser</td></tr>
+<tr><td><code>npx roast-my-design-system &lt;path&gt;</code></td><td>Scan a different repo than the current directory</td></tr>
+<tr><td><code>... --apply</code></td><td>The generated agent rules injected straight into your CLAUDE.md, AGENTS.md, .cursorrules or .cursor/rules/, inside a marked block. Re-running replaces only that block, never your own text</td></tr>
+<tr><td><code>... --rules</code></td><td>The same rules written to design-system-rules.md instead, for pasting by hand</td></tr>
+<tr><td><code>... --card</code></td><td>roast-card.svg: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README</td></tr>
+<tr><td><code>... --sarif</code></td><td>design-system-roast.sarif for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files</td></tr>
+<tr><td><code>... --by "Ada Lovelace"</code></td><td>A requester credit in the report header, next to the scan date</td></tr>
+<tr><td><code>... --json</code></td><td>The scan summary as JSON on stdout, for scripts and pipelines</td></tr>
+<tr><td><code>... --theme light / --out &lt;file&gt; / --no-open</code></td><td>Light report, custom report path, don't open the browser</td></tr>
+<tr><td><code>/roast-my-design-system</code> (in Claude Code)</td><td>The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers</td></tr>
+</tbody>
+</table></div>
+<p class="sub">Every scan also checks the agent rules you already have and flags stale references, no flag needed.</p>
+
 <h2>Example roasts</h2>
 <p class="sub">Real reports from public repos, hosted exactly as the skill generates them. Every number is deterministic; every path is real.</p>
 <a class="card" href="examples/vercel-ai-chatbot.html"><div>vercel/ai-chatbot<span>103 arbitrary values like [13px] punched through the Tailwind scale</span></div><div class="score">75<i>/100</i></div></a>
 <a class="card" href="examples/excalidraw-excalidraw.html"><div>excalidraw/excalidraw<span>42 colour pairs nearly identical, copy-paste, not decisions</span></div><div class="score">55<i>/100</i></div></a>
 <a class="card" href="examples/dubinc-dub.html"><div>dubinc/dub<span>621 arbitrary bracket values and 22 duplicated components</span></div><div class="score">25<i>/100</i></div></a>
+
+<p class="lead" style="margin-top:30px"><b>Your AI can write the UI. This makes sure it writes your UI.</b></p>
 
 <footer><a href="https://github.com/pencilrebel/roast-my-design-system">GitHub</a> · <a href="https://www.npmjs.com/package/roast-my-design-system">npm</a> · <a href="brand.html">brand</a> · MIT · built and designed by <a href="https://gregkozakiewicz.com"><span class="gk-mark"></span>Greg Kozakiewicz</a></footer>
 </main></body></html>

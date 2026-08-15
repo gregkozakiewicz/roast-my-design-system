@@ -49,7 +49,26 @@ The same report in light mode (one file, built-in toggle):
 npx roast-my-design-system
 ```
 
-Run it inside any repo. Same scanner, same report, straight from npm. Add `--apply` to inject the generated agent rules straight into your CLAUDE.md, AGENTS.md or .cursor/rules (inside a marked block; re-running replaces only that block), `--rules` to write them as a file instead, `--card` for a shareable SVG roast card, `--sarif` for GitHub code scanning, `--json` for a machine-readable summary, or `--theme light`, `--out <file>`, `--no-open` as you like. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.
+Run it inside any repo. Same scanner, same report, straight from npm. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.
+
+## Every command
+
+One scan powers all of it; the flags decide what lands on disk. Combine freely.
+
+| Command | What you get |
+|---|---|
+| `npx roast-my-design-system` | The scan and `design-system-roast.html`, opened in your browser |
+| `npx roast-my-design-system <path>` | Scan a different repo than the current directory |
+| `... --apply` | The generated agent rules injected straight into your `CLAUDE.md`, `AGENTS.md`, `.cursorrules` or `.cursor/rules/`, inside a marked block. Re-running replaces only that block, never your own text |
+| `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
+| `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
+| `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
+| `... --by "Ada Lovelace"` | A requester credit in the report header, next to the scan date |
+| `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
+| `... --theme light` / `--out <file>` / `--no-open` | Light report, custom report path, don't open the browser |
+| `/roast-my-design-system` (in Claude Code) | The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers |
+
+Every scan also checks the agent rules you already have and flags stale references, no flag needed.
 
 **Claude Code (recommended):**
 

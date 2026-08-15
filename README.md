@@ -10,7 +10,7 @@ Run this skill on your codebase and get, in about a second:
 - **Per-package scores for monorepos.** One blended number hides which package is the problem: `packages/ui` scores 80 while `apps/web` scores 40, and now you can see it.
 - **The receipts behind it.** Every colour and its near-identical twin, every spacing value, typeface, duplicated or never-imported component, inline style and !important, with real file paths, in one self-contained HTML report you can open, Slack or email.
 - **The first fixes ranked by payoff.** A "Where to start" list derived from your own numbers: keep the report as the audit, or hand it to Claude as the punch list for the fix.
-- **Rules that stop the mess coming back.** A generated `design-system-rules.md` for your CLAUDE.md or .cursor/rules: canonical components, your token file, known duplicates to avoid, so your AI agent follows your system instead of guessing at it.
+- **Rules that stop the mess coming back.** A generated `design-system-rules.md` for your CLAUDE.md or .cursor/rules: canonical components, your token file, known duplicates to avoid, so your AI agent follows your system instead of guessing at it. `--apply` injects them for you, and every scan checks the rules you already have for stale references: paths that no longer exist, components named canonical that nothing imports anymore.
 
 ## Why this exists
 
@@ -49,7 +49,7 @@ The same report in light mode (one file, built-in toggle):
 npx roast-my-design-system
 ```
 
-Run it inside any repo. Same scanner, same report, straight from npm. Add `--rules` to also generate the agent rules file, `--json` for a machine-readable summary, or `--theme light`, `--out <file>`, `--no-open` as you like. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.
+Run it inside any repo. Same scanner, same report, straight from npm. Add `--apply` to inject the generated agent rules straight into your CLAUDE.md, AGENTS.md or .cursor/rules (inside a marked block; re-running replaces only that block), `--rules` to write them as a file instead, `--card` for a shareable SVG roast card, `--sarif` for GitHub code scanning, `--json` for a machine-readable summary, or `--theme light`, `--out <file>`, `--no-open` as you like. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.
 
 **Claude Code (recommended):**
 

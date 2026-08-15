@@ -85,6 +85,7 @@
   .chip { border:1px solid var(--line); background:var(--card); border-radius:99px;
     padding:4px 12px; font:500 11.5px/1.5 var(--sans); color:var(--text); }
   .chip-agent { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
+  .stale { margin-top:18px; }
   .chip-xs { display:inline-block; border:1px solid var(--line); background:var(--chip-bg); border-radius:99px;
     padding:1px 8px; font:500 10px/1.6 var(--mono); color:var(--text); }
 
@@ -324,7 +325,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: pencilrebel/3.12.0 -->
+<!-- rmds-schema: pencilrebel/4.0.0 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <svg class="only-dark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
@@ -336,9 +337,9 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 3860ms · 3,999 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 3359ms · 4,012 code files</div>
       <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-08-13</div>
+      <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-08-15</div>
     </div>
     <div class="score"><div class="eyebrow">Health score</div><div class="val">25<span class="slash">/</span><span class="of">100</span></div></div>
   </div>
@@ -347,7 +348,7 @@
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">621 arbitrary values like [400px] punched through the Tailwind scale. 22 components implemented more than once. 59 off-scale spacing values where a dozen would do.</div>
+    <div class="verdict">619 arbitrary values like [400px] punched through the Tailwind scale, each one a precedent your agent will follow. 22 components implemented more than once, so an agent asked for a Button has several random options. 58 off-scale spacing values where a dozen would do.</div>
   </div>
 </header>
 
@@ -385,7 +386,7 @@
           <span class="gift-count">18 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-08-13.
+&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-08-15.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system --rules --&gt;
 
@@ -400,14 +401,14 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Canonical components
 
 - Use these existing components instead of writing new ones:
-  - `&lt;Button&gt;` from `packages/ui/src/button.tsx` (used 963x · props: text, variant, textWrapperClassName, shortcutClassName)
+  - `&lt;Button&gt;` from `packages/ui/src/button.tsx` (used 969x · props: text, variant, textWrapperClassName, shortcutClassName)
   - `&lt;Modal&gt;` from `packages/ui/src/modal.tsx` (used 183x · props: showModal, setShowModal, onClose, desktopOnly)
   - `&lt;Tooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 145x · props: content, contentClassName, disabled, side)
-  - `&lt;LoadingSpinner&gt;` from `packages/ui/src/icons/loading-spinner.tsx` (used 110x)
+  - `&lt;LoadingSpinner&gt;` from `packages/ui/src/icons/loading-spinner.tsx` (used 111x)
   - `&lt;Popover&gt;` from `packages/ui/src/popover.tsx` (used 100x · props: content, align, side, openPopover)
   - `&lt;InfoTooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 97x)
-  - `&lt;AnimatedSizeContainer&gt;` from `packages/ui/src/animated-size-container.tsx` (used 88x)
-  - `&lt;PageContent&gt;` from `apps/web/ui/layout/page-content/index.tsx` (used 84x · props: contentWrapperClassName, headerProps)
+  - `&lt;X&gt;` from `apps/web/ui/shared/icons/x.tsx` (used 89x)
+  - `&lt;AnimatedSizeContainer&gt;` from `packages/ui/src/animated-size-container.tsx` (used 86x)
 
 ### Known duplicates: do not make it worse
 
@@ -426,7 +427,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Spacing and sizing
 
 - Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
-- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 621 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
+- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 619 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
 - Avoid new one-off CSS spacing values; 33 off-scale values are already in play.
 
 ### Typography
@@ -440,7 +441,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) ver. 3.12.0. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) ver. 4.0.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -461,7 +462,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~13 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">17 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">5 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">59</div><div class="lab">off-scale spacing values</div>
+  <div class="num">58</div><div class="lab">off-scale spacing values</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">34 · messier than 68% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -485,7 +486,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">14 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">621</div><div class="lab">arbitrary bracket values</div>
+  <div class="num">619</div><div class="lab">arbitrary bracket values</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">70 · messier than 88% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
 
@@ -495,7 +496,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <tr><td class="mono strong">apps/web</td>
     <td><span class="pkg-score pkg-bad">40</span></td>
     <td>38 inline style blocks</td>
-    <td class="dim">3,274 files</td></tr>
+    <td class="dim">3,287 files</td></tr>
     <tr><td class="mono strong">packages/ui</td>
     <td><span class="pkg-score pkg-warn">80</span></td>
     <td>16 components nobody imports</td>
@@ -538,38 +539,38 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 </section></section>
 
 <section class="glass pad">
-    <div class="sec-head"><h2>59 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
+    <div class="sec-head"><h2>58 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
     <div class="bars">
     <div class="bar-row"><span class="bar-label">·2</span>
     <div class="bar-track"><div class="bar" style="width:100%"></div></div>
-    <span class="bar-count">2,698</span></div>
+    <span class="bar-count">2,699</span></div>
     <div class="bar-row"><span class="bar-label">·4</span>
-    <div class="bar-track"><div class="bar" style="width:71%"></div></div>
-    <span class="bar-count">1,924</span></div>
+    <div class="bar-track"><div class="bar" style="width:72%"></div></div>
+    <span class="bar-count">1,944</span></div>
     <div class="bar-row"><span class="bar-label">·3</span>
     <div class="bar-track"><div class="bar" style="width:55%"></div></div>
-    <span class="bar-count">1,482</span></div>
+    <span class="bar-count">1,487</span></div>
     <div class="bar-row"><span class="bar-label">·1</span>
     <div class="bar-track"><div class="bar" style="width:41%"></div></div>
-    <span class="bar-count">1,106</span></div>
+    <span class="bar-count">1,114</span></div>
     <div class="bar-row"><span class="bar-label">·6</span>
     <div class="bar-track"><div class="bar" style="width:38%"></div></div>
-    <span class="bar-count">1,034</span></div>
+    <span class="bar-count">1,036</span></div>
     <div class="bar-row"><span class="bar-label">·0</span>
     <div class="bar-track"><div class="bar" style="width:30%"></div></div>
-    <span class="bar-count">798</span></div>
+    <span class="bar-count">801</span></div>
     <div class="bar-row"><span class="bar-label">·1.5</span>
     <div class="bar-track"><div class="bar" style="width:22%"></div></div>
-    <span class="bar-count">582</span></div>
+    <span class="bar-count">586</span></div>
     <div class="bar-row"><span class="bar-label">·2.5</span>
     <div class="bar-track"><div class="bar" style="width:15%"></div></div>
-    <span class="bar-count">395</span></div>
+    <span class="bar-count">399</span></div>
     <div class="bar-row"><span class="bar-label">·5</span>
     <div class="bar-track"><div class="bar" style="width:14%"></div></div>
     <span class="bar-count">373</span></div>
     <div class="bar-row"><span class="bar-label">·0.5</span>
     <div class="bar-track"><div class="bar" style="width:10%"></div></div>
-    <span class="bar-count">269</span></div>
+    <span class="bar-count">273</span></div>
     <div class="bar-row"><span class="bar-label">·8</span>
     <div class="bar-track"><div class="bar" style="width:9%"></div></div>
     <span class="bar-count">249</span></div>
@@ -577,25 +578,25 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="bar-track"><div class="bar" style="width:8%"></div></div>
     <span class="bar-count">217</span></div>
     <div class="bar-row"><span class="bar-label">·px</span>
-    <div class="bar-track"><div class="bar" style="width:7%"></div></div>
-    <span class="bar-count">177</span></div>
+    <div class="bar-track"><div class="bar" style="width:6%"></div></div>
+    <span class="bar-count">174</span></div>
     <div class="bar-row"><span class="bar-label">·16</span>
     <div class="bar-track"><div class="bar" style="width:3%"></div></div>
     <span class="bar-count">89</span></div>
     <div class="bar-row"><span class="bar-label">·12</span>
     <div class="bar-track"><div class="bar" style="width:3%"></div></div>
-    <span class="bar-count">86</span></div>
+    <span class="bar-count">87</span></div>
     <div class="bar-row"><span class="bar-label">·3.5</span>
     <div class="bar-track"><div class="bar" style="width:2%"></div></div>
-    <span class="bar-count">33</span></div>
+    <span class="bar-count">35</span></div>
     <div class="bar-row"><span class="bar-label">·7</span>
     <div class="bar-track"><div class="bar" style="width:2%"></div></div>
     <span class="bar-count">33</span></div>
     <div class="bar-row"><span class="bar-label">·20</span>
     <div class="bar-track"><div class="bar" style="width:2%"></div></div>
     <span class="bar-count">22</span></div></div>
-    <div class="receipts"><div class="eyebrow">621 arbitrary values punched through the scale, one bracket at a time</div>
-    <div class="chips-row"><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×24</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/billing/payment-methods.tsx">[0.625rem] ×20</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/applications/applications-analytics-cards.tsx">[300px] ×19</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/partners-table.tsx">[200px] ×17</span><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×17</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×16</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[50px] ×12</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×11</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/commissions/[commissionId]/page.tsx">[360px] ×11</span><span class="vchip dim">+169 more</span></div></div></section>
+    <div class="receipts"><div class="eyebrow">619 arbitrary values punched through the scale, one bracket at a time</div>
+    <div class="chips-row"><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×24</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/billing/payment-methods.tsx">[0.625rem] ×20</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/applications/applications-analytics-cards.tsx">[300px] ×19</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/partners-table.tsx">[200px] ×18</span><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×17</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×16</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[50px] ×12</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×11</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/commissions/[commissionId]/page.tsx">[360px] ×11</span><span class="vchip dim">+168 more</span></div></div></section>
 <section>
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
@@ -611,7 +612,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="num">25</div><div class="lab">border radii</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
-    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×2234</span><span class="vchip">·xs ×804</span><span class="vchip">·lg ×268</span><span class="vchip">·base ×230</span><span class="vchip">·xl ×69</span><span class="vchip">·3xl ×14</span><span class="vchip">·2xl ×14</span><span class="vchip">·[0.625rem] ×12</span><span class="vchip">·4xl ×10</span><span class="vchip">·[13px] ×10</span><span class="vchip">·5xl ×8</span><span class="vchip">·[0.8125rem] ×7</span><span class="vchip">·[0.7rem] ×6</span><span class="vchip">·[11px] ×5</span></div></div>
+    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×2235</span><span class="vchip">·xs ×808</span><span class="vchip">·lg ×268</span><span class="vchip">·base ×230</span><span class="vchip">·xl ×69</span><span class="vchip">·3xl ×14</span><span class="vchip">·2xl ×14</span><span class="vchip">·[0.625rem] ×12</span><span class="vchip">·4xl ×10</span><span class="vchip">·[13px] ×10</span><span class="vchip">·5xl ×8</span><span class="vchip">·[0.8125rem] ×7</span><span class="vchip">·[0.7rem] ×6</span><span class="vchip">·[11px] ×5</span></div></div>
     <div class="spec"><div class="eyebrow">the corners, drawn · 25 radii in one interface</div>
       <div class="spec-grid">
         <div class="spec-cell"><div class="spec-box" style="border-radius:999px"></div>
@@ -628,7 +629,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">15 stray colours</span>
         <span class="pill pill-coral">3 inline</span>
@@ -636,7 +637,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/app/api/og/avatar/%5B%5B...seed%5D%5D/route.tsx">apps/web/app/api/og/avatar/[[...seed]]/route.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/app/api/og/avatar/%5B%5B...seed%5D%5D/route.tsx">apps/web/app/api/og/avatar/[[...seed]]/route.tsx</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">9 stray colours</span>
         
@@ -644,7 +645,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/submitted-leads/submitted-lead-status-badges.ts">apps/web/ui/submitted-leads/submitted-lead-status-badges.ts</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/submitted-leads/submitted-lead-status-badges.ts">apps/web/ui/submitted-leads/submitted-lead-status-badges.ts</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">8 stray colours</span>
         
@@ -652,7 +653,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">04</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">6 stray colours</span>
         <span class="pill pill-coral">1 inline</span>
@@ -660,7 +661,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">05</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/styles/globals.css">apps/web/styles/globals.css</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/styles/globals.css">apps/web/styles/globals.css</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">6 stray colours</span>
         
@@ -668,66 +669,66 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div></div></section>
 <div class="two-up">
 <div class="glass pad half">
-    <div class="sec-head"><h2>Duplicated components</h2><p class="sub">every duplicate is a place where your agent has to guess which one is canonical, and it picks wrong half the time. Paths open in VS Code</p></div>
+    <div class="sec-head"><h2>Duplicated components</h2><p class="sub">an agent asking which one is canonical gets several plausible answers. Paths open in VS Code</p></div>
     <div class="fams">
     <div class="fam">
       <div class="eyebrow">two icon sets collide on 11 names · one problem, not 11</div>
-      <div class="chips-row"><span class="vchip">&lt;Lock&gt;</span><span class="vchip">&lt;Users&gt;</span><span class="vchip">&lt;Download&gt;</span><span class="vchip">&lt;CursorRays&gt;</span><span class="vchip">&lt;Hyperlink&gt;</span><span class="vchip">&lt;User&gt;</span><span class="vchip">&lt;Gear&gt;</span><span class="vchip">&lt;Eye&gt;</span><span class="vchip">&lt;LinesY&gt;</span><span class="vchip">&lt;ConnectedDots4&gt;</span><span class="vchip">&lt;Heart&gt;</span></div>
+      <div class="chips-row"><span class="vchip">&lt;Lock&gt;</span><span class="vchip">&lt;Download&gt;</span><span class="vchip">&lt;Users&gt;</span><span class="vchip">&lt;CursorRays&gt;</span><span class="vchip">&lt;Hyperlink&gt;</span><span class="vchip">&lt;User&gt;</span><span class="vchip">&lt;Gear&gt;</span><span class="vchip">&lt;Eye&gt;</span><span class="vchip">&lt;LinesY&gt;</span><span class="vchip">&lt;ConnectedDots4&gt;</span><span class="vchip">&lt;Heart&gt;</span></div>
       <p class="sub" style="margin-top:8px">apps/web/ui/shared/icons/lock.tsx vs packages/ui/src/icons/nucleo/lock.tsx</p>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;PayoutStats&gt; · 3 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/payouts/payout-stats.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/layout/sidebar/payout-stats.tsx">apps/web/ui/layout/sidebar/payout-stats.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/payouts/payout-stats.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/layout/sidebar/payout-stats.tsx">apps/web/ui/layout/sidebar/payout-stats.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Logo&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx">apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/packages/ui/src/logo.tsx">packages/ui/src/logo.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx">apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/packages/ui/src/logo.tsx">packages/ui/src/logo.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;EmptyState&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/shared/empty-state.tsx">apps/web/ui/shared/empty-state.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/packages/ui/src/empty-state.tsx">packages/ui/src/empty-state.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/shared/empty-state.tsx">apps/web/ui/shared/empty-state.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/packages/ui/src/empty-state.tsx">packages/ui/src/empty-state.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;FormControl&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx">apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/submitted-leads/form-fields/form-control.tsx">apps/web/ui/submitted-leads/form-fields/form-control.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx">apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/submitted-leads/form-fields/form-control.tsx">apps/web/ui/submitted-leads/form-fields/form-control.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;SettingsRow&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/program-settings-row.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/program-settings-row.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/program-settings-row.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/program-settings-row.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Hero&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/placeholders/hero.tsx">apps/web/ui/placeholders/hero.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/placeholders/hero.tsx">apps/web/ui/placeholders/hero.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;QRCode&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/shared/qr-code.tsx">apps/web/ui/shared/qr-code.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/packages/ui/src/icons/nucleo/qrcode.tsx">packages/ui/src/icons/nucleo/qrcode.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/shared/qr-code.tsx">apps/web/ui/shared/qr-code.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/packages/ui/src/icons/nucleo/qrcode.tsx">packages/ui/src/icons/nucleo/qrcode.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Analytics&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/analytics/index.tsx">apps/web/ui/analytics/index.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/placeholders/feature-graphics/analytics.tsx">apps/web/ui/placeholders/feature-graphics/analytics.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/analytics/index.tsx">apps/web/ui/analytics/index.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/placeholders/feature-graphics/analytics.tsx">apps/web/ui/placeholders/feature-graphics/analytics.tsx</a></div>
       
       </div>
     </div>
@@ -762,7 +763,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">progress family · 6 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgressCircle&gt;</div><div class="mc-path">packages/ui/src/progress-circle.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StepProgressBar&gt;</div><div class="mc-path">apps/web/ui/partners/merge-accounts/step-progress-bar.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;BountyProgressBarRow&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-progress-bar-row.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PerformanceBountyProgress&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-performance.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SubmissionBountyProgress&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-performance.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgressBar&gt;</div><div class="mc-path">packages/ui/src/progress-bar.tsx</div></div></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgressCircle&gt;</div><div class="mc-path">packages/ui/src/progress-circle.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;BountyProgressBarRow&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-progress-bar-row.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StepProgressBar&gt;</div><div class="mc-path">apps/web/ui/partners/merge-accounts/step-progress-bar.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PerformanceBountyProgress&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-performance.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SubmissionBountyProgress&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-performance.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgressBar&gt;</div><div class="mc-path">packages/ui/src/progress-bar.tsx</div></div></div>
       
       </div>
     </div>
@@ -777,41 +778,41 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="sec-head"><h2>47 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx</a><span class="mc-count">×4</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx</a><span class="mc-count">×4</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx</a><span class="mc-count">×3</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx</a><span class="mc-count">×3</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:75%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a><span class="mc-count">×3</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a><span class="mc-count">×3</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:75%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/packages/ui/src/icons/youtube.tsx">packages/ui/src/icons/youtube.tsx</a><span class="mc-count">×2</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/packages/ui/src/icons/youtube.tsx">packages/ui/src/icons/youtube.tsx</a><span class="mc-count">×2</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx">apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx">apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:25%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/fleet/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/%5BprogramSlug%5D/page.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/[programSlug]/page.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/%5BprogramSlug%5D/page.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/[programSlug]/page.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:25%"></div></div>
       </div></div>
     <div class="receipts"><div class="eyebrow">1 !important declaration · the cascade admitting defeat</div>
     <div class="chips-row"><span class="vchip bad" title="apps/web/styles/globals.css">globals.css ×1</span></div></div></div>
 </div>
 <section class="glass pad">
-    <div class="sec-head"><h2>What you actually use</h2><p class="sub">1,555 components defined · top by adoption · the real system, buried in here</p></div>
+    <div class="sec-head"><h2>What you actually use</h2><p class="sub">1,557 components defined · top by adoption · the real system, buried in here</p></div>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
     <tr><td class="mono strong">&lt;Button&gt;</td>
-    <td><span class="pill pill-mint">963×</span></td>
+    <td><span class="pill pill-mint">969×</span></td>
     <td class="path">packages/ui/src/button.tsx</td>
     <td><span class="chip chip-xs">text</span> <span class="chip chip-xs">variant</span> <span class="chip chip-xs">textWrapperClassName</span> <span class="chip chip-xs">shortcutClassName</span> <span class="chip chip-xs">loading</span></td></tr>
     <tr><td class="mono strong">&lt;Link&gt;</td>
-    <td><span class="pill pill-mint">615×</span></td>
+    <td><span class="pill pill-mint">616×</span></td>
     <td class="path">apps/web/ui/shared/icons/link.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;Modal&gt;</td>
@@ -823,7 +824,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td class="path">packages/ui/src/tooltip.tsx</td>
     <td><span class="chip chip-xs">content</span> <span class="chip chip-xs">contentClassName</span> <span class="chip chip-xs">disabled</span> <span class="chip chip-xs">side</span> <span class="chip chip-xs">disableHoverableContent</span></td></tr>
     <tr><td class="mono strong">&lt;LoadingSpinner&gt;</td>
-    <td><span class="pill pill-mint">110×</span></td>
+    <td><span class="pill pill-mint">111×</span></td>
     <td class="path">packages/ui/src/icons/loading-spinner.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;Footer&gt;</td>
@@ -842,19 +843,19 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td><span class="pill pill-mint">97×</span></td>
     <td class="path">packages/ui/src/tooltip.tsx</td>
     <td><span class="dim">none</span></td></tr>
-    <tr><td class="mono strong">&lt;AnimatedSizeContainer&gt;</td>
-    <td><span class="pill pill-mint">88×</span></td>
-    <td class="path">packages/ui/src/animated-size-container.tsx</td>
+    <tr><td class="mono strong">&lt;X&gt;</td>
+    <td><span class="pill pill-mint">89×</span></td>
+    <td class="path">apps/web/ui/shared/icons/x.tsx</td>
     <td><span class="dim">none</span></td></tr></tbody></table></div>
     
-    <div class="receipts"><div class="eyebrow">16 components defined but never imported · candidates for deletion, or the system nobody found</div>
+    <div class="receipts"><div class="eyebrow">16 components defined but never imported · they sit in the system as wrong answers waiting to be picked</div>
     <div class="chips-row"><span class="vchip" title="packages/ui/src/alert.tsx">&lt;Alert&gt;</span><span class="vchip" title="packages/ui/src/alert.tsx">&lt;AlertDescription&gt;</span><span class="vchip" title="packages/ui/src/alert.tsx">&lt;AlertTitle&gt;</span><span class="vchip" title="packages/ui/src/card-list/card-list-card.tsx">&lt;CardContext&gt;</span><span class="vchip" title="packages/ui/src/card-list/card-list-card.tsx">&lt;CardListCard&gt;</span><span class="vchip" title="packages/ui/src/composite-logo.tsx">&lt;CompositeLogo&gt;</span><span class="vchip" title="packages/ui/src/nav/content/graphics/dub-wireframe-graphic.tsx">&lt;DubWireframeGraphic&gt;</span><span class="vchip" title="packages/ui/src/filter/filter-list.tsx">&lt;FilterList&gt;</span><span class="vchip dim">+8 more</span></div>
     <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p></section>
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 3.12.0</span>, free on npm and as a Claude Code + Codex skill</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">8cf3d4043f0d</span></div>
+    <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 4.0.0</span>, free on npm and as a Claude Code + Codex skill</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">41c1855dcf0b</span></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

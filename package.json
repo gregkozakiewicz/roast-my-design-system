@@ -1,7 +1,7 @@
 {
   "name": "roast-my-design-system",
-  "version": "3.12.0",
-  "description": "Roast your design system with real data. A deterministic, zero-dependency scanner that counts everything that betrays a design system, from colours and their near-identical twins to greys, spacing values, typefaces, duplicated and never-imported components, inline styles, !important and arbitrary Tailwind values, scores it 0-100 against Ideal Design System norms and a 34-repo benchmark, scores monorepos package by package from the workspace declaration, generates a shareable HTML diagnosis, and with --rules writes the agent rules file (CLAUDE.md, .cursor/rules) that stops the mess coming back.",
+  "version": "4.0.0",
+  "description": "Roast your design system with real data. A deterministic, zero-dependency scanner that counts everything that betrays a design system, from colours and their near-identical twins to greys, spacing values, typefaces, duplicated and never-imported components, inline styles, !important and arbitrary Tailwind values, scores it 0-100 against Ideal Design System norms and a 34-repo benchmark, scores monorepos package by package from the workspace declaration, generates a shareable HTML diagnosis, flags stale references in the agent rules you already have, and with --apply injects the generated rules file straight into CLAUDE.md, AGENTS.md or .cursor/rules so the mess stops coming back. Also ships --card (shareable SVG roast card) and --sarif (GitHub code scanning export).",
   "keywords": [
     "design-system",
     "design-tokens",

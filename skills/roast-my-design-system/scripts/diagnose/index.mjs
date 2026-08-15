@@ -113,6 +113,9 @@ const THEMES = {
   },
 };
 const themeName = arg('theme', 'dark');
+// Requester credit ("commissioned by"): their name up top next to the scan
+// date; the generated-by authorship stays in the footer, never confused.
+const commissionedBy = arg('by', null);
 const T = THEMES[themeName];
 if (!T) { console.error(`Unknown theme "${themeName}" (dark | light)`); process.exit(1); }
 
@@ -1193,7 +1196,7 @@ const html = `<!doctype html>
     <div>
       <div class="kicker"><span class="dot"></span>Scan complete · ${h.tookMs}ms · ${n(h.files.code)} code files</div>
       <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">${esc(repoName)}</span> · scanned ${esc((h.harvestedAt ?? '').slice(0, 10))}</div>
+      <div class="meta"><span class="mono">${esc(repoName)}</span> · scanned ${esc((h.harvestedAt ?? '').slice(0, 10))}${commissionedBy ? ` · commissioned by ${esc(commissionedBy)}` : ''}</div>
     </div>
     ${healthScore !== null ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note below</div>' : ''}</div>` : ''}
   </div>
@@ -1286,6 +1289,7 @@ if (summaryPath) {
   writeFileSync(resolve(summaryPath), JSON.stringify({
     repo: repoName,
     version: VERSION,
+    ...(commissionedBy ? { commissionedBy } : {}),
     score: healthScore,
     noSystemLikely,
     verdict,

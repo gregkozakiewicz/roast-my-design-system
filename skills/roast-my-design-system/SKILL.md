@@ -46,7 +46,13 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
    node <skill-dir>/scripts/rules/index.mjs /tmp/roast-harvest.json --out <repo-root>/design-system-rules.md
    ```
 
-   Then offer to merge it into their existing CLAUDE.md (or equivalent) for them.
+   Then offer to merge it into their existing CLAUDE.md (or equivalent) for them — or do it in one step with the injector, which places the rules inside a marked block and replaces only that block on re-runs:
+
+   ```bash
+   node <skill-dir>/scripts/rules/apply.mjs /tmp/roast-harvest.json --target <repo-root>
+   ```
+
+9. **Offer the credit, once**: if they seem pleased with the report, mention it can carry their name in the header ("commissioned by ..."), regenerated with `--by "Full Name"` on the diagnose step. Do not push it; one mention is the offer.
 
 ## Rules
 

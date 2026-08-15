@@ -52,6 +52,8 @@ Usage: npx roast-my-design-system [path] [options]
                   the score and worst findings (pure SVG, embeds in READMEs)
   --sarif         also write design-system-roast.sarif for GitHub code
                   scanning: findings annotated on files in the Security tab
+  --by <name>     put a requester credit in the report header, next to the
+                  scan date ("commissioned by <name>")
   --json          print the scan summary as JSON on stdout (implies --no-open)
 
 Read-only scan (--apply and --rules write only the files they name).
@@ -66,6 +68,7 @@ const wantSarif = flag('sarif') === true;
 const asJson = flag('json') === true;
 const noOpen = flag('no-open') === true || asJson;
 const theme = opt('theme', 'dark');
+const commissionedBy = opt('by', null);
 const target = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
 if (!existsSync(target) || !statSync(target).isDirectory()) {
   console.error(`Not a directory: ${target}`);
@@ -90,7 +93,8 @@ const say = (s) => { if (!asJson) console.log(s); };
 say(`roast-my-design-system ${VERSION} · read-only scan, nothing leaves your machine\n`);
 run('harvest/index.mjs', [target, '--out', harvestPath]);
 say('');
-run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath]);
+run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath,
+  ...(commissionedBy ? ['--by', commissionedBy] : [])]);
 
 const rulesPath = resolve(join(target, 'design-system-rules.md'));
 if (wantRules) {

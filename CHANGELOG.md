@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 4.1.0 — 2026-08-15
+
+- **`--by "Full Name"` puts a requester credit in the report header**, next to the scan date, and in the JSON summary. The generated-by authorship stays in the footer; the two are never confused. The skill offers it once, after the roast.
+- The README gained an **Every command** table: one place listing everything the tool and the skill can do.
+
 ## 4.0.0 — 2026-08-15
 
 The agent release. Nothing breaks; the number is the chapter: the report now speaks the language of what your AI agent gets wrong, and the scan ends with the rules in place instead of in your clipboard.

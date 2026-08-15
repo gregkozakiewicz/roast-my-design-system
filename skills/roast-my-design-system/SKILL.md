@@ -19,6 +19,8 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 
    `<skill-dir>` is this skill's own directory. The scan takes about a second on a normal repo and a few seconds on a large monorepo. It reads the repo; it never writes to it.
 
+   **Scoping**: if the repo root has a `.roastignore` file (one repo-relative folder per line, `#` comments allowed), those folders are left out of the scan automatically. The user can also ask to exclude folders ad hoc; pass each as `--exclude <path>` on the harvest command. Use this when one repo hosts deliberately separate visual worlds (a playground, a toy site, film experiments) that would blur the real design system's numbers. Exclusions are never silent: the harvest JSON records each pattern with the number of files it removed, and the report prints them in the header.
+
 3. **Generate the diagnosis page**:
 
    ```bash
@@ -33,6 +35,7 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
    - When suggesting a fix, switch to calm and assume intent: a value used many times is a decision without a name, not a mistake, and small pixel nudges or one-off layout widths may be deliberate craft. Recommend naming and consolidating, never blind deletion.
    - If the scan found almost nothing (no colours, no spacing), do not roast: say the styling likely lives outside this repo (CDN, parent repo) and the roast doesn't apply.
    - If the harvest JSON has a non-empty `staleRules` array, call it out plainly: the repo's own agent rules reference things this scan can no longer find (each entry names the rules file, the reference and the problem). A rule the agent obeys is worse than no rule when the repo has moved on.
+   - If the harvest JSON has an `exclusions` object, state it up front in one line: which folders were excluded, by which source (.roastignore or --exclude), and how many files that kept out. The score describes the scoped scan, and the audience must know that.
 
 5. **For monorepos, name the split**: if the harvest JSON has a `packages` array with scored entries, say which package is cleanest and which is worst, with their scores. The pattern is usually that the shared UI package is disciplined and the app carries the mess; if that holds here, say so plainly, because it tells them where to look.
 

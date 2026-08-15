@@ -6,7 +6,7 @@
  * write design-system-roast.html, open it, print the score.
  *
  *   npx roast-my-design-system [path] [--theme dark|light] [--out report.html] [--no-open]
- *                              [--rules] [--json]
+ *                              [--rules] [--json] [--exclude <path>]
  */
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, readFileSync, existsSync, statSync } from 'node:fs';
@@ -32,6 +32,15 @@ function opt(name, fallback) {
   argv.splice(i, 2);
   return v;
 }
+// repeatable option: collects every occurrence, comma-separated values split
+function optAll(name) {
+  const out = [];
+  let v;
+  while ((v = opt(name, null)) !== null) {
+    out.push(...v.split(',').map((s) => s.trim()).filter(Boolean));
+  }
+  return out;
+}
 
 if (flag('version') || flag('v')) { console.log(VERSION); process.exit(0); }
 if (flag('help') || flag('h')) {
@@ -54,6 +63,11 @@ Usage: npx roast-my-design-system [path] [options]
                   scanning: findings annotated on files in the Security tab
   --by <name>     put a requester credit in the report header, next to the
                   scan date ("commissioned by <name>")
+  --exclude <p>   leave a folder out of the scan (repo-relative, e.g.
+                  --exclude lab/ --exclude piglet/ or --exclude lab/,piglet/;
+                  same as listing it in a .roastignore file at the repo root).
+                  Every exclusion is printed in the report header with the
+                  number of files it removed, so a scoped scan says so
   --json          print the scan summary as JSON on stdout (implies --no-open)
 
 Read-only scan (--apply and --rules write only the files they name).
@@ -69,6 +83,7 @@ const asJson = flag('json') === true;
 const noOpen = flag('no-open') === true || asJson;
 const theme = opt('theme', 'dark');
 const commissionedBy = opt('by', null);
+const excludes = optAll('exclude');
 const target = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
 if (!existsSync(target) || !statSync(target).isDirectory()) {
   console.error(`Not a directory: ${target}`);
@@ -91,7 +106,8 @@ function run(script, args) {
 const say = (s) => { if (!asJson) console.log(s); };
 
 say(`roast-my-design-system ${VERSION} · read-only scan, nothing leaves your machine\n`);
-run('harvest/index.mjs', [target, '--out', harvestPath]);
+run('harvest/index.mjs', [target, '--out', harvestPath,
+  ...excludes.flatMap((e) => ['--exclude', e])]);
 say('');
 run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath,
   ...(commissionedBy ? ['--by', commissionedBy] : [])]);

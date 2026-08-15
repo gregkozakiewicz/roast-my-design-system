@@ -891,6 +891,22 @@ const stack = [
   h.profile.monorepo ? 'monorepo' : null,
 ].filter(Boolean);
 
+// User exclusions are printed in the header, never hidden: a scoped scan must
+// say it is scoped, or the score could be quietly gamed. Grouped by source
+// (.roastignore vs --exclude), with the total number of files kept out.
+function exclusionsLine() {
+  const patterns = h.exclusions?.patterns ?? [];
+  if (!patterns.length) return '';
+  const sources = [...new Set(patterns.map((p) => p.source))];
+  const parts = sources.map((src) => {
+    const own = patterns.filter((p) => p.source === src);
+    const list = own.map((p) => `<span class="mono">${esc(p.pattern)}/</span>`).join(', ');
+    return `${own.length} ${own.length === 1 ? 'folder' : 'folders'} excluded by ${esc(src)} (${list})`;
+  });
+  const total = h.exclusions.filesExcluded ?? 0;
+  return `<div class="excl">${parts.join(' · ')} · ${n(total)} files kept out of this scan</div>`;
+}
+
 const html = `<!doctype html>
 <html lang="en" data-theme="${themeName}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -942,6 +958,8 @@ const html = `<!doctype html>
   .chip { border:1px solid var(--line); background:var(--card); border-radius:99px;
     padding:4px 12px; font:500 11.5px/1.5 var(--sans); color:var(--text); }
   .chip-agent { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
+  .excl { margin-top:10px; font:500 12px/1.6 var(--sans); color:var(--dim); }
+  .excl .mono { font-size:11.5px; color:var(--text); }
   .stale { margin-top:18px; }
   .chip-xs { display:inline-block; border:1px solid var(--line); background:var(--chip-bg); border-radius:99px;
     padding:1px 8px; font:500 10px/1.6 var(--mono); color:var(--text); }
@@ -1201,6 +1219,7 @@ const html = `<!doctype html>
     ${healthScore !== null ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note below</div>' : ''}</div>` : ''}
   </div>
   <div class="chips">${stack.map((s) => `<span class="chip">${esc(s)}</span>`).join('')}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>
+  ${exclusionsLine()}
   ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output).</span></div>` : ''}
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
@@ -1290,6 +1309,7 @@ if (summaryPath) {
     repo: repoName,
     version: VERSION,
     ...(commissionedBy ? { commissionedBy } : {}),
+    ...(h.exclusions ? { exclusions: h.exclusions } : {}),
     score: healthScore,
     noSystemLikely,
     verdict,

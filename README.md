@@ -31,6 +31,7 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
 | `... --by "Ada Lovelace"` | A requester credit in the report header, next to the scan date |
+| `... --exclude lab/` | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
 | `... --theme light` / `--out <file>` / `--no-open` | Light report, custom report path, don't open the browser |
 | `/roast-my-design-system` (in Claude Code) | The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers |
@@ -57,10 +58,28 @@ The same report in light mode (one file, built-in toggle):
 - **Deterministic scanner, not AI sampling.** A zero-dependency Node script reads *every* file (about a second on a normal repo, a few on a large monorepo) and returns the same numbers every run. Claude narrates; it never counts.
 - **Read-only.** Nothing in your repo is modified. The only outputs are a temp JSON and the HTML report.
 - **No network, no telemetry.** Everything runs locally. Nothing about your code leaves your machine.
-- **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality.
+- **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality. Your own exclusions (`.roastignore`, `--exclude`) are printed in the report header with file counts, so a scoped scan can never pass itself off as the whole repo.
 - **Intent-aware counting (v3).** Runtime-computed inline styles, compound-component APIs and wrapper components are not crimes and are not counted as ones. Token-led repos are judged on their hardcoded strays, not their token architecture. Repeated arbitrary values are read as decisions without names, not drift.
 - **A real benchmark.** The "Avg Design System" yardstick comes from scanning 34 public React repos (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…). Median: 130 colours, 17 greys, 20 duplicated components, 49 inline style blocks, 70 arbitrary Tailwind values.
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
+
+## Scoping the scan
+
+Some repos host more than one visual world on purpose: the product plus a marketing site, a playground, a batch of experiments. Blending them produces a score that describes none of them. Scope the scan to the design system you are actually judging:
+
+```bash
+npx roast-my-design-system --exclude lab/ --exclude playground/
+```
+
+Or make it permanent with a `.roastignore` file at the repo root, one repo-relative folder per line:
+
+```
+# separate visual worlds, not the product's design system
+lab/
+playground/
+```
+
+Both routes merge, and both are loud on purpose. The harvest JSON records every active pattern and how many files it removed, and the report prints a line in the header ("2 folders excluded by .roastignore (lab/, playground/) · 946 files kept out of this scan"). You can narrow the question, but the report always says which question was asked, so a scoped score can't be quietly gamed. There is no negation and no glob syntax: plain folder prefixes, nothing clever.
 
 ## Install
 

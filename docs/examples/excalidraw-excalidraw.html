@@ -85,6 +85,8 @@
   .chip { border:1px solid var(--line); background:var(--card); border-radius:99px;
     padding:4px 12px; font:500 11.5px/1.5 var(--sans); color:var(--text); }
   .chip-agent { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
+  .excl { margin-top:10px; font:500 12px/1.6 var(--sans); color:var(--dim); }
+  .excl .mono { font-size:11.5px; color:var(--text); }
   .stale { margin-top:18px; }
   .chip-xs { display:inline-block; border:1px solid var(--line); background:var(--chip-bg); border-radius:99px;
     padding:1px 8px; font:500 10px/1.6 var(--mono); color:var(--text); }
@@ -325,7 +327,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: pencilrebel/4.1.0 -->
+<!-- rmds-schema: pencilrebel/4.2.0 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <svg class="only-dark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
@@ -337,13 +339,14 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 390ms · 506 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 369ms · 506 code files</div>
       <h1>Design System Diagnosis</h1>
       <div class="meta"><span class="mono">excalidraw/excalidraw</span> · scanned 2026-08-15</div>
     </div>
     <div class="score"><div class="eyebrow">Health score</div><div class="val">55<span class="slash">/</span><span class="of">100</span></div></div>
   </div>
   <div class="chips"><span class="chip">vite-react</span><span class="chip">TypeScript</span><span class="chip">Sass</span><span class="chip">monorepo</span><span class="chip chip-agent">CLAUDE.md</span><span class="chip chip-agent">.github/copilot-instructions.md</span></div>
+  
   
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
@@ -433,7 +436,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) ver. 4.1.0. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) ver. 4.2.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -724,7 +727,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/css/variables.module.scss">packages/excalidraw/css/variables.module.scss</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/css/variables.module.scss">packages/excalidraw/css/variables.module.scss</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">11 stray colours</span>
         
@@ -732,7 +735,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/PublishLibrary.tsx">packages/excalidraw/components/PublishLibrary.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/PublishLibrary.tsx">packages/excalidraw/components/PublishLibrary.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">7 inline</span>
@@ -740,7 +743,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/Actions.tsx">packages/excalidraw/components/Actions.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/Actions.tsx">packages/excalidraw/components/Actions.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">6 inline</span>
@@ -748,7 +751,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">04</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/excalidraw-app/App.tsx">excalidraw-app/App.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/excalidraw-app/App.tsx">excalidraw-app/App.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">5 inline</span>
@@ -756,7 +759,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">05</span>
-      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/LibraryMenuItems.tsx">packages/excalidraw/components/LibraryMenuItems.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/LibraryMenuItems.tsx">packages/excalidraw/components/LibraryMenuItems.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">5 inline</span>
@@ -769,21 +772,21 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;CommandPalette&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/CommandPalette/CommandPalette.tsx">packages/excalidraw/components/CommandPalette/CommandPalette.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/CommandPalette/CommandPalette.tsx">packages/excalidraw/components/CommandPalette/CommandPalette.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;LiveCollaborationTrigger&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/live-collaboration/LiveCollaborationTrigger.tsx">packages/excalidraw/components/live-collaboration/LiveCollaborationTrigger.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/live-collaboration/LiveCollaborationTrigger.tsx">packages/excalidraw/components/live-collaboration/LiveCollaborationTrigger.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;SearchMenu&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/SearchMenu.tsx">packages/excalidraw/components/SearchMenu.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/SearchMenu.tsx">packages/excalidraw/components/SearchMenu.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
       
       </div>
     </div>
@@ -833,27 +836,27 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="sec-head"><h2>83 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/PublishLibrary.tsx">packages/excalidraw/components/PublishLibrary.tsx</a><span class="mc-count">×7</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/PublishLibrary.tsx">packages/excalidraw/components/PublishLibrary.tsx</a><span class="mc-count">×7</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/Actions.tsx">packages/excalidraw/components/Actions.tsx</a><span class="mc-count">×6</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/Actions.tsx">packages/excalidraw/components/Actions.tsx</a><span class="mc-count">×6</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:86%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/excalidraw-app/App.tsx">excalidraw-app/App.tsx</a><span class="mc-count">×5</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/excalidraw-app/App.tsx">excalidraw-app/App.tsx</a><span class="mc-count">×5</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:71%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/LibraryMenuItems.tsx">packages/excalidraw/components/LibraryMenuItems.tsx</a><span class="mc-count">×5</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/LibraryMenuItems.tsx">packages/excalidraw/components/LibraryMenuItems.tsx</a><span class="mc-count">×5</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:71%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/Stats/index.tsx">packages/excalidraw/components/Stats/index.tsx</a><span class="mc-count">×4</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/Stats/index.tsx">packages/excalidraw/components/Stats/index.tsx</a><span class="mc-count">×4</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:57%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system/c645bcc1-2e86-4ef8-b8dc-d89290318375/scratchpad/excalidraw/packages/excalidraw/components/Toolbar.tsx">packages/excalidraw/components/Toolbar.tsx</a><span class="mc-count">×3</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-501/-Users-greg-claudecodework-roast-my-design-system--claude-worktrees-goofy-hermann-3e005c/59482283-1254-49fc-9d5a-e486bdeaa969/scratchpad/excalidraw/packages/excalidraw/components/Toolbar.tsx">packages/excalidraw/components/Toolbar.tsx</a><span class="mc-count">×3</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:43%"></div></div>
       </div></div>
     <div class="receipts"><div class="eyebrow">90 !important declarations · the cascade admitting defeat</div>
@@ -906,7 +909,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 4.1.0</span>, free on npm and as a Claude Code + Codex skill</div>
+    <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 4.2.0</span>, free on npm and as a Claude Code + Codex skill</div>
     <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">597c204ca248</span></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>

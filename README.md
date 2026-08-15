@@ -2,9 +2,11 @@
 
 [![npm](https://img.shields.io/npm/v/roast-my-design-system?color=2dd4bf&label=npm)](https://www.npmjs.com/package/roast-my-design-system) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-## A Claude Code skill that roasts your repo's design system with real data.
+## Your AI can write the UI. This makes sure it writes *your* UI.
 
-Run this skill on your codebase and get, in about a second:
+A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
+
+Run it on your codebase and get, in about a second:
 
 - **A health score you can defend in a meeting.** 0-100, deterministic, benchmarked against Ideal Design System norms, 34 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
 - **Per-package scores for monorepos.** One blended number hides which package is the problem: `packages/ui` scores 80 while `apps/web` scores 40, and now you can see it.

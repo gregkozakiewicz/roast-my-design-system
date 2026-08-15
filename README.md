@@ -16,6 +16,25 @@ Run this skill on your codebase and get, in about a second:
 
 Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in your repo. If your repo has 112 colours and four Button implementations, your agent guesses which one is canonical, and it picks wrong half the time. That's why AI-generated UI looks *almost-but-not-quite* right. The first step to fixing it is seeing the mess measured.
 
+## Every command
+
+One scan powers all of it; the flags decide what lands on disk. Combine freely.
+
+| Command | What you get |
+|---|---|
+| `npx roast-my-design-system` | The scan and `design-system-roast.html`, opened in your browser |
+| `npx roast-my-design-system <path>` | Scan a different repo than the current directory |
+| `... --apply` | The generated agent rules injected straight into your `CLAUDE.md`, `AGENTS.md`, `.cursorrules` or `.cursor/rules/`, inside a marked block. Re-running replaces only that block, never your own text |
+| `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
+| `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
+| `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
+| `... --by "Ada Lovelace"` | A requester credit in the report header, next to the scan date |
+| `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
+| `... --theme light` / `--out <file>` / `--no-open` | Light report, custom report path, don't open the browser |
+| `/roast-my-design-system` (in Claude Code) | The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers |
+
+Every scan also checks the agent rules you already have and flags stale references, no flag needed.
+
 ## Example use cases
 
 - **Pre-refactor audit.** Run `/roast-my-design-system` before a design-system cleanup to get the measured baseline: every colour, spacing value, duplicated component and inline style, with real file paths.
@@ -50,25 +69,6 @@ npx roast-my-design-system
 ```
 
 Run it inside any repo. Same scanner, same report, straight from npm. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.
-
-## Every command
-
-One scan powers all of it; the flags decide what lands on disk. Combine freely.
-
-| Command | What you get |
-|---|---|
-| `npx roast-my-design-system` | The scan and `design-system-roast.html`, opened in your browser |
-| `npx roast-my-design-system <path>` | Scan a different repo than the current directory |
-| `... --apply` | The generated agent rules injected straight into your `CLAUDE.md`, `AGENTS.md`, `.cursorrules` or `.cursor/rules/`, inside a marked block. Re-running replaces only that block, never your own text |
-| `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
-| `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
-| `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
-| `... --by "Ada Lovelace"` | A requester credit in the report header, next to the scan date |
-| `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
-| `... --theme light` / `--out <file>` / `--no-open` | Light report, custom report path, don't open the browser |
-| `/roast-my-design-system` (in Claude Code) | The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers |
-
-Every scan also checks the agent rules you already have and flags stale references, no flag needed.
 
 **Claude Code (recommended):**
 

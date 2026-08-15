@@ -16,6 +16,7 @@ import { findDuplicates } from './duplicates.mjs';
 import { harvestContext } from './context.mjs';
 import { resolveWorkspaces } from '../lib/workspaces.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
+import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 
 function arg(name, fallback) {
@@ -37,6 +38,9 @@ const { components } = harvestComponents(target, files.code);
 const tokens = harvestTokens(target, files.styles, files.code);
 const duplicates = findDuplicates(components, profile.uiDir, target);
 const context = harvestContext(target);
+const staleRules = ruleStaleness(target, components,
+  new Set(neverImportedComponents(components, profile.uiDir).map((c) => c.name)),
+  [...files.code, ...files.styles, ...files.other]);
 
 // ---------- per-package pass (monorepos) ----------
 // Styling is measured inside each package, but usage is counted repo-wide: a
@@ -119,6 +123,7 @@ const harvest = {
   tokens,
   duplicates,
   context,
+  staleRules,
   packages,
 };
 harvest.tookMs = Date.now() - t0;

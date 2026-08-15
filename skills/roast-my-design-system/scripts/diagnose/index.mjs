@@ -234,8 +234,8 @@ const effGreys = tokenLed ? greyStrays : greys.length;
 if (typefaces.length > 3) candidates.push({ ratio: typefaces.length / 3, text: `${typefaces.length} typefaces, brands use 2 or 3` });
 else if (typefaces.length && fontFamilies.length > 6) candidates.push({ ratio: fontFamilies.length / 6, text: `${typefaces.length} typeface${typefaces.length > 1 ? 's' : ''} declared ${fontFamilies.length} different ways` });
 if (effColors > 24 * 1.25) candidates.push({ ratio: effColors / 24, text: tokenLed
-  ? `${n(colorStrays)} hardcoded colours outside the token set`
-  : `${n(colors.length)} distinct colours, a design system needs ~24` });
+  ? `${n(colorStrays)} hardcoded colours outside the token set, your agent will happily copy them at random`
+  : `${n(colors.length)} distinct colours for your agent to pick from, a design system needs ~24` });
 if (effGreys > 13 * 1.25) candidates.push({ ratio: effGreys / 13, text: tokenLed
   ? `${greyStrays} hardcoded greys outside the token set`
   : `${greys.length} shades of grey doing the job of 13` });
@@ -243,10 +243,11 @@ if (spacingTotal > 15) candidates.push({ ratio: spacingTotal / 12, text: `${spac
 if (nearPairs.length >= 3) candidates.push({ ratio: 1 + nearPairs.length / 6, text: `${nearPairs.length} colour pairs are nearly identical (${nearPairs[0].a.value} next to ${nearPairs[0].b.value}), copy-paste, not decisions` });
 if (important.count >= 10) candidates.push({ ratio: 1 + important.count / 30, text: `${n(important.count)} !important declarations, the cascade admitting defeat` });
 if (iconCollisions.length >= 5) candidates.push({ ratio: 1 + iconCollisions.length / 8, text: `two icon sets collide on ${iconCollisions.length} names` });
-if (hardDupes.length > 0) candidates.push({ ratio: 1 + hardDupes.length / 5, text: `${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once` });
-if (inline.count > 20) candidates.push({ ratio: inline.count / 20, text: `${n(inline.count)} inline style blocks bypassing every system` });
-if (arbitraryCount >= 20) candidates.push({ ratio: arbitraryCount / 30, text: `${n(arbitraryCount)} arbitrary values like ${arbitrary[0].value} punched through the Tailwind scale` });
+if (hardDupes.length > 0) candidates.push({ ratio: 1 + hardDupes.length / 5, text: `${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once, so an agent asked for a Button has several random options` });
+if (inline.count > 20) candidates.push({ ratio: inline.count / 20, text: `${n(inline.count)} inline style blocks bypassing every system, and teaching your agent to do the same` });
+if (arbitraryCount >= 20) candidates.push({ ratio: arbitraryCount / 30, text: `${n(arbitraryCount)} arbitrary values like ${arbitrary[0].value} punched through the Tailwind scale, each one a precedent your agent will follow` });
 if (agentFiles.length === 0) candidates.push({ ratio: 1.3, text: `no agent rules, so your AI is guessing` });
+if ((h.staleRules ?? []).length >= 2) candidates.push({ ratio: 1.2 + h.staleRules.length / 10, text: `${h.staleRules.length} references in your agent rules point at things this scan can no longer find` });
 const findings = candidates.sort((a, b) => b.ratio - a.ratio).map((c) => c.text);
 
 let verdict = findings.length === 0
@@ -489,7 +490,7 @@ function duplicatesSection() {
       </div>
     </div>`).join('');
   return `<div class="glass pad half">
-    ${sectionHead('Duplicated components', 'every duplicate is a place where your agent has to guess which one is canonical, and it picks wrong half the time. Paths open in VS Code')}
+    ${sectionHead('Duplicated components', 'an agent asking which one is canonical gets several plausible answers. Paths open in VS Code')}
     <div class="fams">${iconCard}${dupeCards}${famCards}</div></div>`;
 }
 
@@ -624,7 +625,7 @@ function componentsSection() {
     ${sectionHead('What you actually use', `${n(reusable.length)} components defined · top by adoption · the real system, buried in here`)}
     ${top.length ? `<div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div>` : ''}
     ${neverImported.length >= 2 ? `
-    <div class="receipts">${eyebrow(`${n(neverImported.length)} components defined but never imported · candidates for deletion, or the system nobody found`)}
+    <div class="receipts">${eyebrow(`${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
     <div class="chips-row">${neverImported.slice(0, 8).map((c) => `<span class="vchip" title="${esc(c.file)}">&lt;${esc(c.name)}&gt;</span>`).join('')}${neverImported.length > 8 ? `<span class="vchip dim">+${neverImported.length - 8} more</span>` : ''}</div>
     <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>` : ''}</section>`;
 }
@@ -861,9 +862,21 @@ function agentSection() {
   const msg = agentFiles.length
     ? `<p class="sub">Your agent reads ${agentFiles.map((c) => `<span class="mono">${esc(c.file)}</span>`).join(', ')}. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p>`
     : `<p class="sub">No <span class="mono">CLAUDE.md</span>, no <span class="mono">AGENTS.md</span>, no <span class="mono">.cursorrules</span>. Every time your AI builds UI here, it guesses, from everything below. This is why its output looks almost-but-not-quite right.</p>`;
+  const stale = h.staleRules ?? [];
+  const staleRows = stale.map((s) => `
+    <div class="ledger-row">
+      <span class="mono strong">${esc(s.ref)}</span>
+      <span class="dim">${s.problem === 'missing' ? 'named in' : 'named canonical in'} ${esc(s.file)}, ${s.problem === 'missing' ? 'but the path no longer exists' : 'but nothing imports it this scan'}</span>
+    </div>`).join('');
+  const staleBlock = stale.length ? `
+    <div class="stale">
+      ${eyebrow(`${stale.length} rule reference${stale.length === 1 ? '' : 's'} gone stale · a rule your agent obeys is worse than no rule when the repo has moved on`)}
+      <div class="ledger">${staleRows}</div>
+      <p class="sub" style="margin-top:10px">Rules rot quietly: nobody edits them when a component is renamed or a file moves. Regenerate them from a fresh scan, or fix the lines by hand.</p>
+    </div>` : '';
   return `<section class="glass pad agent">
     ${sectionHead('What your AI agent sees today', '')}
-    ${msg}${have ? `<div class="chips">${have}</div>` : ''}</section>`;
+    ${msg}${have ? `<div class="chips">${have}</div>` : ''}${staleBlock}</section>`;
 }
 
 // ---------- page ----------
@@ -926,6 +939,7 @@ const html = `<!doctype html>
   .chip { border:1px solid var(--line); background:var(--card); border-radius:99px;
     padding:4px 12px; font:500 11.5px/1.5 var(--sans); color:var(--text); }
   .chip-agent { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
+  .stale { margin-top:18px; }
   .chip-xs { display:inline-block; border:1px solid var(--line); background:var(--chip-bg); border-radius:99px;
     padding:1px 8px; font:500 10px/1.6 var(--mono); color:var(--text); }
 

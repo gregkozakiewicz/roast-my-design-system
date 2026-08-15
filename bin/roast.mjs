@@ -45,13 +45,24 @@ Usage: npx roast-my-design-system [path] [options]
   --no-open       write the report without opening it
   --rules         also write design-system-rules.md: agent rules (for
                   CLAUDE.md / .cursor/rules) generated from the scan
+  --apply         inject the rules straight into your agent files (CLAUDE.md,
+                  AGENTS.md, .cursorrules, .cursor/rules/) inside a marked
+                  block; re-running replaces only that block
+  --card          also write roast-card.svg: a shareable 1200x630 card with
+                  the score and worst findings (pure SVG, embeds in READMEs)
+  --sarif         also write design-system-roast.sarif for GitHub code
+                  scanning: findings annotated on files in the Security tab
   --json          print the scan summary as JSON on stdout (implies --no-open)
 
-Read-only scan. No network, no telemetry, nothing leaves your machine.`);
+Read-only scan (--apply and --rules write only the files they name).
+No network, no telemetry, nothing leaves your machine.`);
   process.exit(0);
 }
 
 const wantRules = flag('rules') === true;
+const wantApply = flag('apply') === true;
+const wantCard = flag('card') === true;
+const wantSarif = flag('sarif') === true;
 const asJson = flag('json') === true;
 const noOpen = flag('no-open') === true || asJson;
 const theme = opt('theme', 'dark');
@@ -86,6 +97,20 @@ if (wantRules) {
   say('');
   run('rules/index.mjs', [harvestPath, '--out', rulesPath]);
 }
+if (wantApply) {
+  say('');
+  run('rules/apply.mjs', [harvestPath, '--target', target]);
+}
+const cardPath = resolve(join(target, 'roast-card.svg'));
+if (wantCard) {
+  say('');
+  run('card/index.mjs', [summaryPath, '--out', cardPath]);
+}
+const sarifPath = resolve(join(target, 'design-system-roast.sarif'));
+if (wantSarif) {
+  say('');
+  run('sarif/index.mjs', [harvestPath, '--out', sarifPath]);
+}
 
 let summary = null;
 try { summary = JSON.parse(readFileSync(summaryPath, 'utf8')); } catch { /* report still exists */ }
@@ -100,9 +125,12 @@ if (asJson) {
   }
 }
 
-if (wantRules && !asJson) {
+if (wantApply && !asJson) {
+  console.log(`\n  rules are in place: your agent reads them on its next run.`);
+} else if (wantRules && !asJson) {
   console.log(`\n  design-system-rules.md is ready: paste it into CLAUDE.md or .cursor/rules
-  so your AI agent stops repeating this repo's mistakes.`);
+  so your AI agent stops repeating this repo's mistakes. Or run --apply
+  next time and skip the paste.`);
 } else if (!asJson) {
   console.log(`\n  there is a present wrapped inside the report: your agent rules file,
   generated from this scan. Or run with --rules to write it straight to disk.`);

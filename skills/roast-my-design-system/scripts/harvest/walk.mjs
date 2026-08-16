@@ -160,10 +160,19 @@ export function profileRepo(root, files) {
   const knownLib = KNOWN_LIBRARIES.find((d) => deps[d.pkg]);
   const homegrown = files.code.filter((f) => /(^|\/)components\//.test(f) && !/\/components\/ui\//.test(f) && /\.(tsx|jsx)$/.test(f));
 
+  // A design system does not have to arrive through npm. A stylesheet defining
+  // a real set of CSS custom properties IS one — arguably the purest form —
+  // and calling it "none" undersells exactly the discipline the ideal asks for.
+  const tokenDefs = files.styles.slice(0, 8).reduce((sum, f) => {
+    const css = read(join(root, f));
+    return sum + (css ? (css.match(/--[A-Za-z0-9_-]+\s*:/g) ?? []).length : 0);
+  }, 0);
+
   let designSystem;
   if (isShadcn) designSystem = { kind: 'shadcn', name: 'shadcn/ui', confidence: 'high' };
   else if (knownLib) designSystem = { kind: 'library', name: knownLib.name, pkg: knownLib.pkg, confidence: 'high' };
   else if (homegrown.length >= 3) designSystem = { kind: 'custom', name: 'custom (unrecognized)', confidence: 'low' };
+  else if (tokenDefs >= 5) designSystem = { kind: 'custom', name: 'CSS tokens', confidence: 'medium' };
   else designSystem = { kind: 'none', confidence: 'high' };
 
   // Import alias from tsconfig paths or components.json
@@ -175,7 +184,10 @@ export function profileRepo(root, files) {
     if (key) alias = key.replace('/*', '');
   }
 
-  const styling = STYLING_DEPS.filter((s) => deps[s.pkg]).map((s) => s.label);
+  // No toolchain in package.json does not mean no styling: if the walk found
+  // real stylesheets, plain CSS is what is there — say so, not "none detected".
+  let styling = STYLING_DEPS.filter((s) => deps[s.pkg]).map((s) => s.label);
+  if (!styling.length && files.styles.length) styling = ['plain CSS'];
 
   // The git remote is a far better identity than package.json's name field
   // ("chatbot" vs "vercel/ai-chatbot"). Parsed from .git/config, no git exec.

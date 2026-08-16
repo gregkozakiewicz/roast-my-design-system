@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 4.2.5 — 2026-08-16
+
+- Terminal layout round, Greg's notes: the banner, Harvest line and profile arrow now sit together without stray blank lines; the diagnosis block breathes instead ("score" then a beat, then "Verdict:"); and the report path reads as a sentence, "Your free report is here → …", instead of a bare arrow.
+
 ## 4.2.4 — 2026-08-16
 
 - **A design system does not have to arrive through npm.** The profiler only knew design systems as packages (shadcn, Material UI, Chakra…) or component folders, so a hand-built site running entirely on CSS custom properties read "design system: none · styling: none detected" right next to a perfect score. A stylesheet defining a real set of tokens now reads "design system: custom (CSS tokens)", and when stylesheets exist without any styling toolchain in package.json, styling says "plain CSS" instead of pretending nothing is there. Labels only; no score changes.

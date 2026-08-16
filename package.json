@@ -1,6 +1,6 @@
 {
   "name": "roast-my-design-system",
-  "version": "4.2.4",
+  "version": "4.2.5",
   "description": "Your AI can write the UI. This makes sure it writes your UI. A deterministic scanner counts every colour, spacing value and duplicate component, scores you 0-100 against 34 public repos, scopes the scan with .roastignore, injects agent rules with --apply.",
   "keywords": [
     "design-system",

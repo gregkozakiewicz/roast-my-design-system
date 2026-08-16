@@ -171,8 +171,8 @@ const top = (list, n = 5) => list.some((e) => e.count > 1)
   ? `   top: ${list.slice(0, n).map((e) => `${showVal(e.value)} ×${e.count}`).join(', ')}`
   : (list.length ? ', none repeated' : '');
 
-console.log(`\nHarvest: ${profile.name ?? target}`);
-console.log(`  framework: ${profile.framework}${profile.typescript ? ' + TS' : ''}   design system: ${profile.designSystem.kind}${profile.designSystem.name ? ` (${profile.designSystem.name})` : ''}   styling: ${profile.stylingDeps.join(', ') || 'none detected'}`);
+console.log(`Harvest: ${profile.name ?? target}`);
+console.log(`  → framework: ${profile.framework}${profile.typescript ? ' + TS' : ''}   design system: ${profile.designSystem.kind}${profile.designSystem.name ? ` (${profile.designSystem.name})` : ''}   styling: ${profile.stylingDeps.join(', ') || 'none detected'}`);
 console.log(`  files: ${files.code.length} code, ${files.styles.length} style`);
 if (exclusions.patterns.length) {
   // Same voice as the report header: source named once, slashes on folders,
@@ -197,7 +197,7 @@ console.log(`  context files: ${context.map((c) => c.file).join(', ') || 'none'}
 // The npx wrapper writes the harvest to a temp dir it deletes right after;
 // pointing the user at a path that will not exist is noise there.
 if (process.env.ROAST_EPHEMERAL_OUT === '1') {
-  console.log(`\n  scanned in ${harvest.tookMs}ms\n`);
+  console.log(`\n  scanned in ${harvest.tookMs}ms`);
 } else {
-  console.log(`\n  → ${outPath}   (${harvest.tookMs}ms)\n`);
+  console.log(`\n  → ${outPath}   (${harvest.tookMs}ms)`);
 }

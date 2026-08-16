@@ -106,7 +106,7 @@ function run(script, args, env) {
 }
 const say = (s) => { if (!asJson) console.log(s); };
 
-say(`roast-my-design-system ${VERSION} · read-only scan, nothing leaves your machine\n`);
+say(`roast-my-design-system ${VERSION} · read-only scan, nothing leaves your machine`);
 // the harvest goes to a temp dir this wrapper deletes right after; tell the
 // script so it does not print a path that will be gone seconds later
 run('harvest/index.mjs', [target, '--out', harvestPath,

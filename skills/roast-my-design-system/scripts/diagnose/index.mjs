@@ -1324,5 +1324,5 @@ if (summaryPath) {
 
 console.log(`✓ Diagnosis for ${repoName}`);
 if (healthScore !== null) console.log(`  score: ${healthScore}/100`);
-console.log(`  verdict: ${verdict}`);
-console.log(`  → ${outPath}`);
+console.log(`\n  Verdict: ${verdict}`);
+console.log(`  Your free report is here → ${outPath}`);

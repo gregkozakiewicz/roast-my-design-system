@@ -1,5 +1,5 @@
 /**
- * File walker + repo profile. Adapted from 1.0's repo-inspect (proffer-spine),
+ * File walker + repo profile. Adapted from an earlier internal repo inspector,
  * widened: the harvester must see EVERYTHING that styles the app — code,
  * stylesheets of any flavor, and config — not just a happy-path shadcn layout.
  */

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Harvest — step 1 of the Proffer pipeline. Non-destructive scan of a repo:
+ * Harvest — step 1 of the pipeline. Non-destructive scan of a repo:
  * components (real props, real usages), all styling, implicit tokens with
  * frequency counts, duplicates, context files. Writes harvest.json; prints a
  * one-screen summary (the seed of the step-2 diagnosis).

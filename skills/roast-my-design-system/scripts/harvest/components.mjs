@@ -1,7 +1,7 @@
 /**
  * Component harvest — every component defined in the repo, with its REAL prop
  * signature and where it is actually used. Parsers lifted from 1.0's
- * compile-skill.mjs (proffer-spine/tools) — brace/string-aware regex parsing,
+ * compile-skill.mjs — brace/string-aware regex parsing,
  * no AST dependency — then extended to scan the whole repo, not one ui/ dir.
  */
 import { readFileSync } from 'node:fs';

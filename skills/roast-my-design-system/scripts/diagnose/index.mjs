@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Diagnose — step 2 of the Proffer pipeline. Renders a harvest.json into a
+ * Diagnose — step 2 of the pipeline. Renders a harvest.json into a
  * single self-contained HTML report: the visceral, shareable "here's your
  * mess" page with real file paths. No dependencies, no server — one file.
  *

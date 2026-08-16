@@ -30,7 +30,7 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
-| `... --by "Ada Lovelace"` | A requester credit in the report header, next to the scan date |
+| `... --by "Dwayne Hicks"` | A requester credit in the report header, next to the scan date |
 | `... --exclude lab/` | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
 | `... --theme light` / `--out <file>` / `--no-open` | Light report, custom report path, don't open the browser |

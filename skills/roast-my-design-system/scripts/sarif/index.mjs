@@ -8,7 +8,7 @@
  *   node src/sarif/index.mjs <harvest.json> --out design-system-roast.sarif
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { resolve, sep } from 'node:path';
 import { VERSION } from '../lib/version.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
@@ -19,6 +19,8 @@ function arg(name, fallback) {
 }
 const inPath = process.argv[2] && !process.argv[2].startsWith('--') ? resolve(process.argv[2]) : null;
 if (!inPath) { console.error('Usage: node src/sarif/index.mjs <harvest.json> --out design-system-roast.sarif'); process.exit(1); }
+const cwd = process.cwd() + sep;
+if (!inPath.startsWith(cwd)) { console.error('Error: input path must be within the current working directory'); process.exit(1); }
 const outPath = resolve(arg('out', 'design-system-roast.sarif'));
 
 const h = JSON.parse(readFileSync(inPath, 'utf8'));

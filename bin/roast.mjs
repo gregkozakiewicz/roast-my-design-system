@@ -12,7 +12,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SCRIPTS = join(HERE, '../skills/roast-my-design-system/scripts');
@@ -114,6 +114,19 @@ run('harvest/index.mjs', [target, '--out', harvestPath,
 say('');
 run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath,
   ...(commissionedBy ? ['--by', commissionedBy] : [])]);
+
+// The verdict leads, the evidence follows: harvest details print here, after
+// the diagnosis, rendered from harvest.json via the same lines the direct
+// harvest run uses.
+if (!asJson) {
+  try {
+    const harvestData = JSON.parse(readFileSync(harvestPath, 'utf8'));
+    const { detailLines } = await import(pathToFileURL(join(SCRIPTS, 'harvest/summary.mjs')).href);
+    console.log('');
+    for (const l of detailLines(harvestData)) console.log(l);
+    console.log(`\n  scanned in ${harvestData.tookMs}ms`);
+  } catch { /* details are garnish; the report exists either way */ }
+}
 
 const rulesPath = resolve(join(target, 'design-system-rules.md'));
 if (wantRules) {

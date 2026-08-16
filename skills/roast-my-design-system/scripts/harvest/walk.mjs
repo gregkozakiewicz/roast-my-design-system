@@ -142,11 +142,15 @@ export function profileRepo(root, files) {
   deps = { ...deps, ...pkg.dependencies, ...pkg.devDependencies };
   const monorepo = pkgFiles.some((f) => f !== 'package.json');
 
+  // Hand-built sites are a real category, not a detection failure: "unknown"
+  // next to a good score reads like a shrug, so name what is actually there.
+  const htmlFiles = files.other.filter((f) => /\.html?$/.test(f)).length;
   const framework =
     deps.next ? 'next'
     : deps['@remix-run/react'] || deps['@react-router/dev'] ? 'remix'
     : deps.vite && deps.react ? 'vite-react'
     : deps.react ? 'react'
+    : htmlFiles > 0 ? 'static HTML/CSS'
     : 'unknown';
 
   const componentsJson = readJSON(join(root, 'components.json'));

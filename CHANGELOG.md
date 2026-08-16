@@ -2,6 +2,16 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 4.2.3 — 2026-08-16
+
+Terminal copy round: the CLI now tells the same story as the report.
+
+- The exclusions line matches the report header's voice: source named once, slashes on folders, and the total at the end ("excluded by you (.roastignore): piglet/ 191 files, lab/into-the-blue/ 753, lab/assets/ 2 · 946 files kept out of this scan").
+- Truncated token captures like "rgba(var(--ink-rgb)" no longer read as a glitch; the terminal shows the token reference itself: var(--ink-rgb) ×6.
+- The "top:" list only appears when something actually repeats; ten values all used once now read "10 distinct CSS values, none repeated" instead of a meaningless ranking.
+- Hand-built sites are a category, not a detection failure: a repo with HTML pages and no framework now reads "framework: static HTML/CSS" instead of "unknown", in the terminal and as a report chip.
+- The npx flow no longer prints the temp harvest path it deletes seconds later; it says "scanned in 27ms" instead. Running the harvest script directly still prints the real output path.
+
 ## 4.2.2 — 2026-08-16
 
 - Docs only: the npm description now fits npm's 255-character display window, so nothing is cut off mid-word on the package page; it keeps the positioning line and names .roastignore and --apply. The --by example name in the README and landing page changed. No code changes.

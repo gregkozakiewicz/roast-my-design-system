@@ -159,23 +159,45 @@ writeFileSync(outPath, JSON.stringify(harvest, null, 2));
 // ---------- one-screen summary ----------
 const nonPage = components.filter((c) => !c.isPage);
 const hexColors = tokens.colors.filter((c) => c.value.startsWith('#'));
-const top = (list, n = 5) => list.slice(0, n).map((e) => `${e.value} ×${e.count}`).join(', ');
+// A truncated capture like "rgba(var(--ink-rgb)" reads as a glitch in the
+// terminal; the token reference inside it is the real story, so show that.
+const showVal = (v) => {
+  const m = /var\((--[A-Za-z0-9_-]+)/.exec(v);
+  const balanced = (v.match(/\(/g) ?? []).length === (v.match(/\)/g) ?? []).length;
+  return m && !balanced ? `var(${m[1]})` : v;
+};
+// A "top" list is only news when something repeats; all-×1 says nothing.
+const top = (list, n = 5) => list.some((e) => e.count > 1)
+  ? `   top: ${list.slice(0, n).map((e) => `${showVal(e.value)} ×${e.count}`).join(', ')}`
+  : (list.length ? ', none repeated' : '');
 
 console.log(`\nHarvest: ${profile.name ?? target}`);
 console.log(`  framework: ${profile.framework}${profile.typescript ? ' + TS' : ''}   design system: ${profile.designSystem.kind}${profile.designSystem.name ? ` (${profile.designSystem.name})` : ''}   styling: ${profile.stylingDeps.join(', ') || 'none detected'}`);
 console.log(`  files: ${files.code.length} code, ${files.styles.length} style`);
 if (exclusions.patterns.length) {
-  const list = exclusions.patterns.map((p) => `${p.pattern} (${p.files} files, ${p.source})`).join(', ');
-  console.log(`  excluded by you: ${list}`);
+  // Same voice as the report header: source named once, slashes on folders,
+  // and the total at the end because that is the number that lands.
+  const groups = [...new Set(exclusions.patterns.map((p) => p.source))].map((src) => {
+    const own = exclusions.patterns.filter((p) => p.source === src);
+    return `(${src}): ${own.map((p, i) => `${p.pattern}/ ${p.files}${i === 0 ? ' files' : ''}`).join(', ')}`;
+  });
+  const total = exclusions.patterns.reduce((sum, p) => sum + p.files, 0);
+  console.log(`  excluded by you ${groups.join(' · ')} · ${total} files kept out of this scan`);
 }
 console.log(`\n  components: ${components.length} defined (${nonPage.length} reusable, ${components.length - nonPage.length} pages)`);
 console.log(`  duplicates: ${duplicates.exactDuplicates.length} exact same-name, ${duplicates.families.length} name families`);
 for (const d of duplicates.exactDuplicates.slice(0, 3)) console.log(`    · ${d.name} defined in ${d.files.length} files`);
 for (const f of duplicates.families.slice(0, 3)) console.log(`    · ${f.root} family: ${f.members.map((m) => m.name).join(', ')}`);
-console.log(`\n  colours: ${tokens.colors.length} distinct (${hexColors.length} hex, of which ${tokens.greyCount} greys)   top: ${top(tokens.colors, 4)}`);
-console.log(`  spacing: ${tokens.spacing.length} distinct CSS values   top: ${top(tokens.spacing, 5)}`);
+console.log(`\n  colours: ${tokens.colors.length} distinct (${hexColors.length} hex, of which ${tokens.greyCount} greys)${top(tokens.colors, 4)}`);
+console.log(`  spacing: ${tokens.spacing.length} distinct CSS values${top(tokens.spacing, 5)}`);
 console.log(`  radii: ${tokens.radii.length}   font sizes: ${tokens.fontSizes.length}   font families: ${tokens.fontFamilies.length}   shadows: ${tokens.shadows.length}`);
 console.log(`  tailwind: ${tokens.tailwind.colors.length} colour utils, ${tokens.tailwind.spacing.length} spacing utils, ${tokens.tailwind.textSizes.length} text sizes`);
 console.log(`  inline styles: ${tokens.inlineStyles.count} blocks`);
 console.log(`  context files: ${context.map((c) => c.file).join(', ') || 'none'}`);
-console.log(`\n  → ${outPath}   (${harvest.tookMs}ms)\n`);
+// The npx wrapper writes the harvest to a temp dir it deletes right after;
+// pointing the user at a path that will not exist is noise there.
+if (process.env.ROAST_EPHEMERAL_OUT === '1') {
+  console.log(`\n  scanned in ${harvest.tookMs}ms\n`);
+} else {
+  console.log(`\n  → ${outPath}   (${harvest.tookMs}ms)\n`);
+}

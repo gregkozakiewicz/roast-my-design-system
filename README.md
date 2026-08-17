@@ -24,7 +24,7 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 
 One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
-| Command | What you get |
+| Command <img width="330" height="1"> | What you get |
 |---|---|
 | <code>npx&nbsp;roast-my-design-system</code> | The scan and `design-system-roast.html`, opened in your browser |
 | <code>npx&nbsp;roast-my-design-system&nbsp;&lt;path&gt;</code> | Scan a different repo than the current directory |

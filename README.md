@@ -107,8 +107,6 @@ claude mcp add roast -- npx roast-my-design-system --mcp
 
 Any MCP client can register the same stdio command (tested with Claude Code; Cursor and Windsurf speak the same protocol). Same promise as the scan: local, read-only, one scan at startup, no port, no account, nothing about your code leaves your machine. And a clean answer reads "no measured violations found" with the list of checks attached, because a scanner can only certify what it can count.
 
-<!-- demo video: open this README in the GitHub web editor and drag demo_mcp_roast.mp4 here -->
-
 ## In CI
 
 The scanner already speaks SARIF, so wiring it into GitHub code scanning is six lines. Findings appear in the Security tab, annotated on the files themselves:

@@ -14,7 +14,7 @@
  * The same suite must pass in both places.
  */
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdtempSync, mkdirSync, rmSync, readdirSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -85,7 +85,39 @@ for (const fixture of readdirSync(FIXTURES).sort()) {
   if (html.includes(tmpdir()) || /\/Users\/[a-z]+\//.test(html.replace(new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), ''))) {
     bad('report carries no machine paths', 'found a home or tmp path outside the scanned fixture root');
   } else ok('report carries no machine paths');
+
+  // SARIF: findings-as-code-scanning output, with the run's absolute fixture
+  // root and version stripped so only the findings themselves are the contract.
+  const sarifPath = join(tmp, `${fixture}.sarif`);
+  runEngine('sarif/index.mjs', [hPath, '--out', sarifPath]);
+  const sarif = readFileSync(sarifPath, 'utf8').split(root).join('FIXTURE');
+  compare('sarif snapshot', stripVersion(sarif), `${fixture}.sarif.json`);
 }
+
+// ---------- messy-only deep checks ----------
+console.log('messy extras:');
+const mh = JSON.parse(readFileSync(join(tmp, 'messy.json'), 'utf8'));
+
+// Stale-rule detection: the fixture's CLAUDE.md references a file that does
+// not exist; the staleness engine must flag it, and nothing else.
+compare('staleness snapshot', mh.staleRules ?? [], 'messy.stale.json');
+
+// The roast card: pure SVG from the summary, dates and versions stripped.
+const cardPath = join(tmp, 'messy-card.svg');
+runEngine('card/index.mjs', [join(tmp, 'messy-s.json'), '--out', cardPath]);
+compare('card snapshot', stripVersion(readFileSync(cardPath, 'utf8').replace(/\d{4}-\d{2}-\d{2}/g, 'DATE')), 'messy.card.svg');
+
+// --apply injection: a fresh CLAUDE.md gets the marked block, and a second
+// run replaces rather than duplicates it.
+const applyDir = join(tmp, 'apply');
+mkdirSync(applyDir, { recursive: true });
+writeFileSync(join(applyDir, 'CLAUDE.md'), '# my own rules\nkeep me.\n');
+runEngine('rules/apply.mjs', [join(tmp, 'messy.json'), '--target', applyDir]);
+const once = readFileSync(join(applyDir, 'CLAUDE.md'), 'utf8');
+runEngine('rules/apply.mjs', [join(tmp, 'messy.json'), '--target', applyDir]);
+const twice = readFileSync(join(applyDir, 'CLAUDE.md'), 'utf8');
+once === twice ? ok('apply is idempotent') : bad('apply is idempotent', 'second run changed the file');
+compare('apply snapshot', stripVersion(once), 'messy.apply.md');
 
 // Determinism: the same fixture scanned twice must produce identical data.
 console.log('determinism:');

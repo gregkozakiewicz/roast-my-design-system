@@ -1,0 +1,8 @@
+[
+  {
+    "file": "CLAUDE.md",
+    "ref": "src/components/OldThing.tsx",
+    "kind": "path",
+    "problem": "missing"
+  }
+]

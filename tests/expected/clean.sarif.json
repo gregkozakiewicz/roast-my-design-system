@@ -1,0 +1,84 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-X.json",
+  "version": "X",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "roast-my-design-system",
+          "version": "X",
+          "informationUri": "https://github.com/pencilrebel/roast-my-design-system",
+          "rules": [
+            {
+              "id": "duplicate-component",
+              "name": "Duplicated component",
+              "shortDescription": {
+                "text": "Duplicated component"
+              },
+              "fullDescription": {
+                "text": "A component implemented more than once. An agent asked for it has several plausible answers."
+              },
+              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+            },
+            {
+              "id": "never-imported-component",
+              "name": "Component nobody imports",
+              "shortDescription": {
+                "text": "Component nobody imports"
+              },
+              "fullDescription": {
+                "text": "Defined in the system, imported by nothing. It sits there as a wrong answer waiting to be picked."
+              },
+              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+            },
+            {
+              "id": "inline-styles",
+              "name": "Inline style blocks",
+              "shortDescription": {
+                "text": "Inline style blocks"
+              },
+              "fullDescription": {
+                "text": "Static values written as style attributes, bypassing the system and teaching the agent to do the same."
+              },
+              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+            },
+            {
+              "id": "important-styles",
+              "name": "!important declarations",
+              "shortDescription": {
+                "text": "!important declarations"
+              },
+              "fullDescription": {
+                "text": "The cascade admitting defeat. Fix specificity at the source and these stop being necessary."
+              },
+              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+            },
+            {
+              "id": "stray-colors",
+              "name": "Hardcoded colours",
+              "shortDescription": {
+                "text": "Hardcoded colours"
+              },
+              "fullDescription": {
+                "text": "Colour values no token names. Each one is a value the agent will happily copy."
+              },
+              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+            },
+            {
+              "id": "stale-rule-reference",
+              "name": "Stale agent-rule reference",
+              "shortDescription": {
+                "text": "Stale agent-rule reference"
+              },
+              "fullDescription": {
+                "text": "The agent rules reference something this scan can no longer find. A rule the agent obeys is worse than no rule when the repo has moved on."
+              },
+              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+            }
+          ]
+        }
+      },
+      "results": []
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="blob1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="blob2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0b0d11"/>
+  <circle cx="1080" cy="80" r="360" fill="url(#blob1)"/>
+  <circle cx="140" cy="580" r="330" fill="url(#blob2)"/>
+  <rect x="44" y="44" width="1112" height="542" rx="28" fill="#11141a" fill-opacity="0.72" stroke="#272c37" stroke-width="1.5"/>
+
+  <text x="96" y="132" font-family="'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace" font-size="21" letter-spacing="3" fill="#8b93a7">FIXTURE-MESSY</text>
+  <text x="1104" y="132" font-family="'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace" font-size="18" letter-spacing="2" fill="#5a6172" text-anchor="end">DESIGN SYSTEM ROAST</text>
+
+  <text x="96" y="360" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="190" font-weight="800" fill="#fbbf24">70</text>
+  <text x="320" y="360" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="52" font-weight="600" fill="#5a6172">/100</text>
+  <text x="96" y="416" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="24" fill="#8b93a7">design system health</text>
+
+  <line x1="560" y1="200" x2="560" y2="430" stroke="#272c37" stroke-width="1.5"/>
+  <text x="620" y="212" font-family="'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace" font-size="17" letter-spacing="2.5" fill="#5a6172">WHAT YOUR AGENT LEARNS FROM</text>
+  <circle cx="632" cy="253" r="7" fill="#fb7185"/>
+      <text x="660" y="262" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#e6e9ef">3</text>
+      <text x="660" y="294" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="21" fill="#8b93a7">components never imported</text>
+<circle cx="632" cy="327" r="7" fill="#fbbf24"/>
+      <text x="660" y="336" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#e6e9ef">1</text>
+      <text x="660" y="368" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="21" fill="#8b93a7">duplicated components</text>
+<circle cx="632" cy="401" r="7" fill="#fbbf24"/>
+      <text x="660" y="410" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#e6e9ef">2</text>
+      <text x="660" y="442" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="21" fill="#8b93a7">inline style blocks</text>
+
+  <line x1="96" y1="486" x2="1104" y2="486" stroke="#272c37" stroke-width="1.5"/>
+  <text x="96" y="536" font-family="'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace" font-size="20" fill="#8b93a7">npx roast-my-design-system</text>
+  <text x="1104" y="536" font-family="'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace" font-size="17" fill="#5a6172" text-anchor="end">scanned DATE · ver. X</text>
+</svg>

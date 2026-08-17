@@ -78,10 +78,18 @@ const repoName = h.profile?.name ?? 'this repo';
     .sort((a, b) => b.usageCount - a.usageCount).slice(0, CAP.components);
   if (top.length) {
     section('Canonical components');
-    rule('Use these existing components instead of writing new ones:');
+    rule(compact
+      ? 'Use these existing components instead of writing new ones:'
+      : 'Use these existing components instead of writing new ones, the way this repo already uses them:');
     for (const c of top) {
       const props = !compact && c.propsHint?.named?.length ? ` · props: ${c.propsHint.named.slice(0, 4).join(', ')}` : '';
       lines.push(`  - \`<${c.name}>\` from \`${c.file}\` (used ${c.usageCount}x${props})`);
+      // Golden example: the repo's own most common real usage, quoted with a
+      // receipt. Full variant only; compact hosts trade examples for size.
+      const ex = c.usageExample;
+      if (!compact && ex) {
+        lines.push(`    - most common usage, as in \`${ex.file}\` (matching ${ex.matches} of ${ex.total} usages): \`${ex.snippet}\``);
+      }
     }
   }
   

@@ -185,5 +185,69 @@ export function harvestComponents(root, codeFiles) {
   }
 
   components.sort((a, b) => b.usageCount - a.usageCount || a.name.localeCompare(b.name));
+
+  // Pass 3: golden examples — for the most-used components, quote the repo's
+  // own most common usage, verbatim, with a receipt. Descriptive, never
+  // invented: we photograph the plate that leaves the kitchen most often.
+  // A component with no dominant pattern gets no example (printing one would
+  // be a lie), and a component used a handful of times is not a pattern yet.
+  const uniqueNames = new Set([...byName].filter(([, d]) => d.length === 1).map(([n]) => n));
+  const candidates = components
+    .filter((c) => !c.isPage && c.usageCount >= 6 && uniqueNames.has(c.name))
+    .slice(0, 12);
+  for (const c of candidates) {
+    const found = []; // { tag, file }
+    for (const [file, src] of sources) {
+      if (file === c.file) continue;
+      let from = 0, open;
+      while ((open = src.indexOf(`<${c.name}`, from)) !== -1) {
+        from = open + c.name.length + 1;
+        const after = src[open + c.name.length + 1];
+        if (after && !/[\s/>]/.test(after)) continue;
+        const tag = sliceTag(src, open);
+        if (tag && tag.length <= 220 && !tag.includes('`')) found.push({ tag, file });
+        if (found.length > 400) break;
+      }
+    }
+    if (found.length < 5) continue;
+    // Group by prop-name signature; the winner must be a real majority habit.
+    const sigOf = (tag) => [...tag.matchAll(/[\s({]([A-Za-z_][\w-]*)=/g)].map((m) => m[1]).sort().join(',');
+    const groups = new Map();
+    for (const u of found) {
+      const s = sigOf(u.tag);
+      (groups.get(s) ?? groups.set(s, []).get(s)).push(u);
+    }
+    const [sig, top] = [...groups.entries()].sort((a, b) => b[1].length - a[1].length)[0];
+    if (top.length < 3 || top.length / found.length < 0.4) continue;
+    // The shortest real tag with the dominant signature is the cleanest quote.
+    const best = [...top].sort((a, b) => a.tag.length - b.tag.length)[0];
+    const selfClosed = /\/>\s*$/.test(best.tag);
+    c.usageExample = {
+      snippet: `${best.tag.replace(/\s+/g, ' ').trim()}${selfClosed ? '' : `…</${c.name}>`}`,
+      file: best.file,
+      matches: top.length,
+      total: found.length,
+      props: sig || null,
+    };
+  }
+
   return { components, totalDefined: components.length };
+}
+
+/**
+ * Slice a JSX opening tag from `<` to its matching `>`, string- and
+ * brace-aware so `onClick={() => a > b}` cannot end the tag early.
+ */
+function sliceTag(src, open) {
+  let depth = 0, str = null;
+  const limit = Math.min(src.length, open + 400);
+  for (let i = open; i < limit; i++) {
+    const c = src[i];
+    if (str) { if (c === str && src[i - 1] !== '\\') str = null; continue; }
+    if (QUOTES.has(c)) { str = c; continue; }
+    if (c === '{') depth++;
+    else if (c === '}') depth--;
+    else if (c === '>' && depth === 0) return src.slice(open, i + 1);
+  }
+  return null;
 }

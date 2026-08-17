@@ -2,6 +2,12 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 4.4.0 — 2026-08-17
+
+- **Golden examples: the rules file now shows the dish, not just the recipe.** Each canonical component in the generated rules carries the repo's own most common real usage, quoted verbatim with a receipt: "most common usage, as in `apps/web/.../modal.tsx` (matching 97 of 180 usages): `<Modal showModal={isOpen} setShowModal={setIsOpen}>`". Agents learn far more from a concrete example than from an instruction, and every example is harvested, never invented.
+- **Honesty guards built in.** A component needs 6+ usages with a real majority pattern (40%+, at least 3 agreeing) to earn an example; no dominant habit means no example, because printing one would be a lie. Template-literal and oversized tags are never quoted. The compact variants for Windsurf and Copilot skip examples by design and are byte-identical to 4.3.1.
+- No score changes anywhere; the scan cost is unmeasurable. Example reports regenerated (scores hold at 75/55/25).
+
 ## 4.3.1 — 2026-08-17
 
 - Docs only: the README and landing page lead the agent story with one line, "One scan writes rules for every agent: Claude, Cursor, GitHub Copilot, and Windsurf", and the npm description now names the four agents. No code changes.

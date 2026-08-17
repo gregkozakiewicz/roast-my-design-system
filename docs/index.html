@@ -71,13 +71,16 @@
 <li><b>Rules that stop the mess coming back.</b> A generated design-system-rules.md with your canonical components and their most common real usage, quoted from your own code with a receipt. One flag injects it into every agent file you have: Claude, Cursor, GitHub Copilot, and Windsurf. And every scan checks the rules you already have for stale references, because a rule your agent obeys is worse than no rule when the repo has moved on.</li>
 <li><b>Live answers while the agent works.</b> --mcp runs the scan as a local MCP server: your agent asks which Button is canonical, which token holds the colour it was about to hardcode, and gets its changed files reviewed before finishing. Five tools, one scan at startup, nothing leaves your machine.</li>
 </ul>
-<p class="lead-close">Read only, no network, no telemetry, one shareable HTML report. Every release is provenance signed on npm and passes a 36-check snapshot suite before it ships.</p>
+<p class="lead-close">Read only, no network, no telemetry, one shareable HTML report. Every release is provenance signed on npm and passes a 55-check snapshot suite before it ships.</p>
 <div class="kicker" style="margin-top:26px">Install the Claude Code skill</div>
 <div class="install"><b>/plugin marketplace add</b> pencilrebel/roast-my-design-system<br><b>/plugin install</b> roast-my-design-system@roast-my-design-system</div>
 <p class="sub">The full experience: the roast in chat, then the fixes walked with you. Submitted to the official Claude plugin directory and awaiting review; the commands above work today.</p>
 <div class="kicker" style="margin-top:26px">Run it with npx</div>
 <div class="install"><b>npx</b> roast-my-design-system</div>
 <p class="sub">One command in any repo. No install, no Claude needed.</p>
+<div class="kicker" style="margin-top:26px">Add the MCP server to Claude Code</div>
+<div class="install"><b>claude mcp add</b> roast -- npx roast-my-design-system --mcp</div>
+<p class="sub">Your agent asks the design system before writing UI, and gets the work checked after. Local, read only, nothing leaves your machine. Any MCP client can register the same command; tested with Claude Code.</p>
 <div class="kicker" style="margin-top:26px">Manual install (Claude Code, any version)</div>
 <div class="install"><b>git clone</b> https://github.com/pencilrebel/roast-my-design-system.git<br><b>cp -r</b> roast-my-design-system/skills/roast-my-design-system ~/.claude/skills/</div>
 <p class="sub">Works everywhere, installs the same skill. Use ~/.codex/skills/ instead for OpenAI Codex.</p>

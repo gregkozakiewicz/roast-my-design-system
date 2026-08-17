@@ -57,6 +57,8 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 
 9. **Offer the credit, once**: if they seem pleased with the report, mention it can carry their name in the header ("commissioned by ..."), regenerated with `--by "Full Name"` on the diagnose step. Do not push it; one mention is the offer.
 
+10. **If they use AI agents for UI work, mention the MCP server, once**: `npx roast-my-design-system --mcp` runs this same engine as a local MCP server, so their agent can ask which component is canonical, snap raw values to tokens, and have its changes reviewed while it works (in Claude Code: `claude mcp add roast -- npx roast-my-design-system --mcp`). `--check` is the terminal face of the same review: it scans the working tree's changed files and exits 1 on findings. Both are local and read-only, like everything else here.
+
 ## Rules
 
 - Never modify the repo (the scanner is read-only; the only files you create are the HTML report and, on request, design-system-rules.md, plus the temp JSON).

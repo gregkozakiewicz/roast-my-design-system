@@ -83,8 +83,10 @@ function extractPropsHint(src, name) {
   return (typeAnno || named.length) ? { type: typeAnno || null, named } : null;
 }
 
-/** Capitalized components DEFINED in a source file (declared, not just re-exported). */
-function definedComponents(src) {
+/** Capitalized components DEFINED in a source file (declared, not just re-exported).
+ *  Exported for the MCP validation engine, which checks a snippet's definitions
+ *  against the ledger with the same detector the harvest uses. */
+export function definedComponents(src) {
   const names = new Set();
   for (const m of src.matchAll(/export\s+(?:default\s+)?(?:async\s+)?function\s+([A-Z]\w*)/g)) names.add(m[1]);
   for (const m of src.matchAll(/export\s+const\s+([A-Z]\w*)\s*(?::[^=]+)?=\s*([^\s;]{1,40})/g)) {

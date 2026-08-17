@@ -1,0 +1,29 @@
+=== get_context ===
+Design system context for fixture-monorepo (scanned DATE). Rules derived from this repo's real code.
+TOKENS: 3 colour tokens in packages/ui/tokens.css. Use them; never hardcode a colour. (9 hardcoded strays already exist; do not add more.)
+SPACING: this repo has no scale, just 10 values in circulation. Reuse one rather than inventing value number 11; do not treat them as a system.
+DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
+NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system --apply.
+Before finishing: call roast_validate on what you wrote, then roast_review.
+=== find_component button ===
+No component matching "button" is defined in this repo.
+=== find_component date picker ===
+No component matching "date picker" is defined in this repo.
+=== find_token #3b81f5 ===
+#3b81f5 is not close to any token in this repo (nearest is #2f6f4f, 166 channel steps away). If this colour is a real decision, add it to packages/ui/tokens.css first; do not hardcode it.
+=== find_token 13px ===
+13px is already in use 1x in this repo. Consistent, so use it, but know it lives off any scale.
+=== validate bad snippet ===
+5 findings:
+✕ L2 Hardcoded colour #3b81f5 is new to this repo.
+   Fix: Nearest token: #2f6f4f (166 channel steps away). If that is not the intent, add a token first.
+✕ L2 New one-off spacing value 27px. The repo already carries 10 distinct spacing values.
+✕ L2 Arbitrary bracket [11px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Arbitrary bracket [13px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
+   Fix: Move the values to classes or tokens.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.
+=== validate clean snippet ===
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.

@@ -71,10 +71,38 @@ Usage: npx roast-my-design-system [path] [options]
                   Every exclusion is printed in the report header with the
                   number of files it removed, so a scoped scan says so
   --json          print the scan summary as JSON on stdout (implies --no-open)
+  --check         check the working tree's changed files (git diff + untracked)
+                  against the design system and print the findings; exits 1
+                  when something is over the line, so it composes with scripts
+  --mcp           run as a local MCP server (stdio) so your agent can query
+                  the design system live: context, canonical components,
+                  tokens, validation. Add to your client, e.g. Claude Code:
+                  claude mcp add roast -- npx roast-my-design-system --mcp
 
 Read-only scan (--apply and --rules write only the files they name).
 No network, no telemetry, nothing leaves your machine.`);
   process.exit(0);
+}
+
+// ---------- MCP server / --check: the live faces, no report pipeline ----------
+if (argv.includes('--mcp')) {
+  argv.splice(argv.indexOf('--mcp'), 1);
+  const root = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
+  // stdout belongs to the protocol from here on — no banner, no chatter
+  const { serve } = await import(pathToFileURL(join(SCRIPTS, 'mcp/server.mjs')).href);
+  serve(root);
+  // the server owns the process now; readline keeps it alive until the client
+  // closes stdin, and nothing below (the report pipeline) may run
+  await new Promise(() => {});
+} else if (argv.includes('--check')) {
+  argv.splice(argv.indexOf('--check'), 1);
+  const root = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
+  const { loadKnowledge } = await import(pathToFileURL(join(SCRIPTS, 'mcp/knowledge.mjs')).href);
+  const { reviewData } = await import(pathToFileURL(join(SCRIPTS, 'mcp/tools.mjs')).href);
+  console.log(`roast-my-design-system ${VERSION} · --check · read-only, nothing leaves your machine\n`);
+  const { text, total } = reviewData(loadKnowledge(root));
+  console.log(text);
+  process.exit(total ? 1 : 0);
 }
 
 const wantRules = flag('rules') === true;

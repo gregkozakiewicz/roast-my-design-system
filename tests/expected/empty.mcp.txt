@@ -1,0 +1,28 @@
+=== get_context ===
+Design system context for this repo (scanned DATE). Rules derived from this repo's real code.
+SPACING: nothing on record yet. Whatever you pick becomes a precedent; pick something divisible by 4.
+DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
+NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system --apply.
+Before finishing: call roast_validate on what you wrote, then roast_review.
+=== find_component button ===
+No component matching "button" is defined in this repo.
+=== find_component date picker ===
+No component matching "date picker" is defined in this repo.
+=== find_token #3b81f5 ===
+There is no token scale in this repo to snap #3b81f5 to. The most used colours are: . Pick one and treat it as the start of a convention rather than adding colour number 1.
+=== find_token 13px ===
+This repo has no spacing values on record to compare 13px against. Whatever you pick becomes a precedent; pick something divisible by 4.
+=== validate bad snippet ===
+5 findings:
+⚠ L2 Colour #3b81f5 is new to this repo. No token set exists here to point you at; 0 distinct colours are already in play.
+   Fix: Reuse a colour the repo already has rather than adding to the count.
+✕ L2 New one-off spacing value 27px. The repo already carries 0 distinct spacing values.
+✕ L2 Arbitrary bracket [11px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Arbitrary bracket [13px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
+   Fix: Move the values to classes or tokens.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.
+=== validate clean snippet ===
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.

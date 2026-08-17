@@ -119,6 +119,77 @@ const twice = readFileSync(join(applyDir, 'CLAUDE.md'), 'utf8');
 once === twice ? ok('apply is idempotent') : bad('apply is idempotent', 'second run changed the file');
 compare('apply snapshot', stripVersion(once), 'messy.apply.md');
 
+// ---------- MCP: the five tools, snapshotted per fixture ----------
+// Dates stripped (scan stamp changes daily); the answers are the contract.
+// The token budget is an ASSERTION, not an aspiration: get_context over
+// budget fails the suite before it can ship.
+console.log('mcp:');
+const { loadKnowledge } = await import(pathToFileURL(join(ENGINE, 'mcp/knowledge.mjs')).href);
+const mcpTools = await import(pathToFileURL(join(ENGINE, 'mcp/tools.mjs')).href);
+const stripDates = (s) => s.replace(/\d{4}-\d{2}-\d{2}/g, 'DATE');
+const BAD_SNIPPET = `export function Button() {
+  return <div style={{ color: '#3b81f5', margin: '27px' }} className="p-[11px] text-[13px]">x</div>;
+}`;
+for (const fixture of readdirSync(FIXTURES).sort()) {
+  const k = loadKnowledge(join(FIXTURES, fixture));
+  const sections = [
+    '=== get_context ===', mcpTools.getContext(k, {}),
+    '=== find_component button ===', mcpTools.findComponent(k, { query: 'button' }),
+    '=== find_component date picker ===', mcpTools.findComponent(k, { query: 'date picker' }),
+    '=== find_token #3b81f5 ===', mcpTools.findToken(k, { value: '#3b81f5' }),
+    '=== find_token 13px ===', mcpTools.findToken(k, { value: '13px' }),
+    '=== validate bad snippet ===', mcpTools.validate(k, { code: BAD_SNIPPET }),
+    '=== validate clean snippet ===', mcpTools.validate(k, { code: 'export function Ok() { return <div className="p-4" /> }' }),
+  ];
+  compare(`${fixture} mcp snapshot`, stripDates(sections.join('\n')), `${fixture}.mcp.txt`);
+  const budget = mcpTools.approxTokens(mcpTools.getContext(k, {}));
+  budget <= 400 ? ok(`${fixture} get_context budget ${budget} ≤ 400 tokens`)
+    : bad(`${fixture} get_context budget`, `${budget} tokens, budget is 400`);
+}
+
+// monorepo routing: a path inside a package must narrow the slice
+const mk = loadKnowledge(join(FIXTURES, 'monorepo'));
+compare('monorepo routed context', stripDates(mcpTools.getContext(mk, { path: 'packages/ui' })), 'monorepo.mcp-routed.txt');
+
+// review needs a real git repo: copy messy, commit it clean, add one bad file
+console.log('mcp review:');
+const gitFix = join(tmp, 'review-git');
+rmSync(gitFix, { recursive: true, force: true });
+spawnSync('cp', ['-R', join(FIXTURES, 'messy'), gitFix]);
+const git = (...a) => spawnSync('git', a, { cwd: gitFix, encoding: 'utf8', env: { ...process.env, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t' } });
+git('init', '-q'); git('add', '-A'); git('commit', '-qm', 'base');
+writeFileSync(join(gitFix, 'components/NewThing.tsx'), BAD_SNIPPET);
+const rk = loadKnowledge(gitFix);
+const reviewText = mcpTools.review(rk);
+// guard against the symlinked-tmpdir regression of 2026-08-17: a review that
+// sees no changed files here is a broken review, not a clean one
+reviewText.startsWith('DESIGN SYSTEM REVIEW') ? ok('review actually reviews')
+  : bad('review actually reviews', `got: ${reviewText.split('\n')[0]}`);
+compare('review snapshot', stripDates(reviewText), 'messy.review.txt');
+const cleanReview = mcpTools.reviewData(loadKnowledge(join(FIXTURES, 'messy')));
+cleanReview.total === 0 ? ok('review outside git degrades honestly')
+  : bad('review outside git', `expected 0 findings, got ${cleanReview.total}`);
+
+// the server end to end: initialize → tools/list → one call, over real stdio
+console.log('mcp server:');
+{
+  const msgs = [
+    { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18' } },
+    { jsonrpc: '2.0', method: 'notifications/initialized' },
+    { jsonrpc: '2.0', id: 2, method: 'tools/list' },
+    { jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'roast_find_token', arguments: { value: '#3b82f6' } } },
+  ].map((m) => JSON.stringify(m)).join('\n') + '\n';
+  const r = spawnSync(process.execPath, [join(ENGINE, 'mcp/server.mjs'), join(FIXTURES, 'messy')],
+    { input: msgs, encoding: 'utf8', timeout: 30000 });
+  try {
+    const replies = r.stdout.split('\n').filter(Boolean).map((l) => JSON.parse(l));
+    const init = replies.find((x) => x.id === 1), list = replies.find((x) => x.id === 2), call = replies.find((x) => x.id === 3);
+    init?.result?.serverInfo?.name === 'roast-my-design-system' ? ok('server initialize') : bad('server initialize', JSON.stringify(init));
+    list?.result?.tools?.length === 5 ? ok('server lists 5 tools') : bad('server lists 5 tools', `got ${list?.result?.tools?.length}`);
+    call?.result?.content?.[0]?.text?.includes('IS a token') ? ok('server tool call answers') : bad('server tool call answers', JSON.stringify(call?.result));
+  } catch (e) { bad('server protocol', e.message); }
+}
+
 // Determinism: the same fixture scanned twice must produce identical data.
 console.log('determinism:');
 const d1 = join(tmp, 'det1.json'), d2 = join(tmp, 'det2.json');

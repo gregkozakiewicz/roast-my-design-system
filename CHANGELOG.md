@@ -2,6 +2,14 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.0.0 — 2026-08-18
+
+- **The MCP server: the scan, live in your agent's loop.** `--mcp` runs the same deterministic engine as a local MCP server over stdio, so your agent asks the design system before writing UI and gets the work checked after. Five tools: `roast_get_context` (what to know before touching UI here, routed by the folder being edited), `roast_find_component` (the canonical component with one real usage example; a tie between two candidates is reported as a tie, never guessed), `roast_find_token` (raw value in, nearest token out, and an honest "no scale exists here" when that is the truth), `roast_validate` (the code about to be saved, checked against the token set, the spacing scale and the component ledger), `roast_review` (the working tree's changed files, read from the git diff itself so the agent pastes nothing back). Plus three compact resources (rules, components, tokens) and two prompts for clients without the skill.
+- **`--check`: the same review in the terminal.** Scans the changed files and exits 1 on findings, so it slots into scripts and pre-commit hooks you control.
+- **The same promise as everything else.** Local child process, no port, no account, no telemetry, zero dependencies (the MCP protocol slice is hand-rolled). One scan at startup, cached, refreshed only when files change. A clean answer reads "no measured violations found" with the list of checks attached, because a scanner can only certify what it can count.
+- Suite grows to 55 checks: every tool snapshotted on all six fixtures, token budgets asserted (context answers stay under 400 tokens), and the server driven over real stdio in CI. Tested end to end with Claude Code as a real client; Cursor and Windsurf speak the same protocol.
+- Report and scores untouched: example reports keep their 4.5.1 stamps because nothing in the diagnosis changed. The major version marks the new surface, nothing breaks.
+
 ## 4.5.1 — 2026-08-17
 
 - Greg's placement note: the agent trap boxes move from inside the findings sections to one spot high in the report, directly below the present. The traps read as one message now instead of two footnotes. No copy changes, no score changes.

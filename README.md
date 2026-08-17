@@ -30,6 +30,8 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
+| `... --mcp` | The scan as a local MCP server: five tools your agent calls while writing UI, from "is there a Button already?" to "review my changes". See [Live answers over MCP](#live-answers-over-mcp) |
+| `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
 | `... --by "Dwayne Hicks"` | A requester credit in the report header, next to the scan date |
 | `... --exclude lab/` | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
@@ -80,6 +82,30 @@ playground/
 ```
 
 Both routes merge, and both are loud on purpose. The harvest JSON records every active pattern and how many files it removed, and the report prints a line in the header ("2 folders excluded by .roastignore (lab/, playground/) · 946 files kept out of this scan"). You can narrow the question, but the report always says which question was asked, so a scoped score can't be quietly gamed. There is no negation and no glob syntax: plain folder prefixes, nothing clever.
+
+## Live answers over MCP
+
+The report and the rules file describe the repo as it was at scan time. `--mcp` keeps the same engine running while your agent works, so questions get answered from the code as it is right now, and mistakes get caught before they land:
+
+| Tool | The question it answers |
+|---|---|
+| `roast_get_context` | What should I know before touching UI here? Routed by the folder being edited |
+| `roast_find_component` | Is there already a component for this, and which one is canonical? With one real usage example. When two candidates tie, it says so and names both |
+| `roast_find_token` | I have `#111111` / `13px` in hand. What should I have used? |
+| `roast_validate` | I am about to save this. Does it break the system? |
+| `roast_review` | Review my changed files. Reads the git diff itself, so no code is pasted back |
+
+The loop: context before building, find while building, validate before saving, review before finishing.
+
+Add it to Claude Code:
+
+```bash
+claude mcp add roast -- npx roast-my-design-system --mcp
+```
+
+Any MCP client can register the same stdio command (tested with Claude Code; Cursor and Windsurf speak the same protocol). Same promise as the scan: local, read-only, one scan at startup, no port, no account, nothing about your code leaves your machine. And a clean answer reads "no measured violations found" with the list of checks attached, because a scanner can only certify what it can count.
+
+<!-- demo video: open this README in the GitHub web editor and drag demo_mcp_roast.mp4 here -->
 
 ## In CI
 

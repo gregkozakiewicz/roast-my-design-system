@@ -118,6 +118,66 @@ function inlineStyleBlocks(src) {
 }
 
 /**
+ * Styling occurrences in ONE piece of source text, with character offsets so
+ * callers can compute line numbers. Shares this module's regexes so the MCP
+ * validation engine measures with the same ruler as the harvest, never a
+ * parallel one. Additive: harvestTokens below does not use it.
+ *
+ * @param src the text to scan
+ * @param opts.css true = treat as stylesheet text, false = component code
+ * @returns { colors, spacing, arbitrary, inlineBlocks, important, tokenDefs }
+ *   each an array of { value, index } (important/inlineBlocks: index only)
+ */
+export function extractStyling(src, { css = false } = {}) {
+  const out = { colors: [], spacing: [], arbitrary: [], inlineBlocks: [], important: [], tokenDefs: [] };
+  if (css) {
+    for (const m of src.matchAll(/!\s*important/gi)) out.important.push({ index: m.index });
+    for (const m of src.matchAll(/--[\w-]+\s*:\s*([^;{}]+)[;}]/g)) {
+      for (const c of m[1].matchAll(HEX_RE)) out.tokenDefs.push({ value: normalizeHex(c[0]), index: m.index });
+      for (const c of m[1].matchAll(FUNC_COLOR_RE)) out.tokenDefs.push({ value: c[0].replace(/\s+/g, ' ').toLowerCase(), index: m.index });
+    }
+    const defIndexes = new Set(out.tokenDefs.map((d) => d.value));
+    for (const m of src.matchAll(HEX_RE)) {
+      const v = normalizeHex(m[0]);
+      if (!defIndexes.has(v)) out.colors.push({ value: v, index: m.index });
+    }
+    for (const m of src.matchAll(FUNC_COLOR_RE)) {
+      const v = m[0].replace(/\s+/g, ' ').toLowerCase();
+      if (!defIndexes.has(v)) out.colors.push({ value: v, index: m.index });
+    }
+    for (const m of src.matchAll(SPACING_PROPS)) {
+      for (const len of (m[2].match(LENGTH_RE) ?? [])) out.spacing.push({ value: len, index: m.index });
+    }
+    return out;
+  }
+  // component code: class strings, inline style blocks, raw hex
+  for (const m of src.matchAll(/class(?:Name)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`\})/g)) {
+    const cls = m[1] ?? m[2] ?? m[3] ?? '';
+    for (const c of cls.matchAll(TW_COLOR_RE)) {
+      if (c[1]) out.colors.push({ value: c[1].startsWith('#') ? normalizeHex(c[1]) : c[1], index: m.index });
+    }
+    for (const c of cls.matchAll(/[a-z][\w-]*-\[(-?\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|pt))\]/g)) {
+      out.arbitrary.push({ value: `[${c[1]}]`, index: m.index });
+    }
+  }
+  const blocks = inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()));
+  for (const b of blocks) {
+    const at = src.indexOf(b);
+    if (isStaticInline(b)) out.inlineBlocks.push({ index: at });
+    for (const m of b.matchAll(HEX_RE)) out.colors.push({ value: normalizeHex(m[0]), index: at + m.index });
+    for (const m of b.matchAll(LENGTH_RE)) out.spacing.push({ value: m[0], index: at + m.index });
+  }
+  // hex literals outside class strings / style blocks (styled-components,
+  // colour consts) — everything not already collected above
+  const seen = new Set(out.colors.map((c) => c.index));
+  for (const m of src.matchAll(HEX_RE)) {
+    if (![...seen].some((i) => Math.abs(i - m.index) < 4)) out.colors.push({ value: normalizeHex(m[0]), index: m.index });
+  }
+  for (const m of src.matchAll(/!\s*important/gi)) out.important.push({ index: m.index });
+  return out;
+}
+
+/**
  * Harvest tokens across style files + code files.
  * Returns { colors, greys, spacing, radii, fontSizes, fontFamilies, shadows,
  *           tailwind: {...same buckets from tw classes...}, inlineStyleCount }

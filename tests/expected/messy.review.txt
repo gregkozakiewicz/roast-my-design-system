@@ -1,0 +1,14 @@
+DESIGN SYSTEM REVIEW · 1 changed file, 6 findings:
+components/NewThing.tsx:
+  ✕ L2 #3b81f5 is visually identical to the token #3b82f6.
+     Fix: Use #3b82f6 from styles/main.css.
+  ✕ L2 New one-off spacing value 27px. The repo already carries 5 distinct spacing values.
+  ✕ L2 Arbitrary bracket [11px].
+     Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+  ✕ L2 Arbitrary bracket [13px], already punched through the scale 1x in this repo.
+     Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+  ✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
+     Fix: Move the values to classes or tokens.
+  ✕ L1 Defines <Button>, which already exists in 2 other places. This makes 3 competing copies, and every wrong pick becomes the example the next agent copies.
+     Fix: Import components/Button.tsx instead of creating a copy.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions. Fix the findings before finishing; rerun roast_review to confirm.

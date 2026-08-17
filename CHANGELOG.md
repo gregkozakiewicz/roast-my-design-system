@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 4.5.1 — 2026-08-17
+
+- Greg's placement note: the agent trap boxes move from inside the findings sections to one spot high in the report, directly below the present. The traps read as one message now instead of two footnotes. No copy changes, no score changes.
+
 ## 4.5.0 — 2026-08-17
 
 - **Agent traps.** Some findings do not just sit there; they multiply, because an agent reads the repo as instruction. The report now names them where they live: duplicated components ("every wrong pick becomes the example the next agent copies"), a bad value repeated dozens of times ("repetition reads as intent, so it will write occurrence 25"), and two spacing dialects coexisting ("every edit is a coin toss between systems"). Copy only, no new measurement, and a trap renders only when its mechanism is real for the repo, so the marker stays scarce enough to mean something. Clean repos see nothing.

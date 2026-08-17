@@ -1,6 +1,6 @@
 {
   "name": "roast-my-design-system",
-  "version": "4.5.0",
+  "version": "4.5.1",
   "description": "Your AI can write the UI. This makes sure it writes your UI. A deterministic scanner scores your design system 0-100 against 34 public repos, scopes the scan with .roastignore, and writes rules for Claude, Cursor, GitHub Copilot and Windsurf with --apply.",
   "keywords": [
     "design-system",

@@ -491,7 +491,7 @@ function spacingBars() {
     <div class="chips-row">${arbitrary.slice(0, 10).map((a) => `<span class="vchip bad" title="${esc(a.files?.[0]?.file ?? '')}">${esc(a.value)} ×${a.count}</span>`).join('')}${arbitrary.length > 10 ? `<span class="vchip dim">+${arbitrary.length - 10} more</span>` : ''}</div></div>` : '';
   return `<section class="glass pad">
     ${sectionHead(`${n(spacingTotal)} off-scale spacing values`, `a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral`)}
-    <div class="bars">${rows}</div>${arb}${spacingTrap()}</section>`;
+    <div class="bars">${rows}</div>${arb}</section>`;
 }
 
 function duplicatesSection() {
@@ -520,7 +520,6 @@ function duplicatesSection() {
     </div>`).join('');
   return `<div class="glass pad half">
     ${sectionHead('Duplicated components', 'an agent asking which one is canonical gets several plausible answers. Paths open in VS Code')}
-    ${dupesTrap()}
     <div class="fams">${iconCard}${dupeCards}${famCards}</div></div>`;
 }
 
@@ -1262,6 +1261,8 @@ const html = `<!doctype html>
 ${whereToStartSection()}
 
 ${giftSection()}
+
+${dupesTrap()}${spacingTrap()}
 
 <div class="stats">${bigStats.map((s) => statTile(s)).join('')}</div>
 

@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.0.1 — 2026-08-18
+
+- The MCP tool catalogue went on a diet: tool and resource descriptions trimmed from 754 to 636 tokens, saving 118 tokens in every session of every client that loads the server. Same tools, same behaviour, fewer words describing them.
+- npm now shows the README as it looks on GitHub: the New in 5.0 callout up top, the command table with commands held on one line, and the landing-page pointer. (npm freezes the README at publish time, so 5.0.0's copy predated the polish.)
+
 ## 5.0.0 — 2026-08-18
 
 - **The MCP server: the scan, live in your agent's loop.** `--mcp` runs the same deterministic engine as a local MCP server over stdio, so your agent asks the design system before writing UI and gets the work checked after. Five tools: `roast_get_context` (what to know before touching UI here, routed by the folder being edited), `roast_find_component` (the canonical component with one real usage example; a tie between two candidates is reported as a tie, never guessed), `roast_find_token` (raw value in, nearest token out, and an honest "no scale exists here" when that is the truth), `roast_validate` (the code about to be saved, checked against the token set, the spacing scale and the component ledger), `roast_review` (the working tree's changed files, read from the git diff itself so the agent pastes nothing back). Plus three compact resources (rules, components, tokens) and two prompts for clients without the skill.

@@ -22,38 +22,40 @@ import { VERSION } from '../lib/version.mjs';
 const PROTOCOL = '2025-06-18';
 
 // ---------- tool + resource + prompt catalogue ----------
+// Descriptions are budgeted: every client loads them into every session, so
+// each one carries only what changes an agent's tool choice (5.0.1 trim).
 const TOOLS = [
   {
     name: 'roast_get_context',
-    description: 'What to know before touching UI in this repo: tokens, canonical components, duplicates to avoid, spacing and typography rules. Derived from a real scan, sized for a context window. Optionally pass the path you are working in (e.g. "packages/ui") for a narrower slice.',
-    inputSchema: { type: 'object', properties: { path: { type: 'string', description: 'Repo-relative folder you are working in (optional)' } } },
+    description: 'Design-system context before writing UI in this repo: tokens, canonical components, duplicates, spacing and type rules, from a real scan. Optional path ("packages/ui") narrows the slice.',
+    inputSchema: { type: 'object', properties: { path: { type: 'string', description: 'Repo-relative folder (optional)' } } },
   },
   {
     name: 'roast_find_component',
-    description: 'Is there already a component for this? Pass a name or intent ("icon button", "Modal"). Returns the canonical component with a real usage example, or an honest zero. Never invents a canon when two candidates tie.',
+    description: 'Find the canonical component for a name or intent ("icon button"). Returns import path, usage count and a real usage example, or an honest zero. Ties are reported, never guessed.',
     inputSchema: { type: 'object', properties: { query: { type: 'string', description: 'Component name or intent' } }, required: ['query'] },
   },
   {
     name: 'roast_find_token',
-    description: 'You have a raw value in hand (#111111, 13px): what should you use instead? Returns the nearest token or scale step from THIS repo, or says honestly that no scale exists.',
-    inputSchema: { type: 'object', properties: { value: { type: 'string', description: 'A colour or length value' } }, required: ['value'] },
+    description: 'Snap a raw value (#111111, 13px) to this repo\'s nearest token or scale step. Says so when no scale exists.',
+    inputSchema: { type: 'object', properties: { value: { type: 'string', description: 'Colour or length value' } }, required: ['value'] },
   },
   {
     name: 'roast_validate',
-    description: 'Check code you are about to save against this repo\'s design system: hardcoded colours, near-token twins, off-scale spacing, arbitrary brackets, inline styles, !important, duplicate components. Findings name the fix. A clean result means no measured violations, not a certificate.',
-    inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to check' }, file: { type: 'string', description: 'Intended file path (optional, improves the verdicts)' } }, required: ['code'] },
+    description: 'Check code before saving: hardcoded colours, near-token twins, off-scale spacing, arbitrary brackets, inline styles, !important, duplicate components. Findings name the fix.',
+    inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to check' }, file: { type: 'string', description: 'Intended file path (optional)' } }, required: ['code'] },
   },
   {
     name: 'roast_review',
-    description: 'Review the working tree\'s changed files (git diff + untracked) against the design system. Reads the diff itself; send no code. Call before finishing any UI task.',
+    description: 'Review the working tree\'s changed files (git diff + untracked) against the design system. Reads the diff itself; send no code. Call before finishing UI work.',
     inputSchema: { type: 'object', properties: {} },
   },
 ];
 
 const RESOURCES = [
-  { uri: 'roast://rules', name: 'Design system rules', description: 'The generated agent rules for this repo, compact variant', mimeType: 'text/markdown' },
-  { uri: 'roast://components', name: 'Component ledger', description: 'Reusable components with usage counts: canonical picks, duplicates, never-imported', mimeType: 'text/plain' },
-  { uri: 'roast://tokens', name: 'Token map', description: 'Colour tokens, spacing values and typefaces this repo actually uses', mimeType: 'text/plain' },
+  { uri: 'roast://rules', name: 'Design system rules', description: 'Generated agent rules, compact', mimeType: 'text/markdown' },
+  { uri: 'roast://components', name: 'Component ledger', description: 'Canonical picks, duplicates, never-imported, with usage counts', mimeType: 'text/plain' },
+  { uri: 'roast://tokens', name: 'Token map', description: 'Colour tokens and spacing values in real use', mimeType: 'text/plain' },
 ];
 
 const PROMPTS = [
@@ -129,7 +131,7 @@ export function serve(root) {
             protocolVersion: typeof params?.protocolVersion === 'string' ? params.protocolVersion : PROTOCOL,
             capabilities: { tools: {}, resources: {}, prompts: {} },
             serverInfo: { name: 'roast-my-design-system', version: VERSION },
-            instructions: 'Local design-system authority for this repository, answering from a real scan. Loop: roast_get_context before building, roast_find_component / roast_find_token while building, roast_validate before saving, roast_review before finishing. Everything runs locally; the repo is read, never written.',
+            instructions: 'Design-system answers for this repo, from a real scan, all local and read-only. Loop: roast_get_context before building, find_component / find_token while building, roast_validate before saving, roast_review before finishing.',
           });
           return;
         case 'notifications/initialized':

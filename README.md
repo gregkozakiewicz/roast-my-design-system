@@ -81,6 +81,18 @@ playground/
 
 Both routes merge, and both are loud on purpose. The harvest JSON records every active pattern and how many files it removed, and the report prints a line in the header ("2 folders excluded by .roastignore (lab/, playground/) · 946 files kept out of this scan"). You can narrow the question, but the report always says which question was asked, so a scoped score can't be quietly gamed. There is no negation and no glob syntax: plain folder prefixes, nothing clever.
 
+## In CI
+
+The scanner already speaks SARIF, so wiring it into GitHub code scanning is six lines. Findings appear in the Security tab, annotated on the files themselves:
+
+```yaml
+- uses: actions/checkout@v4
+- run: npx roast-my-design-system . --sarif --no-open
+- uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: design-system-roast.sarif
+```
+
 ## Install
 
 **No install, no Claude needed — just try it:**

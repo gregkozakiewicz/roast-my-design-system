@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 4.5.0 — 2026-08-17
+
+- **Agent traps.** Some findings do not just sit there; they multiply, because an agent reads the repo as instruction. The report now names them where they live: duplicated components ("every wrong pick becomes the example the next agent copies"), a bad value repeated dozens of times ("repetition reads as intent, so it will write occurrence 25"), and two spacing dialects coexisting ("every edit is a coin toss between systems"). Copy only, no new measurement, and a trap renders only when its mechanism is real for the repo, so the marker stays scarce enough to mean something. Clean repos see nothing.
+- The README gained an **In CI** section: six lines of workflow that put the scan's SARIF findings in the GitHub Security tab.
+
 ## 4.4.0 — 2026-08-17
 
 - **Golden examples: the rules file now shows the dish, not just the recipe.** Each canonical component in the generated rules carries the repo's own most common real usage, quoted verbatim with a receipt: "most common usage, as in `apps/web/.../modal.tsx` (matching 97 of 180 usages): `<Modal showModal={isOpen} setShowModal={setIsOpen}>`". Agents learn far more from a concrete example than from an instruction, and every example is harvested, never invented.

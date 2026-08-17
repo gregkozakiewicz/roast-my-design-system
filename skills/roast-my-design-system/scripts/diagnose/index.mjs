@@ -449,6 +449,32 @@ function paletteSection() {
 </section>`;
 }
 
+// Agent traps: findings that do not just sit there but multiply, because an
+// agent reads the repo as instruction. Copy only, no new measurement, and a
+// trap renders only when its mechanism is real for this repo, so the marker
+// stays scarce enough to mean something.
+function trapBox(text) {
+  return `<div class="trap">${ICONS.warn}<span><b>Agent trap.</b> ${text}</span></div>`;
+}
+function dupesTrap() {
+  const hard = exactDupes.filter((d) => !d.wrapped);
+  if (hard.length < 2) return '';
+  const top = hard[0];
+  return trapBox(`&lt;${esc(top.name)}&gt; alone has ${top.files.length} implementations. An agent asked for one cannot tell which is canonical, so it picks at random or writes another, and every wrong pick becomes the example the next agent copies. This is the finding that multiplies itself.`);
+}
+function spacingTrap() {
+  const candidates = [...spacing, ...(arbitrary ?? [])].filter((s) => s.count >= 15)
+    .sort((a, b) => b.count - a.count);
+  if (candidates.length) {
+    const t = candidates[0];
+    return trapBox(`${esc(t.value)} appears ${t.count} times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence ${t.count + 1}. The most copied pattern here is the one you least want copied.`);
+  }
+  if (twSpacing.length > 0 && spacing.length >= 10) {
+    return trapBox(`Two spacing dialects coexist here: Tailwind steps and ${spacing.length} raw CSS values. A human knows which is legacy. An agent sees two valid options and matches whichever file it opened last, so every edit is a coin toss between systems.`);
+  }
+  return '';
+}
+
 function spacingBars() {
   const hasTw = twSpacing.length > 0;
   const merged = [...spacing.map((s) => ({ label: s.value, count: s.count, off: hasTw })),
@@ -465,7 +491,7 @@ function spacingBars() {
     <div class="chips-row">${arbitrary.slice(0, 10).map((a) => `<span class="vchip bad" title="${esc(a.files?.[0]?.file ?? '')}">${esc(a.value)} ×${a.count}</span>`).join('')}${arbitrary.length > 10 ? `<span class="vchip dim">+${arbitrary.length - 10} more</span>` : ''}</div></div>` : '';
   return `<section class="glass pad">
     ${sectionHead(`${n(spacingTotal)} off-scale spacing values`, `a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral`)}
-    <div class="bars">${rows}</div>${arb}</section>`;
+    <div class="bars">${rows}</div>${arb}${spacingTrap()}</section>`;
 }
 
 function duplicatesSection() {
@@ -494,6 +520,7 @@ function duplicatesSection() {
     </div>`).join('');
   return `<div class="glass pad half">
     ${sectionHead('Duplicated components', 'an agent asking which one is canonical gets several plausible answers. Paths open in VS Code')}
+    ${dupesTrap()}
     <div class="fams">${iconCard}${dupeCards}${famCards}</div></div>`;
 }
 
@@ -967,6 +994,10 @@ const html = `<!doctype html>
   .nods { display:flex; gap:12px; align-items:flex-start; background:var(--nods-bg); border:1px solid var(--nods-line);
     border-radius:16px; padding:14px 16px; margin-top:20px; font-size:14px; }
   .nods .ic { position:static; flex-shrink:0; width:22px; height:22px; }
+  .trap { display:flex; gap:11px; align-items:flex-start; background:var(--coral-soft); border:1px solid var(--bad-ring);
+    border-radius:14px; padding:12px 14px; margin-top:16px; font-size:13px; line-height:1.6; color:var(--dim); }
+  .trap b { color:var(--coral); font-weight:700; letter-spacing:.02em; }
+  .trap .ic { position:static; flex-shrink:0; width:18px; height:18px; margin-top:2px; }
 
   /* verdict hero card */
   .verdict-card { position:relative; overflow:hidden; margin-top:22px; padding:26px 28px; }

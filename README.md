@@ -12,7 +12,7 @@ Run it on your codebase and get, in about a second:
 - **Per-package scores for monorepos.** One blended number hides which package is the problem: `packages/ui` scores 80 while `apps/web` scores 40, and now you can see it.
 - **The receipts behind it.** Every colour and its near-identical twin, every spacing value, typeface, duplicated or never-imported component, inline style and !important, with real file paths, in one self-contained HTML report you can open, Slack or email.
 - **The first fixes ranked by payoff.** A "Where to start" list derived from your own numbers: keep the report as the audit, or hand it to Claude as the punch list for the fix.
-- **Rules that stop the mess coming back.** A generated `design-system-rules.md` for your CLAUDE.md or .cursor/rules: canonical components, your token file, known duplicates to avoid, so your AI agent follows your system instead of guessing at it. `--apply` injects them for you, and every scan checks the rules you already have for stale references: paths that no longer exist, components named canonical that nothing imports anymore.
+- **Rules that stop the mess coming back.** A generated `design-system-rules.md` with canonical components, your token file, and known duplicates to avoid, so your AI agent follows your system instead of guessing at it. `--apply` injects them into every agent file you have: Claude, Cursor, GitHub Copilot, and Windsurf. Every scan also checks the rules you already have for stale references: paths that no longer exist, components named canonical that nothing imports anymore.
 
 ## Why this exists
 
@@ -36,7 +36,7 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 | `... --theme light` / `--out <file>` / `--no-open` | Light report, custom report path, don't open the browser |
 | `/roast-my-design-system` (in Claude Code) | The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers |
 
-Every scan also checks the agent rules you already have and flags stale references, no flag needed.
+**One scan writes rules for every agent: Claude, Cursor, GitHub Copilot, and Windsurf.** Every scan also checks the agent rules you already have and flags stale references, no flag needed.
 
 ## Example use cases
 

@@ -6,6 +6,8 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
+> **New in 5.0: it runs as a local MCP server.** One command, and your agent asks the design system before writing UI, then gets the work checked after: which Button is canonical, which token holds that colour, review my changes. Local, deterministic, nothing leaves your machine. See [Live answers over MCP](#live-answers-over-mcp).
+
 Run it on your codebase and get, in about a second:
 
 - **A health score you can defend in a meeting.** 0-100, deterministic, benchmarked against Ideal Design System norms, 34 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
@@ -24,19 +26,19 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 | Command | What you get |
 |---|---|
-| `npx roast-my-design-system` | The scan and `design-system-roast.html`, opened in your browser |
-| `npx roast-my-design-system <path>` | Scan a different repo than the current directory |
+| <code>npx&nbsp;roast-my-design-system</code> | The scan and `design-system-roast.html`, opened in your browser |
+| <code>npx&nbsp;roast-my-design-system&nbsp;&lt;path&gt;</code> | Scan a different repo than the current directory |
 | `... --apply` | The generated agent rules injected straight into every agent file you have: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules` and `.github/copilot-instructions.md`, inside a marked block. Re-running replaces only that block, never your own text. Windsurf and Copilot get a compact variant sized for their limits |
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
 | `... --mcp` | The scan as a local MCP server: five tools your agent calls while writing UI, from "is there a Button already?" to "review my changes". See [Live answers over MCP](#live-answers-over-mcp) |
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
-| `... --by "Dwayne Hicks"` | A requester credit in the report header, next to the scan date |
-| `... --exclude lab/` | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
+| <code>...&nbsp;--by&nbsp;"Dwayne&nbsp;Hicks"</code> | A requester credit in the report header, next to the scan date |
+| <code>...&nbsp;--exclude&nbsp;lab/</code> | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
-| `... --theme light` / `--out <file>` / `--no-open` | Light report, custom report path, don't open the browser |
-| `/roast-my-design-system` (in Claude Code) | The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers |
+| <code>...&nbsp;--theme&nbsp;light</code>&nbsp;/ <code>--out&nbsp;&lt;file&gt;</code>&nbsp;/ <code>--no-open</code> | Light report, custom report path, don't open the browser |
+| <code>/roast-my-design-system</code> (in&nbsp;Claude&nbsp;Code) | The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers |
 
 **One scan writes rules for every agent: Claude, Cursor, GitHub Copilot, and Windsurf.** Every scan also checks the agent rules you already have and flags stale references, no flag needed.
 

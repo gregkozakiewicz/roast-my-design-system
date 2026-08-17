@@ -1,0 +1,2 @@
+:root { --ui-ink: #202024; --ui-paper: #fbfbf8; --ui-accent: #2f6f4f; }
+.btn { color: var(--ui-ink); padding: 8px; }

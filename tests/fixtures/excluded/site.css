@@ -1,0 +1,2 @@
+:root { --a: #101014; --b: #fefefe; --c: #3355ff; }
+body { color: var(--a); }

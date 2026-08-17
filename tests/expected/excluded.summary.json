@@ -1,0 +1,64 @@
+{
+  "repo": "excluded",
+  "exclusions": {
+    "patterns": [
+      {
+        "pattern": "junk",
+        "source": ".roastignore",
+        "files": 2
+      }
+    ],
+    "filesExcluded": 2
+  },
+  "score": 100,
+  "noSystemLikely": false,
+  "verdict": "no agent rules, so your AI is guessing.",
+  "tiles": [
+    {
+      "label": "distinct colours",
+      "value": "3",
+      "health": "good"
+    },
+    {
+      "label": "shades of grey",
+      "value": "2",
+      "health": "good"
+    },
+    {
+      "label": "off-scale spacing values",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "duplicated components",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "inline style blocks",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "near-identical colour pairs",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "!important declarations",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "components never imported",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "arbitrary bracket values",
+      "value": "0",
+      "health": "good"
+    }
+  ],
+  "packages": []
+}

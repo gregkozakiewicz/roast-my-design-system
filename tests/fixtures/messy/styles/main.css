@@ -1,0 +1,12 @@
+:root {
+  --brand: #3b82f6;
+  --ink: #111111;
+  --space-2: 8px;
+}
+.a { color: #3b82f7; margin: 13px; }
+.b { color: #e11d48; padding: 17px !important; }
+.c { background: #f5f5f5; margin-top: 23px; }
+.d { background: #f6f6f6; font-family: Georgia, serif; }
+.e { font-family: Inter, sans-serif; border-radius: 7px; box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+.f { color: var(--brand); width: 31px !important; }
+.g { line-height: 1.5; letter-spacing: 0.13em; margin-bottom: 19px !important; }

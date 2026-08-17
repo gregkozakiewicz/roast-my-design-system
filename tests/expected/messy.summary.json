@@ -1,0 +1,54 @@
+{
+  "repo": "fixture-messy",
+  "score": 70,
+  "noSystemLikely": false,
+  "verdict": "1 component implemented more than once, so an agent asked for a Button has several random options.",
+  "tiles": [
+    {
+      "label": "distinct colours",
+      "value": "7",
+      "health": "good"
+    },
+    {
+      "label": "shades of grey",
+      "value": "3",
+      "health": "good"
+    },
+    {
+      "label": "off-scale spacing values",
+      "value": "5",
+      "health": "good"
+    },
+    {
+      "label": "duplicated components",
+      "value": "1",
+      "health": "warn"
+    },
+    {
+      "label": "inline style blocks",
+      "value": "2",
+      "health": "warn"
+    },
+    {
+      "label": "near-identical colour pairs",
+      "value": "2",
+      "health": "warn"
+    },
+    {
+      "label": "!important declarations",
+      "value": "3",
+      "health": "warn"
+    },
+    {
+      "label": "components never imported",
+      "value": "3",
+      "health": "bad"
+    },
+    {
+      "label": "arbitrary bracket values",
+      "value": "2",
+      "health": "good"
+    }
+  ],
+  "packages": []
+}

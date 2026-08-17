@@ -1,0 +1,65 @@
+{
+  "repo": "fixture-monorepo",
+  "score": 80,
+  "noSystemLikely": false,
+  "verdict": "no agent rules, so your AI is guessing.",
+  "tiles": [
+    {
+      "label": "distinct colours",
+      "value": "12",
+      "health": "good"
+    },
+    {
+      "label": "shades of grey",
+      "value": "2",
+      "health": "good"
+    },
+    {
+      "label": "off-scale spacing values",
+      "value": "10",
+      "health": "good"
+    },
+    {
+      "label": "duplicated components",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "inline style blocks",
+      "value": "18",
+      "health": "bad"
+    },
+    {
+      "label": "near-identical colour pairs",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "!important declarations",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "components never imported",
+      "value": "8",
+      "health": "bad"
+    },
+    {
+      "label": "arbitrary bracket values",
+      "value": "0",
+      "health": "good"
+    }
+  ],
+  "packages": [
+    {
+      "dir": "packages/app",
+      "name": "@fix/app",
+      "score": 90,
+      "worst": {
+        "metric": "inlineStyles",
+        "value": 18,
+        "health": "bad"
+      }
+    }
+  ]
+}

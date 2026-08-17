@@ -1,0 +1,12 @@
+:root {
+  --paper: #faf8f2;
+  --ink: #16161a;
+  --accent: #c04f2e;
+  --muted: #8a8578;
+  --line: #d9d4c7;
+  --space-1: 8px;
+}
+body { background: var(--paper); color: var(--ink); font-family: 'Barlow Condensed', sans-serif; }
+.hero { padding: var(--space-1); border-color: var(--line); }
+a { color: var(--accent); }
+.small { color: var(--muted); }

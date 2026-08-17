@@ -1,0 +1,42 @@
+## Design system rules
+
+Follow these rules when writing or editing UI in this repo; derived from a scan on 2026-08-17.
+
+### Colours and tokens
+
+- Design tokens live in `styles/main.css`. Reach for an existing token before inventing any value.
+- Never hardcode colour values in components. The palette already has 2 tokens; the scan still found 5 hardcoded colours sitting next to them. Do not add more.
+- Never eyeball a colour from memory: the scan found 2 nearly identical pairs (like #3b82f6 next to #3b82f7). Look the exact value up, or better, use its token.
+- This repo uses shadcn/ui; its components live in `components/ui`. Prefer extending it over building parallel pieces.
+
+### Canonical components
+
+- Use these existing components instead of writing new ones:
+  - `<Card>` from `components/Card.tsx` (used 7x)
+
+### Known duplicates: do not make it worse
+
+- `<Button>` exists in 2 places. Treat `components/Button.tsx` as canonical; do not import the other copy, and never create another.
+
+### Components nobody imports
+
+- 3 components are defined but never imported (`<DeadOne>`, `<DeadThree>`, `<DeadTwo>`…). Before writing any new component, check this list first; adopt one or flag it for deletion instead of adding another.
+
+### Spacing and sizing
+
+- Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
+- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 2 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
+- Avoid new one-off CSS spacing values; 4 off-scale values are already in play.
+
+### Typography
+
+- The repo uses 2 typefaces: Georgia, Inter. Do not introduce another, and do not re-declare font stacks by hand; use the existing setup.
+
+### Styling discipline
+
+- Never write `style={{ ... }}` for static values; styling belongs to classes and tokens where the system can see it.
+  (2 static inline blocks already exist; do not add to them.)
+- Never write !important; the scan found 3 declarations already. When a style does not apply, fix the selector or the source of the conflict instead of shouting over it.
+- Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
+
+*Compact rules by roast-my-design-system ver. X; the full set with receipts: npx roast-my-design-system --rules*

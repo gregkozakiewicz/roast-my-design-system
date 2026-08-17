@@ -26,7 +26,7 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 |---|---|
 | `npx roast-my-design-system` | The scan and `design-system-roast.html`, opened in your browser |
 | `npx roast-my-design-system <path>` | Scan a different repo than the current directory |
-| `... --apply` | The generated agent rules injected straight into your `CLAUDE.md`, `AGENTS.md`, `.cursorrules` or `.cursor/rules/`, inside a marked block. Re-running replaces only that block, never your own text |
+| `... --apply` | The generated agent rules injected straight into every agent file you have: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules` and `.github/copilot-instructions.md`, inside a marked block. Re-running replaces only that block, never your own text. Windsurf and Copilot get a compact variant sized for their limits |
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |

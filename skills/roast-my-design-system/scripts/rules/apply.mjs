@@ -9,6 +9,12 @@
  *     block; re-running replaces only our block, never touching their text.
  *   .cursor/rules/ (directory)          -> design-system-rules.mdc written
  *     whole, with the frontmatter Cursor expects.
+ *   .windsurfrules                      -> COMPACT rules injected (Windsurf
+ *     caps rules files at a few thousand characters). Injected only when the
+ *     file already exists; .windsurf/rules/ (directory) gets its own file.
+ *   .github/copilot-instructions.md     -> COMPACT rules injected; created
+ *     when .github/ exists (Copilot chat and code review read this file, and
+ *     Copilot's guidance prefers short instructions).
  * If none exist, falls back to design-system-rules.md at the root and says so.
  *
  *   node src/rules/apply.mjs <harvest.json> --target <repo-root>
@@ -30,17 +36,20 @@ const END = '<!-- roast-my-design-system:rules:end -->';
 
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
 const { text, ruleCount } = rulesMarkdown(h);
-const block = `${BEGIN}\n\n${text.trim()}\n\n${END}`;
+// Size-aware variant for hosts with tight practical limits (Windsurf, Copilot)
+const compactText = rulesMarkdown(h, { compact: true }).text;
+const blockOf = (t) => `${BEGIN}\n\n${t.trim()}\n\n${END}`;
+const block = blockOf(text);
 
 /** Inject or replace our marked block in an existing file's content. */
-function inject(content) {
+function inject(content, b0 = block) {
   const b = content.indexOf(BEGIN);
   const e = content.indexOf(END);
   if (b !== -1 && e !== -1 && e > b) {
-    return { next: content.slice(0, b) + block + content.slice(e + END.length), how: 'replaced' };
+    return { next: content.slice(0, b) + b0 + content.slice(e + END.length), how: 'replaced' };
   }
   const sep = content.length === 0 ? '' : content.endsWith('\n\n') ? '' : content.endsWith('\n') ? '\n' : '\n\n';
-  return { next: content + sep + block + '\n', how: 'added' };
+  return { next: content + sep + b0 + '\n', how: 'added' };
 }
 
 const done = [];
@@ -60,10 +69,39 @@ if (existsSync(cursorDir) && statSync(cursorDir).isDirectory()) {
   done.push(`.cursor/rules/design-system-rules.mdc (${existed ? 'rewritten' : 'created'})`);
 }
 
+// Windsurf: the compact variant, because .windsurfrules has a hard character
+// cap. Injected only into a file the user already has; a .windsurf/rules/
+// directory gets its own file, same as Cursor's.
+const windsurfFile = join(target, '.windsurfrules');
+if (existsSync(windsurfFile) && statSync(windsurfFile).isFile()) {
+  const { next, how } = inject(readFileSync(windsurfFile, 'utf8'), blockOf(compactText));
+  writeFileSync(windsurfFile, next);
+  done.push(`.windsurfrules (${how} the compact rules block)`);
+}
+const windsurfDir = join(target, '.windsurf', 'rules');
+if (existsSync(windsurfDir) && statSync(windsurfDir).isDirectory()) {
+  const p = join(windsurfDir, 'design-system-rules.md');
+  const existed = existsSync(p);
+  writeFileSync(p, `${compactText.trim()}\n`);
+  done.push(`.windsurf/rules/design-system-rules.md (${existed ? 'rewritten' : 'created'})`);
+}
+
+// Copilot chat and code review read .github/copilot-instructions.md, and
+// Copilot's guidance prefers short instructions: compact variant, created
+// when .github/ exists (a strong signal the repo lives on GitHub).
+const githubDir = join(target, '.github');
+if (existsSync(githubDir) && statSync(githubDir).isDirectory()) {
+  const p = join(githubDir, 'copilot-instructions.md');
+  const existing = existsSync(p) && statSync(p).isFile() ? readFileSync(p, 'utf8') : '';
+  const { next, how } = inject(existing, blockOf(compactText));
+  writeFileSync(p, next);
+  done.push(`.github/copilot-instructions.md (${existing ? `${how} the compact rules block` : 'created'})`);
+}
+
 if (done.length === 0) {
   const p = join(target, 'design-system-rules.md');
   writeFileSync(p, text);
-  console.log(`No agent file found (CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/).`);
+  console.log(`No agent file found (CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/, .windsurfrules, .github/).`);
   console.log(`✓ Wrote design-system-rules.md instead; point your agent at it.`);
 } else {
   console.log(`✓ ${ruleCount} rules applied, every one with a receipt:`);

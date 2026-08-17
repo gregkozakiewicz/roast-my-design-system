@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 4.3.0 — 2026-08-17
+
+- **One scan, every agent obeys.** `--apply` now also reaches Windsurf and GitHub Copilot: it injects the rules into `.windsurfrules` (when you have one) and `.windsurf/rules/`, and writes `.github/copilot-instructions.md` (read by Copilot chat and Copilot code review) whenever the repo has a `.github/` folder. Same marked block, same guarantee: re-running replaces only our block, your own text is never touched.
+- **A compact rules variant for hosts with tight limits.** Windsurf caps rules files at a few thousand characters and Copilot's guidance prefers short instructions, so those two targets get a size-aware edition: same rules, fewer receipts per rule, no prose preamble, and a hard character budget that trims at a section boundary on very messy repos with a pointer to the full set. CLAUDE.md, AGENTS.md and Cursor keep the full rules with receipts.
+
 ## 4.2.6 — 2026-08-16
 
 - **The verdict leads, the evidence follows.** In the npx flow the running order is now: banner, repo and profile, the diagnosis (score, verdict, report path), and only then the harvest details. The summary lines moved to a shared module so the wrapper renders the details from harvest.json after the diagnosis; running the harvest script directly (the skill flow) prints everything in one go as before.

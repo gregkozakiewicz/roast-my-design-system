@@ -55,8 +55,10 @@ Usage: npx roast-my-design-system [path] [options]
   --rules         also write design-system-rules.md: agent rules (for
                   CLAUDE.md / .cursor/rules) generated from the scan
   --apply         inject the rules straight into your agent files (CLAUDE.md,
-                  AGENTS.md, .cursorrules, .cursor/rules/) inside a marked
-                  block; re-running replaces only that block
+                  AGENTS.md, .cursorrules, .cursor/rules/, .windsurfrules,
+                  .github/copilot-instructions.md) inside a marked block;
+                  re-running replaces only that block. Windsurf and Copilot
+                  get a compact variant sized for their limits
   --card          also write roast-card.svg: a shareable 1200x630 card with
                   the score and worst findings (pure SVG, embeds in READMEs)
   --sarif         also write design-system-roast.sarif for GitHub code

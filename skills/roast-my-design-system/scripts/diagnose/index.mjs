@@ -6,6 +6,13 @@
  *
  *   node src/diagnose/index.mjs harvest.json [--out diagnosis.html] [--theme dark|light]
  *   (--theme sets the initial mode; the page itself has a light/dark toggle)
+ *
+ *   --notes <file.md> embeds an agent-written analysis ("What the numbers
+ *   mean") between the verdict and the punch list, clearly labelled as
+ *   written-by-AI so it never reads as part of the measurement. The file is
+ *   markdown-lite: paragraphs, **bold**, `code`, and "- " lists. Reruns of
+ *   this script (e.g. --by credit) must pass --notes again or the section
+ *   is gone — which is why a missing notes file is a hard error, not a skip.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, basename, join, dirname } from 'node:path';
@@ -116,6 +123,14 @@ const themeName = arg('theme', 'dark');
 // Requester credit ("commissioned by"): their name up top next to the scan
 // date; the generated-by authorship stays in the footer, never confused.
 const commissionedBy = arg('by', null);
+// Agent-written analysis to embed (see the header comment). Read eagerly so
+// a bad path fails the run instead of silently shipping a report without it.
+const notesPath = arg('notes', null);
+let notesText = null;
+if (notesPath) {
+  try { notesText = readFileSync(resolve(notesPath), 'utf8').trim() || null; }
+  catch { console.error(`--notes: cannot read ${notesPath}`); process.exit(1); }
+}
 const T = THEMES[themeName];
 if (!T) { console.error(`Unknown theme "${themeName}" (dark | light)`); process.exit(1); }
 
@@ -694,6 +709,35 @@ function giftSection() {
   </section>`;
 }
 
+// ---------- agent-written analysis (--notes) ----------
+// Markdown-lite renderer: escape everything first, then allow exactly
+// **bold**, `code` and "- " bullet lists. No raw HTML ever passes through,
+// so a hostile notes file cannot inject into the report.
+function notesInline(s) {
+  return esc(s)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
+}
+function notesBody(md) {
+  return md.split(/\n\s*\n/).map((block) => {
+    const lines = block.trim().split('\n');
+    if (lines.every((l) => /^[-*] /.test(l.trim()))) {
+      return `<ul>${lines.map((l) => `<li>${notesInline(l.trim().slice(2))}</li>`).join('')}</ul>`;
+    }
+    return `<p>${notesInline(block.trim())}</p>`;
+  }).join('');
+}
+function notesSection() {
+  if (!notesText) return '';
+  return `<section class="glass pad notes-sec">
+    <div class="sec-head">
+      ${eyebrow(`Written by ${esc(arg('notes-author', 'Claude'))} from this scan · ${esc((h.harvestedAt ?? '').slice(0, 10))} · not part of the measurement`)}
+      <h2>What the numbers mean</h2>
+    </div>
+    <div class="notes-body">${notesBody(notesText)}</div>
+</section>`;
+}
+
 function whereToStartSection() {
   const c = [];
   if (agentFiles.length === 0) c.push({ score: 60, metric: null, title: 'Write the agent rules file',
@@ -958,6 +1002,14 @@ const html = `<!doctype html>
 
   .eyebrow { font:700 10.5px/1.4 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--dim); }
   .sec-head h2 { font:600 19px/1.3 var(--disp); letter-spacing:-.01em; }
+  /* agent-written analysis (--notes): same glass, but an accent spine and a
+     written-by label keep prose visibly apart from measurement */
+  .notes-sec { border-left:3px solid var(--accent); }
+  .notes-sec .sec-head .eyebrow { margin-bottom:6px; }
+  .notes-body { display:flex; flex-direction:column; gap:14px; margin-top:10px;
+    font-size:15px; line-height:1.65; color:var(--text); }
+  .notes-body ul { margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; }
+  .notes-body .mono { font-family:var(--mono); font-size:.92em; }
   .sec-head .sub { margin-top:3px; }
   .sub { color:var(--dim); font-size:13.5px; }
   .h3d { font:600 16px/1.3 var(--disp); letter-spacing:-.01em; margin-top:3px; }
@@ -1258,6 +1310,8 @@ const html = `<!doctype html>
   </div>
 </header>
 
+${notesSection()}
+
 ${whereToStartSection()}
 
 ${giftSection()}
@@ -1341,6 +1395,7 @@ if (summaryPath) {
     repo: repoName,
     version: VERSION,
     ...(commissionedBy ? { commissionedBy } : {}),
+    ...(notesText ? { notesEmbedded: true } : {}),
     ...(h.exclusions ? { exclusions: h.exclusions } : {}),
     score: healthScore,
     noSystemLikely,

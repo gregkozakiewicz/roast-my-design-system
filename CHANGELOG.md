@@ -2,6 +2,13 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.1.0 — 2026-08-20
+
+- **The roast's analysis ships inside the report.** New `--notes <file.md>` on the diagnose step (and passed through by the npx CLI) embeds an agent-written analysis in the report as **"What the numbers mean"**, between the verdict and Where to start. Born from the first user feedback: an 85/100 report got forwarded to the team while the critical read of those numbers stayed behind in the requester's chat — the score flattered, the analysis never travelled. Now the shared file carries both.
+- Kept honest by design: the section is labelled "Written by Claude from this scan · date · not part of the measurement" (author overridable with `--notes-author` for other agents), rendered from markdown-lite (paragraphs, bold, code, lists) with everything HTML-escaped, so notes can never inject markup and prose can never pass as measurement. No flag, no section: the CLI report without notes is byte-for-byte what 5.0.2 produced.
+- The skill now writes the roast to `/tmp/roast-notes.md` first and generates the report from it, so chat and report carry the same analysis; every regeneration (`--by` credit, theme change) re-passes the notes, and a missing notes file is a hard error rather than a silently thinner report.
+- `--summary` JSON reports `notesEmbedded: true` when the section is present.
+
 ## 5.0.2 — 2026-08-18
 
 - Docs only: npm's README now carries the reshot screenshots (the report as it looks today, agent trap and present included; the old images dated from 3.10.1) and the current image cache keys. No code changes.

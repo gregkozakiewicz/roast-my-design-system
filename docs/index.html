@@ -67,14 +67,14 @@
 <ul class="lead-list">
 <li><b>A health score you can defend in a meeting.</b> 0-100, benchmarked against Ideal Design System norms, 34 public repos and 10 reputable design systems. Monorepos are scored package by package, so the disciplined UI library and the messy app stop hiding behind one blended number.</li>
 <li><b>The receipts behind it.</b> Every colour and its near-identical twin, every spacing value, duplicated or never-imported component, inline style and !important, with real file paths. The values are rendered, not just counted: your type scale at real sizes, your radii as real corners. Findings an agent would copy and multiply are marked as agent traps.</li>
-<li><b>The first fixes ranked by payoff.</b> A Where to start list derived from your own numbers, with what each move is worth and where the score lands if you do them all: three tweaks, 55 becomes 85.</li>
+<li><b>The first fixes ranked by payoff.</b> A Where to start list derived from your own numbers, with what each move is worth and where the score lands if you do them all: three tweaks, 55 becomes 85. Run as the Claude Code skill, the report also carries Claude's read of the numbers — What the numbers mean, embedded in the same shareable file, labelled as written by AI.</li>
 <li><b>Rules that stop the mess coming back.</b> A generated design-system-rules.md with your canonical components and their most common real usage, quoted from your own code with a receipt. One flag injects it into every agent file you have: Claude, Cursor, GitHub Copilot, and Windsurf. And every scan checks the rules you already have for stale references, because a rule your agent obeys is worse than no rule when the repo has moved on.</li>
 <li><b>Live answers while the agent works.</b> --mcp runs the scan as a local MCP server: your agent asks which Button is canonical, which token holds the colour it was about to hardcode, and gets its changed files reviewed before finishing. Five tools, one scan at startup, nothing leaves your machine.</li>
 </ul>
 <p class="lead-close">Read only, no network, no telemetry, one shareable HTML report. Every release is provenance signed on npm and passes a 55-check snapshot suite before it ships.</p>
 <div class="kicker" style="margin-top:26px">Install the Claude Code skill</div>
 <div class="install"><b>/plugin marketplace add</b> pencilrebel/roast-my-design-system<br><b>/plugin install</b> roast-my-design-system@roast-my-design-system</div>
-<p class="sub">The full experience: the roast in chat, then the fixes walked with you. Submitted to the official Claude plugin directory and awaiting review; the commands above work today.</p>
+<p class="sub">The full experience: the roast in chat and written into the report itself, so the shared file carries the analysis, not just the score — then the fixes walked with you. Submitted to the official Claude plugin directory and awaiting review; the commands above work today.</p>
 <div class="kicker" style="margin-top:26px">Run it with npx</div>
 <div class="install"><b>npx</b> roast-my-design-system</div>
 <p class="sub">One command in any repo. No install, no Claude needed.</p>
@@ -99,10 +99,11 @@
 <tr><td><code>... --mcp</code></td><td>The scan as a local MCP server: five tools your agent calls while writing UI, from "is there a Button already?" to "review my changes". Nothing leaves your machine</td></tr>
 <tr><td><code>... --check</code></td><td>The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts</td></tr>
 <tr><td><code>... --by "Dwayne Hicks"</code></td><td>A requester credit in the report header, next to the scan date</td></tr>
+<tr><td><code>... --notes &lt;file.md&gt;</code></td><td>An agent-written analysis embedded in the report as "What the numbers mean": labelled as written by AI, kept apart from the measured numbers. The Claude Code skill writes and passes this automatically; the flag is here so any agent can</td></tr>
 <tr><td><code>... --exclude lab/</code></td><td>Leave a folder out of the scan, or list folders in a .roastignore file at the repo root. The report prints every exclusion in the header with its file count, so a scoped score always says it is scoped</td></tr>
 <tr><td><code>... --json</code></td><td>The scan summary as JSON on stdout, for scripts and pipelines</td></tr>
 <tr><td><code>... --theme light / --out &lt;file&gt; / --no-open</code></td><td>Light report, custom report path, don't open the browser</td></tr>
-<tr><td><code>/roast-my-design-system</code> (in Claude Code)</td><td>The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers</td></tr>
+<tr><td><code>/roast-my-design-system</code> (in Claude Code)</td><td>The full experience: the roast in chat and embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers</td></tr>
 </tbody>
 </table></div>
 <p class="sub">One scan writes rules for every agent: Claude, Cursor, GitHub Copilot, and Windsurf. Every scan also checks the agent rules you already have and flags stale references, no flag needed.</p>

@@ -65,6 +65,10 @@ Usage: npx roast-my-design-system [path] [options]
                   scanning: findings annotated on files in the Security tab
   --by <name>     put a requester credit in the report header, next to the
                   scan date ("commissioned by <name>")
+  --notes <file>  embed an agent-written analysis (markdown-lite) in the
+                  report as "What the numbers mean", labelled as written by
+                  AI and kept apart from the measured numbers. The Claude
+                  Code skill writes and passes this automatically
   --exclude <p>   leave a folder out of the scan (repo-relative, e.g.
                   --exclude lab/ --exclude piglet/ or --exclude lab/,piglet/;
                   same as listing it in a .roastignore file at the repo root).
@@ -113,6 +117,7 @@ const asJson = flag('json') === true;
 const noOpen = flag('no-open') === true || asJson;
 const theme = opt('theme', 'dark');
 const commissionedBy = opt('by', null);
+const notesFile = opt('notes', null);
 const excludes = optAll('exclude');
 const target = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
 if (!existsSync(target) || !statSync(target).isDirectory()) {
@@ -143,7 +148,8 @@ run('harvest/index.mjs', [target, '--out', harvestPath,
   ...excludes.flatMap((e) => ['--exclude', e])], { ROAST_EPHEMERAL_OUT: '1' });
 say('');
 run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath,
-  ...(commissionedBy ? ['--by', commissionedBy] : [])]);
+  ...(commissionedBy ? ['--by', commissionedBy] : []),
+  ...(notesFile ? ['--notes', resolve(notesFile)] : [])]);
 
 // The verdict leads, the evidence follows: harvest details print here, after
 // the diagnosis, rendered from harvest.json via the same lines the direct

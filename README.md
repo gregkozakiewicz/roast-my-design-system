@@ -6,6 +6,8 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
+> **New in 5.1: the roast's analysis now ships inside the report.** Run as the Claude Code skill, the report gains a "What the numbers mean" section — Claude's read of your scan, in the same shareable file as the score, so the analysis reaches whoever the report is forwarded to. Labelled as written by AI, never mixed into the measurement.
+
 > **New in 5.0: it runs as a local MCP server.** One command, and your agent asks the design system before writing UI, then gets the work checked after: which Button is canonical, which token holds that colour, review my changes. Local, deterministic, nothing leaves your machine. See [Live answers over MCP](#live-answers-over-mcp).
 
 Run it on your codebase and get, in about a second:
@@ -35,10 +37,11 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 | `... --mcp` | The scan as a local MCP server: five tools your agent calls while writing UI, from "is there a Button already?" to "review my changes". See [Live answers over MCP](#live-answers-over-mcp) |
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
 | <code>...&nbsp;--by&nbsp;"Dwayne&nbsp;Hicks"</code> | A requester credit in the report header, next to the scan date |
+| <code>...&nbsp;--notes&nbsp;&lt;file.md&gt;</code> | An agent-written analysis embedded in the report as **"What the numbers mean"**: labelled as written by AI, kept apart from the measured numbers. The Claude Code skill writes and passes this automatically; the flag is here so any agent can |
 | <code>...&nbsp;--exclude&nbsp;lab/</code> | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
 | <code>...&nbsp;--theme&nbsp;light</code>&nbsp;/ <code>--out&nbsp;&lt;file&gt;</code>&nbsp;/ <code>--no-open</code> | Light report, custom report path, don't open the browser |
-| <code>/roast-my-design-system</code> (in&nbsp;Claude&nbsp;Code) | The full experience: the roast in chat, the report, the rules offer, and the fix loop with Claude on your own numbers |
+| <code>/roast-my-design-system</code> (in&nbsp;Claude&nbsp;Code) | The full experience: the roast in chat *and* embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers |
 
 **One scan writes rules for every agent: Claude, Cursor, GitHub Copilot, and Windsurf.** Every scan also checks the agent rules you already have and flags stale references, no flag needed.
 
@@ -171,6 +174,7 @@ Open Claude Code in the repo you want roasted and type:
 You get the roast in chat plus `design-system-roast.html` at your repo root: a self-contained page (open it, Slack it, email it, no external requests) with:
 
 - a **health score** computed from how your numbers sit against the ideal
+- **"What the numbers mean"**: Claude's read of your scan — which findings actually matter, which good numbers are accidents, what to fix first — embedded in the same file you'll forward, labelled as written by Claude and kept apart from the measured numbers. The score alone can flatter; this section is what keeps a shared 85/100 honest
 - stat tiles comparing you to all three yardsticks: Ideal, the 34-repo average, and the reputable systems
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the off-scale spacing receipts, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger

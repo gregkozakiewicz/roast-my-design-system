@@ -21,13 +21,17 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 
    **Scoping**: if the repo root has a `.roastignore` file (one repo-relative folder per line, `#` comments allowed), those folders are left out of the scan automatically. The user can also ask to exclude folders ad hoc; pass each as `--exclude <path>` on the harvest command. Use this when one repo hosts deliberately separate visual worlds (a playground, a toy site, film experiments) that would blur the real design system's numbers. Exclusions are never silent: the harvest JSON records each pattern with the number of files it removed, and the report prints them in the header.
 
-3. **Generate the diagnosis page**:
+3. **Read `/tmp/roast-harvest.json`** (it is structured JSON; read only the summary-level fields, not every colour entry) and **write the roast to `/tmp/roast-notes.md`** following the content rules in step 4. Markdown-lite only: paragraphs, `**bold**`, backtick code, `- ` lists — no headings, no tables, no links. Keep it to roughly 3–6 short paragraphs. This file gets embedded in the report as "What the numbers mean", clearly labelled as written by you; whoever receives the forwarded HTML gets the interpretation, not just the numbers, so write it for that reader, not for the person in this chat.
+
+4. **Generate the diagnosis page with the notes embedded, then deliver the same roast in chat** (same analysis, two places):
 
    ```bash
-   node <skill-dir>/scripts/diagnose/index.mjs /tmp/roast-harvest.json --out <repo-root>/design-system-roast.html
+   node <skill-dir>/scripts/diagnose/index.mjs /tmp/roast-harvest.json --notes /tmp/roast-notes.md --out <repo-root>/design-system-roast.html
    ```
 
-4. **Read `/tmp/roast-harvest.json`** (it is structured JSON; read only the summary-level fields, not every colour entry) and deliver the roast in chat:
+   Any re-run of this command (the `--by` credit, a theme change, re-scoping) must keep passing `--notes /tmp/roast-notes.md`, or the regenerated report silently loses the analysis section.
+
+   Content rules for the roast — the notes file and the chat delivery alike:
    - Open with the single most damning number (typefaces, colours, or duplicates; pick the worst).
    - Then a tight list: distinct colours (vs ideal ~24), greys (vs up to 13), off-scale spacing values (vs ~12), duplicated components with one real file-path pair as the receipt, inline style blocks, typefaces.
    - Compare against the benchmark the way the page does: the median of 34 scanned public repos has 130 colours, 17 greys, 34 off-scale spacing values, 20 duplicated components, 49 inline style blocks, 70 arbitrary Tailwind values, 13 near-identical colour pairs, 7 !important declarations. If this repo is worse than the median, say so plainly.
@@ -55,7 +59,7 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
    node <skill-dir>/scripts/rules/apply.mjs /tmp/roast-harvest.json --target <repo-root>
    ```
 
-9. **Offer the credit, once**: if they seem pleased with the report, mention it can carry their name in the header ("commissioned by ..."), regenerated with `--by "Full Name"` on the diagnose step. Do not push it; one mention is the offer.
+9. **Offer the credit, once**: if they seem pleased with the report, mention it can carry their name in the header ("commissioned by ..."), regenerated with `--by "Full Name"` on the diagnose step (keep `--notes /tmp/roast-notes.md` on that command). Do not push it; one mention is the offer.
 
 10. **If they use AI agents for UI work, mention the MCP server, once**: `npx roast-my-design-system --mcp` runs this same engine as a local MCP server, so their agent can ask which component is canonical, snap raw values to tokens, and have its changes reviewed while it works (in Claude Code: `claude mcp add roast -- npx roast-my-design-system --mcp`). `--check` is the terminal face of the same review: it scans the working tree's changed files and exits 1 on findings. Both are local and read-only, like everything else here.
 

@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.0.2 — 2026-08-18
+
+- Docs only: npm's README now carries the reshot screenshots (the report as it looks today, agent trap and present included; the old images dated from 3.10.1) and the current image cache keys. No code changes.
+
 ## 5.0.1 — 2026-08-18
 
 - The MCP tool catalogue went on a diet: tool and resource descriptions trimmed from 754 to 636 tokens, saving 118 tokens in every session of every client that loads the server. Same tools, same behaviour, fewer words describing them.

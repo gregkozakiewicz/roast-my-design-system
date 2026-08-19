@@ -41,6 +41,9 @@ function runEngine(script, args) {
 // Version and machine paths change between runs and releases; the contract
 // is everything else.
 const stripVersion = (s) => s.replace(/ver\. \d+\.\d+\.\d+/g, 'ver. X').replace(/\d+\.\d+\.\d+/g, 'X');
+// Scan dates change at UTC midnight; snapshots must not (caught 2026-08-18,
+// the first suite run on a later UTC day than its expected files).
+const stripDates = (s) => s.replace(/\d{4}-\d{2}-\d{2}/g, 'DATE');
 function normalizeSummary(s) {
   const { version, report, ...rest } = s;
   return rest;
@@ -77,8 +80,8 @@ for (const fixture of readdirSync(FIXTURES).sort()) {
   const h = JSON.parse(readFileSync(hPath, 'utf8'));
   const s = JSON.parse(readFileSync(sPath, 'utf8'));
   compare('summary snapshot', normalizeSummary(s), `${fixture}.summary.json`);
-  compare('rules snapshot', stripVersion(rulesMarkdown(h).text), `${fixture}.rules.md`);
-  compare('compact rules snapshot', stripVersion(rulesMarkdown(h, { compact: true }).text), `${fixture}.compact.md`);
+  compare('rules snapshot', stripDates(stripVersion(rulesMarkdown(h).text)), `${fixture}.rules.md`);
+  compare('compact rules snapshot', stripDates(stripVersion(rulesMarkdown(h, { compact: true }).text)), `${fixture}.compact.md`);
 
   // The report must embed no machine paths (the examples leak of 2026-08-16)
   const html = readFileSync(join(tmp, `${fixture}.html`), 'utf8');
@@ -126,7 +129,6 @@ compare('apply snapshot', stripVersion(once), 'messy.apply.md');
 console.log('mcp:');
 const { loadKnowledge } = await import(pathToFileURL(join(ENGINE, 'mcp/knowledge.mjs')).href);
 const mcpTools = await import(pathToFileURL(join(ENGINE, 'mcp/tools.mjs')).href);
-const stripDates = (s) => s.replace(/\d{4}-\d{2}-\d{2}/g, 'DATE');
 const BAD_SNIPPET = `export function Button() {
   return <div style={{ color: '#3b81f5', margin: '27px' }} className="p-[11px] text-[13px]">x</div>;
 }`;

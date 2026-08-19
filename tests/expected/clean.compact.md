@@ -1,6 +1,6 @@
 ## Design system rules
 
-Follow these rules when writing or editing UI in this repo; derived from a scan on 2026-08-17.
+Follow these rules when writing or editing UI in this repo; derived from a scan on DATE.
 
 ### Colours and tokens
 

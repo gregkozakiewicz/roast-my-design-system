@@ -1,6 +1,7 @@
 {
   "name": "roast-my-design-system",
-  "version": "5.1.1",
+  "version": "5.1.2",
+  "mcpName": "io.github.pencilrebel/roast-my-design-system",
   "description": "Your AI can write the UI. This makes sure it writes your UI. A deterministic scanner scores your design system 0-100 against 34 public repos, writes rules for Claude, Cursor, Copilot and Windsurf with --apply, and runs as a local MCP server with --mcp.",
   "keywords": [
     "design-system",

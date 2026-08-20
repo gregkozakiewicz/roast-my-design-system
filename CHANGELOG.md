@@ -2,6 +2,13 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.1.2 — 2026-08-20
+
+- **Listed in the official MCP registry.** A `server.json` at the repo root describes the stdio server (`npx roast-my-design-system --mcp`) for registry.modelcontextprotocol.io, and `mcpName` in package.json is the ownership proof the registry checks against the published npm package. The publish workflow now sends the listing itself, authenticated with GitHub OIDC, so npm and the registry can never drift apart.
+- **One release path, in one file.** `release.mjs` is now the only supported way to cut a release: it syncs the version across package.json, the engine constant, the plugin manifest and server.json, refuses to move without a changelog entry, runs the smoke test and the 55-check snapshot suite, shows the diff, then commits, tags and pushes and watches npm and the registry receive it. Publishing by hand from a laptop skips the tests and drops npm's provenance badge, so the script never does it and neither should anyone else.
+- The plugin manifest, stale at 5.0.2 since the 5.1 releases, is back in step with everything else.
+- No engine changes: the scanner, the report and the five MCP tools are what 5.1.1 shipped.
+
 ## 5.1.1 — 2026-08-20
 
 - Docs and examples catch up with 5.1.0: the hosted vercel/ai-chatbot example report is regenerated from a fresh scan **with Claude's notes embedded** ("What the numbers mean" live on the page, same 75/100), its card on the landing page carries a "with Claude's notes" chip, README screenshots are reshot on that report so the analysis section is visible, and the landing page leads with the analysis-travels-with-the-report bullet. No engine changes.

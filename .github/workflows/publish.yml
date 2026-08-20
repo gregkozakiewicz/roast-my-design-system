@@ -1,7 +1,12 @@
-# Publishes to npm when a version tag (v3.4.0 style) is pushed.
-# Uses npm Trusted Publishing: no tokens, no secrets — npmjs.com is configured
+# Publishes to npm AND the official MCP registry when a version tag (v3.4.0
+# style) is pushed. Started by `node release.mjs <version>`, which is the only
+# supported way to cut a release — never `npm publish` from a laptop.
+#
+# npm uses Trusted Publishing: no tokens, no secrets — npmjs.com is configured
 # to trust this exact workflow, and npm attaches provenance automatically
-# (the "built and signed from this commit" badge on the package page).
+# (the "built and signed from this commit" badge on the package page). The MCP
+# registry uses GitHub OIDC, also tokenless: it trusts this repository's
+# identity, which is why `id-token: write` below matters twice.
 name: publish
 
 on:
@@ -26,13 +31,26 @@ jobs:
       # Trusted publishing needs a recent npm
       - run: npm install -g npm@latest
 
-      # The tag must match package.json — catches a forgotten version bump
-      - name: Check tag matches package.json
+      # The tag must match every file that carries the version — catches a
+      # forgotten bump before anything reaches the public
+      - name: Check the tag matches package.json and server.json
         run: |
-          PKG=$(node -p "require('./package.json').version")
           TAG=${GITHUB_REF_NAME#v}
+          PKG=$(node -p "require('./package.json').version")
           if [ "$PKG" != "$TAG" ]; then
             echo "Tag v$TAG does not match package.json $PKG" >&2
+            exit 1
+          fi
+          SRV=$(node -p "require('./server.json').version")
+          SRVPKG=$(node -p "require('./server.json').packages[0].version")
+          MCPNAME=$(node -p "require('./package.json').mcpName")
+          SRVNAME=$(node -p "require('./server.json').name")
+          if [ "$SRV" != "$TAG" ] || [ "$SRVPKG" != "$TAG" ]; then
+            echo "server.json is at $SRV / package $SRVPKG, tag is v$TAG" >&2
+            exit 1
+          fi
+          if [ "$MCPNAME" != "$SRVNAME" ]; then
+            echo "mcpName $MCPNAME does not match server.json name $SRVNAME" >&2
             exit 1
           fi
 
@@ -48,3 +66,29 @@ jobs:
         run: node tests/run.mjs
 
       - run: npm publish
+
+      # ---- MCP registry: the listing at registry.modelcontextprotocol.io ----
+      # Metadata only. It points at the npm package published a step ago, and
+      # the registry verifies ownership by reading mcpName out of that exact
+      # published package — which is why this runs after npm, not before.
+
+      - name: Wait for npm to serve the new version
+        run: |
+          for i in $(seq 1 30); do
+            if npm view roast-my-design-system@${GITHUB_REF_NAME#v} version >/dev/null 2>&1; then
+              echo "npm is serving ${GITHUB_REF_NAME#v}"; exit 0
+            fi
+            echo "waiting for npm... ($i)"; sleep 10
+          done
+          echo "npm never served ${GITHUB_REF_NAME#v}; the registry would reject the listing" >&2
+          exit 1
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Authenticate to the MCP registry (GitHub OIDC, no secrets)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish the listing
+        run: ./mcp-publisher publish

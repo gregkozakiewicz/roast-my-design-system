@@ -1,6 +1,6 @@
 {
   "name": "roast-my-design-system",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "mcpName": "io.github.pencilrebel/roast-my-design-system",
   "description": "Your AI can write the UI. This makes sure it writes your UI. A deterministic scanner scores your design system 0-100 against 34 public repos, writes rules for Claude, Cursor, Copilot and Windsurf with --apply, and runs as a local MCP server with --mcp.",
   "keywords": [
@@ -13,7 +13,13 @@
     "tailwind",
     "ui",
     "claude-code",
-    "developer-tools"
+    "developer-tools",
+    "mcp-server",
+    "ai-agents",
+    "linter",
+    "code-quality",
+    "cursor",
+    "windsurf"
   ],
   "homepage": "https://pencilrebel.github.io/roast-my-design-system/",
   "bugs": "https://github.com/pencilrebel/roast-my-design-system/issues",

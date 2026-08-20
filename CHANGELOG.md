@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.1.4 — 2026-08-20
+
+- npm search catches up with the GitHub topics: mcp-server, ai-agents, linter, code-quality, cursor and windsurf join the package keywords.
+- Republished so npm's provenance attestation points at a live commit again: a repository history cleanup earlier today orphaned the commit 5.1.3 was built from, and npm showed a "cannot verify source" banner on the package page. No code changes; the engine is byte-for-byte 5.1.3.
+
 ## 5.1.3 — 2026-08-20
 
 - **The tool asks for feedback now.** The terminal outro and the report footer both carry one line, "Think it got something wrong? Say so, and say which bit", pointing at a GitHub issue form that opens with the version already filled in and the questions already written. Around 2,000 people had run the scanner by then and the only way to answer back was to know where the issues tab lived. Nothing is sent and nothing is collected: the link carries the version and nothing else, so a scan can never publish itself by accident.

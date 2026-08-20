@@ -1,0 +1,32 @@
+name: What it got wrong
+description: Tell me where the roast is wrong, and which bit
+title: "What it got wrong: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking time, genuinely, appreciate it.
+
+        **GitHub issues are public**, so paste only what you want public. Nothing about your repo is filled in below.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Filled in for you when you arrive from the report or the terminal.
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What the report got wrong, or what you expected instead
+      description: Try to be prescriptive. The specific bit is the useful bit.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything that helps me see it
+      placeholder: Framework, monorepo or single repo, rough size.
+  - type: markdown
+    attributes:
+      value: |
+        Cheers
+        Greg

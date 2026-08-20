@@ -211,6 +211,13 @@ if (wantApply && !asJson) {
 say(`\nWant the fixes, not just the roast? The free Claude Code skill runs this same
 scan, then walks the punch list with you: https://github.com/pencilrebel/roast-my-design-system`);
 
+// The ask for feedback, worded and linked in one place (scripts/lib/feedback.mjs)
+// so the terminal and the report footer can never say different things.
+if (!asJson) {
+  const { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA } = await import(pathToFileURL(join(SCRIPTS, 'lib/feedback.mjs')).href);
+  say(`\n${FEEDBACK_ASK} ${FEEDBACK_CTA}:\n${feedbackUrl(VERSION)}`);
+}
+
 if (!noOpen) {
   // Windows: `start` treats a first quoted arg as the window TITLE, and Node
   // quotes paths containing spaces — pass an empty title so the path lands

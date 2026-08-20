@@ -2,6 +2,12 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.1.3 — 2026-08-20
+
+- **The tool asks for feedback now.** The terminal outro and the report footer both carry one line, "Think it got something wrong? Say so, and say which bit", pointing at a GitHub issue form that opens with the version already filled in and the questions already written. Around 2,000 people had run the scanner by then and the only way to answer back was to know where the issues tab lived. Nothing is sent and nothing is collected: the link carries the version and nothing else, so a scan can never publish itself by accident.
+- The questions and the note that comes with them live in `.github/ISSUE_TEMPLATE/feedback.yml`, so the wording can change without a release.
+- The link wears a pulse that traces itself left to right, drawn in CSS so a forwarded report keeps it, and held still for anyone who asked for reduced motion. The credit link now carries `?utm_source=roast-report`, which is the first honest measure of whether shared reports actually travel.
+
 ## 5.1.2 — 2026-08-20
 
 - **Listed in the official MCP registry.** A `server.json` at the repo root describes the stdio server (`npx roast-my-design-system --mcp`) for registry.modelcontextprotocol.io, and `mcpName` in package.json is the ownership proof the registry checks against the published npm package. The publish workflow now sends the listing itself, authenticated with GitHub OIDC, so npm and the registry can never drift apart.

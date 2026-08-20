@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.1.1 — 2026-08-20
+
+- Docs and examples catch up with 5.1.0: the hosted vercel/ai-chatbot example report is regenerated from a fresh scan **with Claude's notes embedded** ("What the numbers mean" live on the page, same 75/100), its card on the landing page carries a "with Claude's notes" chip, README screenshots are reshot on that report so the analysis section is visible, and the landing page leads with the analysis-travels-with-the-report bullet. No engine changes.
+
 ## 5.1.0 — 2026-08-20
 
 - **The roast's analysis ships inside the report.** New `--notes <file.md>` on the diagnose step (and passed through by the npx CLI) embeds an agent-written analysis in the report as **"What the numbers mean"**, between the verdict and Where to start. Born from the first user feedback: an 85/100 report got forwarded to the team while the critical read of those numbers stayed behind in the requester's chat — the score flattered, the analysis never travelled. Now the shared file carries both.

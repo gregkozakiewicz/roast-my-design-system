@@ -39,6 +39,8 @@
     padding:14px 18px; margin-top:10px; color:var(--text); text-decoration:none; background:var(--card); }
   a.card:hover { border-color:rgba(45,212,191,.4); }
   a.card span { display:block; font-size:12.5px; color:var(--dim); margin-top:2px; }
+  a.card .notes-chip { display:inline-block; font-style:normal; font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--mint); border:1px solid rgba(45,212,191,.35); border-radius:999px; padding:2px 8px; margin-left:8px; vertical-align:1px; }
   .score { font:700 20px/1 'Sora',sans-serif; color:var(--mint); flex-shrink:0; }
   .score i { font-style:normal; font-size:12px; color:var(--dim2); font-weight:600; }
   .cmd-wrap { overflow-x:auto; margin:14px 0 6px; border:1px solid var(--line); border-radius:14px; }
@@ -111,7 +113,7 @@
 
 <h2>Example roasts</h2>
 <p class="sub">Real reports from public repos, hosted exactly as the skill generates them. Every number is deterministic; every path is real.</p>
-<a class="card" href="examples/vercel-ai-chatbot.html"><div>vercel/ai-chatbot<span>103 arbitrary values like [13px] punched through the Tailwind scale</span></div><div class="score">75<i>/100</i></div></a>
+<a class="card" href="examples/vercel-ai-chatbot.html"><div>vercel/ai-chatbot<em class="notes-chip">with Claude's notes</em><span>103 arbitrary values like [13px] punched through the Tailwind scale</span></div><div class="score">75<i>/100</i></div></a>
 <a class="card" href="examples/excalidraw-excalidraw.html"><div>excalidraw/excalidraw<span>42 colour pairs nearly identical, copy-paste, not decisions</span></div><div class="score">55<i>/100</i></div></a>
 <a class="card" href="examples/dubinc-dub.html"><div>dubinc/dub<span>619 arbitrary bracket values and 22 duplicated components</span></div><div class="score">25<i>/100</i></div></a>
 

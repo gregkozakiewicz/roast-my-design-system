@@ -120,7 +120,7 @@ const once = readFileSync(join(applyDir, 'CLAUDE.md'), 'utf8');
 runEngine('rules/apply.mjs', [join(tmp, 'messy.json'), '--target', applyDir]);
 const twice = readFileSync(join(applyDir, 'CLAUDE.md'), 'utf8');
 once === twice ? ok('apply is idempotent') : bad('apply is idempotent', 'second run changed the file');
-compare('apply snapshot', stripVersion(once), 'messy.apply.md');
+compare('apply snapshot', stripDates(stripVersion(once)), 'messy.apply.md');
 
 // ---------- MCP: the five tools, snapshotted per fixture ----------
 // Dates stripped (scan stamp changes daily); the answers are the contract.

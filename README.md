@@ -52,13 +52,13 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 - **Making the case without a meeting.** Drop the self-contained HTML report in Slack: a health score and three benchmarks (ideal norms, the 34-repo median, 10 reputable systems) argue for the design system for you.
 - **The fix loop.** Hand the report back to Claude as the punch list and work through the Where to start section, file by file.
 
-The full report for vercel/ai-chatbot, top to bottom:
+The full report for vercel/ai-chatbot, top to bottom — including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, priced Where to start moves, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=5.0.1)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=5.1.1)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=5.0.1)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=5.1.1)
 
 ## What makes the numbers trustworthy
 

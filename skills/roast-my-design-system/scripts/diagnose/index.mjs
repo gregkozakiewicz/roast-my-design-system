@@ -13,6 +13,11 @@
  *   markdown-lite: paragraphs, **bold**, `code`, and "- " lists. Reruns of
  *   this script (e.g. --by credit) must pass --notes again or the section
  *   is gone — which is why a missing notes file is a hard error, not a skip.
+ *
+ *   --section "Title" <file.md> (repeatable) appends agent-written chapters
+ *   after the notes, same markdown-lite plus "## " sub-headings. It exists so
+ *   analysis that outgrows the notes (an interaction audit, an accessibility
+ *   pass) still lives inside this report instead of a hand-built page.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, basename, join, dirname } from 'node:path';
@@ -131,6 +136,22 @@ let notesText = null;
 if (notesPath) {
   try { notesText = readFileSync(resolve(notesPath), 'utf8').trim() || null; }
   catch { console.error(`--notes: cannot read ${notesPath}`); process.exit(1); }
+}
+
+// --section "Title" file.md, repeatable; unreadable files are hard errors for
+// the same reason as --notes.
+const extraSections = [];
+for (let i = 3; i < process.argv.length; i++) {
+  if (process.argv[i] !== '--section') continue;
+  const title = process.argv[i + 1], file = process.argv[i + 2];
+  if (!title || !file || title.startsWith('--') || file.startsWith('--')) {
+    console.error('--section needs a title and a file: --section "Interaction audit" audit.md'); process.exit(1);
+  }
+  let text;
+  try { text = readFileSync(resolve(file), 'utf8').trim(); }
+  catch { console.error(`--section: cannot read ${file}`); process.exit(1); }
+  if (text) extraSections.push({ title, text });
+  i += 2;
 }
 const T = THEMES[themeName];
 if (!T) { console.error(`Unknown theme "${themeName}" (dark | light)`); process.exit(1); }
@@ -724,13 +745,26 @@ function notesInline(s) {
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
 }
+function mdBlock(block) {
+  const lines = block.trim().split('\n');
+  if (lines.every((l) => /^[-*] /.test(l.trim()))) {
+    return `<ul>${lines.map((l) => `<li>${notesInline(l.trim().slice(2))}</li>`).join('')}</ul>`;
+  }
+  return `<p>${notesInline(block.trim())}</p>`;
+}
 function notesBody(md) {
+  return md.split(/\n\s*\n/).map(mdBlock).join('');
+}
+// Sections additionally allow "## " sub-headings on a block's first line.
+function sectionBody(md) {
   return md.split(/\n\s*\n/).map((block) => {
-    const lines = block.trim().split('\n');
-    if (lines.every((l) => /^[-*] /.test(l.trim()))) {
-      return `<ul>${lines.map((l) => `<li>${notesInline(l.trim().slice(2))}</li>`).join('')}</ul>`;
+    let b = block.trim(), head = '';
+    if (b.startsWith('## ')) {
+      const nl = b.indexOf('\n');
+      head = `<h3>${notesInline((nl === -1 ? b : b.slice(0, nl)).slice(3).trim())}</h3>`;
+      b = nl === -1 ? '' : b.slice(nl + 1).trim();
     }
-    return `<p>${notesInline(block.trim())}</p>`;
+    return head + (b ? mdBlock(b) : '');
   }).join('');
 }
 function notesSection() {
@@ -742,6 +776,15 @@ function notesSection() {
     </div>
     <div class="notes-body">${notesBody(notesText)}</div>
 </section>`;
+}
+function extraSectionsHtml() {
+  return extraSections.map(({ title, text }) => `<section class="glass pad notes-sec">
+    <div class="sec-head">
+      ${eyebrow(`Written by ${esc(arg('notes-author', 'Claude'))} from this scan · ${esc((h.harvestedAt ?? '').slice(0, 10))} · not part of the measurement`)}
+      <h2>${esc(title)}</h2>
+    </div>
+    <div class="notes-body">${sectionBody(text)}</div>
+</section>`).join('\n\n');
 }
 
 function whereToStartSection() {
@@ -1016,6 +1059,7 @@ const html = `<!doctype html>
     font-size:15px; line-height:1.65; color:var(--text); }
   .notes-body ul { margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; }
   .notes-body .mono { font-family:var(--mono); font-size:.92em; }
+  .notes-body h3 { font:600 16px/1.3 var(--disp); letter-spacing:-.01em; margin-top:8px; }
   .sec-head .sub { margin-top:3px; }
   .sub { color:var(--dim); font-size:13.5px; }
   .h3d { font:600 16px/1.3 var(--disp); letter-spacing:-.01em; margin-top:3px; }
@@ -1329,6 +1373,8 @@ const html = `<!doctype html>
 
 ${notesSection()}
 
+${extraSectionsHtml()}
+
 ${whereToStartSection()}
 
 ${giftSection()}
@@ -1413,6 +1459,7 @@ if (summaryPath) {
     version: VERSION,
     ...(commissionedBy ? { commissionedBy } : {}),
     ...(notesText ? { notesEmbedded: true } : {}),
+    ...(extraSections.length ? { sectionsEmbedded: extraSections.map((s) => s.title) } : {}),
     ...(h.exclusions ? { exclusions: h.exclusions } : {}),
     score: healthScore,
     noSystemLikely,

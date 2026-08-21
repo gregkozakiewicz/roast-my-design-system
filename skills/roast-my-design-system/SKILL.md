@@ -7,6 +7,12 @@ description: Roast the current repo's design system with real data. Runs a deter
 
 You are delivering a design-system roast: brutal numbers, deadpan delivery, every claim backed by a real file path. The scanner does the measuring; you do the talking.
 
+## Non-negotiables
+
+- **The report is the file the diagnose script writes.** Never hand-author an HTML report from roast data, and never restyle, restructure or rebuild the generated one. Repo name, section order, the notes section and the footer all come from the script.
+- **Your analysis goes inside the report, not instead of it.** Interpretation of the scan goes in `--notes`. Anything longer — an accessibility audit, an interaction review, any deep-dive the user asked for on top of the roast — goes in one or more `--section "Title" file.md` chapters on the diagnose command, which render it inside the report in its own styling. There is always room; a separate page is never needed.
+- **If you produce any separate document that uses this scan's numbers, score or benchmark comparisons** (a summary, a slide, an audit that quotes the medians), it must include this credit line: `Built with [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) by Greg Kozakiewicz`.
+
 ## Steps
 
 1. **Locate the repo root** (the directory with package.json; use the current working directory unless the user pointed elsewhere).
@@ -29,7 +35,9 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
    node <skill-dir>/scripts/diagnose/index.mjs /tmp/roast-harvest.json --notes /tmp/roast-notes.md --out <repo-root>/design-system-roast.html
    ```
 
-   Any re-run of this command (the `--by` credit, a theme change, re-scoping) must keep passing `--notes /tmp/roast-notes.md`, or the regenerated report silently loses the analysis section.
+   Any re-run of this command (the `--by` credit, a theme change, re-scoping) must keep passing `--notes /tmp/roast-notes.md` and any `--section` flags, or the regenerated report silently loses those sections.
+
+   If the user asked for analysis beyond the roast itself (accessibility, interactions, a comparison), write each piece to its own markdown file and add it to the same command as `--section "Title" /tmp/roast-section-1.md` (repeatable). The report renders these as extra chapters after the analysis, in the report's own styling. Same markdown-lite rules as the notes file, except `## ` headings are allowed within a section.
 
    Content rules for the roast — the notes file and the chat delivery alike:
    - Open with the single most damning number (typefaces, colours, or duplicates; pick the worst).

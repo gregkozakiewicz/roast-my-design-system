@@ -2,6 +2,14 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.2.0 — 2026-08-21
+
+- **The report can hold chapters now.** New `--section "Title" <file.md>` on the diagnose step, repeatable, renders agent-written chapters after "What the numbers mean": same styling, same accent spine, same written-by-AI label, with `## ` sub-headings allowed. Born from a report seen in the wild: asked for an interaction audit on top of the roast, an agent found the notes box too small for ten findings and built its own page from scratch, no footer, no credit, none of this report's design. A document with spare rooms never forces a guest to build a second house. Re-runs must re-pass every `--section` (and `--notes`), and an unreadable file is a hard error; `--summary` JSON lists embedded section titles under `sectionsEmbedded`.
+- **The scan data now introduces its maker.** The harvest JSON opens with an `_attribution` block (tool, author, repo link, and the credit line any derived document should carry), placed first so agents that sample the top of the file meet it before the numbers. The MCP server's `roast_get_context` closes with the same one-line credit request. Nothing is enforced and nothing is collected; the data simply asks to be cited, the way a dataset does.
+- The skill gains a **non-negotiables** block: the report is always the file the diagnose script writes, never a hand-authored page; analysis beyond the roast goes into `--section` chapters; and any separate document built from the scan's numbers carries the credit line.
+- README states the same credit norm for humans, one line under License.
+- The report itself is unchanged when no new flags are passed, footer and all.
+
 ## 5.1.4 — 2026-08-20
 
 - npm search catches up with the GitHub topics: mcp-server, ai-agents, linter, code-quality, cursor and windsurf join the package keywords.

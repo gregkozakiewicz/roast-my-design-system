@@ -32,6 +32,21 @@ function opt(name, fallback) {
   argv.splice(i, 2);
   return v;
 }
+// repeatable two-argument option: collects every "--name <a> <b>" pair
+function optPairs(name) {
+  const out = [];
+  let i;
+  while ((i = argv.indexOf(`--${name}`)) !== -1) {
+    const a = argv[i + 1], b = argv[i + 2];
+    if (!a || !b || a.startsWith('--') || b.startsWith('--')) {
+      console.error(`--${name} needs a title and a file: --${name} "Interaction audit" audit.md`);
+      process.exit(1);
+    }
+    out.push([a, b]);
+    argv.splice(i, 3);
+  }
+  return out;
+}
 // repeatable option: collects every occurrence, comma-separated values split
 function optAll(name) {
   const out = [];
@@ -69,6 +84,10 @@ Usage: npx roast-my-design-system [path] [options]
                   report as "What the numbers mean", labelled as written by
                   AI and kept apart from the measured numbers. The Claude
                   Code skill writes and passes this automatically
+  --section "Title" <file>
+                  append an agent-written chapter after the notes, same
+                  markdown-lite plus "## " sub-headings, same written-by-AI
+                  label. Repeatable, one chapter per --section
   --exclude <p>   leave a folder out of the scan (repo-relative, e.g.
                   --exclude lab/ --exclude piglet/ or --exclude lab/,piglet/;
                   same as listing it in a .roastignore file at the repo root).
@@ -118,6 +137,7 @@ const noOpen = flag('no-open') === true || asJson;
 const theme = opt('theme', 'dark');
 const commissionedBy = opt('by', null);
 const notesFile = opt('notes', null);
+const sections = optPairs('section');
 const excludes = optAll('exclude');
 const target = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
 if (!existsSync(target) || !statSync(target).isDirectory()) {
@@ -149,7 +169,8 @@ run('harvest/index.mjs', [target, '--out', harvestPath,
 say('');
 run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath,
   ...(commissionedBy ? ['--by', commissionedBy] : []),
-  ...(notesFile ? ['--notes', resolve(notesFile)] : [])]);
+  ...(notesFile ? ['--notes', resolve(notesFile)] : []),
+  ...sections.flatMap(([title, file]) => ['--section', title, resolve(file)])]);
 
 // The verdict leads, the evidence follows: harvest details print here, after
 // the diagnosis, rendered from harvest.json via the same lines the direct

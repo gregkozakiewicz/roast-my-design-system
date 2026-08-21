@@ -103,6 +103,7 @@
 <tr><td><code>... --check</code></td><td>The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts</td></tr>
 <tr><td><code>... --by "Dwayne Hicks"</code></td><td>A requester credit in the report header, next to the scan date</td></tr>
 <tr><td><code>... --notes &lt;file.md&gt;</code></td><td>An agent-written analysis embedded in the report as "What the numbers mean": labelled as written by AI, kept apart from the measured numbers. The Claude Code skill writes and passes this automatically; the flag is here so any agent can</td></tr>
+<tr><td><code>... --section "Title" &lt;file.md&gt;</code></td><td>An agent-written chapter appended after the notes, same styling, same written-by-AI label, with sub-headings allowed. Repeatable, so analysis that outgrows the notes still lives inside the report instead of a hand-built page</td></tr>
 <tr><td><code>... --exclude lab/</code></td><td>Leave a folder out of the scan, or list folders in a .roastignore file at the repo root. The report prints every exclusion in the header with its file count, so a scoped score always says it is scoped</td></tr>
 <tr><td><code>... --json</code></td><td>The scan summary as JSON on stdout, for scripts and pipelines</td></tr>
 <tr><td><code>... --theme light / --out &lt;file&gt; / --no-open</code></td><td>Light report, custom report path, don't open the browser</td></tr>

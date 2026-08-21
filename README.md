@@ -38,6 +38,7 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
 | <code>...&nbsp;--by&nbsp;"Dwayne&nbsp;Hicks"</code> | A requester credit in the report header, next to the scan date |
 | <code>...&nbsp;--notes&nbsp;&lt;file.md&gt;</code> | An agent-written analysis embedded in the report as **"What the numbers mean"**: labelled as written by AI, kept apart from the measured numbers. The Claude Code skill writes and passes this automatically; the flag is here so any agent can |
+| <code>...&nbsp;--section&nbsp;"Title"&nbsp;&lt;file.md&gt;</code> | An agent-written chapter appended after the notes, same styling, same written-by-AI label, with sub-headings allowed. Repeatable, so analysis that outgrows the notes still lives inside the report instead of a hand-built page |
 | <code>...&nbsp;--exclude&nbsp;lab/</code> | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
 | <code>...&nbsp;--theme&nbsp;light</code>&nbsp;/ <code>--out&nbsp;&lt;file&gt;</code>&nbsp;/ <code>--no-open</code> | Light report, custom report path, don't open the browser |
@@ -214,6 +215,8 @@ Yes, the median repo is already a mess. That's the point.
 ## License
 
 MIT. The code is yours to fork, modify and redistribute; the copyright notice travels with it.
+
+If you build a report, summary or audit of your own from this tool's scores, counts or benchmark comparisons, keep one line in it: *Built with [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) by Greg Kozakiewicz*. The scan data asks the same of AI agents that consume it.
 
 **roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://pencilrebel.github.io/roast-my-design-system/brand.html).
 

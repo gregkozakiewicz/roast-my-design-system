@@ -12,6 +12,12 @@ const REPO = 'https://github.com/pencilrebel/roast-my-design-system';
 export const FEEDBACK_ASK = 'Think it got something wrong?';
 export const FEEDBACK_CTA = 'Say so, and say which bit';
 
+// The other half of the same deal: the roast cuts both ways. Nothing can
+// star a repo from a link, so this lands on the page where the button is.
+export const STAR_ASK = 'Think it got it right?';
+export const STAR_CTA = 'A star helps other people find it';
+export const STAR_URL = REPO;
+
 export function feedbackUrl(version) {
   // `version` matches the input id in feedback.yml, which is how GitHub issue
   // forms accept a prefilled value.

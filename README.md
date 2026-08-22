@@ -212,6 +212,8 @@ Yes, the median repo is already a mess. That's the point.
 
 **Your AI can write the UI. This makes sure it writes *your* UI.**
 
+<a href="https://github.com/pencilrebel/roast-my-design-system"><img src="https://img.shields.io/badge/If%20it%20roasted%20you%20fairly%2C%20a%20star%20helps%20other%20people%20find%20it-a855f7?style=for-the-badge&logo=github&logoColor=white" alt="If it roasted you fairly, a star helps other people find it"></a>
+
 ## License
 
 MIT. The code is yours to fork, modify and redistribute; the copyright notice travels with it.

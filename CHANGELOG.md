@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.2.1 — 2026-08-22
+
+- **The roast cuts both ways.** The terminal outro now pairs the feedback ask with its twin: "Think it got it right? A star helps other people find it", linking to the repo. The README carries the same ask as a badge under the tagline, and a live monthly-downloads badge at the top.
+- No engine changes: the scanner, the report and the five MCP tools are what 5.2.0 shipped.
+
 ## 5.2.0 — 2026-08-21
 
 - **The report can hold chapters now.** New `--section "Title" <file.md>` on the diagnose step, repeatable, renders agent-written chapters after "What the numbers mean": same styling, same accent spine, same written-by-AI label, with `## ` sub-headings allowed. Born from a report seen in the wild: asked for an interaction audit on top of the roast, an agent found the notes box too small for ten findings and built its own page from scratch, no footer, no credit, none of this report's design. A document with spare rooms never forces a guest to build a second house. Re-runs must re-pass every `--section` (and `--notes`), and an unreadable file is a hard error; `--summary` JSON lists embedded section titles under `sectionsEmbedded`.

@@ -235,8 +235,8 @@ scan, then walks the punch list with you: https://github.com/pencilrebel/roast-m
 // The ask for feedback, worded and linked in one place (scripts/lib/feedback.mjs)
 // so the terminal and the report footer can never say different things.
 if (!asJson) {
-  const { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA } = await import(pathToFileURL(join(SCRIPTS, 'lib/feedback.mjs')).href);
-  say(`\n${FEEDBACK_ASK} ${FEEDBACK_CTA}:\n${feedbackUrl(VERSION)}`);
+  const { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA, STAR_ASK, STAR_CTA, STAR_URL } = await import(pathToFileURL(join(SCRIPTS, 'lib/feedback.mjs')).href);
+  say(`\n${FEEDBACK_ASK} ${FEEDBACK_CTA}:\n${feedbackUrl(VERSION)}\n${STAR_ASK} ${STAR_CTA}:\n${STAR_URL}`);
 }
 
 if (!noOpen) {

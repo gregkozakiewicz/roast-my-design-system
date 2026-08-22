@@ -59,6 +59,15 @@
 
   .eyebrow { font:700 10.5px/1.4 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--dim); }
   .sec-head h2 { font:600 19px/1.3 var(--disp); letter-spacing:-.01em; }
+  /* agent-written analysis (--notes): same glass, but an accent spine and a
+     written-by label keep prose visibly apart from measurement */
+  .notes-sec { border-left:3px solid var(--accent); }
+  .notes-sec .sec-head .eyebrow { margin-bottom:6px; }
+  .notes-body { display:flex; flex-direction:column; gap:14px; margin-top:10px;
+    font-size:15px; line-height:1.65; color:var(--text); }
+  .notes-body ul { margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; }
+  .notes-body .mono { font-family:var(--mono); font-size:.92em; }
+  .notes-body h3 { font:600 16px/1.3 var(--disp); letter-spacing:-.01em; margin-top:8px; }
   .sec-head .sub { margin-top:3px; }
   .sub { color:var(--dim); font-size:13.5px; }
   .h3d { font:600 16px/1.3 var(--disp); letter-spacing:-.01em; margin-top:3px; }
@@ -259,6 +268,17 @@
     border-top:1px solid var(--line); margin-top:40px; padding-top:22px; color:var(--dim); font-size:11.5px; }
   .foot-left { display:grid; gap:5px; }
   .foot-sub { color:var(--dim2); }
+  .foot-sub .feedback { color:var(--accent); font-weight:700; text-decoration:none; }
+  .foot-sub .feedback:hover { text-decoration:underline; }
+  .foot-sub .pulse { width:14px; height:14px; vertical-align:-3px; margin-right:5px; fill:none;
+    stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  /* The line traces itself and sweeps out, like a heart monitor. 46 is the
+     polyline's own length, so the dash covers it exactly. */
+  .foot-sub .pulse polyline { stroke-dasharray:46; animation:pulse-trace 3.4s cubic-bezier(.5,0,.5,1) infinite; }
+  @keyframes pulse-trace { 0% { stroke-dashoffset:46; } 55% { stroke-dashoffset:0; } 100% { stroke-dashoffset:-46; } }
+  @media (prefers-reduced-motion: reduce) {
+    .foot-sub .pulse polyline { animation:none; stroke-dashoffset:0; }
+  }
   .scan-id { font-family:var(--mono); font-size:11px; letter-spacing:.04em; }
   footer .brand { color:var(--accent); font-weight:700; text-decoration:none; }
   footer .brand:hover { text-decoration:underline; }
@@ -331,7 +351,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: pencilrebel/4.5.1 -->
+<!-- rmds-schema: pencilrebel/5.2.1 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <svg class="only-dark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
@@ -343,9 +363,9 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 3605ms · 4,012 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 1986ms · 4,065 code files</div>
       <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-08-17</div>
+      <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-08-22</div>
     </div>
     <div class="score"><div class="eyebrow">Health score</div><div class="val">25<span class="slash">/</span><span class="of">100</span></div></div>
   </div>
@@ -355,9 +375,13 @@
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">619 arbitrary values like [400px] punched through the Tailwind scale, each one a precedent your agent will follow. 22 components implemented more than once, so an agent asked for a Button has several random options. 58 off-scale spacing values where a dozen would do.</div>
+    <div class="verdict">632 arbitrary values like [400px] punched through the Tailwind scale, each one a precedent your agent will follow. 22 components implemented more than once, so an agent asked for a Button has several random options. 60 off-scale spacing values where a dozen would do.</div>
   </div>
 </header>
+
+
+
+
 
 <section class="glass pad">
     <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks · <b class="proj">25 &rarr; 55</b></p></div>
@@ -372,7 +396,7 @@
       </div>
       <div class="ledger-row start-row">
         <span class="ledger-idx">03</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Fold 47 inline style blocks back into the system</div><span class="delta">+10</span></div><div class="sub">These are static values written as style attributes; start with apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx (4 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div></div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Fold 48 inline style blocks back into the system</div><span class="delta">+10</span></div><div class="sub">These are static values written as style attributes; start with apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx (4 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div></div>
       </div></div></section>
 
 <section class="glass pad gift-sec">
@@ -393,7 +417,7 @@
           <span class="gift-count">18 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-08-17.
+&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-08-22.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system --rules --&gt;
 
@@ -408,20 +432,20 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Canonical components
 
 - Use these existing components instead of writing new ones, the way this repo already uses them:
-  - `&lt;Button&gt;` from `packages/ui/src/button.tsx` (used 970x · props: text, variant, textWrapperClassName, shortcutClassName)
-  - `&lt;Modal&gt;` from `packages/ui/src/modal.tsx` (used 183x · props: showModal, setShowModal, onClose, desktopOnly)
-    - most common usage, as in `apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/groups/[groupSlug]/links/add-edit-group-additional-link-modal.tsx` (matching 97 of 180 usages): `&lt;Modal showModal={isOpen} setShowModal={setIsOpen}&gt;…&lt;/Modal&gt;`
-  - `&lt;Tooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 145x · props: content, contentClassName, disabled, side)
-    - most common usage, as in `apps/web/ui/support/chat-bubble.tsx` (matching 50 of 67 usages): `&lt;Tooltip content=&quot;Close&quot;&gt;…&lt;/Tooltip&gt;`
-  - `&lt;LoadingSpinner&gt;` from `packages/ui/src/icons/loading-spinner.tsx` (used 111x)
-    - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/programs/page.tsx` (matching 58 of 111 usages): `&lt;LoadingSpinner className=&quot;size-4&quot; /&gt;`
+  - `&lt;Button&gt;` from `packages/ui/src/button.tsx` (used 988x · props: text, variant, textWrapperClassName, shortcutClassName)
+  - `&lt;Modal&gt;` from `packages/ui/src/modal.tsx` (used 185x · props: showModal, setShowModal, onClose, desktopOnly)
+    - most common usage, as in `apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/groups/[groupSlug]/links/add-edit-group-additional-link-modal.tsx` (matching 98 of 182 usages): `&lt;Modal showModal={isOpen} setShowModal={setIsOpen}&gt;…&lt;/Modal&gt;`
+  - `&lt;Tooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 144x · props: content, contentClassName, disabled, side)
+    - most common usage, as in `apps/web/ui/support/chat-bubble.tsx` (matching 50 of 68 usages): `&lt;Tooltip content=&quot;Close&quot;&gt;…&lt;/Tooltip&gt;`
+  - `&lt;LoadingSpinner&gt;` from `packages/ui/src/icons/loading-spinner.tsx` (used 113x)
+    - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/programs/page.tsx` (matching 58 of 113 usages): `&lt;LoadingSpinner className=&quot;size-4&quot; /&gt;`
   - `&lt;Popover&gt;` from `packages/ui/src/popover.tsx` (used 100x · props: content, align, side, openPopover)
   - `&lt;InfoTooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 97x)
     - most common usage, as in `apps/web/ui/modals/qr-code-design-fields.tsx` (matching 76 of 78 usages): `&lt;InfoTooltip content={tooltip} /&gt;`
-  - `&lt;X&gt;` from `apps/web/ui/shared/icons/x.tsx` (used 89x)
-    - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/partners/network/network-partner-application-sheet.tsx` (matching 86 of 89 usages): `&lt;X className=&quot;size-5&quot; /&gt;`
-  - `&lt;AnimatedSizeContainer&gt;` from `packages/ui/src/animated-size-container.tsx` (used 86x)
-    - most common usage, as in `apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx` (matching 38 of 82 usages): `&lt;AnimatedSizeContainer height&gt;…&lt;/AnimatedSizeContainer&gt;`
+  - `&lt;X&gt;` from `apps/web/ui/shared/icons/x.tsx` (used 90x)
+    - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/partners/network/network-partner-application-sheet.tsx` (matching 86 of 90 usages): `&lt;X className=&quot;size-5&quot; /&gt;`
+  - `&lt;AnimatedSizeContainer&gt;` from `packages/ui/src/animated-size-container.tsx` (used 89x)
+    - most common usage, as in `apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx` (matching 38 of 85 usages): `&lt;AnimatedSizeContainer height&gt;…&lt;/AnimatedSizeContainer&gt;`
 
 ### Known duplicates: do not make it worse
 
@@ -440,7 +464,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Spacing and sizing
 
 - Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
-- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 619 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
+- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 632 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
 - Avoid new one-off CSS spacing values; 33 off-scale values are already in play.
 
 ### Typography
@@ -450,11 +474,11 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Styling discipline
 
 - Never write `style={{ ... }}` for static values; styling belongs to classes and tokens where the system can see it.
-  (47 static inline blocks already exist; do not add to them.)
+  (48 static inline blocks already exist; do not add to them.)
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) ver. 4.5.1. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) ver. 5.2.1. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -477,15 +501,15 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~13 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">17 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">5 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">58</div><div class="lab">off-scale spacing values</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">34 · messier than 68% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">60</div><div class="lab">off-scale spacing values</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">34 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   <div class="num">22</div><div class="lab">duplicated components</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">47</div><div class="lab">inline style blocks</div>
+  <div class="num">48</div><div class="lab">inline style blocks</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">49 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -501,8 +525,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">14 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">619</div><div class="lab">arbitrary bracket values</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">70 · messier than 88% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">632</div><div class="lab">arbitrary bracket values</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">70 · messier than 91% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
 
 <section class="glass pad">
@@ -510,12 +534,12 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="tbl-wrap"><table><thead><tr><th>package</th><th>score</th><th>worst finding</th><th>size</th></tr></thead><tbody>
     <tr><td class="mono strong">apps/web</td>
     <td><span class="pkg-score pkg-bad">40</span></td>
-    <td>38 inline style blocks</td>
-    <td class="dim">3,287 files</td></tr>
+    <td>39 inline style blocks</td>
+    <td class="dim">3,335 files</td></tr>
     <tr><td class="mono strong">packages/ui</td>
     <td><span class="pkg-score pkg-warn">80</span></td>
     <td>16 components nobody imports</td>
-    <td class="dim">475 files</td></tr></tbody></table></div>
+    <td class="dim">478 files</td></tr></tbody></table></div>
     
     <p class="sub" style="margin-top:12px">A repo scores below its own packages by arithmetic, not by accident: distinct values add up across packages, so the whole always carries more than any part. Read the package scores for where each team stands, and the repo score for what your agent sees when it looks at everything at once.</p></section>
 
@@ -554,64 +578,64 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 </section></section>
 
 <section class="glass pad">
-    <div class="sec-head"><h2>58 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
+    <div class="sec-head"><h2>60 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
     <div class="bars">
     <div class="bar-row"><span class="bar-label">·2</span>
     <div class="bar-track"><div class="bar" style="width:100%"></div></div>
-    <span class="bar-count">2,700</span></div>
+    <span class="bar-count">2,711</span></div>
     <div class="bar-row"><span class="bar-label">·4</span>
-    <div class="bar-track"><div class="bar" style="width:72%"></div></div>
-    <span class="bar-count">1,944</span></div>
+    <div class="bar-track"><div class="bar" style="width:73%"></div></div>
+    <span class="bar-count">1,966</span></div>
     <div class="bar-row"><span class="bar-label">·3</span>
-    <div class="bar-track"><div class="bar" style="width:55%"></div></div>
-    <span class="bar-count">1,487</span></div>
+    <div class="bar-track"><div class="bar" style="width:56%"></div></div>
+    <span class="bar-count">1,506</span></div>
     <div class="bar-row"><span class="bar-label">·1</span>
-    <div class="bar-track"><div class="bar" style="width:41%"></div></div>
-    <span class="bar-count">1,114</span></div>
+    <div class="bar-track"><div class="bar" style="width:42%"></div></div>
+    <span class="bar-count">1,127</span></div>
     <div class="bar-row"><span class="bar-label">·6</span>
-    <div class="bar-track"><div class="bar" style="width:38%"></div></div>
-    <span class="bar-count">1,036</span></div>
+    <div class="bar-track"><div class="bar" style="width:39%"></div></div>
+    <span class="bar-count">1,047</span></div>
     <div class="bar-row"><span class="bar-label">·0</span>
     <div class="bar-track"><div class="bar" style="width:30%"></div></div>
-    <span class="bar-count">801</span></div>
+    <span class="bar-count">800</span></div>
     <div class="bar-row"><span class="bar-label">·1.5</span>
     <div class="bar-track"><div class="bar" style="width:22%"></div></div>
-    <span class="bar-count">587</span></div>
+    <span class="bar-count">595</span></div>
     <div class="bar-row"><span class="bar-label">·2.5</span>
     <div class="bar-track"><div class="bar" style="width:15%"></div></div>
-    <span class="bar-count">399</span></div>
+    <span class="bar-count">417</span></div>
     <div class="bar-row"><span class="bar-label">·5</span>
     <div class="bar-track"><div class="bar" style="width:14%"></div></div>
     <span class="bar-count">373</span></div>
     <div class="bar-row"><span class="bar-label">·0.5</span>
-    <div class="bar-track"><div class="bar" style="width:10%"></div></div>
-    <span class="bar-count">274</span></div>
+    <div class="bar-track"><div class="bar" style="width:11%"></div></div>
+    <span class="bar-count">285</span></div>
     <div class="bar-row"><span class="bar-label">·8</span>
     <div class="bar-track"><div class="bar" style="width:9%"></div></div>
-    <span class="bar-count">249</span></div>
+    <span class="bar-count">250</span></div>
     <div class="bar-row"><span class="bar-label">·10</span>
     <div class="bar-track"><div class="bar" style="width:8%"></div></div>
     <span class="bar-count">217</span></div>
     <div class="bar-row"><span class="bar-label">·px</span>
     <div class="bar-track"><div class="bar" style="width:6%"></div></div>
-    <span class="bar-count">174</span></div>
+    <span class="bar-count">176</span></div>
     <div class="bar-row"><span class="bar-label">·16</span>
     <div class="bar-track"><div class="bar" style="width:3%"></div></div>
     <span class="bar-count">89</span></div>
     <div class="bar-row"><span class="bar-label">·12</span>
     <div class="bar-track"><div class="bar" style="width:3%"></div></div>
-    <span class="bar-count">87</span></div>
+    <span class="bar-count">86</span></div>
     <div class="bar-row"><span class="bar-label">·3.5</span>
     <div class="bar-track"><div class="bar" style="width:2%"></div></div>
     <span class="bar-count">35</span></div>
     <div class="bar-row"><span class="bar-label">·7</span>
     <div class="bar-track"><div class="bar" style="width:2%"></div></div>
-    <span class="bar-count">33</span></div>
+    <span class="bar-count">34</span></div>
     <div class="bar-row"><span class="bar-label">·20</span>
     <div class="bar-track"><div class="bar" style="width:2%"></div></div>
     <span class="bar-count">22</span></div></div>
-    <div class="receipts"><div class="eyebrow">619 arbitrary values punched through the scale, one bracket at a time</div>
-    <div class="chips-row"><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×24</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/billing/payment-methods.tsx">[0.625rem] ×20</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/applications/applications-analytics-cards.tsx">[300px] ×19</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/partners-table.tsx">[200px] ×18</span><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×17</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×16</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[50px] ×12</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×11</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/commissions/[commissionId]/page.tsx">[360px] ×11</span><span class="vchip dim">+168 more</span></div></div></section>
+    <div class="receipts"><div class="eyebrow">632 arbitrary values punched through the scale, one bracket at a time</div>
+    <div class="chips-row"><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×24</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/billing/payment-methods.tsx">[0.625rem] ×22</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/applications/applications-analytics-cards.tsx">[300px] ×19</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/partners-table.tsx">[200px] ×18</span><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×17</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×16</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×11</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[50px] ×11</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/commissions/[commissionId]/page.tsx">[360px] ×11</span><span class="vchip dim">+169 more</span></div></div></section>
 <section>
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
@@ -620,15 +644,15 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">39</div><div class="lab">font sizes</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 · messier than 82% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">41</div><div class="lab">font sizes</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 · messier than 88% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">25</div><div class="lab">border radii</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">27</div><div class="lab">border radii</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 · messier than 88% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
-    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×2235</span><span class="vchip">·xs ×809</span><span class="vchip">·lg ×268</span><span class="vchip">·base ×230</span><span class="vchip">·xl ×69</span><span class="vchip">·3xl ×14</span><span class="vchip">·2xl ×14</span><span class="vchip">·[0.625rem] ×12</span><span class="vchip">·4xl ×10</span><span class="vchip">·[13px] ×10</span><span class="vchip">·5xl ×8</span><span class="vchip">·[0.8125rem] ×7</span><span class="vchip">·[0.7rem] ×6</span><span class="vchip">·[11px] ×5</span></div></div>
-    <div class="spec"><div class="eyebrow">the corners, drawn · 25 radii in one interface</div>
+    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×2263</span><span class="vchip">·xs ×812</span><span class="vchip">·lg ×270</span><span class="vchip">·base ×230</span><span class="vchip">·xl ×69</span><span class="vchip">·3xl ×14</span><span class="vchip">·2xl ×14</span><span class="vchip">·[0.625rem] ×14</span><span class="vchip">·[13px] ×11</span><span class="vchip">·4xl ×10</span><span class="vchip">·5xl ×8</span><span class="vchip">·[0.8125rem] ×7</span><span class="vchip">·[0.7rem] ×6</span><span class="vchip">·[11px] ×6</span></div></div>
+    <div class="spec"><div class="eyebrow">the corners, drawn · 27 radii in one interface</div>
       <div class="spec-grid">
         <div class="spec-cell"><div class="spec-box" style="border-radius:999px"></div>
         <span class="spec-cap">999px ×3</span></div>
@@ -790,7 +814,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       </div>
     </div></div></div>
 <div class="glass pad half">
-    <div class="sec-head"><h2>47 inline style blocks</h2><p class="sub">styling no system can see</p></div>
+    <div class="sec-head"><h2>48 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
         <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx</a><span class="mc-count">×4</span></div>
@@ -820,10 +844,10 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="chips-row"><span class="vchip bad" title="apps/web/styles/globals.css">globals.css ×1</span></div></div></div>
 </div>
 <section class="glass pad">
-    <div class="sec-head"><h2>What you actually use</h2><p class="sub">1,557 components defined · top by adoption · the real system, buried in here</p></div>
+    <div class="sec-head"><h2>What you actually use</h2><p class="sub">1,570 components defined · top by adoption · the real system, buried in here</p></div>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
     <tr><td class="mono strong">&lt;Button&gt;</td>
-    <td><span class="pill pill-mint">970×</span></td>
+    <td><span class="pill pill-mint">988×</span></td>
     <td class="path">packages/ui/src/button.tsx</td>
     <td><span class="chip chip-xs">text</span> <span class="chip chip-xs">variant</span> <span class="chip chip-xs">textWrapperClassName</span> <span class="chip chip-xs">shortcutClassName</span> <span class="chip chip-xs">loading</span></td></tr>
     <tr><td class="mono strong">&lt;Link&gt;</td>
@@ -831,23 +855,23 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td class="path">apps/web/ui/shared/icons/link.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;Modal&gt;</td>
-    <td><span class="pill pill-mint">183×</span></td>
+    <td><span class="pill pill-mint">185×</span></td>
     <td class="path">packages/ui/src/modal.tsx</td>
     <td><span class="chip chip-xs">showModal</span> <span class="chip chip-xs">setShowModal</span> <span class="chip chip-xs">onClose</span> <span class="chip chip-xs">desktopOnly</span> <span class="chip chip-xs">preventDefaultClose</span></td></tr>
     <tr><td class="mono strong">&lt;Tooltip&gt;</td>
-    <td><span class="pill pill-mint">145×</span></td>
+    <td><span class="pill pill-mint">144×</span></td>
     <td class="path">packages/ui/src/tooltip.tsx</td>
     <td><span class="chip chip-xs">content</span> <span class="chip chip-xs">contentClassName</span> <span class="chip chip-xs">disabled</span> <span class="chip chip-xs">side</span> <span class="chip chip-xs">disableHoverableContent</span></td></tr>
     <tr><td class="mono strong">&lt;LoadingSpinner&gt;</td>
-    <td><span class="pill pill-mint">111×</span></td>
+    <td><span class="pill pill-mint">113×</span></td>
     <td class="path">packages/ui/src/icons/loading-spinner.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;Footer&gt;</td>
-    <td><span class="pill pill-mint">106×</span></td>
+    <td><span class="pill pill-mint">107×</span></td>
     <td class="path">packages/email/src/components/footer.tsx</td>
     <td><span class="chip chip-xs">email</span> <span class="chip chip-xs">marketing</span> <span class="chip chip-xs">unsubscribeUrl</span> <span class="chip chip-xs">https</span> <span class="chip chip-xs">notificationSettingsUrl</span></td></tr>
     <tr><td class="mono strong">&lt;Footer&gt;</td>
-    <td><span class="pill pill-mint">106×</span></td>
+    <td><span class="pill pill-mint">107×</span></td>
     <td class="path">packages/ui/src/footer.tsx</td>
     <td><span class="chip chip-xs">staticDomain</span></td></tr>
     <tr><td class="mono strong">&lt;Popover&gt;</td>
@@ -859,7 +883,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td class="path">packages/ui/src/tooltip.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;X&gt;</td>
-    <td><span class="pill pill-mint">89×</span></td>
+    <td><span class="pill pill-mint">90×</span></td>
     <td class="path">apps/web/ui/shared/icons/x.tsx</td>
     <td><span class="dim">none</span></td></tr></tbody></table></div>
     
@@ -869,8 +893,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 4.5.1</span>, free on npm and as a Claude Code + Codex skill</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">3ff72fff794c</span></div>
+    <div>Generated by <a class="brand" href="https://github.com/pencilrebel/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 5.2.1</span>, free on npm and as a Claude Code + Codex skill</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">4243be29299c</span> · Think it got something wrong? <a class="feedback" href="https://github.com/pencilrebel/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.2.1"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 6 12 9 3 15 21 18 12 22 12"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

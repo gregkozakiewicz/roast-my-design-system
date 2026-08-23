@@ -55,11 +55,11 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 The full report for vercel/ai-chatbot, top to bottom — including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-full-dark.png?v=5.1.1)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.1.1)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/report-light-hero.png?v=5.1.1)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.1.1)
 
 ## What makes the numbers trustworthy
 
@@ -136,7 +136,7 @@ Run it inside any repo. Same scanner, same report, straight from npm. The Claude
 **Claude Code (recommended):**
 
 ```bash
-/plugin marketplace add pencilrebel/roast-my-design-system
+/plugin marketplace add gregkozakiewicz/roast-my-design-system
 /plugin install roast-my-design-system@roast-my-design-system
 ```
 
@@ -145,7 +145,7 @@ If those commands error, your Claude Code is likely older than the plugin market
 **Manual (Claude Code, any version):**
 
 ```bash
-git clone https://github.com/pencilrebel/roast-my-design-system.git
+git clone https://github.com/gregkozakiewicz/roast-my-design-system.git
 cp -r roast-my-design-system/skills/roast-my-design-system ~/.claude/skills/
 ```
 
@@ -154,13 +154,13 @@ cp -r roast-my-design-system/skills/roast-my-design-system ~/.claude/skills/
 **OpenAI Codex CLI** (same SKILL.md, same folder):
 
 ```bash
-git clone https://github.com/pencilrebel/roast-my-design-system.git
+git clone https://github.com/gregkozakiewicz/roast-my-design-system.git
 cp -r roast-my-design-system/skills/roast-my-design-system ~/.codex/skills/
 ```
 
 Invoke with `$roast-my-design-system` (or let Codex auto-match it). Use `.codex/skills/` inside a repo to share with your team.
 
-**`npx skills`:** `npx skills add pencilrebel/roast-my-design-system` works for agents that read `~/.agents/skills/`. Claude Code currently reads `~/.claude/skills/`, so prefer one of the routes above.
+**`npx skills`:** `npx skills add gregkozakiewicz/roast-my-design-system` works for agents that read `~/.agents/skills/`. Claude Code currently reads `~/.claude/skills/`, so prefer one of the routes above.
 
 Requires Node 18+.
 
@@ -188,9 +188,9 @@ After the roast, the skill also offers to write `design-system-rules.md` to disk
 
 Three real roasts of public repos, hosted as-is (the same self-contained HTML the skill generates):
 
-- **[excalidraw/excalidraw](https://pencilrebel.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**
-- **[dubinc/dub](https://pencilrebel.github.io/roast-my-design-system/examples/dubinc-dub.html)**
-- **[vercel/ai-chatbot](https://pencilrebel.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)**
+- **[excalidraw/excalidraw](https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**
+- **[dubinc/dub](https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html)**
+- **[vercel/ai-chatbot](https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)**
 
 ## What it measures
 
@@ -212,14 +212,14 @@ Yes, the median repo is already a mess. That's the point.
 
 **Your AI can write the UI. This makes sure it writes *your* UI.**
 
-<a href="https://github.com/pencilrebel/roast-my-design-system"><img src="https://img.shields.io/badge/If%20it%20roasted%20you%20fairly%2C%20a%20star%20helps%20other%20people%20find%20it-a855f7?style=for-the-badge&logo=github&logoColor=white" alt="If it roasted you fairly, a star helps other people find it"></a>
+<a href="https://github.com/gregkozakiewicz/roast-my-design-system"><img src="https://img.shields.io/badge/If%20it%20roasted%20you%20fairly%2C%20a%20star%20helps%20other%20people%20find%20it-a855f7?style=for-the-badge&logo=github&logoColor=white" alt="If it roasted you fairly, a star helps other people find it"></a>
 
 ## License
 
 MIT. The code is yours to fork, modify and redistribute; the copyright notice travels with it.
 
-If you build a report, summary or audit of your own from this tool's scores, counts or benchmark comparisons, keep one line in it: *Built with [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) by Greg Kozakiewicz*. The scan data asks the same of AI agents that consume it.
+If you build a report, summary or audit of your own from this tool's scores, counts or benchmark comparisons, keep one line in it: *Built with [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz*. The scan data asks the same of AI agents that consume it.
 
-**roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://pencilrebel.github.io/roast-my-design-system/brand.html).
+**roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://gregkozakiewicz.github.io/roast-my-design-system/brand.html).
 
-Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.10.1"><img src="https://raw.githubusercontent.com/pencilrebel/roast-my-design-system/main/assets/gk-mark.png?v=3.10.1" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.
+Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.10.1"><img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/gk-mark.png?v=3.10.1" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.

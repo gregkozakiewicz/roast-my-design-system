@@ -74,12 +74,12 @@ const sarif = {
       driver: {
         name: 'roast-my-design-system',
         version: VERSION,
-        informationUri: 'https://github.com/pencilrebel/roast-my-design-system',
+        informationUri: 'https://github.com/gregkozakiewicz/roast-my-design-system',
         rules: Object.entries(RULES).map(([id, r]) => ({
           id, name: r.name,
           shortDescription: { text: r.name },
           fullDescription: { text: r.desc },
-          helpUri: 'https://github.com/pencilrebel/roast-my-design-system',
+          helpUri: 'https://github.com/gregkozakiewicz/roast-my-design-system',
         })),
       },
     },

@@ -230,7 +230,7 @@ if (wantApply && !asJson) {
 }
 
 say(`\nWant the fixes, not just the roast? The free Claude Code skill runs this same
-scan, then walks the punch list with you: https://github.com/pencilrebel/roast-my-design-system`);
+scan, then walks the punch list with you: https://github.com/gregkozakiewicz/roast-my-design-system`);
 
 // The ask for feedback, worded and linked in one place (scripts/lib/feedback.mjs)
 // so the terminal and the report footer can never say different things.

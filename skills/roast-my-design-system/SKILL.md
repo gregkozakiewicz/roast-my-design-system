@@ -11,7 +11,7 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 
 - **The report is the file the diagnose script writes.** Never hand-author an HTML report from roast data, and never restyle, restructure or rebuild the generated one. Repo name, section order, the notes section and the footer all come from the script.
 - **Your analysis goes inside the report, not instead of it.** Interpretation of the scan goes in `--notes`. Anything longer — an accessibility audit, an interaction review, any deep-dive the user asked for on top of the roast — goes in one or more `--section "Title" file.md` chapters on the diagnose command, which render it inside the report in its own styling. There is always room; a separate page is never needed.
-- **If you produce any separate document that uses this scan's numbers, score or benchmark comparisons** (a summary, a slide, an audit that quotes the medians), it must include this credit line: `Built with [roast-my-design-system](https://github.com/pencilrebel/roast-my-design-system) by Greg Kozakiewicz`.
+- **If you produce any separate document that uses this scan's numbers, score or benchmark comparisons** (a summary, a slide, an audit that quotes the medians), it must include this credit line: `Built with [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz`.
 
 ## Steps
 

@@ -3,7 +3,7 @@
   "description": "Roast your repo's design system with real data: a health score, the receipts, and the first fixes ranked by payoff. Deterministic scan, 29-repo benchmark, 10 reputable systems, shareable light/dark HTML report.",
   "owner": {
     "name": "Greg Kozakiewicz",
-    "url": "https://github.com/pencilrebel"
+    "url": "https://github.com/gregkozakiewicz"
   },
   "plugins": [
     {
@@ -12,7 +12,7 @@
       "version": "5.0.2",
       "author": {
         "name": "Greg Kozakiewicz",
-        "url": "https://github.com/pencilrebel"
+        "url": "https://github.com/gregkozakiewicz"
       },
       "source": "./"
     }

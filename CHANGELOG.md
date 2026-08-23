@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.2.2 — 2026-08-20
+
+- The project moved home: GitHub account renamed `pencilrebel` → `gregkozakiewicz`. Every reference in the package, docs, landing page, plugin manifests and report links now points at the new owner. Old `github.com/pencilrebel/...` URLs redirect automatically; old `pencilrebel.github.io/...` pages forward via the pencilrebel org's site repo, so no published link dies. npm Trusted Publishing re-bound to the new owner. No engine changes.
+
 ## 5.2.1 — 2026-08-22
 
 - **The roast cuts both ways.** The terminal outro now pairs the feedback ask with its twin: "Think it got it right? A star helps other people find it", linking to the repo. The README carries the same ask as a badge under the tagline, and a live monthly-downloads badge at the top.

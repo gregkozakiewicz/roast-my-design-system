@@ -1,12 +1,12 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.pencilrebel/roast-my-design-system",
+  "name": "io.github.gregkozakiewicz/roast-my-design-system",
   "title": "Roast My Design System",
   "description": "Audit your Design System and serve your Agent the rules that keep AI-written UI on-system.",
-  "version": "5.2.1",
-  "websiteUrl": "https://pencilrebel.github.io/roast-my-design-system/",
+  "version": "5.2.2",
+  "websiteUrl": "https://gregkozakiewicz.github.io/roast-my-design-system/",
   "repository": {
-    "url": "https://github.com/pencilrebel/roast-my-design-system",
+    "url": "https://github.com/gregkozakiewicz/roast-my-design-system",
     "source": "github",
     "id": "1310045865"
   },
@@ -15,7 +15,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "roast-my-design-system",
-      "version": "5.2.1",
+      "version": "5.2.2",
       "transport": {
         "type": "stdio"
       },

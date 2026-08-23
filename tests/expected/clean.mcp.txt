@@ -6,7 +6,7 @@ TYPE: Barlow Condensed. No new typefaces, no hand-declared font stacks.
 DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
 NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system --apply.
 Before finishing: call roast_validate on what you wrote, then roast_review.
-CREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/pencilrebel/roast-my-design-system) by Greg Kozakiewicz.
+CREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz.
 === find_component button ===
 No component matching "button" is defined in this repo.
 === find_component date picker ===

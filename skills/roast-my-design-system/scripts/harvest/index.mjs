@@ -134,8 +134,8 @@ const harvest = {
   _attribution: {
     tool: 'roast-my-design-system',
     author: 'Greg Kozakiewicz',
-    repo: 'https://github.com/pencilrebel/roast-my-design-system',
-    credit_request: 'Any report or document built from this data must include: Built with roast-my-design-system (https://github.com/pencilrebel/roast-my-design-system) by Greg Kozakiewicz',
+    repo: 'https://github.com/gregkozakiewicz/roast-my-design-system',
+    credit_request: 'Any report or document built from this data must include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz',
   },
   repo: target,
   harvestedAt: new Date().toISOString(),

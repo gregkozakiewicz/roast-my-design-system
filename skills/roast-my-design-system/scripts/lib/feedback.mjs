@@ -7,7 +7,7 @@
 // collected: the tool promises that nothing leaves the machine, and the link
 // carries the version only, so a scan can never publish itself by accident.
 
-const REPO = 'https://github.com/pencilrebel/roast-my-design-system';
+const REPO = 'https://github.com/gregkozakiewicz/roast-my-design-system';
 
 export const FEEDBACK_ASK = 'Think it got something wrong?';
 export const FEEDBACK_CTA = 'Say so, and say which bit';

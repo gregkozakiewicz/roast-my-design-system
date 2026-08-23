@@ -228,7 +228,7 @@ if (hasGh) {
   run(`gh run watch --exit-status $(gh run list --workflow=publish.yml --limit 1 --json databaseId --jq '.[0].databaseId')`);
 } else {
   say('  gh CLI not installed, so no live view. Check:');
-  say('  https://github.com/pencilrebel/roast-my-design-system/actions\n');
+  say('  https://github.com/gregkozakiewicz/roast-my-design-system/actions\n');
 }
 
 step('Verifying what the world can see');
@@ -271,6 +271,6 @@ if (hasGh) {
 
 say(`\n\x1b[32m${version} is out.\x1b[0m`);
 say(`  npm       https://www.npmjs.com/package/roast-my-design-system`);
-say(`  release   https://github.com/pencilrebel/roast-my-design-system/releases/tag/v${version}`);
-say(`  registry  https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.pencilrebel`);
+say(`  release   https://github.com/gregkozakiewicz/roast-my-design-system/releases/tag/v${version}`);
+say(`  registry  https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.gregkozakiewicz`);
 say(`\n  Still yours to do: push proffer-2 if the engine changed there, and refresh the installed skill.\n`);

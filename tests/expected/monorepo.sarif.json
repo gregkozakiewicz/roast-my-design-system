@@ -7,7 +7,7 @@
         "driver": {
           "name": "roast-my-design-system",
           "version": "X",
-          "informationUri": "https://github.com/pencilrebel/roast-my-design-system",
+          "informationUri": "https://github.com/gregkozakiewicz/roast-my-design-system",
           "rules": [
             {
               "id": "duplicate-component",
@@ -18,7 +18,7 @@
               "fullDescription": {
                 "text": "A component implemented more than once. An agent asked for it has several plausible answers."
               },
-              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
             },
             {
               "id": "never-imported-component",
@@ -29,7 +29,7 @@
               "fullDescription": {
                 "text": "Defined in the system, imported by nothing. It sits there as a wrong answer waiting to be picked."
               },
-              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
             },
             {
               "id": "inline-styles",
@@ -40,7 +40,7 @@
               "fullDescription": {
                 "text": "Static values written as style attributes, bypassing the system and teaching the agent to do the same."
               },
-              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
             },
             {
               "id": "important-styles",
@@ -51,7 +51,7 @@
               "fullDescription": {
                 "text": "The cascade admitting defeat. Fix specificity at the source and these stop being necessary."
               },
-              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
             },
             {
               "id": "stray-colors",
@@ -62,7 +62,7 @@
               "fullDescription": {
                 "text": "Colour values no token names. Each one is a value the agent will happily copy."
               },
-              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
             },
             {
               "id": "stale-rule-reference",
@@ -73,7 +73,7 @@
               "fullDescription": {
                 "text": "The agent rules reference something this scan can no longer find. A rule the agent obeys is worse than no rule when the repo has moved on."
               },
-              "helpUri": "https://github.com/pencilrebel/roast-my-design-system"
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
             }
           ]
         }

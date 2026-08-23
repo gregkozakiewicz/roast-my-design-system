@@ -62,7 +62,7 @@ export function getContext(k, { path = null } = {}) {
   const faces = distinctTypefaces(t.fontFamilies ?? []);
   if (faces.length) L.push(`TYPE: ${faces.slice(0, 3).join(', ')}. No new typefaces, no hand-declared font stacks.`);
   L.push('DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.');
-  if (k.agentFiles.length === 0) L.push('NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system --apply.');
+  if (k.agentFiles.length === 0) L.push('NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.');
   L.push('Before finishing: call roast_validate on what you wrote, then roast_review.');
 
   let text = L.join('\n');

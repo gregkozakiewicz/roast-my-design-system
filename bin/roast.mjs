@@ -5,7 +5,7 @@
  * diagnose it against Ideal Design System norms and the 29-repo benchmark,
  * write design-system-roast.html, open it, print the score.
  *
- *   npx roast-my-design-system [path] [--theme dark|light] [--out report.html] [--no-open]
+ *   npx roast-my-design-system@latest [path] [--theme dark|light] [--out report.html] [--no-open]
  *                              [--rules] [--json] [--exclude <path>]
  */
 import { spawnSync } from 'node:child_process';
@@ -61,7 +61,7 @@ if (flag('version') || flag('v')) { console.log(VERSION); process.exit(0); }
 if (flag('help') || flag('h')) {
   console.log(`roast-my-design-system ${VERSION}
 
-Usage: npx roast-my-design-system [path] [options]
+Usage: npx roast-my-design-system@latest [path] [options]
 
   path            repo to scan (default: current directory)
   --theme <t>     dark | light (default: dark)

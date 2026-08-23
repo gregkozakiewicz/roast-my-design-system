@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.2.4 — 2026-08-22
+
+- Every one-off command in the docs, the CLI help, the share card and the rules-file regenerate hint now reads `npx roast-my-design-system@latest`: plain npx reuses its cached copy indefinitely, so users kept running versions that were days stale. The MCP registration (`claude mcp add ... --mcp`) deliberately stays unpinned — a registry check on every session start would cost latency and break offline. No engine behaviour changes.
+
 ## 5.2.3 — 2026-08-22
 
 - README screenshots reshot on the current report: the feedback-ask footer, the star ask, and the post-rename links are now visible (previous shots predated 5.1.3's footer). Docs only, no engine changes.

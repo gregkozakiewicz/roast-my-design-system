@@ -34,6 +34,6 @@
       <text x="660" y="442" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="21" fill="#8b93a7">inline style blocks</text>
 
   <line x1="96" y1="486" x2="1104" y2="486" stroke="#272c37" stroke-width="1.5"/>
-  <text x="96" y="536" font-family="'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace" font-size="20" fill="#8b93a7">npx roast-my-design-system</text>
+  <text x="96" y="536" font-family="'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace" font-size="20" fill="#8b93a7">npx roast-my-design-system@latest</text>
   <text x="1104" y="536" font-family="'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace" font-size="17" fill="#5a6172" text-anchor="end">scanned DATE · ver. X</text>
 </svg>

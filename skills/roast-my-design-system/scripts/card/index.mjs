@@ -75,7 +75,7 @@ const svg = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http:/
   ${rows}
 
   <line x1="96" y1="486" x2="1104" y2="486" stroke="#272c37" stroke-width="1.5"/>
-  <text x="96" y="536" font-family="${MONO}" font-size="20" fill="#8b93a7">npx roast-my-design-system</text>
+  <text x="96" y="536" font-family="${MONO}" font-size="20" fill="#8b93a7">npx roast-my-design-system@latest</text>
   <text x="1104" y="536" font-family="${MONO}" font-size="17" fill="#5a6172" text-anchor="end">scanned ${date} · ver. ${esc(s.version ?? '')}</text>
 </svg>
 `;

@@ -28,8 +28,8 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 | Command&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | What you get |
 |---|---|
-| <code>npx&nbsp;roast-my-design-system</code> | The scan and `design-system-roast.html`, opened in your browser |
-| <code>npx&nbsp;roast-my-design-system&nbsp;&lt;path&gt;</code> | Scan a different repo than the current directory |
+| <code>npx&nbsp;roast-my-design-system@latest</code> | The scan and `design-system-roast.html`, opened in your browser |
+| <code>npx&nbsp;roast-my-design-system@latest&nbsp;&lt;path&gt;</code> | Scan a different repo than the current directory |
 | `... --apply` | The generated agent rules injected straight into every agent file you have: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules` and `.github/copilot-instructions.md`, inside a marked block. Re-running replaces only that block, never your own text. Windsurf and Copilot get a compact variant sized for their limits |
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
@@ -76,7 +76,7 @@ The same report in light mode (one file, built-in toggle):
 Some repos host more than one visual world on purpose: the product plus a marketing site, a playground, a batch of experiments. Blending them produces a score that describes none of them. Scope the scan to the design system you are actually judging:
 
 ```bash
-npx roast-my-design-system --exclude lab/ --exclude playground/
+npx roast-my-design-system@latest --exclude lab/ --exclude playground/
 ```
 
 Or make it permanent with a `.roastignore` file at the repo root, one repo-relative folder per line:
@@ -117,7 +117,7 @@ The scanner already speaks SARIF, so wiring it into GitHub code scanning is six 
 
 ```yaml
 - uses: actions/checkout@v4
-- run: npx roast-my-design-system . --sarif --no-open
+- run: npx roast-my-design-system@latest . --sarif --no-open
 - uses: github/codeql-action/upload-sarif@v3
   with:
     sarif_file: design-system-roast.sarif
@@ -128,7 +128,7 @@ The scanner already speaks SARIF, so wiring it into GitHub code scanning is six 
 **No install, no Claude needed — just try it:**
 
 ```bash
-npx roast-my-design-system
+npx roast-my-design-system@latest
 ```
 
 Run it inside any repo. Same scanner, same report, straight from npm. The Claude Code skill below adds the conversation on top: the roast in chat, then a punch list you can actually work through with Claude.

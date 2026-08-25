@@ -2,6 +2,12 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.3.0 — 2026-08-25
+
+- **Four new agent traps.** The report's trap boxes, until now covering duplicated components and off-scale spacing, extend to the other findings that multiply when an agent reads the repo as instruction: near-identical colour pairs (twins breed triplets), inline styles (every exception becomes the precedent for the next one), `!important` declarations (an agent that cannot win the cascade shouts louder, because that is what the repo taught it) and components never imported (yesterday's dead end becomes today's example).
+- Same discipline as the originals: copy only, no new measurement, and each trap renders only when its mechanism is genuinely present, with thresholds high enough to keep the marker scarce. A report shows at most three traps, in severity order, so the warning never becomes wallpaper.
+- Scores untouched: a repo below every threshold gets a byte-for-byte identical report.
+
 ## 5.2.4 — 2026-08-22
 
 - Every one-off command in the docs, the CLI help, the share card and the rules-file regenerate hint now reads `npx roast-my-design-system@latest`: plain npx reuses its cached copy indefinitely, so users kept running versions that were days stale. The MCP registration (`claude mcp add ... --mcp`) deliberately stays unpinned — a registry check on every session start would cost latency and break offline. No engine behaviour changes.

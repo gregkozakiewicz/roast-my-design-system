@@ -3,7 +3,7 @@
   "name": "io.github.gregkozakiewicz/roast-my-design-system",
   "title": "Roast My Design System",
   "description": "Audit your Design System and serve your Agent the rules that keep AI-written UI on-system.",
-  "version": "5.2.4",
+  "version": "5.3.0",
   "websiteUrl": "https://gregkozakiewicz.github.io/roast-my-design-system/",
   "repository": {
     "url": "https://github.com/gregkozakiewicz/roast-my-design-system",
@@ -15,7 +15,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "roast-my-design-system",
-      "version": "5.2.4",
+      "version": "5.3.0",
       "transport": {
         "type": "stdio"
       },

@@ -516,6 +516,28 @@ function spacingTrap() {
   }
   return '';
 }
+function coloursTrap() {
+  if (nearPairs.length < 6) return '';
+  return trapBox(`This palette holds ${nearPairs.length} pairs of colours a screen can barely tell apart. An agent asked for the brand grey cannot see the difference either, so it copies whichever twin is nearest, and when unsure it invents a third between them. Twins breed triplets.`);
+}
+function inlineTrap() {
+  if (inline.count < 50) return '';
+  return trapBox(`${n(inline.count)} inline styles live where the system should. An agent learns a codebase by example, and every inline style is an example that says the system is optional. Each exception it copies becomes the precedent for the next one.`);
+}
+function importantTrap() {
+  if (important.count < 20) return '';
+  return trapBox(`${n(important.count)} !important declarations, and each one is a shouting match a previous developer decided to win by force. An agent whose style will not apply does what the repo taught it and shouts louder. The volume in this codebase only goes up.`);
+}
+function orphansTrap() {
+  if (neverImported.length < 10) return '';
+  return trapBox(`${neverImported.length} components are never imported anywhere. An agent searching for a Button finds the abandoned ones alongside the canonical one with nothing to tell them apart, so yesterday's dead end becomes today's example.`);
+}
+// At most three traps per report, in severity order: scarcity is what makes
+// the marker readable as a warning rather than wallpaper.
+function trapsBlock() {
+  return [dupesTrap(), spacingTrap(), coloursTrap(), inlineTrap(), importantTrap(), orphansTrap()]
+    .filter(Boolean).slice(0, 3).join('');
+}
 
 function spacingBars() {
   const hasTw = twSpacing.length > 0;
@@ -1379,7 +1401,7 @@ ${whereToStartSection()}
 
 ${giftSection()}
 
-${dupesTrap()}${spacingTrap()}
+${trapsBlock()}
 
 <div class="stats">${bigStats.map((s) => statTile(s)).join('')}</div>
 

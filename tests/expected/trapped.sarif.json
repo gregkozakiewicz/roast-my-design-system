@@ -1,0 +1,469 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-X.json",
+  "version": "X",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "roast-my-design-system",
+          "version": "X",
+          "informationUri": "https://github.com/gregkozakiewicz/roast-my-design-system",
+          "rules": [
+            {
+              "id": "duplicate-component",
+              "name": "Duplicated component",
+              "shortDescription": {
+                "text": "Duplicated component"
+              },
+              "fullDescription": {
+                "text": "A component implemented more than once. An agent asked for it has several plausible answers."
+              },
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
+            },
+            {
+              "id": "never-imported-component",
+              "name": "Component nobody imports",
+              "shortDescription": {
+                "text": "Component nobody imports"
+              },
+              "fullDescription": {
+                "text": "Defined in the system, imported by nothing. It sits there as a wrong answer waiting to be picked."
+              },
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
+            },
+            {
+              "id": "inline-styles",
+              "name": "Inline style blocks",
+              "shortDescription": {
+                "text": "Inline style blocks"
+              },
+              "fullDescription": {
+                "text": "Static values written as style attributes, bypassing the system and teaching the agent to do the same."
+              },
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
+            },
+            {
+              "id": "important-styles",
+              "name": "!important declarations",
+              "shortDescription": {
+                "text": "!important declarations"
+              },
+              "fullDescription": {
+                "text": "The cascade admitting defeat. Fix specificity at the source and these stop being necessary."
+              },
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
+            },
+            {
+              "id": "stray-colors",
+              "name": "Hardcoded colours",
+              "shortDescription": {
+                "text": "Hardcoded colours"
+              },
+              "fullDescription": {
+                "text": "Colour values no token names. Each one is a value the agent will happily copy."
+              },
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
+            },
+            {
+              "id": "stale-rule-reference",
+              "name": "Stale agent-rule reference",
+              "shortDescription": {
+                "text": "Stale agent-rule reference"
+              },
+              "fullDescription": {
+                "text": "The agent rules reference something this scan can no longer find. A rule the agent obeys is worse than no rule when the repo has moved on."
+              },
+              "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "duplicate-component",
+          "level": "warning",
+          "message": {
+            "text": "<Button> is implemented in 2 places. This is one of them; an agent has to guess which is canonical."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "components/Button.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "duplicate-component",
+          "level": "warning",
+          "message": {
+            "text": "<Button> is implemented in 2 places. This is one of them; an agent has to guess which is canonical."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "widgets/Button.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "duplicate-component",
+          "level": "warning",
+          "message": {
+            "text": "<Card> is implemented in 2 places. This is one of them; an agent has to guess which is canonical."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "components/Card.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "duplicate-component",
+          "level": "warning",
+          "message": {
+            "text": "<Card> is implemented in 2 places. This is one of them; an agent has to guess which is canonical."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "widgets/Card.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone0> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone0.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone1> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone1.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone10> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone10.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone11> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone11.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone2> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone2.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone3> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone3.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone4> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone4.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone5> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone5.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone6> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone6.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone7> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone7.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone8> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone8.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "never-imported-component",
+          "level": "note",
+          "message": {
+            "text": "<Lone9> is defined here and imported by nothing."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "design-system/Lone9.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "inline-styles",
+          "level": "warning",
+          "message": {
+            "text": "18 static inline style blocks in this file. Dynamic positioning is already excluded, so these could be classes or tokens today."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/Page0.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "inline-styles",
+          "level": "warning",
+          "message": {
+            "text": "18 static inline style blocks in this file. Dynamic positioning is already excluded, so these could be classes or tokens today."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/Page1.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "inline-styles",
+          "level": "warning",
+          "message": {
+            "text": "18 static inline style blocks in this file. Dynamic positioning is already excluded, so these could be classes or tokens today."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/Page2.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "important-styles",
+          "level": "warning",
+          "message": {
+            "text": "25 !important declarations in this file."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "styles/main.css"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "stray-colors",
+          "level": "note",
+          "message": {
+            "text": "14 hardcoded colour values no token names."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "styles/main.css"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "stray-colors",
+          "level": "note",
+          "message": {
+            "text": "10 hardcoded colour values no token names."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/Page0.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "stray-colors",
+          "level": "note",
+          "message": {
+            "text": "10 hardcoded colour values no token names."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/Page1.jsx"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "stray-colors",
+          "level": "note",
+          "message": {
+            "text": "10 hardcoded colour values no token names."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/Page2.jsx"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

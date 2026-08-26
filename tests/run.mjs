@@ -122,6 +122,37 @@ const twice = readFileSync(join(applyDir, 'CLAUDE.md'), 'utf8');
 once === twice ? ok('apply is idempotent') : bad('apply is idempotent', 'second run changed the file');
 compare('apply snapshot', stripDates(stripVersion(once)), 'messy.apply.md');
 
+// ---------- trapped-only: the agent traps and their cap ----------
+// The trapped fixture is guilty of all six trap conditions at once. The
+// report must show exactly three boxes, in severity order; the harvest must
+// prove each hidden trap's condition was genuinely met, so we know the cap
+// (not a broken threshold) is what hid it. Before this fixture existed, no
+// fixture tripped a single trap and the traps shipped unphotographed.
+console.log('traps:');
+{
+  const th = JSON.parse(readFileSync(join(tmp, 'trapped.json'), 'utf8'));
+  const tHtml = readFileSync(join(tmp, 'trapped.html'), 'utf8');
+  const shown = [...tHtml.matchAll(/Agent trap\.<\/b> ([^<]+)/g)].map((m) => m[1]);
+  shown.length === 3 ? ok('trap cap holds at three') : bad('trap cap holds at three', `got ${shown.length}: ${shown.join(' | ')}`);
+  const order = ['implementations', 'appears', 'pairs of colours'];
+  order.every((w, i) => shown[i]?.includes(w)) ? ok('traps render in severity order')
+    : bad('traps render in severity order', shown.join(' | '));
+  const { nearColorPairs } = await import(pathToFileURL(join(ENGINE, 'lib/nearpairs.mjs')).href);
+  const { neverImportedComponents } = await import(pathToFileURL(join(ENGINE, 'lib/neverimported.mjs')).href);
+  const hardDupes = (th.duplicates.exactDuplicates ?? []).filter((d) => !d.wrapped).length;
+  const topSpacing = Math.max(0, ...(th.tokens.spacing ?? []).map((s) => s.count));
+  const pairs = nearColorPairs(th.tokens.colors ?? []).length;
+  const conditions = [
+    ['duplicates trap condition met', hardDupes >= 2, `${hardDupes} hard duplicates, need 2`],
+    ['spacing trap condition met', topSpacing >= 15, `top value ×${topSpacing}, need 15`],
+    ['colour twins trap condition met', pairs >= 6, `${pairs} near pairs, need 6`],
+    ['inline styles trap condition met', (th.tokens.inlineStyles?.count ?? 0) >= 50, `${th.tokens.inlineStyles?.count} blocks, need 50`],
+    ['!important trap condition met', (th.tokens.important?.count ?? 0) >= 20, `${th.tokens.important?.count} declarations, need 20`],
+    ['orphans trap condition met', neverImportedComponents(th.components, th.profile?.uiDir).length >= 10, 'need 10 never-imported in the DS dir'],
+  ];
+  for (const [name, met, detail] of conditions) met ? ok(name) : bad(name, detail);
+}
+
 // ---------- MCP: the five tools, snapshotted per fixture ----------
 // Dates stripped (scan stamp changes daily); the answers are the contract.
 // The token budget is an ASSERTION, not an aspiration: get_context over

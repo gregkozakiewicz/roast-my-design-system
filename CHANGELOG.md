@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.3.1 — 2026-08-26
+
+- **The suite grows from 55 to 70 checks, and the agent traps get their photograph taken.** Building 5.3.0 revealed a blind spot: not one test fixture was messy enough to trip a single trap, so the report's most pointed feature shipped unwatched. A new `trapped` fixture is guilty of all six trap conditions at once, and the suite now proves the report shows exactly three boxes in severity order, that every hidden trap's condition was genuinely met (so the cap, not a broken threshold, is what hid it), and snapshots the fixture's summary, rules, SARIF and MCP answers like every other fixture.
+- Nothing a user sees changes: same scanner, same report, same scores. This release is the reference photo, taken so the next one cannot break the traps quietly.
+
 ## 5.3.0 — 2026-08-25
 
 - **Four new agent traps.** The report's trap boxes, until now covering duplicated components and off-scale spacing, extend to the other findings that multiply when an agent reads the repo as instruction: near-identical colour pairs (twins breed triplets), inline styles (every exception becomes the precedent for the next one), `!important` declarations (an agent that cannot win the cascade shouts louder, because that is what the repo taught it) and components never imported (yesterday's dead end becomes today's example).

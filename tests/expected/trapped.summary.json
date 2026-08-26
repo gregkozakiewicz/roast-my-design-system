@@ -1,0 +1,54 @@
+{
+  "repo": "trapped-fixture",
+  "score": 40,
+  "noSystemLikely": false,
+  "verdict": "51 colour pairs are nearly identical (#6b6f70 next to #6b6f71), copy-paste, not decisions. 54 inline style blocks bypassing every system, and teaching your agent to do the same. 25 off-scale spacing values where a dozen would do.",
+  "tiles": [
+    {
+      "label": "distinct colours",
+      "value": "24",
+      "health": "good"
+    },
+    {
+      "label": "shades of grey",
+      "value": "20",
+      "health": "bad"
+    },
+    {
+      "label": "off-scale spacing values",
+      "value": "25",
+      "health": "warn"
+    },
+    {
+      "label": "duplicated components",
+      "value": "2",
+      "health": "warn"
+    },
+    {
+      "label": "inline style blocks",
+      "value": "54",
+      "health": "bad"
+    },
+    {
+      "label": "near-identical colour pairs",
+      "value": "51",
+      "health": "bad"
+    },
+    {
+      "label": "!important declarations",
+      "value": "25",
+      "health": "bad"
+    },
+    {
+      "label": "components never imported",
+      "value": "12",
+      "health": "bad"
+    },
+    {
+      "label": "arbitrary bracket values",
+      "value": "0",
+      "health": "good"
+    }
+  ],
+  "packages": []
+}

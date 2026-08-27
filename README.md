@@ -2,11 +2,13 @@
 
 [![npm](https://img.shields.io/npm/v/roast-my-design-system?color=2dd4bf&label=npm)](https://www.npmjs.com/package/roast-my-design-system) [![downloads](https://img.shields.io/npm/dm/roast-my-design-system?color=2dd4bf&label=downloads)](https://www.npmjs.com/package/roast-my-design-system) [![Socket](https://badge.socket.dev/npm/package/roast-my-design-system)](https://socket.dev/npm/package/roast-my-design-system) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![zero dependencies](https://img.shields.io/badge/dependencies-0-2dd4bf)](https://www.npmjs.com/package/roast-my-design-system?activeTab=dependencies) [![no telemetry](https://img.shields.io/badge/no-telemetry-2dd4bf)](https://github.com/gregkozakiewicz/roast-my-design-system#what-makes-the-numbers-trustworthy)
 
+[![MCP verified in Claude Code](https://img.shields.io/badge/MCP_verified-Claude_Code-2dd4bf)](#live-answers-over-mcp) [![MCP verified in Cursor](https://img.shields.io/badge/MCP_verified-Cursor-2dd4bf)](#live-answers-over-mcp) [![MCP verified in Windsurf / Devin Desktop](https://img.shields.io/badge/MCP_verified-Windsurf_%2F_Devin_Desktop-2dd4bf)](#live-answers-over-mcp)
+
 ## Your AI can write the UI. This makes sure it writes *your* UI.
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
-> **New in 5.1: the roast's analysis now ships inside the report.** Run as the Claude Code skill, the report gains a "What the numbers mean" section — Claude's read of your scan, in the same shareable file as the score, so the analysis reaches whoever the report is forwarded to. Labelled as written by AI, never mixed into the measurement.
+> **New in 5.4: the MCP server is verified in Cursor and Windsurf (now Devin Desktop), alongside Claude Code.** Each tested end to end in the editor itself: server connected, five tools listed, real answers in the chat. Setup for each lives in [Live answers over MCP](#live-answers-over-mcp).
 
 > **New in 5.0: it runs as a local MCP server.** One command, and your agent asks the design system before writing UI, then gets the work checked after: which Button is canonical, which token holds that colour, review my changes. Local, deterministic, nothing leaves your machine. See [Live answers over MCP](#live-answers-over-mcp).
 
@@ -109,14 +111,30 @@ Add it to Claude Code:
 claude mcp add roast -- npx roast-my-design-system --mcp
 ```
 
-Any MCP client can register the same stdio command (tested with Claude Code; Cursor and Windsurf speak the same protocol). Same promise as the scan: local, read-only, one scan at startup, no port, no account, nothing about your code leaves your machine. And a clean answer reads "no measured violations found" with the list of checks attached, because a scanner can only certify what it can count.
+**Verified in Claude Code, Cursor, and Windsurf (now Devin Desktop)** — each tested end to end: server connected, all five tools listed, real answers in the editor's own chat. Same promise as the scan: local, read-only, one scan at startup, no port, no account, nothing about your code leaves your machine. And a clean answer reads "no measured violations found" with the list of checks attached, because a scanner can only certify what it can count.
+
+**Cursor** — put this in `.cursor/mcp.json` inside the project (the project, not your home directory, so the scan sees one repo, not your whole disk):
+
+```json
+{ "mcpServers": { "roast": { "command": "npx", "args": ["roast-my-design-system", "--mcp"] } } }
+```
+
+Cursor holds workspace servers at arm's length until you approve them: open Settings → Tools & MCP and enable `roast` the first time. The first start takes a few seconds while npx fetches the package; Cursor retries on its own.
+
+**Windsurf (Devin Desktop)** — its MCP config is global (`~/.codeium/windsurf/mcp_config.json`), so name the project folder in the entry to keep the scan scoped to one repo:
+
+```json
+{ "mcpServers": { "roast": { "command": "npx", "args": ["roast-my-design-system", "--mcp", "/path/to/your/repo"] } } }
+```
+
+Any other MCP client can register the same stdio command.
 
 ## In CI
 
 The scanner already speaks SARIF, so wiring it into GitHub code scanning is six lines. Findings appear in the Security tab, annotated on the files themselves:
 
 ```yaml
-- uses: actions/checkout@v4
+- uses: actions/checkout@v5
 - run: npx roast-my-design-system@latest . --sarif --no-open
 - uses: github/codeql-action/upload-sarif@v3
   with:

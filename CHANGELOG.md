@@ -2,6 +2,13 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.4.0 — 2026-08-27
+
+- **Verified in Cursor and Windsurf (now Devin Desktop).** Until today the README said the two editors "speak the same protocol", which is a plug that fits the socket on paper. Now both have been watched working: fresh installs, the server registered the way a real user would, connection confirmed in each client's own logs (five tools, three resources, two prompts), and real answers in each editor's chat — including `roast_find_component` reporting a two-Button tie and telling the agent not to add a third.
+- The verification wrote the setup guide. Cursor wants the config **inside the project** (`.cursor/mcp.json`) so the scan sees one repo rather than your whole disk, and holds workspace servers disabled until you approve them in Settings → Tools & MCP. Windsurf's config is global, so its entry names the project folder. Both recipes are now in the README, learned the honest way.
+- The publish workflow moves to `actions/checkout@v5` and `actions/setup-node@v5`, so release emails stop carrying the Node 20 deprecation warning. The README's CI recipe follows.
+- No engine changes: the scanner, the report and the five MCP tools are what 5.3.1 shipped.
+
 ## 5.3.1 — 2026-08-26
 
 - **The suite grows from 55 to 70 checks, and the agent traps get their photograph taken.** Building 5.3.0 revealed a blind spot: not one test fixture was messy enough to trip a single trap, so the report's most pointed feature shipped unwatched. A new `trapped` fixture is guilty of all six trap conditions at once, and the suite now proves the report shows exactly three boxes in severity order, that every hidden trap's condition was genuinely met (so the cap, not a broken threshold, is what hid it), and snapshots the fixture's summary, rules, SARIF and MCP answers like every other fixture.

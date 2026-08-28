@@ -19,6 +19,11 @@ import { join, dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
+// Git hooks export GIT_DIR and friends; inherited, they point every git call
+// in the temp fixtures at the wrong repository. Scrub them so the suite gives
+// the same verdict from a pre-commit hook as from a plain terminal.
+for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_OBJECT_DIRECTORY', 'GIT_ALTERNATE_OBJECT_DIRECTORIES']) delete process.env[v];
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ENGINE = existsSync(join(HERE, '../src/harvest/index.mjs'))
   ? resolve(HERE, '../src')

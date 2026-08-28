@@ -17,8 +17,14 @@ import { distinctTypefaces } from '../lib/typefaces.mjs';
 const CONTEXT_BUDGET = 1600; // chars ≈ 400 tokens
 const approxTokens = (s) => Math.ceil(s.length / 4);
 
+// Invalid input keeps its guidance text but must reach the client as an MCP
+// isError result (spec: servers MUST validate tool inputs), so the calling
+// model knows to self-correct instead of reading the guidance as an answer.
+export const invalidInput = (text) => ({ invalidInput: true, text });
+
 // ---------- roast_get_context ----------
 export function getContext(k, { path = null } = {}) {
+  if (path != null && typeof path !== 'string') return invalidInput('path must be a repo-relative folder as a string, like "packages/ui". Leave it out for the whole repo.');
   // route: a path inside a workspace package narrows the slice to that package
   const pkg = path && k.workspaces.length > 1
     ? [...k.workspaces].sort((a, b) => b.dir.length - a.dir.length).find((w) => path === w.dir || path.startsWith(`${w.dir}/`))
@@ -75,9 +81,9 @@ export function getContext(k, { path = null } = {}) {
 // ---------- roast_find_component ----------
 const camelWords = (name) => name.split(/(?=[A-Z])/).map((w) => w.toLowerCase()).filter(Boolean);
 
-export function findComponent(k, { query }) {
-  const q = String(query ?? '').trim();
-  if (!q) return 'Give me a component name or intent, like "icon button" or "Modal".';
+export function findComponent(k, { query } = {}) {
+  if (typeof query !== 'string' || !query.trim()) return invalidInput('Give me a component name or intent, like "icon button" or "Modal".');
+  const q = query.trim();
   const qWords = q.toLowerCase().split(/[\s_-]+/).filter(Boolean);
 
   const scored = [];
@@ -134,9 +140,9 @@ function componentLine(c, k) {
 }
 
 // ---------- roast_find_token ----------
-export function findToken(k, { value }) {
-  const v = String(value ?? '').trim();
-  if (!v) return 'Give me a value: a colour (#111111, rgba(...)) or a length (13px, 0.8rem).';
+export function findToken(k, { value } = {}) {
+  if (typeof value !== 'string' || !value.trim()) return invalidInput('Give me a value: a colour (#111111, rgba(...)) or a length (13px, 0.8rem).');
+  const v = value.trim();
 
   const rgb = hexRgb(v.toLowerCase());
   if (rgb) {
@@ -192,8 +198,9 @@ function toPxLocal(len) {
 }
 
 // ---------- roast_validate ----------
-export function validate(k, { code, file = null }) {
-  if (!code?.trim()) return 'Send the code you are about to save (and ideally its file path).';
+export function validate(k, { code, file = null } = {}) {
+  if (typeof code !== 'string' || !code.trim()) return invalidInput('Send the code you are about to save (and ideally its file path).');
+  if (file != null && typeof file !== 'string') return invalidInput('file is optional, but when sent it must be a repo-relative path as a string.');
   const { findings } = validateContent({ text: code, file }, k);
   if (!findings.length) return cleanResultText();
   const L = [`${findings.length} finding${findings.length === 1 ? '' : 's'}:`];

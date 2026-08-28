@@ -154,7 +154,12 @@ export function serve(root) {
             roast_review: () => review(k),
           }[name];
           if (!impl) { fail(id, -32602, `Unknown tool: ${name}`); return; }
-          reply(id, { content: [{ type: 'text', text: impl() }] });
+          const out = impl();
+          // invalid input: same guidance text, but flagged so the calling
+          // model self-corrects (spec: input-validation errors are results
+          // with isError true, not plain successes)
+          if (out?.invalidInput) { reply(id, { content: [{ type: 'text', text: out.text }], isError: true }); return; }
+          reply(id, { content: [{ type: 'text', text: out }] });
           return;
         }
         case 'resources/list':

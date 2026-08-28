@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.4.1 — 2026-08-28
+
+- **Invalid tool input now answers as an error, the way the MCP spec asks.** When a call to `roast_get_context`, `roast_find_component`, `roast_find_token` or `roast_validate` arrived with a missing or wrong-typed argument, the server replied with helpful guidance but stamped the reply a success, like a doorman explaining you are at the wrong building while cheerfully waving you in. The guidance text is unchanged; it now travels with `isError: true`, the flag that tells a calling model to correct its call instead of reading the advice as the answer. Surfaced by an MCP conformance sweep: six failures before, a clean pass after.
+- The test suite scrubs `GIT_DIR` and its siblings at startup, so the pre-commit gate reaches the same verdict as a plain terminal run. Housekeeping, invisible to users.
+
 ## 5.4.0 — 2026-08-27
 
 - **Verified in Cursor and Windsurf (now Devin Desktop).** Until today the README said the two editors "speak the same protocol", which is a plug that fits the socket on paper. Now both have been watched working: fresh installs, the server registered the way a real user would, connection confirmed in each client's own logs (five tools, three resources, two prompts), and real answers in each editor's chat — including `roast_find_component` reporting a two-Button tie and telling the agent not to add a third.

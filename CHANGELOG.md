@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.5.2 — 2026-08-29
+
+- **The engine gets a front door for the family.** A single official entry point, `roast-my-design-system/engine`, so that sibling tools can borrow the scanner instead of copying it. First through the door: guard-my-design-system, the pull request guard that judges only the lines a change adds. The door is one new file (`lib/guard-api.mjs`) exposing how the engine learns a repo's system, scans a piece of text for styling, and names the on-system value a stray most resembles. Nothing about the CLI, the report, the scores or the MCP server changes; every existing import stays private and free to refactor. What is exported here is a promise: it moves only with a version bump and a line in this file.
+
 ## 5.5.1 — 2026-08-29
 
 - The example report and the README screenshot catch up with 5.5.0: docs/examples/vercel-ai-chatbot.html regenerated from a fresh scan (same 75/100, same embedded notes) so the adoption map is live on the hosted example, and the full-report screenshot reshot on it, map and all. npm shows the new image because the cache key moved to ?v=5.5.1. Docs only, no engine changes.

@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.5.1 — 2026-08-29
+
+- The example report and the README screenshot catch up with 5.5.0: docs/examples/vercel-ai-chatbot.html regenerated from a fresh scan (same 75/100, same embedded notes) so the adoption map is live on the hosted example, and the full-report screenshot reshot on it, map and all. npm shows the new image because the cache key moved to ?v=5.5.1. Docs only, no engine changes.
+
 ## 5.5.0 — 2026-08-29
 
 - **The adoption map.** The components section now opens with a treemap: every adopted component a tile, tile area its import count, all of them flush so scale is read by eye. One glance answers the question the table made you compute: how much of this system is really the same three components. Drawn only when there are at least eight adopted components, because a treemap of four tiles says nothing a table does not. Deterministic layout, no libraries, same SVG-from-the-script approach as everything else in the report.

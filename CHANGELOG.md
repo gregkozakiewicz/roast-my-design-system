@@ -2,6 +2,14 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.5.0 — 2026-08-29
+
+- **The adoption map.** The components section now opens with a treemap: every adopted component a tile, tile area its import count, all of them flush so scale is read by eye. One glance answers the question the table made you compute: how much of this system is really the same three components. Drawn only when there are at least eight adopted components, because a treemap of four tiles says nothing a table does not. Deterministic layout, no libraries, same SVG-from-the-script approach as everything else in the report.
+- **Orphans now carry a receipt.** Components defined but never imported are grouped by the year git last saw anyone touch them, oldest first: "untouched since 2023" followed by its chips. A heavy year reads as what it is, the fossil of one abandoned effort. Exact date and file path on hover; without git the section falls back to the plain list and makes no date claims.
+- Components imported exactly once get a line of text, never a tile: a tile would flatter them.
+- The scan gains one read-only git call per orphan (capped, five-second timeout, silently absent outside a git repo). Scores untouched: every number in every report stays exactly where it was.
+- Suite grows to 73 checks (74 with the npx wrapper), including one that proves small systems get no map on purpose.
+
 ## 5.4.1 — 2026-08-28
 
 - **Invalid tool input now answers as an error, the way the MCP spec asks.** When a call to `roast_get_context`, `roast_find_component`, `roast_find_token` or `roast_validate` arrived with a missing or wrong-typed argument, the server replied with helpful guidance but stamped the reply a success, like a doorman explaining you are at the wrong building while cheerfully waving you in. The guidance text is unchanged; it now travels with `isError: true`, the flag that tells a calling model to correct its call instead of reading the advice as the answer. Surfaced by an MCP conformance sweep: six failures before, a clean pass after.

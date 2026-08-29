@@ -8,6 +8,8 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
+> **New in 5.5: the adoption map.** The report now draws your real system to scale: a treemap where every adopted component's tile area is its import count, and the never-imported are grouped by the year git last saw them touched. The cupboard audit, with dates on the boxes.
+
 > **New in 5.4: the MCP server is verified in Cursor and Windsurf (now Devin Desktop), alongside Claude Code.** Each tested end to end in the editor itself: server connected, five tools listed, real answers in the chat. Setup for each lives in [Live answers over MCP](#live-answers-over-mcp).
 
 > **New in 5.0: it runs as a local MCP server.** One command, and your agent asks the design system before writing UI, then gets the work checked after: which Button is canonical, which token holds that colour, review my changes. Local, deterministic, nothing leaves your machine. See [Live answers over MCP](#live-answers-over-mcp).

@@ -1,5 +1,6 @@
 import { Button } from "../components/Button.jsx";
 import { Card } from "../components/Card.jsx";
+import { Badge } from "../components/Badge.jsx";
 export default function Page1(){
   return (
     <Card>
@@ -21,6 +22,7 @@ export default function Page1(){
       <div style={{ marginTop: 26, color: "#6b6f75" }}>row</div>
       <div style={{ marginTop: 27, color: "#6b6f76" }}>row</div>
       <div style={{ marginTop: 28, color: "#6b6f77" }}>row</div>
+      <Badge>new</Badge>
       <Button>go</Button>
     </Card>
   );

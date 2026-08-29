@@ -7,6 +7,11 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
 - There is no token file yet. Until one exists, reuse the colours already in the codebase instead of introducing new ones (24 distinct colours are already in play).
 - Never eyeball a colour from memory: the scan found 51 nearly identical pairs (like #6b6f70 next to #6b6f71). Look the exact value up, or better, use its token.
 
+### Canonical components
+
+- Use these existing components instead of writing new ones:
+  - `<Badge>` from `components/Badge.jsx` (used 3x)
+
 ### Known duplicates: do not make it worse
 
 - `<Button>` exists in 2 places. Treat `components/Button.jsx` as canonical; do not import the other copy, and never create another.

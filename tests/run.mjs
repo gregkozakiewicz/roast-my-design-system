@@ -158,6 +158,35 @@ console.log('traps:');
   for (const [name, met, detail] of conditions) met ? ok(name) : bad(name, detail);
 }
 
+// ---------- adoption map (5.5.0): drawn on trapped, dated from git ----------
+// The fixtures sit inside this repo's own git history, so orphan dates are
+// exercised on every run: real `git log` calls, real YYYY-MM-DD receipts.
+console.log('adoption map:');
+{
+  const html = readFileSync(join(tmp, 'trapped.html'), 'utf8');
+  // Small systems get no map on purpose: a treemap of four tiles says
+  // nothing the table does not (Greg's call, 2026-08-29).
+  !html.includes('class="amap"') ? ok('small system draws no map')
+    : bad('small system draws no map', 'trapped has 5 adopted components yet a map rendered');
+  /untouched since \d{4}-\d{2}-\d{2}/.test(html) ? ok('orphan dates render from git')
+    : bad('orphan dates render from git', 'no "untouched since" receipt in trapped report');
+  // The map itself, tested on a synthesized larger system: trapped's harvest
+  // with ten well-used components patched in, run through the real diagnose.
+  const big = JSON.parse(readFileSync(join(tmp, 'trapped.json'), 'utf8'));
+  for (let i = 0; i < 10; i++) big.components.push({
+    name: `Widget${i}`, file: `components/Widget${i}.jsx`, isPage: false,
+    variants: {}, propsHint: null, usageCount: 40 - i * 3, usedIn: ['app/Page0.jsx'],
+  });
+  const bigPath = join(tmp, 'mapdemo.json');
+  writeFileSync(bigPath, JSON.stringify(big));
+  runEngine('diagnose/index.mjs', [bigPath, '--out', join(tmp, 'mapdemo.html')]);
+  const mapHtml = readFileSync(join(tmp, 'mapdemo.html'), 'utf8');
+  const tiles = (mapHtml.match(/class="atile"/g) ?? []).length;
+  tiles >= 8 ? ok(`map draws ${tiles} tiles at scale`) : bad('map draws tiles at scale', `${tiles} tiles, need 8+`);
+  mapHtml.includes('tile area is import count') ? ok('map section head names the encoding')
+    : bad('map section head', 'missing "tile area is import count"');
+}
+
 // ---------- MCP: the five tools, snapshotted per fixture ----------
 // Dates stripped (scan stamp changes daily); the answers are the contract.
 // The token budget is an ASSERTION, not an aspiration: get_context over

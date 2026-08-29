@@ -706,20 +706,100 @@ function inlineSection() {
     ${blocks}${importantRow}</div>`;
 }
 
+// The adoption map: the real system drawn to scale as a treemap. Every
+// adopted component (usage >= 2, top 24) is a tile whose AREA is its import
+// count, and the tiles sit flush so scale is read by eye, not by legend.
+// Squarified layout (Bruls et al.), deterministic: same scan, same picture.
+// The once-used get a line of text, never a tile: a tile would flatter them.
+function adoptionMap(tiled) {
+  // A treemap of four tiles says nothing the table does not; the map earns
+  // its place only when there is a system worth drawing.
+  if (tiled.length < 8) return '';
+  const W = 1040, H = Math.min(460, 150 + tiled.length * 12);
+  const total = tiled.reduce((s, c) => s + c.usageCount, 0);
+  const areas = tiled.map((c) => (c.usageCount / total) * W * H);
+  const rects = [];
+  let rx = 0, ry = 0, rw = W, rh = H, i = 0;
+  while (i < areas.length) {
+    const side = Math.min(rw, rh);
+    const worst = (row) => {
+      const s = row.reduce((a, b) => a + b, 0);
+      return Math.max(...row.map((r) => Math.max((r * side * side) / (s * s), (s * s) / (r * side * side))));
+    };
+    let row = [areas[i]];
+    while (i + row.length < areas.length) {
+      const next = [...row, areas[i + row.length]];
+      if (worst(next) > worst(row)) break;
+      row = next;
+    }
+    const s = row.reduce((a, b) => a + b, 0);
+    const t = s / side;   // row thickness
+    let off = 0;
+    for (let k = 0; k < row.length; k++) {
+      const len = row[k] / t;
+      rects.push(rw <= rh
+        ? { x: rx + off, y: ry, w: len, h: t, c: tiled[i + k] }
+        : { x: rx, y: ry + off, w: t, h: len, c: tiled[i + k] });
+      off += len;
+    }
+    if (rw <= rh) { ry += t; rh -= t; } else { rx += t; rw -= t; }
+    i += row.length;
+  }
+  const tiles = rects.map(({ x, y, w, h, c }) => {
+    const fitsName = w > c.name.length * 7.5 + 10 && h > 34;
+    const fitsCount = w > 34 && h > (fitsName ? 52 : 22);
+    const cx = x + w / 2, cy = y + h / 2;
+    return `<g><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" class="atile">
+      <title>&lt;${esc(c.name)}&gt; · used ${c.usageCount}× · ${esc(c.file)}</title></rect>
+    ${fitsName ? `<text x="${cx.toFixed(1)}" y="${(fitsCount ? cy - 4 : cy + 4).toFixed(1)}" class="adot-n">${esc(c.name)}</text>` : ''}
+    ${fitsCount ? `<text x="${cx.toFixed(1)}" y="${(fitsName ? cy + 14 : cy + 4).toFixed(1)}" class="adot-c">${c.usageCount}×</text>` : ''}</g>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" class="amap" role="img" aria-label="Component adoption map: tile area is import count">${tiles}</svg>`;
+}
+
+// Orphans grouped by the year git last saw anyone touch them, oldest first:
+// the obituary column. "Untouched since 2023" needs no decoding, and a heavy
+// year reads as what it is, the fossil of one abandoned effort. Orphans
+// without a date (no git) fall back to one plain row, exactly as before.
+function orphanRows() {
+  const shown = neverImported.slice(0, 16);
+  const chip = (c) => `<span class="vchip" title="${esc(c.file)}${c.lastTouched ? ` · untouched since ${esc(c.lastTouched)}` : ''}">&lt;${esc(c.name)}&gt;</span>`;
+  const more = neverImported.length > 16 ? `<span class="vchip dim">+${neverImported.length - 16} more</span>` : '';
+  const dated = shown.filter((c) => c.lastTouched);
+  if (dated.length < 2) return `<div class="chips-row">${shown.slice(0, 8).map(chip).join('')}${neverImported.length > 8 ? `<span class="vchip dim">+${neverImported.length - 8} more</span>` : ''}</div>`;
+  const byYear = new Map();
+  for (const c of shown) {
+    const k = c.lastTouched ? c.lastTouched.slice(0, 4) : 'no git date';
+    (byYear.get(k) ?? byYear.set(k, []).get(k)).push(c);
+  }
+  const keys = [...byYear.keys()].sort((a, b) => (a === 'no git date' ? 1 : b === 'no git date' ? -1 : a < b ? -1 : 1));
+  return keys.map((k, idx) => `
+    <div class="orow"><span class="oyear">${k === 'no git date' ? k : `untouched since ${k}`}</span>
+    <div class="chips-row">${byYear.get(k).map(chip).join('')}${idx === keys.length - 1 ? more : ''}</div></div>`).join('');
+}
+
 function componentsSection() {
-  const top = reusable.filter((c) => c.usageCount > 0).slice(0, 10);
+  const adopted = reusable.filter((c) => c.usageCount > 0);
+  const top = adopted.slice(0, 10);
   if (!top.length && neverImported.length < 2) return '';
+  const tiled = adopted.filter((c) => c.usageCount >= 2).slice(0, 24);
+  const onceUsed = adopted.filter((c) => c.usageCount === 1);
+  const mapped = adoptionMap(tiled);
+  const overflow = adopted.filter((c) => c.usageCount >= 2).length - tiled.length;
   const rows = top.map((c) => `
     <tr><td class="mono strong">&lt;${esc(c.name)}&gt;</td>
     <td><span class="pill pill-mint">${c.usageCount}×</span></td>
     <td class="path">${esc(c.file)}</td>
     <td>${c.propsHint?.named?.length ? c.propsHint.named.slice(0, 5).map((p) => `<span class="chip chip-xs">${esc(p)}</span>`).join(' ') : '<span class="dim">none</span>'}</td></tr>`).join('');
   return `<section class="glass pad">
-    ${sectionHead('What you actually use', `${n(reusable.length)} components defined · top by adoption · the real system, buried in here`)}
+    ${sectionHead('The adoption map', `${n(reusable.length)} components defined · tile area is import count · the real system, drawn to scale`)}
+    ${mapped}
+    ${overflow > 0 ? `<p class="sub">${overflow} more adopted component${overflow === 1 ? '' : 's'} below the top 24, not drawn.</p>` : ''}
+    ${onceUsed.length ? `<p class="sub">${n(onceUsed.length)} component${onceUsed.length === 1 ? ' is' : 's are'} imported exactly once: ${onceUsed.slice(0, 6).map((c) => `&lt;${esc(c.name)}&gt;`).join(', ')}${onceUsed.length > 6 ? ` and ${onceUsed.length - 6} more` : ''}. Quiet corners, not yet a system.</p>` : ''}
     ${top.length ? `<div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div>` : ''}
     ${neverImported.length >= 2 ? `
     <div class="receipts">${eyebrow(`${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
-    <div class="chips-row">${neverImported.slice(0, 8).map((c) => `<span class="vchip" title="${esc(c.file)}">&lt;${esc(c.name)}&gt;</span>`).join('')}${neverImported.length > 8 ? `<span class="vchip dim">+${neverImported.length - 8} more</span>` : ''}</div>
+    ${orphanRows()}
     <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>` : ''}</section>`;
 }
 
@@ -1246,6 +1326,16 @@ const html = `<!doctype html>
     border-radius:99px; padding:2px 10px; }
   .vchip.bad { color:var(--coral); border-color:var(--coral-soft); background:var(--coral-soft); }
   .vchip.dim { color:var(--dim2); }
+  .amap { width:100%; height:auto; display:block; margin:10px 0 4px; }
+  .atile { fill:var(--ok-soft); stroke:var(--bg, #0f172a); stroke-width:2; }
+  .orow { display:flex; align-items:baseline; gap:12px; margin-top:8px; }
+  .orow .oyear { flex:0 0 150px; font:600 10.5px var(--mono); color:var(--coral);
+    letter-spacing:.08em; text-transform:uppercase; text-align:right; }
+  .orow .chips-row { margin-top:0; }
+  .atile:hover { fill:var(--hover-ring); }
+  .adot-n { fill:var(--text); font:600 12.5px var(--mono); text-anchor:middle; }
+  .adot-n.s { font-size:10.5px; fill:var(--dim); }
+  .adot-c { fill:var(--dim); font:500 10.5px var(--mono); text-anchor:middle; }
 
   /* two-up cards, families, mini-cards */
   .two-up { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }

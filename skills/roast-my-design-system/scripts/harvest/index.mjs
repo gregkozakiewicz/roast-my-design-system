@@ -25,6 +25,7 @@ import { loadExclusions } from '../lib/exclusions.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
+import { lastTouchedDates } from '../lib/lasttouched.mjs';
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -60,6 +61,15 @@ const context = harvestContext(target);
 const staleRules = ruleStaleness(target, components,
   new Set(neverImportedComponents(components, profile.uiDir).map((c) => c.name)),
   [...files.code, ...files.styles, ...files.other]);
+
+// Orphans carry a receipt: the last time git saw anyone touch the file.
+// Only never-imported components are dated (the adoption map's evidence);
+// outside a git repo the field is simply absent and no claim is made.
+{
+  const orphans = neverImportedComponents(components, profile.uiDir);
+  const dates = lastTouchedDates(target, orphans.map((c) => c.file));
+  for (const c of components) if (dates[c.file]) c.lastTouched = dates[c.file];
+}
 
 // ---------- per-package pass (monorepos) ----------
 // Styling is measured inside each package, but usage is counted repo-wide: a

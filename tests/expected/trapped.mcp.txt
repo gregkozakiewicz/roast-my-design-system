@@ -1,6 +1,8 @@
 === get_context ===
 Design system context for trapped-fixture (scanned DATE). Rules derived from this repo's real code.
 TOKENS: none defined. 24 distinct colours already in play; reuse one, never invent another.
+USE THESE, DO NOT REBUILD THEM:
+  <Badge> from components/Badge.jsx (3x)
 DUPLICATES, DO NOT MAKE IT WORSE:
   <Button> exists in 2 places; match what the surrounding code imports, never create another.
   <Card> exists in 2 places; match what the surrounding code imports, never create another.

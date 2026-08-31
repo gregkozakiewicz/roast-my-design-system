@@ -262,6 +262,21 @@ step('Verifying what the world can see');
 const npmVersion = spawnSync('npm', ['view', `roast-my-design-system@${version}`, 'version'], { encoding: 'utf8' }).stdout.trim();
 npmVersion === version ? ok(`npm serves ${version}`) : say(`  \x1b[33m…npm does not serve ${version} yet. It can lag a minute; re-check with: npm view roast-my-design-system version\x1b[0m`);
 
+// Metadata replicating before the file is a real failure mode (5.6.2 listed
+// for minutes while its tarball 404'd, breaking every npx @latest run). The
+// metadata check above cannot see it; fetching the tarball itself can.
+{
+  const tarUrl = `https://registry.npmjs.org/roast-my-design-system/-/roast-my-design-system-${version}.tgz`;
+  let served = false;
+  for (let i = 0; i < 6 && !served; i++) {
+    const code = spawnSync('curl', ['-s', '-o', '/dev/null', '-w', '%{http_code}', '-I', tarUrl], { encoding: 'utf8' }).stdout.trim();
+    if (code === '200') served = true;
+    else { say(`  …tarball not served yet (HTTP ${code}), waiting`); spawnSync('sleep', ['20']); }
+  }
+  served ? ok(`tarball downloads (npx @latest actually works)`)
+    : say(`  \x1b[31m✗ tarball still not served: ${tarUrl}\n    @latest is BROKEN for users until this heals. Re-check in minutes; if it persists, republish as the next patch.\x1b[0m`);
+}
+
 if (existsSync(serverPath)) {
   const name = JSON.parse(readFileSync(serverPath, 'utf8')).name;
   const res = spawnSync('curl', ['-s', `https://registry.modelcontextprotocol.io/v0.1/servers?search=${name}`], { encoding: 'utf8' }).stdout;

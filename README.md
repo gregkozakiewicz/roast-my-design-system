@@ -112,6 +112,8 @@ The loop: context before building, find while building, validate before saving, 
 
 And when the goal is fixing the system rather than building on it, the `roast-fix` prompt serves the top Where-to-start move from a fresh scan, as a ready-made fix prompt (byte-identical to the report's copy buttons). Fix it, ask again, and the next move has risen to the top: the scan is the progress bar. Pass `move: 2` to jump the queue.
 
+To use it in Claude Code, type `/mcp__roast__roast-fix` in the chat (MCP prompts appear as slash commands, named after whatever you registered the server as; the `/` autocomplete menu lists them too). Add the move number to jump the queue: `/mcp__roast__roast-fix 2`. Other clients list server prompts in their own prompt picker; wherever `roast-build-ui` and `roast-review-ui` show up, `roast-fix` sits beside them.
+
 Add it to Claude Code:
 
 ```bash

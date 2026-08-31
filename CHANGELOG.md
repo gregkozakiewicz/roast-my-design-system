@@ -2,6 +2,16 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.5.3 — 2026-08-31
+
+- **The engine doorway widens for the guard.** `roast-my-design-system/engine`'s
+  `learnSystem` now also returns the border radii, font sizes and shadows the
+  harvest has always computed, plus `tokenNames`: every `--var` definition as
+  value → name, so guard-my-design-system can advise "use `var(--blue-500)`"
+  instead of leaving the reader to hunt the hex. Nothing about the CLI, the
+  report, the scores or the MCP server changes; the numbers stay exactly where
+  they were.
+
 ## 5.5.2 — 2026-08-29
 
 - **The engine gets a front door for the family.** A single official entry point, `roast-my-design-system/engine`, so that sibling tools can borrow the scanner instead of copying it. First through the door: guard-my-design-system, the pull request guard that judges only the lines a change adds. The door is one new file (`lib/guard-api.mjs`) exposing how the engine learns a repo's system, scans a piece of text for styling, and names the on-system value a stray most resembles. Nothing about the CLI, the report, the scores or the MCP server changes; every existing import stays private and free to refactor. What is exported here is a promise: it moves only with a version bump and a line in this file.

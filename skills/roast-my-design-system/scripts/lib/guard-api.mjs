@@ -9,7 +9,8 @@
  * Kept deliberately narrow: learn what the repo's system is, scan a piece of
  * text for styling, and say which on-system value a stray most resembles.
  */
-import { extname } from 'node:path';
+import { extname, join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { walkRepo } from '../harvest/walk.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { loadExclusions } from './exclusions.mjs';
@@ -33,7 +34,11 @@ export const isStyleFile = (p) => STYLE_EXTS.has(extname(p));
  *   tokenFile,        // the file defining the most --vars, or null
  *   colors,           // [{ value, count, isToken, files }] every colour seen
  *   tokens,           // shorthand: just the token colour values
+ *   tokenNames,       // { normalizedValue: '--var-name' } for every --var definition
  *   spacing,          // [{ value, count, files }] every length seen
+ *   radii,            // [{ value, count, files }] every border-radius declared
+ *   fontSizes,        // [{ value, count, files }] every font-size declared
+ *   shadows,          // [{ value, count, files }] every box-shadow declared
  *   fontFamilies,     // [{ value, count, files }] every family declared
  *   tailwind,         // { colors, spacing, radii, textSizes, arbitrary }
  *   files,            // { styles: n, code: n } — how much was read
@@ -43,11 +48,30 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   const exclusions = loadExclusions(repoRoot, exclude);
   const files = walkRepo(repoRoot, 14, exclusions);
   const t = harvestTokens(repoRoot, files.styles, files.code);
+
+  // Every --var definition, as normalizedValue → name, so a guard can say
+  // "use var(--blue-500)" instead of leaving the reader to hunt the hex.
+  // First definition wins; later duplicates are aliases, not the canon.
+  const tokenNames = {};
+  const HEX = /#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/;
+  for (const f of files.styles) {
+    let text; try { text = readFileSync(join(repoRoot, f), 'utf8'); } catch { continue; }
+    for (const m of text.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+)[;}]/g)) {
+      const hex = HEX.exec(m[2]);
+      const value = hex ? normalizeHex(hex[0]) : m[2].trim().replace(/\s+/g, ' ').toLowerCase();
+      if (!(value in tokenNames)) tokenNames[value] = m[1];
+    }
+  }
+
   return {
     tokenFile: t.tokenFile,
     colors: t.colors,
     tokens: t.colors.filter((c) => c.isToken).map((c) => c.value),
+    tokenNames,
     spacing: t.spacing,
+    radii: t.radii,
+    fontSizes: t.fontSizes,
+    shadows: t.shadows,
     fontFamilies: t.fontFamilies,
     tailwind: t.tailwind,
     files: { styles: files.styles.length, code: files.code.length },

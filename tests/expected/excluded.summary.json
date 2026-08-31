@@ -60,5 +60,13 @@
       "health": "good"
     }
   ],
+  "moves": [
+    {
+      "title": "Write the agent rules file",
+      "sub": "No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.",
+      "delta": 0,
+      "prompt": "You are fixing one design-system finding in the excluded repository, measured by roast-my-design-system.\n\nThe finding: Write the agent rules file\n\nThe detail: No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    }
+  ],
   "packages": []
 }

@@ -50,5 +50,25 @@
       "health": "good"
     }
   ],
+  "moves": [
+    {
+      "title": "Collapse the 51 near-identical colours",
+      "sub": "#6b6f70 and #6b6f71 are the same colour to any eye, and they are used 12 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.",
+      "delta": 10,
+      "prompt": "You are fixing one design-system finding in the trapped repository, measured by roast-my-design-system.\n\nThe finding: Collapse the 51 near-identical colours\n\nThe detail: #6b6f70 and #6b6f71 are the same colour to any eye, and they are used 12 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.\n\nExpected payoff: about +10 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    },
+    {
+      "title": "Unwind the 25 !important declarations",
+      "sub": "Each one is a selector losing an argument with another selector; main.css alone carries 25. Fix the specificity at the source and they stop being necessary.",
+      "delta": 10,
+      "prompt": "You are fixing one design-system finding in the trapped repository, measured by roast-my-design-system.\n\nThe finding: Unwind the 25 !important declarations\n\nThe detail: Each one is a selector losing an argument with another selector; main.css alone carries 25. Fix the specificity at the source and they stop being necessary.\n\nExpected payoff: about +10 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    },
+    {
+      "title": "Fold 54 inline style blocks back into the system",
+      "sub": "These are static values written as style attributes; start with app/Page0.jsx (18 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.",
+      "delta": 10,
+      "prompt": "You are fixing one design-system finding in the trapped repository, measured by roast-my-design-system.\n\nThe finding: Fold 54 inline style blocks back into the system\n\nThe detail: These are static values written as style attributes; start with app/Page0.jsx (18 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.\n\nExpected payoff: about +10 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    }
+  ],
   "packages": []
 }

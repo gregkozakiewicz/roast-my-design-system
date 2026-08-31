@@ -40,7 +40,7 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
-| `... --mcp` | The scan as a local MCP server: five tools your agent calls while writing UI, from "is there a Button already?" to "review my changes". See [Live answers over MCP](#live-answers-over-mcp) |
+| `... --mcp` | The scan as a local MCP server: five tools your agent calls while writing UI, from "is there a Button already?" to "review my changes", plus the `roast-fix` prompt that serves the top fix from a fresh scan. See [Live answers over MCP](#live-answers-over-mcp) |
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
 | <code>...&nbsp;--by&nbsp;"Dwayne&nbsp;Hicks"</code> | A requester credit in the report header, next to the scan date |
 | <code>...&nbsp;--notes&nbsp;&lt;file.md&gt;</code> | An agent-written analysis embedded in the report as **"What the numbers mean"**: labelled as written by AI, kept apart from the measured numbers. The Claude Code skill writes and passes this automatically; the flag is here so any agent can |
@@ -61,7 +61,7 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 The full report for vercel/ai-chatbot, top to bottom — including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.5.1)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.6.1)
 
 The same report in light mode (one file, built-in toggle):
 
@@ -109,6 +109,8 @@ The report and the rules file describe the repo as it was at scan time. `--mcp` 
 | `roast_review` | Review my changed files. Reads the git diff itself, so no code is pasted back |
 
 The loop: context before building, find while building, validate before saving, review before finishing.
+
+And when the goal is fixing the system rather than building on it, the `roast-fix` prompt serves the top Where-to-start move from a fresh scan, as a ready-made fix prompt (byte-identical to the report's copy buttons). Fix it, ask again, and the next move has risen to the top: the scan is the progress bar. Pass `move: 2` to jump the queue.
 
 Add it to Claude Code:
 

@@ -182,6 +182,32 @@ if (DRY) {
   process.exit(0);
 }
 
+// ---------- screenshots cannot go stale silently ----------
+// The report's screenshots went stale after visual changes THREE times (5.2.3,
+// 5.5.1, 5.6.1 — every one caught by Greg, none by a check), and the honesty
+// question below was being answered by release automation piping "y". So this
+// is mechanical: if anything under the report's code changed since the last
+// release, the README screenshot cache-key must carry THIS version, which can
+// only be true if someone touched the screenshots this release. Reshoot (or,
+// for a genuinely invisible change, bump the ?v= deliberately) and re-run.
+{
+  let lastTag = '';
+  try { lastTag = git('describe', '--tags', '--abbrev=0'); } catch { /* first release ever */ }
+  if (lastTag) {
+    const committed = git('diff', '--name-only', `${lastTag}..HEAD`);
+    const uncommitted = git('status', '--porcelain');
+    const reportChanged = `${committed}\n${uncommitted}`.split('\n').some((f) => f.includes('scripts/diagnose/'));
+    if (reportChanged) {
+      const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
+      const m = readme.match(/report-full-dark\.png\?v=([0-9.]+)/);
+      if (!m || m[1] !== version) {
+        die(`the report's code changed since ${lastTag}, but README.md's screenshot cache-key is ?v=${m ? m[1] : 'missing'}, not ?v=${version}. Reshoot the screenshots on the current report (or bump the ?v= deliberately for an invisible change), then re-run.`);
+      }
+      ok(`report changed and screenshots carry ?v=${version}`);
+    }
+  }
+}
+
 // The landing page has gone stale before (v3.7.1 through v3.10.1, caught by
 // Greg, not by any check). Nothing can verify prose automatically, so this asks
 // out loud rather than letting it slip again.

@@ -277,6 +277,25 @@ console.log('mcp server:');
     init?.result?.serverInfo?.name === 'roast-my-design-system' ? ok('server initialize') : bad('server initialize', JSON.stringify(init));
     list?.result?.tools?.length === 5 ? ok('server lists 5 tools') : bad('server lists 5 tools', `got ${list?.result?.tools?.length}`);
     call?.result?.content?.[0]?.text?.includes('IS a token') ? ok('server tool call answers') : bad('server tool call answers', JSON.stringify(call?.result));
+
+    // roast-fix: the dynamic prompt runs the real report pipeline, so its
+    // text must be byte-identical to the report button's prompt (plus the
+    // progression footer). One composer, two doors — tested, not assumed.
+    const fixMsgs = [
+      { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18' } },
+      { jsonrpc: '2.0', method: 'notifications/initialized' },
+      { jsonrpc: '2.0', id: 4, method: 'prompts/get', params: { name: 'roast-fix' } },
+    ].map((m) => JSON.stringify(m)).join('\n') + '\n';
+    const fr = spawnSync(process.execPath, [join(ENGINE, 'mcp/server.mjs'), join(FIXTURES, 'trapped')],
+      { input: fixMsgs, encoding: 'utf8', timeout: 60000 });
+    const fixReply = fr.stdout.split('\n').filter(Boolean).map((l) => JSON.parse(l)).find((x) => x.id === 4);
+    const fixText = fixReply?.result?.messages?.[0]?.content?.text ?? '';
+    const trapSummary = JSON.parse(readFileSync(join(tmp, 'trapped-s.json'), 'utf8'));
+    const reportPrompt = trapSummary.moves?.[0]?.prompt ?? '(no moves in summary)';
+    fixText.startsWith(reportPrompt) ? ok('roast-fix serves the report button prompt, byte for byte')
+      : bad('roast-fix matches report prompt', `mcp starts: ${fixText.slice(0, 60)} · report starts: ${reportPrompt.slice(0, 60)}`);
+    fixText.includes('the next move rises to the top') ? ok('roast-fix explains the progression loop')
+      : bad('roast-fix progression footer', 'missing');
   } catch (e) { bad('server protocol', e.message); }
 }
 

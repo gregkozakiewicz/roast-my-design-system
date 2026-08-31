@@ -890,6 +890,12 @@ function extraSectionsHtml() {
 </section>`).join('\n\n');
 }
 
+// Filled by whereToStartSection when the template renders (which happens
+// before the summary is written): the same moves and prompts the report's
+// buttons hold, published in --summary so the MCP server's roast-fix prompt
+// hands out byte-identical text. One composer, two doors.
+let startMoves = [];
+
 function whereToStartSection() {
   const c = [];
   if (agentFiles.length === 0) c.push({ score: 60, metric: null, title: 'Write the agent rules file',
@@ -1019,6 +1025,10 @@ function whereToStartSection() {
     deltaText: item.delta > 0 ? `about +${item.delta} points` : (item.target ? `about +${item.target.gain} points once ${item.target.target === 0 ? 'they are all cleared' : `the count is under ${n(item.target.target)}`}` : ''),
     repoName: h.repo ? String(h.repo).split('/').pop() : '',
   });
+  startMoves = top3.map((item) => ({
+    title: unesc(item.title), sub: unesc(item.sub),
+    delta: item.delta || 0, prompt: promptFor(item),
+  }));
   return `<section class="glass pad">
     ${sectionHead('Where to start', head)}
     <div class="ledger">${top3.map((item, i) => `
@@ -1636,6 +1646,7 @@ if (summaryPath) {
     noSystemLikely,
     verdict,
     tiles: bigStats.map((s) => ({ label: s.label, value: s.num, health: s.health })),
+    ...(startMoves.length ? { moves: startMoves } : {}),
     packages: (h.packages ?? []).filter((p) => p.scored && p.metrics)
       .map((p) => ({ dir: p.dir, name: p.name, ...(scorePackage(p.metrics) ?? {}) }))
       .filter((p) => p.score !== undefined)

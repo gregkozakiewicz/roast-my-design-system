@@ -50,5 +50,19 @@
       "health": "good"
     }
   ],
+  "moves": [
+    {
+      "title": "Decide about the 3 components nobody imports",
+      "sub": "<DeadOne>, <DeadThree>, <DeadTwo> sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.",
+      "delta": 10,
+      "prompt": "You are fixing one design-system finding in the messy repository, measured by roast-my-design-system.\n\nThe finding: Decide about the 3 components nobody imports\n\nThe detail: <DeadOne>, <DeadThree>, <DeadTwo> sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.\n\nExpected payoff: about +10 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    },
+    {
+      "title": "Crown the canonical <Button>",
+      "sub": "1 component name has competing implementations. Start with <Button>: components/Button.tsx vs widgets/Button.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.",
+      "delta": 5,
+      "prompt": "You are fixing one design-system finding in the messy repository, measured by roast-my-design-system.\n\nThe finding: Crown the canonical <Button>\n\nThe detail: 1 component name has competing implementations. Start with <Button>: components/Button.tsx vs widgets/Button.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.\n\nExpected payoff: about +5 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    }
+  ],
   "packages": []
 }

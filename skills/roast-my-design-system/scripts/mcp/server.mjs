@@ -13,7 +13,11 @@
  *   node src/mcp/server.mjs <repo-path>
  */
 import { createInterface } from 'node:readline';
-import { resolve } from 'node:path';
+import { resolve, join, dirname } from 'node:path';
+import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { loadKnowledge, freshKnowledge } from './knowledge.mjs';
 import { getContext, findComponent, findToken, validate, review } from './tools.mjs';
 import { rulesMarkdown } from '../rules/build.mjs';
@@ -69,7 +73,42 @@ const PROMPTS = [
     description: 'Review the current UI changes against the design system',
     text: 'Call roast_review to check the working tree\'s changed files against this repository\'s design system. For each finding, apply the named fix (use roast_find_component and roast_find_token to find the canonical replacement). Rerun roast_review until it reports no measured violations, then summarise what changed.',
   },
+  {
+    name: 'roast-fix',
+    description: 'Fix the top Where-to-start move from a fresh scan; call again for the next one',
+    dynamic: true,
+    arguments: [{ name: 'move', description: 'Which move to fix (1-3); default is the top of the current list', required: false }],
+  },
 ];
+
+// roast-fix runs the real report pipeline (harvest, then diagnose --summary)
+// so the prompt is byte-identical to what the report's copy buttons hold: one
+// composer, two doors. Fresh scan every call, deliberately: fix the top move,
+// ask again, and the next move has risen to the top. The two temp files match
+// the promise the README already makes (a temp JSON and the report).
+function fixMovePrompt(root, moveArg) {
+  const dir = mkdtempSync(join(tmpdir(), 'roast-fix-'));
+  try {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const hPath = join(dir, 'h.json'), sPath = join(dir, 's.json');
+    const run = (script, args) => {
+      const r = spawnSync(process.execPath, [join(here, script), ...args], { encoding: 'utf8', timeout: 120000 });
+      if (r.status !== 0) throw new Error(`${script} exited ${r.status}`);
+    };
+    run('../harvest/index.mjs', [root, '--out', hPath]);
+    run('../diagnose/index.mjs', [hPath, '--out', join(dir, 'report.html'), '--summary', sPath]);
+    const summary = JSON.parse(readFileSync(sPath, 'utf8'));
+    const moves = summary.moves ?? [];
+    if (!moves.length) {
+      return `A fresh scan of this repository found no Where-to-start moves: nothing at the top level is worth a fix prompt right now${summary.score !== null && summary.score !== undefined ? ` (score ${summary.score}/100)` : ''}. Run roast_review on your changed files if you want the working tree checked instead.`;
+    }
+    const idx = Math.min(Math.max(parseInt(moveArg, 10) || 1, 1), moves.length) - 1;
+    const extra = moves.length > 1 ? `\n\n(${moves.length} moves on the current list; this is number ${idx + 1}. Ask for roast-fix again after fixing: the scan refreshes and the next move rises to the top.)` : '';
+    return moves[idx].prompt + extra;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
 
 // ---------- resource bodies ----------
 function resourceBody(uri, k) {
@@ -173,12 +212,13 @@ export function serve(root) {
           return;
         }
         case 'prompts/list':
-          reply(id, { prompts: PROMPTS.map(({ name, description }) => ({ name, description })) });
+          reply(id, { prompts: PROMPTS.map(({ name, description, arguments: args }) => ({ name, description, ...(args ? { arguments: args } : {}) })) });
           return;
         case 'prompts/get': {
           const p = PROMPTS.find((x) => x.name === params?.name);
           if (!p) { fail(id, -32602, `Unknown prompt: ${params?.name}`); return; }
-          reply(id, { description: p.description, messages: [{ role: 'user', content: { type: 'text', text: p.text } }] });
+          const text = p.dynamic ? fixMovePrompt(root, params?.arguments?.move) : p.text;
+          reply(id, { description: p.description, messages: [{ role: 'user', content: { type: 'text', text } }] });
           return;
         }
         default:

@@ -2,6 +2,13 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.6.1 — 2026-08-31
+
+- **The fix prompts reach the MCP door.** A third prompt, `roast-fix`, serves the top Where-to-start move from a fresh scan as a ready-made fix prompt, byte-identical to the report's copy buttons because it runs the same pipeline and the suite proves the match, byte for byte. Fix the move, ask again, and the next one has risen to the top: the scan is the progress bar. Pass `move: 2` to jump the queue; a repo with nothing to fix says so honestly.
+- The scan summary (`--summary`) now publishes the moves with their prompts, which is how any tool can reuse them.
+- **Screenshots reshot on the current report** (the 5.6.0 buttons are now visible in them), and the release script grew a mechanical guard: if the report's code changed since the last release, the screenshot cache-key must carry the new version or the release refuses to run. Screenshots went stale after visual changes three times, every one caught by Greg and none by a check; the check exists now.
+- README, landing page and npm description all name the new prompt.
+
 ## 5.6.0 — 2026-08-31
 
 - **Every fix now comes with its prompt.** Each move in Where to start carries a copy button holding a ready-made fix prompt: the finding, the real file paths, the expected score payoff, and the calm rules for fixing without steamrolling craft (name and consolidate, keep deliberate exceptions, no drive-by refactors), closing with the command to re-run the scan and watch the payoff land. One move per prompt, deliberately: three small finished fixes beat one long homework list, and the score becomes a progress bar. Born from the first user feedback: thank you, Willem.

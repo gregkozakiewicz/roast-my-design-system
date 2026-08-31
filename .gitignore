@@ -14,3 +14,6 @@ design-system-roast.sarif
 
 # Local operating notes for AI sessions, deliberately not public
 CLAUDE.md
+
+# npm lockfile: this package has zero dependencies, a lockfile only appears by accident
+package-lock.json

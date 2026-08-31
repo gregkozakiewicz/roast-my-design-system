@@ -271,6 +271,14 @@ same ? ok('two harvests of messy are identical') : bad('two harvests of messy ar
 const bin = resolve(ENGINE, '../../../bin/roast.mjs');
 if (existsSync(bin)) {
   console.log('npx wrapper:');
+  // Zero dependencies is enforced, not aspirational: a stray `npm install`
+  // once wrote a dependency into package.json and five releases shipped it
+  // (5.4.1's conformance sweep left checkmcp behind; Greg caught it on
+  // Socket, fixed in 5.5.4). The promise now has a tripwire.
+  const pkg = JSON.parse(readFileSync(resolve(ENGINE, '../../../package.json'), 'utf8'));
+  const declared = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies, ...pkg.optionalDependencies });
+  declared.length === 0 ? ok('package declares zero dependencies')
+    : bad('package declares zero dependencies', `found: ${declared.join(', ')}`);
   const r = spawnSync(process.execPath, [bin, join(FIXTURES, 'messy'), '--json', '--out', join(tmp, 'e2e.html')], { encoding: 'utf8' });
   try {
     const j = JSON.parse(r.stdout);

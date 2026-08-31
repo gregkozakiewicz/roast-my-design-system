@@ -28,6 +28,7 @@ import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { VERSION } from '../lib/version.mjs';
 import { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA } from '../lib/feedback.mjs';
+import { fixPrompt } from '../lib/fixprompt.mjs';
 
 // The benchmark (Ideal-2026 norms + scanned-repo stats) ships next to the
 // code so the page works offline; degrade gracefully when absent.
@@ -1006,12 +1007,26 @@ function whereToStartSection() {
     : item.target
       ? `<span class="delta delta-target">${item.target.target === 0 ? 'clear them all' : `under ${n(item.target.target)}`} · +${item.target.gain}</span>`
       : '';
+  // The copy button beside each move hands the finding to whatever agent the
+  // reader pastes it into: one move per prompt, so progress stays visible and
+  // finishable. Prompt text is composed from the same title/sub the row shows
+  // (entities unescaped back to plain text), held in a hidden div the button
+  // reads at click time, so a forwarded report keeps working offline.
+  const unesc = (s) => s.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&rarr;/g, '->').replace(/&amp;/g, '&');
+  const promptFor = (item) => fixPrompt({
+    title: unesc(item.title),
+    sub: unesc(item.sub),
+    deltaText: item.delta > 0 ? `about +${item.delta} points` : (item.target ? `about +${item.target.gain} points once ${item.target.target === 0 ? 'they are all cleared' : `the count is under ${n(item.target.target)}`}` : ''),
+    repoName: h.repo ? String(h.repo).split('/').pop() : '',
+  });
   return `<section class="glass pad">
     ${sectionHead('Where to start', head)}
     <div class="ledger">${top3.map((item, i) => `
       <div class="ledger-row start-row">
         <span class="ledger-idx">${String(i + 1).padStart(2, '0')}</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">${item.title}</div>${chip(item)}</div><div class="sub">${item.sub}</div></div>
+        <div class="start-body"><div class="start-head"><div class="start-title">${item.title}</div>${chip(item)}</div><div class="sub">${item.sub}</div>
+        <div class="start-actions"><button type="button" class="fixbtn" data-fix="${i}">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="${i}">view it first</button></span></div>
+        <div class="fixprompt" hidden id="fixprompt-${i}">${esc(promptFor(item))}</div></div>
       </div>`).join('')}</div></section>`;
 }
 
@@ -1313,6 +1328,19 @@ const html = `<!doctype html>
   .start-body { min-width:0; }
   .start-title { font:600 15px/1.4 var(--disp); }
   .start-row .sub { margin-top:2px; overflow-wrap:anywhere; }
+  .start-actions { display:flex; align-items:center; gap:10px; margin-top:10px; }
+  .fixbtn { font:700 11.5px/1 var(--sans); padding:8px 13px; border-radius:8px; border:1px solid var(--accent);
+    background:transparent; color:var(--accent); cursor:pointer; }
+  .fixbtn:hover { background:var(--ok-soft); }
+  .fixbtn.did { background:var(--accent); color:var(--card-solid); }
+  .fixhint { color:var(--dim2); font-size:11.5px; }
+  .fixview { font:inherit; color:var(--dim); background:none; border:none; padding:0; cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px; }
+  .fixview:hover { color:var(--accent); }
+  .fixprompt.shown { display:block; white-space:pre-wrap; font:12px/1.6 var(--mono); color:var(--dim);
+    border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-top:10px;
+    user-select:all; -webkit-user-select:all; }
+  @media print { .start-actions { display:none; } }
 
   .pill { border-radius:99px; padding:3px 10px; font:500 10.5px/1.5 var(--sans); white-space:nowrap; }
   .pill-mint { background:var(--ok-soft); color:var(--ok); }
@@ -1540,6 +1568,37 @@ ${componentsSection()}
     gift.classList.add('gone');
     setTimeout(function(){ gift.hidden=true; gift.parentNode.classList.add('open'); reveal.hidden=false; reveal.classList.add('in'); }, reduce?0:240);
   },{once:true});
+  document.querySelectorAll('.fixbtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var holder=document.getElementById('fixprompt-'+btn.getAttribute('data-fix'));
+      if(!holder) return;
+      var text=holder.textContent;
+      var done=function(){ btn.textContent='Copied'; btn.classList.add('did'); setTimeout(function(){ btn.textContent='Copy the fix prompt'; btn.classList.remove('did'); },1600); };
+      // No faked success: if the clipboard is blocked (sandboxed previews,
+      // strict browsers), unfold the prompt for manual copying instead.
+      var showManual=function(){ holder.hidden=false; holder.classList.add('shown'); btn.textContent='Clipboard blocked, prompt shown below'; setTimeout(function(){ btn.textContent='Copy the fix prompt'; },2600); };
+      var attempt=function(){ var okd=false; var ta=document.createElement('textarea'); ta.value=text;
+        ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+        ta.focus(); ta.select(); try{ okd=document.execCommand('copy'); }catch(e){} ta.remove(); return okd; };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        // If the modern API rejects, the environment is blocking clipboards
+        // and execCommand's return value cannot be trusted either (sandboxed
+        // panes return true while writing nothing): attempt it, then show the
+        // prompt anyway so the reader is never stranded.
+        navigator.clipboard.writeText(text).then(done, function(){ attempt(); showManual(); });
+      }
+      else { attempt()?done():showManual(); }
+    });
+  });
+  document.querySelectorAll('.fixview').forEach(function(v){
+    v.addEventListener('click', function(){
+      var holder=document.getElementById('fixprompt-'+v.getAttribute('data-fix'));
+      if(!holder) return;
+      var show=holder.hidden;
+      holder.hidden=!show; holder.classList.toggle('shown', show);
+      v.textContent=show?'hide it':'view it first';
+    });
+  });
   var copyBtn=document.getElementById('gift-copy');
   function rulesText(){ return document.getElementById('gift-md').textContent; }
   copyBtn.addEventListener('click', function(){

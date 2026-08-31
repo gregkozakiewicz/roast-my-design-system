@@ -14,6 +14,7 @@ skills/roast-my-design-system/scripts/harvest/tokens.mjs
 skills/roast-my-design-system/scripts/harvest/walk.mjs
 skills/roast-my-design-system/scripts/lib/exclusions.mjs
 skills/roast-my-design-system/scripts/lib/feedback.mjs
+skills/roast-my-design-system/scripts/lib/fixprompt.mjs
 skills/roast-my-design-system/scripts/lib/guard-api.mjs
 skills/roast-my-design-system/scripts/lib/lasttouched.mjs
 skills/roast-my-design-system/scripts/lib/nearpairs.mjs

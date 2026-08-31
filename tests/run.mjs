@@ -187,6 +187,29 @@ console.log('adoption map:');
     : bad('map section head', 'missing "tile area is import count"');
 }
 
+// ---------- fix prompts: one copy button per Where-to-start move ----------
+console.log('fix prompts:');
+{
+  const html = readFileSync(join(tmp, 'trapped.html'), 'utf8');
+  const rows = (html.match(/class="ledger-row start-row"/g) ?? []).length;
+  const btns = (html.match(/class="fixbtn" data-fix/g) ?? []).length;
+  const prompts = (html.match(/class="fixprompt" hidden/g) ?? []).length;
+  btns === rows && prompts === rows && rows > 0
+    ? ok(`each of ${rows} moves carries a button and a prompt`)
+    : bad('fix buttons match moves', `${rows} moves, ${btns} buttons, ${prompts} prompts`);
+  html.includes('npx roast-my-design-system@latest') && html.includes('never blind-delete')
+    ? ok('prompt carries the verify command and the calm rules')
+    : bad('prompt content', 'missing verify command or fixing rules');
+  // the invariant holds on every fixture: exactly one button per rendered move
+  for (const fixture of readdirSync(FIXTURES).sort()) {
+    const fh = readFileSync(join(tmp, `${fixture}.html`), 'utf8');
+    const r = (fh.match(/class="ledger-row start-row"/g) ?? []).length;
+    const b = (fh.match(/class="fixbtn" data-fix/g) ?? []).length;
+    if (r !== b) bad(`buttons match moves on ${fixture}`, `${r} moves, ${b} buttons`);
+  }
+  ok('buttons equal moves on every fixture');
+}
+
 // ---------- MCP: the five tools, snapshotted per fixture ----------
 // Dates stripped (scan stamp changes daily); the answers are the contract.
 // The token budget is an ASSERTION, not an aspiration: get_context over

@@ -2,6 +2,13 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.6.0 — 2026-08-31
+
+- **Every fix now comes with its prompt.** Each move in Where to start carries a copy button holding a ready-made fix prompt: the finding, the real file paths, the expected score payoff, and the calm rules for fixing without steamrolling craft (name and consolidate, keep deliberate exceptions, no drive-by refactors), closing with the command to re-run the scan and watch the payoff land. One move per prompt, deliberately: three small finished fixes beat one long homework list, and the score becomes a progress bar. Born from the first user feedback: thank you, Willem.
+- **Nothing to trust blind.** A "view it first" link unfolds the prompt right in the report before you copy it. And the button never fakes success: where a clipboard is blocked (sandboxed previews and their kin, whose copy commands report success while writing nothing), it says so plainly and unfolds the prompt for manual copying instead.
+- Prompts travel inside the report file, so a forwarded report hands out working fixes with no tool installed. Zero moves means zero buttons; buttons stay out of print.
+- Suite grows to 80 checks, including one born mid-release: the new tarball-manifest tripwire from 5.5.4 caught its first intentional change (the prompt composer joining the package) and made it deliberate.
+
 ## 5.5.5 — 2026-08-31
 
 - Docs only: the README's trust section now states that zero dependencies is enforced, not aspirational — the suite fails if package.json ever declares a dependency, and the shipped file list is a photographed contract. Published so npm's copy of the README says it too; the protections themselves landed with 5.5.4.

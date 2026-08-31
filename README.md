@@ -8,6 +8,8 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
+> **New in 5.6: every fix comes with its prompt.** Each move in the report's Where to start now carries a copy button holding a ready-made fix prompt: the finding, the file paths, the expected score payoff, and the calm rules for fixing without steamrolling craft. Paste it into your agent, fix, re-run the scan, press the next button. View it first if you like: the prompt unfolds right in the report.
+
 > **New in 5.5: the adoption map.** The report now draws your real system to scale: a treemap where every adopted component's tile area is its import count, and the never-imported are grouped by the year git last saw them touched. The cupboard audit, with dates on the boxes.
 
 > **New in 5.4: the MCP server is verified in Cursor and Windsurf (now Devin Desktop), alongside Claude Code.** Each tested end to end in the editor itself: server connected, five tools listed, real answers in the chat. Setup for each lives in [Live answers over MCP](#live-answers-over-mcp).
@@ -19,7 +21,7 @@ Run it on your codebase and get, in about a second:
 - **A health score you can defend in a meeting.** 0-100, deterministic, benchmarked against Ideal Design System norms, 34 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
 - **Per-package scores for monorepos.** One blended number hides which package is the problem: `packages/ui` scores 80 while `apps/web` scores 40, and now you can see it.
 - **The receipts behind it.** Every colour and its near-identical twin, every spacing value, typeface, duplicated or never-imported component, inline style and !important, with real file paths, in one self-contained HTML report you can open, Slack or email.
-- **The first fixes ranked by payoff.** A "Where to start" list derived from your own numbers: keep the report as the audit, or hand it to Claude as the punch list for the fix.
+- **The first fixes ranked by payoff, each with its prompt.** A "Where to start" list derived from your own numbers, and every move carries a copy button with a ready-made fix prompt for your agent: the finding, the files, the expected payoff, and rules that respect deliberate craft. Fix, re-run the scan, press the next button.
 - **Rules that stop the mess coming back.** A generated `design-system-rules.md` with canonical components, your token file, and known duplicates to avoid, so your AI agent follows your system instead of guessing at it. `--apply` injects them into every agent file you have: Claude, Cursor, GitHub Copilot, and Windsurf. Every scan also checks the rules you already have for stale references: paths that no longer exist, components named canonical that nothing imports anymore.
 
 ## Why this exists

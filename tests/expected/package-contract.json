@@ -1,0 +1,46 @@
+{
+  "name": "roast-my-design-system",
+  "mcpName": "io.github.gregkozakiewicz/roast-my-design-system",
+  "description": "Your AI can write the UI. This makes sure it writes your UI. A deterministic scanner scores your design system 0-100 against 34 public repos, writes rules for Claude, Cursor, Copilot and Windsurf with --apply, and runs as a local MCP server with --mcp.",
+  "keywords": [
+    "design-system",
+    "mcp",
+    "design-tokens",
+    "css",
+    "audit",
+    "lint",
+    "tailwind",
+    "ui",
+    "claude-code",
+    "developer-tools",
+    "mcp-server",
+    "ai-agents",
+    "linter",
+    "code-quality",
+    "cursor",
+    "windsurf"
+  ],
+  "homepage": "https://gregkozakiewicz.github.io/roast-my-design-system/",
+  "bugs": "https://github.com/gregkozakiewicz/roast-my-design-system/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregkozakiewicz/roast-my-design-system.git"
+  },
+  "license": "MIT",
+  "author": "Greg Kozakiewicz (https://gregkozakiewicz.com)",
+  "type": "module",
+  "exports": {
+    "./engine": "./skills/roast-my-design-system/scripts/lib/guard-api.mjs",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "roast-my-design-system": "bin/roast.mjs"
+  },
+  "files": [
+    "bin/",
+    "skills/roast-my-design-system/scripts/"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

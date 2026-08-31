@@ -279,6 +279,21 @@ if (existsSync(bin)) {
   const declared = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies, ...pkg.optionalDependencies });
   declared.length === 0 ? ok('package declares zero dependencies')
     : bad('package declares zero dependencies', `found: ${declared.join(', ')}`);
+
+  // What ships is a contract, both directions: a stowaway file appearing in
+  // the tarball or expected cargo going missing (a bad sync) both fail here.
+  // Born from 5.5.4: a stray `npm install` shipped a dependency for four days
+  // before a human noticed. Machines notice now.
+  const packRoot = resolve(ENGINE, '../../..');
+  const packRun = spawnSync('npm', ['pack', '--dry-run', '--json'], { cwd: packRoot, encoding: 'utf8' });
+  try {
+    const parsed = JSON.parse(packRun.stdout);
+    const entry = Array.isArray(parsed) ? parsed[0] : Object.values(parsed)[0];
+    const manifest = entry.files.map((f) => f.path ?? f).sort().join('\n');
+    compare('tarball manifest snapshot', manifest, 'pack-manifest.txt');
+  } catch (e) { bad('tarball manifest snapshot', `npm pack --dry-run failed: ${e.message}`); }
+  const { version, ...pkgContract } = pkg;
+  compare('package.json contract snapshot', JSON.stringify(pkgContract, null, 2), 'package-contract.json');
   const r = spawnSync(process.execPath, [bin, join(FIXTURES, 'messy'), '--json', '--out', join(tmp, 'e2e.html')], { encoding: 'utf8' });
   try {
     const j = JSON.parse(r.stdout);

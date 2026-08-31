@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.6.2 — 2026-08-31
+
+- Docs only: the README now shows exactly how to summon the `roast-fix` prompt in Claude Code (`/mcp__roast__roast-fix`, add the move number to jump the queue), verified against current Claude Code docs. Published so npm's copy carries the instructions beside the feature they belong to.
+
 ## 5.6.1 — 2026-08-31
 
 - **The fix prompts reach the MCP door.** A third prompt, `roast-fix`, serves the top Where-to-start move from a fresh scan as a ready-made fix prompt, byte-identical to the report's copy buttons because it runs the same pipeline and the suite proves the match, byte for byte. Fix the move, ask again, and the next one has risen to the top: the scan is the progress bar. Pass `move: 2` to jump the queue; a repo with nothing to fix says so honestly.

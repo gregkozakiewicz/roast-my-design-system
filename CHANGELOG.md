@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.5.5 — 2026-08-31
+
+- Docs only: the README's trust section now states that zero dependencies is enforced, not aspirational — the suite fails if package.json ever declares a dependency, and the shipped file list is a photographed contract. Published so npm's copy of the README says it too; the protections themselves landed with 5.5.4.
+
 ## 5.5.4 — 2026-08-31
 
 - **Zero dependencies again, and this time the suite enforces it.** Versions 5.4.1 through 5.5.3 quietly shipped a dependency on `checkmcp`: a conformance-testing session ran `npm install` in this repo, package.json remembered it, and five releases carried it out the door. Nothing ever imported it, but every `npx` run downloaded it and its luggage, and the zero-dependencies badge spent four days telling a lie. The dependency and the stray lockfile are gone, and the test suite now fails if package.json ever declares a dependency again, so the promise has a tripwire instead of relying on nobody tripping.

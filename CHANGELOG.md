@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.7.1 — 2026-09-02
+
+- Docs only: the README's Live examples list catches up with 5.7.0 — five reports now, telekom/scale and adobe/spectrum-web-components included, labelled by framework. The landing page had them; the README's own list still said three, and Greg caught it within the hour. Published so npm's copy matches.
+
 ## 5.7.0 — 2026-09-02
 
 - **The scan reads web components now.** Stencil's `@Component({ tag })`, Lit's `@customElement`, plain `customElements.define` and Shoelace-style `Class.define('tag')` are all detected, with usage counted by the kebab tag and generated framework wrappers excluded so no component earns phantom adoption from its own machine-made bindings. Styling inside `` css`...` `` template literals (Lit's whole idiom) runs through the same CSS scanner as a stylesheet. Born on telekom/scale, where 93 Stencil components once scanned as one; hardened on eight real design systems: scale, Shoelace, Ionic, Material Web, Adobe Spectrum, Siemens iX, Baloise and Lion, whose scores now range 89 to 38 the way a design-system lead's gut would rank them.

@@ -213,11 +213,13 @@ After the roast, the skill also offers to write `design-system-rules.md` to disk
 
 ## Live examples
 
-Three real roasts of public repos, hosted as-is (the same self-contained HTML the skill generates):
+Five real roasts of public repos, hosted as-is (the same self-contained HTML the skill generates), spanning React, Stencil and Lit:
 
+- **[telekom/scale](https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html)** — Stencil, 95 components read by tag, with Claude's notes embedded
+- **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** — Lit, the `--spectrum-*` namespace named in the header
+- **[vercel/ai-chatbot](https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)** — React, with Claude's notes embedded
 - **[excalidraw/excalidraw](https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**
 - **[dubinc/dub](https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html)**
-- **[vercel/ai-chatbot](https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)**
 
 ## What it measures
 

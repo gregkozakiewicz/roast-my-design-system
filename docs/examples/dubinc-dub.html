@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" data-theme="dark"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Design-system diagnosis:​‌‌‌​​​​​‌‌​​‌​‌​‌‌​‌‌‌​​‌‌​​​‌‌​‌‌​‌​​‌​‌‌​‌‌​​​‌‌‌​​‌​​‌‌​​‌​‌​‌‌​​​‌​​‌‌​​‌​‌​‌‌​‌‌​​ dubinc/dub</title>
+<title>Design-system diagnosis:​‌‌​​‌‌‌​‌‌‌​​‌​​‌‌​​‌​‌​‌‌​​‌‌‌​‌‌​‌​‌‌​‌‌​‌‌‌‌​‌‌‌‌​‌​​‌‌​​​​‌​‌‌​‌​‌‌​‌‌​‌​​‌​‌‌​​‌​‌​‌‌‌​‌‌‌​‌‌​‌​​‌​‌‌​​​‌‌​‌‌‌‌​‌​ dubinc/dub</title>
 <meta name="author" content="Greg Kozakiewicz · gregkozakiewicz.com">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==">
 <link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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">
@@ -219,6 +219,19 @@
   .start-body { min-width:0; }
   .start-title { font:600 15px/1.4 var(--disp); }
   .start-row .sub { margin-top:2px; overflow-wrap:anywhere; }
+  .start-actions { display:flex; align-items:center; gap:10px; margin-top:10px; }
+  .fixbtn { font:700 11.5px/1 var(--sans); padding:8px 13px; border-radius:8px; border:1px solid var(--accent);
+    background:transparent; color:var(--accent); cursor:pointer; }
+  .fixbtn:hover { background:var(--ok-soft); }
+  .fixbtn.did { background:var(--accent); color:var(--card-solid); }
+  .fixhint { color:var(--dim2); font-size:11.5px; }
+  .fixview { font:inherit; color:var(--dim); background:none; border:none; padding:0; cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px; }
+  .fixview:hover { color:var(--accent); }
+  .fixprompt.shown { display:block; white-space:pre-wrap; font:12px/1.6 var(--mono); color:var(--dim);
+    border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-top:10px;
+    user-select:all; -webkit-user-select:all; }
+  @media print { .start-actions { display:none; } }
 
   .pill { border-radius:99px; padding:3px 10px; font:500 10.5px/1.5 var(--sans); white-space:nowrap; }
   .pill-mint { background:var(--ok-soft); color:var(--ok); }
@@ -232,6 +245,16 @@
     border-radius:99px; padding:2px 10px; }
   .vchip.bad { color:var(--coral); border-color:var(--coral-soft); background:var(--coral-soft); }
   .vchip.dim { color:var(--dim2); }
+  .amap { width:100%; height:auto; display:block; margin:10px 0 4px; }
+  .atile { fill:var(--ok-soft); stroke:var(--bg, #0f172a); stroke-width:2; }
+  .orow { display:flex; align-items:baseline; gap:12px; margin-top:8px; }
+  .orow .oyear { flex:0 0 150px; font:600 10.5px var(--mono); color:var(--coral);
+    letter-spacing:.08em; text-transform:uppercase; text-align:right; }
+  .orow .chips-row { margin-top:0; }
+  .atile:hover { fill:var(--hover-ring); }
+  .adot-n { fill:var(--text); font:600 12.5px var(--mono); text-anchor:middle; }
+  .adot-n.s { font-size:10.5px; fill:var(--dim); }
+  .adot-c { fill:var(--dim); font:500 10.5px var(--mono); text-anchor:middle; }
 
   /* two-up cards, families, mini-cards */
   .two-up { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }
@@ -351,7 +374,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/5.2.1 -->
+<!-- rmds-schema: gregkozakiewicz/5.6.2 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <svg class="only-dark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
@@ -363,9 +386,9 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 1986ms · 4,065 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 2413ms · 4,110 code files</div>
       <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-08-22</div>
+      <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-09-01</div>
     </div>
     <div class="score"><div class="eyebrow">Health score</div><div class="val">25<span class="slash">/</span><span class="of">100</span></div></div>
   </div>
@@ -375,7 +398,7 @@
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">632 arbitrary values like [400px] punched through the Tailwind scale, each one a precedent your agent will follow. 22 components implemented more than once, so an agent asked for a Button has several random options. 60 off-scale spacing values where a dozen would do.</div>
+    <div class="verdict">636 arbitrary values like [400px] punched through the Tailwind scale, each one a precedent your agent will follow. 22 components implemented more than once, so an agent asked for a Button has several random options. 60 off-scale spacing values where a dozen would do.</div>
   </div>
 </header>
 
@@ -388,15 +411,69 @@
     <div class="ledger">
       <div class="ledger-row start-row">
         <span class="ledger-idx">01</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Collapse the 14 near-identical colours</div><span class="delta">+10</span></div><div class="sub">#ffffff and #fafafa are the same colour to any eye, and they are used 9 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.</div></div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Collapse the 14 near-identical colours</div><span class="delta">+10</span></div><div class="sub">#ffffff and #fafafa are the same colour to any eye, and they are used 9 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.</div>
+        <div class="start-actions"><button type="button" class="fixbtn" data-fix="0">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="0">view it first</button></span></div>
+        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the dub repository, measured by roast-my-design-system.
+
+The finding: Collapse the 14 near-identical colours
+
+The detail: #ffffff and #fafafa are the same colour to any eye, and they are used 9 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.
+
+Expected payoff: about +10 points on the report's 0-100 score.
+
+How to fix it, calmly and with respect for intent:
+- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
+- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.
+- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.
+- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.
+
+Work through the files named in the finding. When you are done, re-run the scan to verify the payoff:
+
+npx roast-my-design-system@latest</div></div>
       </div>
       <div class="ledger-row start-row">
         <span class="ledger-idx">02</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Decide about the 16 components nobody imports</div><span class="delta">+10</span></div><div class="sub">&lt;Alert&gt;, &lt;AlertDescription&gt;, &lt;AlertTitle&gt; and others sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.</div></div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Decide about the 16 components nobody imports</div><span class="delta">+10</span></div><div class="sub">&lt;Alert&gt;, &lt;AlertDescription&gt;, &lt;AlertTitle&gt; and others sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.</div>
+        <div class="start-actions"><button type="button" class="fixbtn" data-fix="1">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="1">view it first</button></span></div>
+        <div class="fixprompt" hidden id="fixprompt-1">You are fixing one design-system finding in the dub repository, measured by roast-my-design-system.
+
+The finding: Decide about the 16 components nobody imports
+
+The detail: &lt;Alert&gt;, &lt;AlertDescription&gt;, &lt;AlertTitle&gt; and others sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.
+
+Expected payoff: about +10 points on the report's 0-100 score.
+
+How to fix it, calmly and with respect for intent:
+- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
+- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.
+- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.
+- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.
+
+Work through the files named in the finding. When you are done, re-run the scan to verify the payoff:
+
+npx roast-my-design-system@latest</div></div>
       </div>
       <div class="ledger-row start-row">
         <span class="ledger-idx">03</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Fold 48 inline style blocks back into the system</div><span class="delta">+10</span></div><div class="sub">These are static values written as style attributes; start with apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx (4 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div></div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Fold 48 inline style blocks back into the system</div><span class="delta">+10</span></div><div class="sub">These are static values written as style attributes; start with apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx (4 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div>
+        <div class="start-actions"><button type="button" class="fixbtn" data-fix="2">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="2">view it first</button></span></div>
+        <div class="fixprompt" hidden id="fixprompt-2">You are fixing one design-system finding in the dub repository, measured by roast-my-design-system.
+
+The finding: Fold 48 inline style blocks back into the system
+
+The detail: These are static values written as style attributes; start with apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx (4 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.
+
+Expected payoff: about +10 points on the report's 0-100 score.
+
+How to fix it, calmly and with respect for intent:
+- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
+- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.
+- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.
+- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.
+
+Work through the files named in the finding. When you are done, re-run the scan to verify the payoff:
+
+npx roast-my-design-system@latest</div></div>
       </div></div></section>
 
 <section class="glass pad gift-sec">
@@ -417,9 +494,9 @@
           <span class="gift-count">18 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-08-22.
+&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-09-01.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
-     npx roast-my-design-system --rules --&gt;
+     npx roast-my-design-system@latest --rules --&gt;
 
 Follow these rules when writing or editing UI in this repo. Every rule below was derived from a scan of this codebase, with real paths and usage counts.
 
@@ -432,18 +509,18 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Canonical components
 
 - Use these existing components instead of writing new ones, the way this repo already uses them:
-  - `&lt;Button&gt;` from `packages/ui/src/button.tsx` (used 988x · props: text, variant, textWrapperClassName, shortcutClassName)
-  - `&lt;Modal&gt;` from `packages/ui/src/modal.tsx` (used 185x · props: showModal, setShowModal, onClose, desktopOnly)
-    - most common usage, as in `apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/groups/[groupSlug]/links/add-edit-group-additional-link-modal.tsx` (matching 98 of 182 usages): `&lt;Modal showModal={isOpen} setShowModal={setIsOpen}&gt;…&lt;/Modal&gt;`
-  - `&lt;Tooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 144x · props: content, contentClassName, disabled, side)
-    - most common usage, as in `apps/web/ui/support/chat-bubble.tsx` (matching 50 of 68 usages): `&lt;Tooltip content=&quot;Close&quot;&gt;…&lt;/Tooltip&gt;`
+  - `&lt;Button&gt;` from `packages/ui/src/button.tsx` (used 995x · props: text, variant, textWrapperClassName, shortcutClassName)
+  - `&lt;Modal&gt;` from `packages/ui/src/modal.tsx` (used 187x · props: showModal, setShowModal, onClose, desktopOnly)
+    - most common usage, as in `apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/groups/[groupSlug]/links/add-edit-group-additional-link-modal.tsx` (matching 98 of 184 usages): `&lt;Modal showModal={isOpen} setShowModal={setIsOpen}&gt;…&lt;/Modal&gt;`
+  - `&lt;Tooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 145x · props: content, contentClassName, disabled, side)
+    - most common usage, as in `apps/web/ui/support/chat-bubble.tsx` (matching 50 of 69 usages): `&lt;Tooltip content=&quot;Close&quot;&gt;…&lt;/Tooltip&gt;`
   - `&lt;LoadingSpinner&gt;` from `packages/ui/src/icons/loading-spinner.tsx` (used 113x)
     - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/programs/page.tsx` (matching 58 of 113 usages): `&lt;LoadingSpinner className=&quot;size-4&quot; /&gt;`
   - `&lt;Popover&gt;` from `packages/ui/src/popover.tsx` (used 100x · props: content, align, side, openPopover)
   - `&lt;InfoTooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 97x)
     - most common usage, as in `apps/web/ui/modals/qr-code-design-fields.tsx` (matching 76 of 78 usages): `&lt;InfoTooltip content={tooltip} /&gt;`
-  - `&lt;X&gt;` from `apps/web/ui/shared/icons/x.tsx` (used 90x)
-    - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/partners/network/network-partner-application-sheet.tsx` (matching 86 of 90 usages): `&lt;X className=&quot;size-5&quot; /&gt;`
+  - `&lt;X&gt;` from `apps/web/ui/shared/icons/x.tsx` (used 91x)
+    - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/partners/network/network-partner-application-sheet.tsx` (matching 87 of 91 usages): `&lt;X className=&quot;size-5&quot; /&gt;`
   - `&lt;AnimatedSizeContainer&gt;` from `packages/ui/src/animated-size-container.tsx` (used 89x)
     - most common usage, as in `apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx` (matching 38 of 85 usages): `&lt;AnimatedSizeContainer height&gt;…&lt;/AnimatedSizeContainer&gt;`
 
@@ -464,7 +541,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Spacing and sizing
 
 - Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
-- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 632 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
+- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 636 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
 - Avoid new one-off CSS spacing values; 33 off-scale values are already in play.
 
 ### Typography
@@ -478,7 +555,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 5.2.1. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 5.6.2. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -489,7 +566,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
   </section>
 
-<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> &lt;PayoutStats&gt; alone has 3 implementations. An agent asked for one cannot tell which is canonical, so it picks at random or writes another, and every wrong pick becomes the example the next agent copies. This is the finding that multiplies itself.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> [400px] appears 24 times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence 25. The most copied pattern here is the one you least want copied.</span></div>
+<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> &lt;PayoutStats&gt; alone has 3 implementations. An agent asked for one cannot tell which is canonical, so it picks at random or writes another, and every wrong pick becomes the example the next agent copies. This is the finding that multiplies itself.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> [400px] appears 24 times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence 25. The most copied pattern here is the one you least want copied.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> This palette holds 14 pairs of colours a screen can barely tell apart. An agent asked for the brand grey cannot see the difference either, so it copies whichever twin is nearest, and when unsure it invents a third between them. Twins breed triplets.</span></div>
 
 <div class="stats"><div class="stat glass st-warn">
   <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
@@ -525,7 +602,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">14 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">632</div><div class="lab">arbitrary bracket values</div>
+  <div class="num">636</div><div class="lab">arbitrary bracket values</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">70 · messier than 91% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
 
@@ -535,11 +612,11 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <tr><td class="mono strong">apps/web</td>
     <td><span class="pkg-score pkg-bad">40</span></td>
     <td>39 inline style blocks</td>
-    <td class="dim">3,335 files</td></tr>
+    <td class="dim">3,378 files</td></tr>
     <tr><td class="mono strong">packages/ui</td>
     <td><span class="pkg-score pkg-warn">80</span></td>
     <td>16 components nobody imports</td>
-    <td class="dim">478 files</td></tr></tbody></table></div>
+    <td class="dim">480 files</td></tr></tbody></table></div>
     
     <p class="sub" style="margin-top:12px">A repo scores below its own packages by arithmetic, not by accident: distinct values add up across packages, so the whole always carries more than any part. Read the package scores for where each team stands, and the repo score for what your agent sees when it looks at everything at once.</p></section>
 
@@ -582,37 +659,37 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="bars">
     <div class="bar-row"><span class="bar-label">·2</span>
     <div class="bar-track"><div class="bar" style="width:100%"></div></div>
-    <span class="bar-count">2,711</span></div>
+    <span class="bar-count">2,714</span></div>
     <div class="bar-row"><span class="bar-label">·4</span>
-    <div class="bar-track"><div class="bar" style="width:73%"></div></div>
-    <span class="bar-count">1,966</span></div>
+    <div class="bar-track"><div class="bar" style="width:72%"></div></div>
+    <span class="bar-count">1,967</span></div>
     <div class="bar-row"><span class="bar-label">·3</span>
-    <div class="bar-track"><div class="bar" style="width:56%"></div></div>
-    <span class="bar-count">1,506</span></div>
+    <div class="bar-track"><div class="bar" style="width:55%"></div></div>
+    <span class="bar-count">1,505</span></div>
     <div class="bar-row"><span class="bar-label">·1</span>
     <div class="bar-track"><div class="bar" style="width:42%"></div></div>
-    <span class="bar-count">1,127</span></div>
+    <span class="bar-count">1,136</span></div>
     <div class="bar-row"><span class="bar-label">·6</span>
     <div class="bar-track"><div class="bar" style="width:39%"></div></div>
-    <span class="bar-count">1,047</span></div>
+    <span class="bar-count">1,054</span></div>
     <div class="bar-row"><span class="bar-label">·0</span>
-    <div class="bar-track"><div class="bar" style="width:30%"></div></div>
+    <div class="bar-track"><div class="bar" style="width:29%"></div></div>
     <span class="bar-count">800</span></div>
     <div class="bar-row"><span class="bar-label">·1.5</span>
     <div class="bar-track"><div class="bar" style="width:22%"></div></div>
-    <span class="bar-count">595</span></div>
+    <span class="bar-count">603</span></div>
     <div class="bar-row"><span class="bar-label">·2.5</span>
     <div class="bar-track"><div class="bar" style="width:15%"></div></div>
-    <span class="bar-count">417</span></div>
+    <span class="bar-count">415</span></div>
     <div class="bar-row"><span class="bar-label">·5</span>
     <div class="bar-track"><div class="bar" style="width:14%"></div></div>
     <span class="bar-count">373</span></div>
     <div class="bar-row"><span class="bar-label">·0.5</span>
-    <div class="bar-track"><div class="bar" style="width:11%"></div></div>
-    <span class="bar-count">285</span></div>
+    <div class="bar-track"><div class="bar" style="width:10%"></div></div>
+    <span class="bar-count">278</span></div>
     <div class="bar-row"><span class="bar-label">·8</span>
     <div class="bar-track"><div class="bar" style="width:9%"></div></div>
-    <span class="bar-count">250</span></div>
+    <span class="bar-count">252</span></div>
     <div class="bar-row"><span class="bar-label">·10</span>
     <div class="bar-track"><div class="bar" style="width:8%"></div></div>
     <span class="bar-count">217</span></div>
@@ -621,7 +698,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <span class="bar-count">176</span></div>
     <div class="bar-row"><span class="bar-label">·16</span>
     <div class="bar-track"><div class="bar" style="width:3%"></div></div>
-    <span class="bar-count">89</span></div>
+    <span class="bar-count">91</span></div>
     <div class="bar-row"><span class="bar-label">·12</span>
     <div class="bar-track"><div class="bar" style="width:3%"></div></div>
     <span class="bar-count">86</span></div>
@@ -634,8 +711,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="bar-row"><span class="bar-label">·20</span>
     <div class="bar-track"><div class="bar" style="width:2%"></div></div>
     <span class="bar-count">22</span></div></div>
-    <div class="receipts"><div class="eyebrow">632 arbitrary values punched through the scale, one bracket at a time</div>
-    <div class="chips-row"><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×24</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/billing/payment-methods.tsx">[0.625rem] ×22</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/applications/applications-analytics-cards.tsx">[300px] ×19</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/partners-table.tsx">[200px] ×18</span><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×17</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×16</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×11</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[50px] ×11</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/commissions/[commissionId]/page.tsx">[360px] ×11</span><span class="vchip dim">+169 more</span></div></div></section>
+    <div class="receipts"><div class="eyebrow">636 arbitrary values punched through the scale, one bracket at a time</div>
+    <div class="chips-row"><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×24</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/billing/payment-methods.tsx">[0.625rem] ×22</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/partners-table.tsx">[200px] ×20</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/applications/applications-analytics-cards.tsx">[300px] ×19</span><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×18</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×16</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×11</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[50px] ×11</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/commissions/[commissionId]/page.tsx">[360px] ×11</span><span class="vchip dim">+169 more</span></div></div></section>
 <section>
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
@@ -651,7 +728,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="num">27</div><div class="lab">border radii</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 · messier than 88% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
-    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×2263</span><span class="vchip">·xs ×812</span><span class="vchip">·lg ×270</span><span class="vchip">·base ×230</span><span class="vchip">·xl ×69</span><span class="vchip">·3xl ×14</span><span class="vchip">·2xl ×14</span><span class="vchip">·[0.625rem] ×14</span><span class="vchip">·[13px] ×11</span><span class="vchip">·4xl ×10</span><span class="vchip">·5xl ×8</span><span class="vchip">·[0.8125rem] ×7</span><span class="vchip">·[0.7rem] ×6</span><span class="vchip">·[11px] ×6</span></div></div>
+    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×2256</span><span class="vchip">·xs ×817</span><span class="vchip">·lg ×272</span><span class="vchip">·base ×230</span><span class="vchip">·xl ×69</span><span class="vchip">·3xl ×14</span><span class="vchip">·2xl ×14</span><span class="vchip">·[0.625rem] ×14</span><span class="vchip">·[13px] ×11</span><span class="vchip">·4xl ×10</span><span class="vchip">·5xl ×8</span><span class="vchip">·[0.8125rem] ×7</span><span class="vchip">·[0.7rem] ×6</span><span class="vchip">·[11px] ×6</span></div></div>
     <div class="spec"><div class="eyebrow">the corners, drawn · 27 radii in one interface</div>
       <div class="spec-grid">
         <div class="spec-cell"><div class="spec-box" style="border-radius:999px"></div>
@@ -668,7 +745,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
-      <a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">15 stray colours</span>
         <span class="pill pill-coral">3 inline</span>
@@ -676,7 +753,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
-      <a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/app/api/og/avatar/%5B%5B...seed%5D%5D/route.tsx">apps/web/app/api/og/avatar/[[...seed]]/route.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/api/og/avatar/%5B%5B...seed%5D%5D/route.tsx">apps/web/app/api/og/avatar/[[...seed]]/route.tsx</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">9 stray colours</span>
         
@@ -684,7 +761,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
-      <a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/submitted-leads/submitted-lead-status-badges.ts">apps/web/ui/submitted-leads/submitted-lead-status-badges.ts</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/submitted-leads/submitted-lead-status-badges.ts">apps/web/ui/submitted-leads/submitted-lead-status-badges.ts</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">8 stray colours</span>
         
@@ -692,7 +769,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">04</span>
-      <a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">6 stray colours</span>
         <span class="pill pill-coral">1 inline</span>
@@ -700,7 +777,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">05</span>
-      <a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/styles/globals.css">apps/web/styles/globals.css</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/styles/globals.css">apps/web/styles/globals.css</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">6 stray colours</span>
         
@@ -718,56 +795,56 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;PayoutStats&gt; · 3 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/payouts/payout-stats.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/layout/sidebar/payout-stats.tsx">apps/web/ui/layout/sidebar/payout-stats.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/payouts/payout-stats.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/layout/sidebar/payout-stats.tsx">apps/web/ui/layout/sidebar/payout-stats.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Logo&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx">apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/packages/ui/src/logo.tsx">packages/ui/src/logo.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx">apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/packages/ui/src/logo.tsx">packages/ui/src/logo.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;EmptyState&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/shared/empty-state.tsx">apps/web/ui/shared/empty-state.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/packages/ui/src/empty-state.tsx">packages/ui/src/empty-state.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/shared/empty-state.tsx">apps/web/ui/shared/empty-state.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/packages/ui/src/empty-state.tsx">packages/ui/src/empty-state.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;FormControl&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx">apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/submitted-leads/form-fields/form-control.tsx">apps/web/ui/submitted-leads/form-fields/form-control.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx">apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/submitted-leads/form-fields/form-control.tsx">apps/web/ui/submitted-leads/form-fields/form-control.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;SettingsRow&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/program-settings-row.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/program-settings-row.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/program-settings-row.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/program-settings-row.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Hero&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/placeholders/hero.tsx">apps/web/ui/placeholders/hero.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/placeholders/hero.tsx">apps/web/ui/placeholders/hero.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;QRCode&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/shared/qr-code.tsx">apps/web/ui/shared/qr-code.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/packages/ui/src/icons/nucleo/qrcode.tsx">packages/ui/src/icons/nucleo/qrcode.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/shared/qr-code.tsx">apps/web/ui/shared/qr-code.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/packages/ui/src/icons/nucleo/qrcode.tsx">packages/ui/src/icons/nucleo/qrcode.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Analytics&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/analytics/index.tsx">apps/web/ui/analytics/index.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/placeholders/feature-graphics/analytics.tsx">apps/web/ui/placeholders/feature-graphics/analytics.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/analytics/index.tsx">apps/web/ui/analytics/index.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/placeholders/feature-graphics/analytics.tsx">apps/web/ui/placeholders/feature-graphics/analytics.tsx</a></div>
       
       </div>
     </div>
@@ -817,37 +894,112 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="sec-head"><h2>48 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx</a><span class="mc-count">×4</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx</a><span class="mc-count">×4</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx</a><span class="mc-count">×3</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx</a><span class="mc-count">×3</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:75%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a><span class="mc-count">×3</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a><span class="mc-count">×3</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:75%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/packages/ui/src/icons/youtube.tsx">packages/ui/src/icons/youtube.tsx</a><span class="mc-count">×2</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/packages/ui/src/icons/youtube.tsx">packages/ui/src/icons/youtube.tsx</a><span class="mc-count">×2</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx">apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx">apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:25%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/%5BprogramSlug%5D/page.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/[programSlug]/page.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/%5BprogramSlug%5D/page.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/[programSlug]/page.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:25%"></div></div>
       </div></div>
     <div class="receipts"><div class="eyebrow">1 !important declaration · the cascade admitting defeat</div>
     <div class="chips-row"><span class="vchip bad" title="apps/web/styles/globals.css">globals.css ×1</span></div></div></div>
 </div>
 <section class="glass pad">
-    <div class="sec-head"><h2>What you actually use</h2><p class="sub">1,570 components defined · top by adoption · the real system, buried in here</p></div>
+    <div class="sec-head"><h2>The adoption map</h2><p class="sub">1,573 components defined · tile area is import count · the real system, drawn to scale</p></div>
+    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="295.7" height="438.0" class="atile">
+      <title>&lt;Button&gt; · used 995× · packages/ui/src/button.tsx</title></rect>
+    <text x="147.9" y="215.0" class="adot-n">Button</text>
+    <text x="147.9" y="233.0" class="adot-c">995×</text></g><g><rect x="295.7" y="0.0" width="238.7" height="336.0" class="atile">
+      <title>&lt;Link&gt; · used 616× · apps/web/ui/shared/icons/link.tsx</title></rect>
+    <text x="415.1" y="164.0" class="adot-n">Link</text>
+    <text x="415.1" y="182.0" class="adot-c">616×</text></g><g><rect x="295.7" y="336.0" width="238.7" height="102.0" class="atile">
+      <title>&lt;Modal&gt; · used 187× · packages/ui/src/modal.tsx</title></rect>
+    <text x="415.1" y="383.0" class="adot-n">Modal</text>
+    <text x="415.1" y="401.0" class="adot-c">187×</text></g><g><rect x="534.4" y="0.0" width="140.3" height="134.6" class="atile">
+      <title>&lt;Tooltip&gt; · used 145× · packages/ui/src/tooltip.tsx</title></rect>
+    <text x="604.6" y="63.3" class="adot-n">Tooltip</text>
+    <text x="604.6" y="81.3" class="adot-c">145×</text></g><g><rect x="534.4" y="134.6" width="140.3" height="104.9" class="atile">
+      <title>&lt;LoadingSpinner&gt; · used 113× · packages/ui/src/icons/loading-spinner.tsx</title></rect>
+    <text x="604.6" y="183.0" class="adot-n">LoadingSpinner</text>
+    <text x="604.6" y="201.0" class="adot-c">113×</text></g><g><rect x="534.4" y="239.4" width="140.3" height="99.3" class="atile">
+      <title>&lt;Footer&gt; · used 107× · packages/email/src/components/footer.tsx</title></rect>
+    <text x="604.6" y="285.1" class="adot-n">Footer</text>
+    <text x="604.6" y="303.1" class="adot-c">107×</text></g><g><rect x="534.4" y="338.7" width="140.3" height="99.3" class="atile">
+      <title>&lt;Footer&gt; · used 107× · packages/ui/src/footer.tsx</title></rect>
+    <text x="604.6" y="384.4" class="adot-n">Footer</text>
+    <text x="604.6" y="402.4" class="adot-c">107×</text></g><g><rect x="674.7" y="0.0" width="126.8" height="102.6" class="atile">
+      <title>&lt;Popover&gt; · used 100× · packages/ui/src/popover.tsx</title></rect>
+    <text x="738.1" y="47.3" class="adot-n">Popover</text>
+    <text x="738.1" y="65.3" class="adot-c">100×</text></g><g><rect x="801.5" y="0.0" width="123.0" height="102.6" class="atile">
+      <title>&lt;InfoTooltip&gt; · used 97× · packages/ui/src/tooltip.tsx</title></rect>
+    <text x="863.1" y="47.3" class="adot-n">InfoTooltip</text>
+    <text x="863.1" y="65.3" class="adot-c">97×</text></g><g><rect x="924.6" y="0.0" width="115.4" height="102.6" class="atile">
+      <title>&lt;X&gt; · used 91× · apps/web/ui/shared/icons/x.tsx</title></rect>
+    <text x="982.3" y="47.3" class="adot-n">X</text>
+    <text x="982.3" y="65.3" class="adot-c">91×</text></g><g><rect x="674.7" y="102.6" width="98.6" height="117.5" class="atile">
+      <title>&lt;AnimatedSizeContainer&gt; · used 89× · packages/ui/src/animated-size-container.tsx</title></rect>
+    
+    <text x="724.0" y="165.4" class="adot-c">89×</text></g><g><rect x="674.7" y="220.1" width="98.6" height="110.9" class="atile">
+      <title>&lt;PageContent&gt; · used 84× · apps/web/ui/layout/page-content/index.tsx</title></rect>
+    <text x="724.0" y="271.6" class="adot-n">PageContent</text>
+    <text x="724.0" y="289.6" class="adot-c">84×</text></g><g><rect x="674.7" y="331.1" width="98.6" height="106.9" class="atile">
+      <title>&lt;PageWidthWrapper&gt; · used 81× · apps/web/ui/layout/page-width-wrapper.tsx</title></rect>
+    
+    <text x="724.0" y="388.5" class="adot-c">81×</text></g><g><rect x="773.3" y="102.6" width="92.0" height="113.3" class="atile">
+      <title>&lt;Switch&gt; · used 80× · packages/ui/src/switch.tsx</title></rect>
+    <text x="819.3" y="155.3" class="adot-n">Switch</text>
+    <text x="819.3" y="173.3" class="adot-c">80×</text></g><g><rect x="865.3" y="102.6" width="89.7" height="113.3" class="atile">
+      <title>&lt;StatusBadge&gt; · used 78× · packages/ui/src/status-badge.tsx</title></rect>
+    
+    <text x="910.1" y="163.3" class="adot-c">78×</text></g><g><rect x="954.9" y="102.6" width="85.1" height="113.3" class="atile">
+      <title>&lt;PartnerAvatar&gt; · used 74× · apps/web/ui/partners/partner-avatar.tsx</title></rect>
+    
+    <text x="997.5" y="163.3" class="adot-c">74×</text></g><g><rect x="773.3" y="215.9" width="79.7" height="112.7" class="atile">
+      <title>&lt;Table&gt; · used 69× · packages/ui/src/table/table.tsx</title></rect>
+    <text x="813.2" y="268.2" class="adot-n">Table</text>
+    <text x="813.2" y="286.2" class="adot-c">69×</text></g><g><rect x="773.3" y="328.6" width="79.7" height="109.4" class="atile">
+      <title>&lt;MenuItem&gt; · used 67× · packages/ui/src/menu-item.tsx</title></rect>
+    <text x="813.2" y="379.3" class="adot-n">MenuItem</text>
+    <text x="813.2" y="397.3" class="adot-c">67×</text></g><g><rect x="853.0" y="215.9" width="101.3" height="83.6" class="atile">
+      <title>&lt;TimestampTooltip&gt; · used 65× · packages/ui/src/timestamp-tooltip.tsx</title></rect>
+    
+    <text x="903.7" y="261.7" class="adot-c">65×</text></g><g><rect x="954.3" y="215.9" width="85.7" height="83.6" class="atile">
+      <title>&lt;ChevronRight&gt; · used 55× · packages/ui/src/icons/nucleo/chevron-right.tsx</title></rect>
+    
+    <text x="997.2" y="261.7" class="adot-c">55×</text></g><g><rect x="853.0" y="299.4" width="101.5" height="70.6" class="atile">
+      <title>&lt;InlineBadgePopover&gt; · used 55× · apps/web/ui/shared/inline-badge-popover.tsx</title></rect>
+    
+    <text x="903.8" y="338.7" class="adot-c">55×</text></g><g><rect x="853.0" y="370.0" width="101.5" height="68.0" class="atile">
+      <title>&lt;BlurImage&gt; · used 53× · packages/ui/src/blur-image.tsx</title></rect>
+    <text x="903.8" y="400.0" class="adot-n">BlurImage</text>
+    <text x="903.8" y="418.0" class="adot-c">53×</text></g><g><rect x="954.5" y="299.4" width="85.5" height="70.0" class="atile">
+      <title>&lt;AnimatedEmptyState&gt; · used 46× · apps/web/ui/shared/animated-empty-state.tsx</title></rect>
+    
+    <text x="997.2" y="338.5" class="adot-c">46×</text></g><g><rect x="954.5" y="369.5" width="85.5" height="68.5" class="atile">
+      <title>&lt;TooltipContent&gt; · used 45× · packages/ui/src/tooltip.tsx</title></rect>
+    
+    <text x="997.2" y="407.7" class="adot-c">45×</text></g></svg>
+    <p class="sub">558 more adopted components below the top 24, not drawn.</p>
+    <p class="sub">534 components are imported exactly once: &lt;AboutYouForm&gt;, &lt;AcceptProgramInviteButton&gt;, &lt;AccordionBlockThumbnail&gt;, &lt;ActivityLogDescription&gt;, &lt;ActivityLogProvider&gt;, &lt;ActivityRing&gt; and 528 more. Quiet corners, not yet a system.</p>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
     <tr><td class="mono strong">&lt;Button&gt;</td>
-    <td><span class="pill pill-mint">988×</span></td>
+    <td><span class="pill pill-mint">995×</span></td>
     <td class="path">packages/ui/src/button.tsx</td>
     <td><span class="chip chip-xs">text</span> <span class="chip chip-xs">variant</span> <span class="chip chip-xs">textWrapperClassName</span> <span class="chip chip-xs">shortcutClassName</span> <span class="chip chip-xs">loading</span></td></tr>
     <tr><td class="mono strong">&lt;Link&gt;</td>
@@ -855,11 +1007,11 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td class="path">apps/web/ui/shared/icons/link.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;Modal&gt;</td>
-    <td><span class="pill pill-mint">185×</span></td>
+    <td><span class="pill pill-mint">187×</span></td>
     <td class="path">packages/ui/src/modal.tsx</td>
     <td><span class="chip chip-xs">showModal</span> <span class="chip chip-xs">setShowModal</span> <span class="chip chip-xs">onClose</span> <span class="chip chip-xs">desktopOnly</span> <span class="chip chip-xs">preventDefaultClose</span></td></tr>
     <tr><td class="mono strong">&lt;Tooltip&gt;</td>
-    <td><span class="pill pill-mint">144×</span></td>
+    <td><span class="pill pill-mint">145×</span></td>
     <td class="path">packages/ui/src/tooltip.tsx</td>
     <td><span class="chip chip-xs">content</span> <span class="chip chip-xs">contentClassName</span> <span class="chip chip-xs">disabled</span> <span class="chip chip-xs">side</span> <span class="chip chip-xs">disableHoverableContent</span></td></tr>
     <tr><td class="mono strong">&lt;LoadingSpinner&gt;</td>
@@ -883,18 +1035,26 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td class="path">packages/ui/src/tooltip.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;X&gt;</td>
-    <td><span class="pill pill-mint">90×</span></td>
+    <td><span class="pill pill-mint">91×</span></td>
     <td class="path">apps/web/ui/shared/icons/x.tsx</td>
     <td><span class="dim">none</span></td></tr></tbody></table></div>
     
     <div class="receipts"><div class="eyebrow">16 components defined but never imported · they sit in the system as wrong answers waiting to be picked</div>
-    <div class="chips-row"><span class="vchip" title="packages/ui/src/alert.tsx">&lt;Alert&gt;</span><span class="vchip" title="packages/ui/src/alert.tsx">&lt;AlertDescription&gt;</span><span class="vchip" title="packages/ui/src/alert.tsx">&lt;AlertTitle&gt;</span><span class="vchip" title="packages/ui/src/card-list/card-list-card.tsx">&lt;CardContext&gt;</span><span class="vchip" title="packages/ui/src/card-list/card-list-card.tsx">&lt;CardListCard&gt;</span><span class="vchip" title="packages/ui/src/composite-logo.tsx">&lt;CompositeLogo&gt;</span><span class="vchip" title="packages/ui/src/nav/content/graphics/dub-wireframe-graphic.tsx">&lt;DubWireframeGraphic&gt;</span><span class="vchip" title="packages/ui/src/filter/filter-list.tsx">&lt;FilterList&gt;</span><span class="vchip dim">+8 more</span></div>
+    
+    <div class="orow"><span class="oyear">untouched since 2023</span>
+    <div class="chips-row"><span class="vchip" title="packages/ui/src/inline-snippet.tsx · untouched since 2023-10-16">&lt;InlineSnippet&gt;</span></div></div>
+    <div class="orow"><span class="oyear">untouched since 2024</span>
+    <div class="chips-row"><span class="vchip" title="packages/ui/src/alert.tsx · untouched since 2024-06-19">&lt;Alert&gt;</span><span class="vchip" title="packages/ui/src/alert.tsx · untouched since 2024-06-19">&lt;AlertDescription&gt;</span><span class="vchip" title="packages/ui/src/alert.tsx · untouched since 2024-06-19">&lt;AlertTitle&gt;</span><span class="vchip" title="packages/ui/src/composite-logo.tsx · untouched since 2024-04-30">&lt;CompositeLogo&gt;</span></div></div>
+    <div class="orow"><span class="oyear">untouched since 2025</span>
+    <div class="chips-row"><span class="vchip" title="packages/ui/src/card-list/card-list-card.tsx · untouched since 2025-04-15">&lt;CardContext&gt;</span><span class="vchip" title="packages/ui/src/card-list/card-list-card.tsx · untouched since 2025-04-15">&lt;CardListCard&gt;</span><span class="vchip" title="packages/ui/src/nav/content/graphics/dub-wireframe-graphic.tsx · untouched since 2025-01-15">&lt;DubWireframeGraphic&gt;</span><span class="vchip" title="packages/ui/src/progress-bar.tsx · untouched since 2025-09-27">&lt;ProgressBar&gt;</span></div></div>
+    <div class="orow"><span class="oyear">untouched since 2026</span>
+    <div class="chips-row"><span class="vchip" title="packages/ui/src/filter/filter-list.tsx · untouched since 2026-05-19">&lt;FilterList&gt;</span><span class="vchip" title="packages/ui/src/filter/filter-select.tsx · untouched since 2026-04-11">&lt;FilterSelect&gt;</span><span class="vchip" title="packages/ui/src/filter/filter-sidebar.tsx · untouched since 2026-06-25">&lt;FilterSidebar&gt;</span><span class="vchip" title="packages/ui/src/rich-text-area/image-alt-node-view.tsx · untouched since 2026-06-25">&lt;ImageAltNodeView&gt;</span><span class="vchip" title="packages/ui/src/nav/content/product-content.tsx · untouched since 2026-08-04">&lt;ProductContent&gt;</span><span class="vchip" title="packages/ui/src/nav/content/resources-content.tsx · untouched since 2026-08-04">&lt;ResourcesContent&gt;</span><span class="vchip" title="packages/ui/src/nav/content/solutions-content.tsx · untouched since 2026-08-04">&lt;SolutionsContent&gt;</span></div></div>
     <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p></section>
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 5.2.1</span>, free on npm and as a Claude Code + Codex skill</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">4243be29299c</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.2.1"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 6 12 9 3 15 21 18 12 22 12"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 5.6.2</span>, free on npm and as a Claude Code + Codex skill</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">148048c10fee</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.6.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 6 12 9 3 15 21 18 12 22 12"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>
@@ -921,6 +1081,37 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     gift.classList.add('gone');
     setTimeout(function(){ gift.hidden=true; gift.parentNode.classList.add('open'); reveal.hidden=false; reveal.classList.add('in'); }, reduce?0:240);
   },{once:true});
+  document.querySelectorAll('.fixbtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var holder=document.getElementById('fixprompt-'+btn.getAttribute('data-fix'));
+      if(!holder) return;
+      var text=holder.textContent;
+      var done=function(){ btn.textContent='Copied'; btn.classList.add('did'); setTimeout(function(){ btn.textContent='Copy the fix prompt'; btn.classList.remove('did'); },1600); };
+      // No faked success: if the clipboard is blocked (sandboxed previews,
+      // strict browsers), unfold the prompt for manual copying instead.
+      var showManual=function(){ holder.hidden=false; holder.classList.add('shown'); btn.textContent='Clipboard blocked, prompt shown below'; setTimeout(function(){ btn.textContent='Copy the fix prompt'; },2600); };
+      var attempt=function(){ var okd=false; var ta=document.createElement('textarea'); ta.value=text;
+        ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+        ta.focus(); ta.select(); try{ okd=document.execCommand('copy'); }catch(e){} ta.remove(); return okd; };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        // If the modern API rejects, the environment is blocking clipboards
+        // and execCommand's return value cannot be trusted either (sandboxed
+        // panes return true while writing nothing): attempt it, then show the
+        // prompt anyway so the reader is never stranded.
+        navigator.clipboard.writeText(text).then(done, function(){ attempt(); showManual(); });
+      }
+      else { attempt()?done():showManual(); }
+    });
+  });
+  document.querySelectorAll('.fixview').forEach(function(v){
+    v.addEventListener('click', function(){
+      var holder=document.getElementById('fixprompt-'+v.getAttribute('data-fix'));
+      if(!holder) return;
+      var show=holder.hidden;
+      holder.hidden=!show; holder.classList.toggle('shown', show);
+      v.textContent=show?'hide it':'view it first';
+    });
+  });
   var copyBtn=document.getElementById('gift-copy');
   function rulesText(){ return document.getElementById('gift-md').textContent; }
   copyBtn.addEventListener('click', function(){

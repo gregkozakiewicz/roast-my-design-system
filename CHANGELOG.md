@@ -2,6 +2,17 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.7.0 — 2026-09-02
+
+- **The scan reads web components now.** Stencil's `@Component({ tag })`, Lit's `@customElement`, plain `customElements.define` and Shoelace-style `Class.define('tag')` are all detected, with usage counted by the kebab tag and generated framework wrappers excluded so no component earns phantom adoption from its own machine-made bindings. Styling inside `` css`...` `` template literals (Lit's whole idiom) runs through the same CSS scanner as a stylesheet. Born on telekom/scale, where 93 Stencil components once scanned as one; hardened on eight real design systems: scale, Shoelace, Ionic, Material Web, Adobe Spectrum, Siemens iX, Baloise and Lion, whose scores now range 89 to 38 the way a design-system lead's gut would rank them.
+- **What the scan cannot read, it now says.** When a repo's components register in a pattern beyond the detector, the component tiles read "not measured", the score takes no credit, and the ledger explains, because a zero the scanner never earned is blindness, not discipline. Versions before this one presented exactly that blindness as praise.
+- **Repos have roles.** A published components package is a library: its consumers live in other repos, so it gets a composition map (how the system builds from itself) instead of an adoption map, and unused components become showroom stock to review, not corpses to accuse.
+- **Token namespaces, earned and named.** A dominant custom-property namespace puts `custom design system (--telekom-*)` in the header; two co-equal tiers are named as a partnership (`--si-* + --ix-*`); further namespaces are reported as present, verdict-free, because "legacy" turned out to be a judgment ratios cannot make (Baloise documents `--mod-*` as a live tier; Adobe runs three layers; the roast notes, which can read deprecation notices, keep making the call). The rules file and MCP answers teach the namespace by name.
+- **Header honesty all round:** `web components (Stencil)` instead of a wrong "react"; a dim `design system: unrecognised` chip when the scan cannot name the system, because on a design-system report, not knowing is a finding; the plain "custom design system" title requires a real token layer, so a white-label library like Lion is honestly a "component library".
+- Sass repos measure truer: `$token` references are no longer counted as typefaces, the Sass `color(base)` helper is no longer a colour, and fully transparent values no longer pad the palette.
+- Two new examples join the gallery: telekom/scale (with Claude's notes) and adobe/spectrum-web-components. All five example reports regenerated on this engine.
+- Suite grows to 108 checks across nine fixtures, including a Stencil-plus-Lit library and a Vue repo proving the not-measured state. Every pre-existing fixture's scores are byte-identical: the new sight only added eyes where there were none.
+
 ## 5.6.2 — 2026-08-31
 
 - Docs only: the README now shows exactly how to summon the `roast-fix` prompt in Claude Code (`/mcp__roast__roast-fix`, add the move number to jump the queue), verified against current Claude Code docs. Published so npm's copy carries the instructions beside the feature they belong to.

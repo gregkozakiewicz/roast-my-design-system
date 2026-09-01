@@ -3,6 +3,8 @@
   "score": 40,
   "noSystemLikely": false,
   "verdict": "51 colour pairs are nearly identical (#6b6f70 next to #6b6f71), copy-paste, not decisions. 54 inline style blocks bypassing every system, and teaching your agent to do the same. 25 off-scale spacing values where a dozen would do.",
+  "role": "product",
+  "componentsMeasured": true,
   "tiles": [
     {
       "label": "distinct colours",

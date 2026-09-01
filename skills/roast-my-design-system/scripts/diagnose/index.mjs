@@ -228,6 +228,15 @@ const nearPairs = nearColorPairs(colors);
 
 const neverImported = neverImportedComponents(h.components, h.profile?.uiDir);
 
+// Measurability and role, decided by the harvest (telekom/scale, 2026-09-01):
+// when the component detector could not read this repo's stack, the component
+// metrics say so and take no score credit; when the repo is a published
+// library, usage means composition (how the system uses itself), never
+// adoption, and every accusation about orphans is softened to match.
+const componentsMeasured = h.profile?.componentDetection?.measured !== false;
+const notMeasuredReason = h.profile?.componentDetection?.reason ?? 'an unrecognised component pattern';
+const isLibrary = h.profile?.role === 'library';
+
 // Benchmark helpers: for a metric value, where does this repo sit among the
 // scanned fleet? ("more colours than 90% of scanned repos")
 function percentile(metric, value) {
@@ -283,8 +292,8 @@ if (effGreys > 13 * 1.25) candidates.push({ ratio: effGreys / 13, text: tokenLed
 if (spacingTotal > 15) candidates.push({ ratio: spacingTotal / 12, text: `${spacingTotal} off-scale spacing values where a dozen would do` });
 if (nearPairs.length >= 3) candidates.push({ ratio: 1 + nearPairs.length / 6, text: `${nearPairs.length} colour pairs are nearly identical (${nearPairs[0].a.value} next to ${nearPairs[0].b.value}), copy-paste, not decisions` });
 if (important.count >= 10) candidates.push({ ratio: 1 + important.count / 30, text: `${n(important.count)} !important declarations, the cascade admitting defeat` });
-if (iconCollisions.length >= 5) candidates.push({ ratio: 1 + iconCollisions.length / 8, text: `two icon sets collide on ${iconCollisions.length} names` });
-if (hardDupes.length > 0) candidates.push({ ratio: 1 + hardDupes.length / 5, text: `${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once, so an agent asked for a Button has several random options` });
+if (componentsMeasured && iconCollisions.length >= 5) candidates.push({ ratio: 1 + iconCollisions.length / 8, text: `two icon sets collide on ${iconCollisions.length} names` });
+if (componentsMeasured && hardDupes.length > 0) candidates.push({ ratio: 1 + hardDupes.length / 5, text: `${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once, so an agent asked for a Button has several random options` });
 if (inline.count > 20) candidates.push({ ratio: inline.count / 20, text: `${n(inline.count)} inline style blocks bypassing every system, and teaching your agent to do the same` });
 if (arbitraryCount >= 20) candidates.push({ ratio: arbitraryCount / 30, text: `${n(arbitraryCount)} arbitrary values like ${arbitrary[0].value} punched through the Tailwind scale, each one a precedent your agent will follow` });
 if (agentFiles.length === 0) candidates.push({ ratio: 1.3, text: `no agent rules, so your AI is guessing` });
@@ -339,6 +348,7 @@ const ICONS = {
   warn: '<svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>',
   bad: '<svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
   info: '',
+  na: '<svg class="ic ic-na" viewBox="0 0 24 24"><line x1="7" y1="12" x2="17" y2="12"/></svg>',
 };
 
 // Feather "activity", the pulse line, points reversed so it traces left to
@@ -379,6 +389,21 @@ const bigStats = [
   tile(neverImported.length, 'components never imported', 'neverImported', 'the system nobody found'),
   tile(arbitraryCount, 'arbitrary bracket values', 'arbitrary', 'a handful of deliberate exceptions'),
 ];
+
+// Component metrics the detector could not measure render as such and drop
+// out of the score ('na' is not a scored health); a library's never-imported
+// count stays visible but unscored, with the reason on the tile.
+if (!componentsMeasured) {
+  for (const m of ['exactDuplicates', 'neverImported']) {
+    const i = bigStats.findIndex((st) => st.metric === m);
+    bigStats[i] = { num: '—', label: bigStats[i].label, health: 'na', metric: m, healthValue: null,
+      rows: [{ label: `not measured: ${notMeasuredReason}`, val: '', dir: '' }] };
+  }
+} else if (isLibrary) {
+  const t = bigStats.find((st) => st.metric === 'neverImported');
+  t.health = 'info';
+  t.rows.push({ label: 'library: internal use only, downstream consumers invisible', val: '', dir: '' });
+}
 
 // Health score for the hero: the scored tiles averaged (good 100 / warn 55 / bad 10).
 const SCORE_OF = { good: 100, warn: 55, bad: 10 };
@@ -500,6 +525,7 @@ function trapBox(text) {
   return `<div class="trap">${ICONS.warn}<span><b>Agent trap.</b> ${text}</span></div>`;
 }
 function dupesTrap() {
+  if (!componentsMeasured) return '';
   const hard = exactDupes.filter((d) => !d.wrapped);
   if (hard.length < 2) return '';
   const top = hard[0];
@@ -530,6 +556,7 @@ function importantTrap() {
   return trapBox(`${n(important.count)} !important declarations, and each one is a shouting match a previous developer decided to win by force. An agent whose style will not apply does what the repo taught it and shouts louder. The volume in this codebase only goes up.`);
 }
 function orphansTrap() {
+  if (!componentsMeasured || isLibrary) return '';
   if (neverImported.length < 10) return '';
   return trapBox(`${neverImported.length} components are never imported anywhere. An agent searching for a Button finds the abandoned ones alongside the canonical one with nothing to tell them apart, so yesterday's dead end becomes today's example.`);
 }
@@ -780,6 +807,14 @@ function orphanRows() {
 }
 
 function componentsSection() {
+  // The wing the inspector could not enter gets named, never skipped: a
+  // missing section claims "nothing worth mapping", which is a different
+  // claim from "I could not see them".
+  if (!componentsMeasured) {
+    return `<section class="glass pad">
+    ${sectionHead('The component ledger', 'not measured in this repo')}
+    <p class="sub">Components here are built as ${esc(notMeasuredReason)}, a pattern this scan cannot read yet. Nothing on this page makes claims about component count, duplication, usage or adoption, and the score takes no credit for those tiles. Everything measured from stylesheets stands unaffected: colours, spacing, typography, !important.</p></section>`;
+  }
   const adopted = reusable.filter((c) => c.usageCount > 0);
   const top = adopted.slice(0, 10);
   if (!top.length && neverImported.length < 2) return '';
@@ -793,13 +828,13 @@ function componentsSection() {
     <td class="path">${esc(c.file)}</td>
     <td>${c.propsHint?.named?.length ? c.propsHint.named.slice(0, 5).map((p) => `<span class="chip chip-xs">${esc(p)}</span>`).join(' ') : '<span class="dim">none</span>'}</td></tr>`).join('');
   return `<section class="glass pad">
-    ${sectionHead('The adoption map', `${n(reusable.length)} components defined · tile area is import count · the real system, drawn to scale`)}
+    ${sectionHead(isLibrary ? 'The composition map' : 'The adoption map', `${n(reusable.length)} components defined · tile area is ${isLibrary ? 'internal use: how the system builds from itself, downstream consumers invisible from here' : 'import count'} · the real system, drawn to scale`)}
     ${mapped}
     ${overflow > 0 ? `<p class="sub">${overflow} more adopted component${overflow === 1 ? '' : 's'} below the top 24, not drawn.</p>` : ''}
     ${onceUsed.length ? `<p class="sub">${n(onceUsed.length)} component${onceUsed.length === 1 ? ' is' : 's are'} imported exactly once: ${onceUsed.slice(0, 6).map((c) => `&lt;${esc(c.name)}&gt;`).join(', ')}${onceUsed.length > 6 ? ` and ${onceUsed.length - 6} more` : ''}. Quiet corners, not yet a system.</p>` : ''}
     ${top.length ? `<div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div>` : ''}
     ${neverImported.length >= 2 ? `
-    <div class="receipts">${eyebrow(`${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
+    <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : `${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
     ${orphanRows()}
     <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>` : ''}</section>`;
 }
@@ -900,7 +935,7 @@ function whereToStartSection() {
   const c = [];
   if (agentFiles.length === 0) c.push({ score: 60, metric: null, title: 'Write the agent rules file',
     sub: `No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.` });
-  if (hardDupes.length > 0) {
+  if (componentsMeasured && hardDupes.length > 0) {
     // Pick the pair with the strongest copy-paste evidence: sibling files in
     // app code (same basename, neither in a shared package) are true
     // duplicates; a library-vs-app pair may be an intentional override, and
@@ -918,7 +953,7 @@ function whereToStartSection() {
       title: `Crown the canonical &lt;${esc(d.name)}&gt;`,
       sub: `${hardDupes.length} component name${hardDupes.length > 1 ? 's have' : ' has'} competing implementations. Start with &lt;${esc(d.name)}&gt;: ${esc(d.files[0])} vs ${esc(d.files[1] ?? '')}. Decide which one is canonical, re-export it from one home, and rename or fold in the other.` });
   }
-  if (iconCollisions.length >= 5) c.push({ score: 20 + iconCollisions.length * 3, metric: null, title: 'Merge the two icon sets',
+  if (componentsMeasured && iconCollisions.length >= 5) c.push({ score: 20 + iconCollisions.length * 3, metric: null, title: 'Merge the two icon sets',
     sub: `${iconCollisions.length} icon names exist in both sets, so every import is a coin flip. Pick one home and rename or delete the rest. Receipt: ${esc(iconCollisions[0].files[0])} vs ${esc(iconCollisions[0].files[1])}.` });
   const strayOffender = offenders.find((o) => o.strayColors > 0);
   if (colorStrays > 12) {
@@ -978,7 +1013,7 @@ function whereToStartSection() {
       title: `Unwind the ${n(important.count)} !important declarations`,
       sub: `Each one is a selector losing an argument with another selector${worst ? `; ${esc(basename(worst.file))} alone carries ${worst.count}` : ''}. Fix the specificity at the source and they stop being necessary.` });
   }
-  if (neverImported.length >= 3) {
+  if (componentsMeasured && !isLibrary && neverImported.length >= 3) {
     c.push({ score: 15 + neverImported.length, metric: 'neverImported', after: 0,
       title: `Decide about the ${n(neverImported.length)} components nobody imports`,
       sub: `${neverImported.slice(0, 3).map((x) => `&lt;${esc(x.name)}&gt;`).join(', ')}${neverImported.length > 3 ? ' and others' : ''} sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.` });
@@ -1129,13 +1164,33 @@ function agentSection() {
 }
 
 // ---------- page ----------
+// One chip owns the design-system slot, and bigger titles are earned, not
+// assumed (Greg's rule, 2026-09-01): a recognised library by name; a token
+// NAMESPACE upgrades to "custom design system (--brand-*)" because
+// components-plus-tokens is the system definition this tool preaches; a
+// library with tokens but no namespace gets the plain title; a tokenless
+// library stays "component library"; a product repo we cannot read gets the
+// quiet unrecognised chip, because not knowing IS a finding here.
+const ns = h.tokens.namespaces ?? null;
+const dsChip =
+  ds.kind === 'shadcn' ? 'shadcn/ui'
+  : ds.kind === 'library' ? ds.name
+  : ns ? `custom design system (--${ns.primary}-*${ns.partner ? ` + --${ns.partner}-*` : ''})`
+  // A tokenFile alone is a technicality (Lion's is one drawer style file);
+  // the plain title needs a token LAYER: ten defined colour tokens.
+  : isLibrary && h.tokens.tokenFile && (h.tokens.colors ?? []).filter((c) => c.isToken).length >= 10 ? 'custom design system'
+  : isLibrary ? 'component library'
+  : ds.name === 'CSS tokens' ? 'CSS tokens'
+  : null;
 const stack = [
   h.profile.framework !== 'unknown' ? h.profile.framework : null,
   h.profile.typescript ? 'TypeScript' : null,
   ...(h.profile.stylingDeps ?? []),
-  ds.kind === 'shadcn' ? 'shadcn/ui' : ds.kind === 'library' ? ds.name : null,
+  dsChip,
   h.profile.monorepo ? 'monorepo' : null,
 ].filter(Boolean);
+const dsUnrecognised = !dsChip && !noSystemLikely;
+const legacyChip = ns?.others?.length ? `also present: ${ns.others.map((l) => `--${l}-*`).join(', ')}` : null;
 
 // User exclusions are printed in the header, never hidden: a scoped scan must
 // say it is scoped, or the score could be quietly gamed. Grouped by source
@@ -1364,6 +1419,9 @@ const html = `<!doctype html>
     border-radius:99px; padding:2px 10px; }
   .vchip.bad { color:var(--coral); border-color:var(--coral-soft); background:var(--coral-soft); }
   .vchip.dim { color:var(--dim2); }
+  .chip-dim { opacity:.6; font-style:italic; }
+  .st-na .num { color:var(--dim2); }
+  .ic-na { stroke:var(--dim2); }
   .amap { width:100%; height:auto; display:block; margin:10px 0 4px; }
   .atile { fill:var(--ok-soft); stroke:var(--bg, #0f172a); stroke-width:2; }
   .orow { display:flex; align-items:baseline; gap:12px; margin-top:8px; }
@@ -1511,7 +1569,7 @@ const html = `<!doctype html>
     </div>
     ${healthScore !== null ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note below</div>' : ''}</div>` : ''}
   </div>
-  <div class="chips">${stack.map((s) => `<span class="chip">${esc(s)}</span>`).join('')}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>
+  <div class="chips">${stack.map((s) => `<span class="chip">${esc(s)}</span>`).join('')}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>
   ${exclusionsLine()}
   ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output).</span></div>` : ''}
   <div class="glass verdict-card">
@@ -1645,6 +1703,8 @@ if (summaryPath) {
     score: healthScore,
     noSystemLikely,
     verdict,
+    role: h.profile?.role ?? 'product',
+    componentsMeasured,
     tiles: bigStats.map((s) => ({ label: s.label, value: s.num, health: s.health })),
     ...(startMoves.length ? { moves: startMoves } : {}),
     packages: (h.packages ?? []).filter((p) => p.scored && p.metrics)

@@ -51,6 +51,11 @@ const repoName = h.profile?.name ?? 'this repo';
   const tokenCount = (t.colors ?? []).filter((c) => c.isToken).length;
   if (t.tokenFile || (t.colors ?? []).length) {
     section('Colours and tokens');
+    if (t.namespaces?.primary) {
+      const nsLabel = t.namespaces.partner ? `\`--${t.namespaces.primary}-*\` and \`--${t.namespaces.partner}-*\` namespaces` : `\`--${t.namespaces.primary}-*\` namespace`;
+      rule(`This system's tokens answer to the ${nsLabel}. Reach for an existing \`var(--...)\` from them before inventing any value.`);
+      if (t.namespaces.others?.length) rule(`${t.namespaces.others.map((l) => `\`--${l}-*\``).join(', ')} ${t.namespaces.others.length === 1 ? 'is also' : 'are also'} present in the code. Before writing new references to ${t.namespaces.others.length === 1 ? 'it' : 'them'}, check whether this repo treats ${t.namespaces.others.length === 1 ? 'it' : 'them'} as current or as a migration source; when unsure, prefer \`--${t.namespaces.primary}-*\`.`);
+    }
     if (t.tokenFile) {
       rule(`Design tokens live in \`${t.tokenFile}\`. Reach for an existing token before inventing any value.`);
       if (tokenCount && strays.length) rule(`Never hardcode colour values in components. The palette already has ${tokenCount} tokens; the scan still found ${strays.length} hardcoded colours sitting next to them. Do not add more.`);

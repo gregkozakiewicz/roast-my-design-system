@@ -32,7 +32,12 @@ class Tally {
 
 // ---------- colour parsing ----------
 const HEX_RE = /#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g;
-const FUNC_COLOR_RE = /\b(?:rgba?|hsla?|oklch|oklab|lab|lch|color)\(\s*[^)]{1,80}\)/g;
+const FUNC_COLOR_RE = /\b(?:rgba?|hsla?|oklch|oklab|lab|lch)\(\s*[^)]{1,80}\)|\bcolor\(\s*(?:from|srgb|srgb-linear|display-p3|a98-rgb|prophoto-rgb|rec2020|xyz(?:-d(?:50|65))?)\b[^)]{0,80}\)/g;
+
+/** Fully transparent values are the CSS word for "nothing here" — counting
+ * rgba(0,0,0,0) as a palette colour 581 times (Siemens iX) inflates every
+ * colour metric with non-decisions. */
+export const isTransparent = (v) => /^(?:rgba|hsla)\(\s*[\d.,%\s]+,\s*0(?:\.0+)?\s*\)$/.test(v) || /\/\s*0(?:\.0+)?\s*\)$/.test(v);
 
 /** normalize: lowercase; expand #abc → #aabbcc so duplicates merge. */
 export function normalizeHex(hex) {
@@ -197,17 +202,28 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // hinges on this split.
   const tokenDefined = new Set();
   const tokenDefsPerFile = new Map();
+  const nsDefs = new Map();  // --telekom-x: value  → 'telekom' (definitions)
+  const nsRefs = new Map();  // var(--telekom-x)    → 'telekom' (references)
 
   const scanCssText = (text, file) => {
     const imp = (text.match(/!\s*important/gi) ?? []).length;
     if (imp) importantFiles.set(file, (importantFiles.get(file) ?? 0) + imp);
-    for (const m of text.matchAll(/--[\w-]+\s*:\s*([^;{}]+)[;}]/g)) {
+    for (const m of text.matchAll(/--([\w-]+)\s*:\s*([^;{}]+)[;}]/g)) {
       tokenDefsPerFile.set(file, (tokenDefsPerFile.get(file) ?? 0) + 1);
-      for (const c of m[1].matchAll(HEX_RE)) tokenDefined.add(normalizeHex(c[0]));
-      for (const c of m[1].matchAll(FUNC_COLOR_RE)) tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase());
+      const stem = m[1].split('-')[0].toLowerCase();
+      if (stem) nsDefs.set(stem, (nsDefs.get(stem) ?? 0) + 1);
+      for (const c of m[2].matchAll(HEX_RE)) tokenDefined.add(normalizeHex(c[0]));
+      for (const c of m[2].matchAll(FUNC_COLOR_RE)) tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase());
+    }
+    // References count too: a system whose tokens are defined in a package
+    // dependency still answers to its namespace in every var(--telekom-...)
+    // (telekom/scale defines few tokens in-repo but references hundreds).
+    for (const m of text.matchAll(/var\(\s*--([\w-]+)/g)) {
+      const stem = m[1].split('-')[0].toLowerCase();
+      if (stem) nsRefs.set(stem, (nsRefs.get(stem) ?? 0) + 1);
     }
     for (const m of text.matchAll(HEX_RE)) colors.add(normalizeHex(m[0]), file);
-    for (const m of text.matchAll(FUNC_COLOR_RE)) colors.add(m[0].replace(/\s+/g, ' ').toLowerCase(), file);
+    for (const m of text.matchAll(FUNC_COLOR_RE)) { const v = m[0].replace(/\s+/g, ' ').toLowerCase(); if (!isTransparent(v)) colors.add(v, file); }
     for (const m of text.matchAll(SPACING_PROPS)) {
       for (const len of (m[2].match(LENGTH_RE) ?? [])) spacing.add(len, file);
     }
@@ -215,8 +231,12 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     for (const m of text.matchAll(FONTSIZE_PROPS)) fontSizes.add(m[1].trim(), file);
     for (const m of text.matchAll(FONTFAMILY_PROPS)) {
       const v = m[1].trim().replace(/\s+/g, ' ');
-      // var(--x) and inherit are disciplined token usage, not declarations
+      // var(--x) and inherit are disciplined token usage, not declarations —
+      // and so are Sass token references ($label-text-font, map.get($tokens,
+      // ...)), Material Web's whole idiom: 59 fake "typefaces" once counted
+      // where one Roboto lived behind tokens (caught 2026-09-02).
       if (/^(var\(--[\w-]+\)|inherit)$/i.test(v)) continue;
+      if (v.startsWith('$') || /\bmap[.-]get\b/.test(v)) continue;
       fontFamilies.add(v, file);
     }
     for (const m of text.matchAll(SHADOW_PROPS)) shadows.add(m[1].trim().replace(/\s+/g, ' '), file);
@@ -247,6 +267,24 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     if (!/\.(tsx|jsx|ts|js)$/.test(f)) continue;
     if (EXEMPT_RE.test(f)) continue;
     let src; try { src = readFileSync(join(root, f), 'utf8'); } catch { continue; }
+
+    // CSS-in-tagged-templates (Lit css``, styled-components css``) IS the
+    // stylesheet in those worlds: Shoelace keeps its entire component styling
+    // in .styles.ts files, and skipping them scored a mostly-unread repo 94
+    // (caught by Greg, 2026-09-02). Each block runs through the same CSS
+    // scanner as a stylesheet; interpolations are blanked first (dynamic
+    // values are not static styling); the block text is then removed from
+    // the raw-hex pass below so nothing is counted twice.
+    {
+      let cssBlocks = 0;
+      for (const m of src.matchAll(/(?:^|[\s=(,:])css\s*`([^`]*)`/gs)) {
+        const text = m[1].replace(/\$\{[^}]*\}/g, ' ');
+        if (text.length < 20) continue;
+        scanCssText(text, f);
+        cssBlocks++;
+      }
+      if (cssBlocks) src = src.replace(/(?:^|[\s=(,:])css\s*`([^`]*)`/gs, ' ');
+    }
 
     // A Tailwind config's colours ARE the token layer (the tailwind-native
     // equivalent of --var definitions). Its fontFamily block is the typeface
@@ -350,8 +388,53 @@ export function harvestTokens(root, styleFiles, codeFiles) {
 
   const tokenFile = [...tokenDefsPerFile.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 
+  // Token namespace: the brand stem the repo's custom properties answer to
+  // (--telekom-*), named only when earned — enough definitions, a dominant
+  // share, not a generic category word. A second qualifying stem is the
+  // fossil of a migration, named as legacy. Below the bar: no claim.
+  const NS_GENERIC = new Set(['color', 'colors', 'colour', 'font', 'fonts', 'text', 'spacing', 'space',
+    'size', 'sizes', 'bg', 'background', 'border', 'shadow', 'shadows', 'radius', 'radii', 'grey', 'gray',
+    'theme', 'base', 'global', 'primary', 'secondary', 'brand', 'var', 'css', 'root', 'light', 'dark',
+    'transition', 'duration', 'animation', 'ease', 'focus', 'hover', 'active', 'disabled', 'gap', 'grid', 'index',
+    'container', 'content', 'item', 'label', 'icon', 'surface', 'outline', 'track', 'thumb', 'state', 'input',
+    'width', 'height', 'margin', 'padding', 'opacity', 'line', 'letter']);
+  let namespaces = null;
+  {
+    // The contest is namespace vs namespace, never namespace vs category
+    // words: --telekom-* competes with --scl-*, not with --color-*. Primary
+    // must carry a real share of all custom-property traffic AND clearly beat
+    // its nearest rival; every other qualifying rival is a legacy namespace,
+    // the fossil of a migration, named as such.
+    const nsAll = new Map();
+    for (const [st, c] of nsDefs) nsAll.set(st, c);
+    for (const [st, c] of nsRefs) nsAll.set(st, (nsAll.get(st) ?? 0) + c);
+    const total = [...nsAll.values()].reduce((a, b) => a + b, 0);
+    const candidates = [...nsAll.entries()]
+      .filter(([st, c]) => st.length >= 2 && !NS_GENERIC.has(st) && c >= 10 && c / total >= 0.05)
+      .sort((a, b) => b[1] - a[1]);
+    const [top, second] = candidates;
+    if (top && top[1] / total >= 0.25) {
+      // The machine names namespaces; it never judges them. "Legacy" failed
+      // the admission test across seven real systems (2026-09-02): scale's
+      // dead --scl-* and Baloise's live --mod-* tier share the exact same
+      // defs/refs shape, so no ratio can tell abandonment from architecture.
+      // Facts only: a co-equal partner joins the title; every other
+      // qualifying namespace is reported as present, verdict-free. The roast
+      // notes, which can read deprecation notices and docs, make the legacy
+      // call per repo — judgment stays where context lives.
+      if (!second || top[1] >= second[1] * 2) {
+        const others = candidates.slice(1).map(([st]) => st);
+        namespaces = { primary: top[0], count: top[1], totalRefs: total, ...(others.length ? { others } : {}) };
+      } else if (second[1] / total >= 0.15) {
+        const others = candidates.slice(2).map(([st]) => st);
+        namespaces = { primary: top[0], partner: second[0], count: top[1], totalRefs: total, ...(others.length ? { others } : {}) };
+      }
+    }
+  }
+
   return {
     tokenFile,
+    namespaces,
     colors: colorList,
     offenders: offenderList,
     greyCount: colorList.filter((c) => c.value.startsWith('#') && isGrey(c.value)).length,

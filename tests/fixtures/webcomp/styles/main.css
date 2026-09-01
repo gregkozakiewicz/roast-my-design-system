@@ -1,0 +1,64 @@
+.acme-button { color: #0055aa; padding: 12px; }
+.acme-card { background: #f4f4f5; margin: 13px; }
+.acme-panel { border-color: #22aa77; padding: 17px; }
+
+:root {
+  --acme-token-0: 0px;
+  --acme-token-1: 1px;
+  --acme-token-2: 2px;
+  --acme-token-3: 3px;
+  --acme-token-4: 4px;
+  --acme-token-5: 5px;
+  --acme-token-6: 6px;
+  --acme-token-7: 7px;
+  --acme-token-8: 8px;
+  --acme-token-9: 9px;
+  --acme-token-10: 10px;
+  --acme-token-11: 11px;
+  --acme-token-12: 12px;
+  --acme-token-13: 13px;
+  --acme-token-14: 14px;
+  --acme-token-15: 15px;
+  --acme-token-16: 16px;
+  --acme-token-17: 17px;
+  --acme-token-18: 18px;
+  --acme-token-19: 19px;
+  --acme-token-20: 20px;
+  --acme-token-21: 21px;
+  --acme-token-22: 22px;
+  --acme-token-23: 23px;
+  --old-token-0: #334450;
+  --old-token-1: #334451;
+  --old-token-2: #334452;
+  --old-token-3: #334453;
+  --old-token-4: #334454;
+  --old-token-5: #334455;
+  --old-token-6: #334456;
+  --old-token-7: #334457;
+  --old-token-8: #334458;
+  --old-token-9: #334459;
+}
+.acme-card { padding: var(--acme-token-1); color: var(--old-token-2); }
+
+:root {
+  --acme-token-24: 24px;
+  --acme-token-25: 25px;
+  --acme-token-26: 26px;
+  --acme-token-27: 27px;
+  --acme-token-28: 28px;
+  --acme-token-29: 29px;
+  --acme-token-30: 30px;
+  --acme-token-31: 31px;
+  --acme-token-32: 32px;
+  --acme-token-33: 33px;
+  --acme-token-34: 34px;
+  --acme-token-35: 35px;
+  --acme-token-36: 36px;
+  --acme-token-37: 37px;
+  --acme-token-38: 38px;
+  --acme-token-39: 39px;
+  --acme-token-40: 40px;
+  --acme-token-41: 41px;
+  --acme-token-42: 42px;
+  --acme-token-43: 43px;
+}

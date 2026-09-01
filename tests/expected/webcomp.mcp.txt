@@ -1,0 +1,38 @@
+=== get_context ===
+Design system context for acme-components (scanned DATE). Rules derived from this repo's real code.
+TOKENS: 10 colour tokens in styles/main.css. Use them; never hardcode a colour. (3 hardcoded strays already exist; do not add more.)
+USE THESE, DO NOT REBUILD THEM:
+  <Button> from design-system/button.tsx (3x)
+  <Card> from design-system/card.tsx (2x)
+  <ChipEl> from design-system/chip.ts (1x)
+  <Icon> from design-system/icon.ts (1x)
+  <Panel> from design-system/panel.tsx (1x)
+SPACING: this repo has no scale, just 3 values in circulation. Reuse one rather than inventing value number 4; do not treat them as a system.
+DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
+NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.
+Before finishing: call roast_validate on what you wrote, then roast_review.
+CREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz.
+=== find_component button ===
+Canonical: <Button> from design-system/button.tsx (used 3x)
+=== find_component date picker ===
+No component matching "date picker" is defined in this repo.
+=== find_token #3b81f5 ===
+#3b81f5 is not close to any token in this repo (nearest is #334459, 156 channel steps away). If this colour is a real decision, add it to styles/main.css first; do not hardcode it.
+=== find_token 13px ===
+13px is already in use 1x in this repo. Consistent, so use it, but know it lives off any scale.
+=== validate bad snippet ===
+6 findings:
+✕ L2 Hardcoded colour #3b81f5 is new to this repo.
+   Fix: Nearest token: #334459 (156 channel steps away). If that is not the intent, add a token first.
+✕ L2 New one-off spacing value 27px. The repo already carries 3 distinct spacing values.
+✕ L2 Arbitrary bracket [11px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Arbitrary bracket [13px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
+   Fix: Move the values to classes or tokens.
+✕ L1 Defines <Button>, but design-system/button.tsx already defines it (used 3x).
+   Fix: Import design-system/button.tsx instead of creating a copy.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.
+=== validate clean snippet ===
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.

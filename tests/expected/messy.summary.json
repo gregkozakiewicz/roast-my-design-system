@@ -3,6 +3,8 @@
   "score": 70,
   "noSystemLikely": false,
   "verdict": "1 component implemented more than once, so an agent asked for a Button has several random options.",
+  "role": "product",
+  "componentsMeasured": true,
   "tiles": [
     {
       "label": "distinct colours",

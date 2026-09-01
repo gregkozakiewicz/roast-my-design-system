@@ -62,6 +62,38 @@ const staleRules = ruleStaleness(target, components,
   new Set(neverImportedComponents(components, profile.uiDir).map((c) => c.name)),
   [...files.code, ...files.styles, ...files.other]);
 
+// Repo role and measurability, decided from what the scan actually found.
+// A published components package with no app pages is a LIBRARY: its real
+// consumers live in other repos, so usage counts mean composition, not
+// adoption, and the report's language follows. And when a component stack
+// the detector cannot read is present while it found almost nothing, the
+// component metrics are declared NOT MEASURED instead of scoring zeros as
+// discipline (the telekom/scale lesson, 2026-09-01).
+{
+  const reusableCount = components.filter((c) => !c.isPage).length;
+  // A web-components repo with many tag-registered components and no pages
+  // is a library by construction, whatever its packages are named (Ionic's
+  // @ionic/core and Material Web both dodge the name rule).
+  // A handful of pages next to hundreds of components is a demo or test app
+  // riding in the library's monorepo (Siemens iX ships two), not a product.
+  const pageCount = components.length - reusableCount;
+  const fewPages = pageCount <= reusableCount * 0.05;
+  profile.role = (profile.libraryPkg && fewPages && reusableCount >= 5)
+    || (String(profile.framework).startsWith('web components') && fewPages && reusableCount >= 10)
+    ? 'library' : 'product';
+  // The gate fires on the situation, never a list of known frameworks: a
+  // repo with real code volume where the detector found almost nothing is a
+  // repo we could not read, whatever it is written in (the Shoelace lesson:
+  // its .define() idiom was invisible and the named-framework gate stayed
+  // silent, which would have shipped blind zeros as discipline again).
+  // Either trigger suffices: a named unreadable stack (Vue/Angular/Svelte
+  // markers, however small the repo), or sheer volume the detector saw
+  // nothing in (the Shoelace near-miss: unknown idiom, no marker).
+  profile.componentDetection = reusableCount < 3 && (profile.unreadableComponentStack || files.code.length >= 40)
+    ? { measured: false, reason: profile.unreadableComponentStack ?? 'a component pattern this scan cannot read' }
+    : { measured: true };
+}
+
 // Orphans carry a receipt: the last time git saw anyone touch the file.
 // Only never-imported components are dated (the adoption map's evidence);
 // outside a git repo the field is simply absent and no claim is made.

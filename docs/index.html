@@ -68,6 +68,7 @@
 <p class="lead">A free CLI tool <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a>, and a Claude Code + Codex skill. A deterministic scanner reads your repo and returns:</p>
 <ul class="lead-list">
 <li><b>A health score you can defend in a meeting.</b> 0-100, benchmarked against Ideal Design System norms, 34 public repos and 10 reputable design systems. Monorepos are scored package by package, so the disciplined UI library and the messy app stop hiding behind one blended number.</li>
+<li><b>Reads React and web components alike.</b> Stencil, Lit and plain custom elements are detected by their tag registrations and counted by their kebab tags; component libraries get composition maps and library language instead of adoption accusations; a token namespace like --telekom-* is named in the header when it is earned. And what the scan cannot read, it says so, plainly, instead of scoring zeros as discipline.</li>
 <li><b>The receipts behind it.</b> Every colour and its near-identical twin, every spacing value, duplicated or never-imported component, inline style and !important, with real file paths. The values are rendered, not just counted: your type scale at real sizes, your radii as real corners. Findings an agent would copy and multiply are marked as agent traps.</li>
 <li><b>The adoption map.</b> Your real system drawn to scale: a treemap where every adopted component's tile area is its import count, and the never-imported grouped by the year git last saw them touched. The cupboard audit, with dates on the boxes.</li>
 <li><b>The first fixes ranked by payoff, each with its prompt.</b> A Where to start list derived from your own numbers, with what each move is worth and where the score lands if you do them all: three tweaks, 55 becomes 85. Every move carries a copy button with a ready-made fix prompt for your agent, viewable right in the report before you trust it.</li>
@@ -118,6 +119,8 @@
 <a class="card" href="examples/vercel-ai-chatbot.html"><div>vercel/ai-chatbot<em class="notes-chip">with Claude's notes</em><span>103 arbitrary values like [13px] punched through the Tailwind scale</span></div><div class="score">75<i>/100</i></div></a>
 <a class="card" href="examples/excalidraw-excalidraw.html"><div>excalidraw/excalidraw<span>42 colour pairs nearly identical, copy-paste, not decisions</span></div><div class="score">55<i>/100</i></div></a>
 <a class="card" href="examples/dubinc-dub.html"><div>dubinc/dub<span>636 arbitrary bracket values and 22 duplicated components</span></div><div class="score">25<i>/100</i></div></a>
+<a class="card" href="examples/telekom-scale.html"><div>telekom/scale<em class="notes-chip">with Claude's notes</em><span>95 Stencil components read by tag; one typeface declared 14 different ways</span></div><div class="score">49<i>/100</i></div></a>
+<a class="card" href="examples/adobe-spectrum.html"><div>adobe/spectrum-web-components<em class="notes-chip" style="border-color:rgba(148,163,184,.35);color:var(--dim)">Lit</em><span>56 hardcoded colours sitting beside 44,000 token references</span></div><div class="score">66<i>/100</i></div></a>
 
 <p class="lead" style="margin-top:30px"><b>Your AI can write the UI. This makes sure it writes your UI.</b></p>
 

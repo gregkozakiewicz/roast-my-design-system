@@ -145,13 +145,41 @@ export function profileRepo(root, files) {
   // Hand-built sites are a real category, not a detection failure: "unknown"
   // next to a good score reads like a shrug, so name what is actually there.
   const htmlFiles = files.other.filter((f) => /\.html?$/.test(f)).length;
+  // Web-component builders come FIRST: a Stencil monorepo ships generated
+  // React/Vue/Angular wrappers whose deps would otherwise win, and calling
+  // Telekom's Stencil system "react" is how a report loses its reader in one
+  // glance (learned on telekom/scale, 2026-09-01).
   const framework =
-    deps.next ? 'next'
+    deps['@stencil/core'] ? 'web components (Stencil)'
+    : deps.lit || deps['lit-element'] ? 'web components (Lit)'
+    : deps.next ? 'next'
     : deps['@remix-run/react'] || deps['@react-router/dev'] ? 'remix'
     : deps.vite && deps.react ? 'vite-react'
     : deps.react ? 'react'
+    : deps.vue ? 'vue'
+    : deps['@angular/core'] ? 'angular'
+    : deps.svelte ? 'svelte'
     : htmlFiles > 0 ? 'static HTML/CSS'
     : 'unknown';
+
+  // A published components package marks a LIBRARY: a repo whose consumers
+  // live in other repos entirely. The distinction changes what usage counts
+  // mean (composition, not adoption) and how orphans may be judged.
+  // Two honest signals: the ROOT package being publishable (private !== true
+  // with a main/module/exports) marks the whole repo as the product being
+  // shipped, whatever it is named (Shoelace); a publishable SUB-package needs
+  // a components-ish name, or every monorepo publishing anything would flip.
+  let libraryPkg = null;
+  if (pkg.private !== true && (pkg.main || pkg.module || pkg.exports)) libraryPkg = pkg.name ?? 'root package';
+  if (!libraryPkg) {
+    for (const f of pkgFiles) {
+      if (f === 'package.json') continue;
+      const p = readJSON(join(root, f));
+      if (!p || p.private === true) continue;
+      if (!(p.main || p.module || p.exports)) continue;
+      if (/components|design.?system|design.?tokens|ui-kit|\bui\b/i.test(p.name ?? '')) { libraryPkg = p.name; break; }
+    }
+  }
 
   const componentsJson = readJSON(join(root, 'components.json'));
   const uiDir = ['src/components/ui', 'components/ui', 'app/components/ui'].find((d) => existsSync(join(root, d)));
@@ -208,5 +236,13 @@ export function profileRepo(root, files) {
     stylingDeps: styling,
     importAlias: componentsJson?.aliases?.components?.split('/')[0] || alias || null,
     uiDir: uiDir || null,
+    libraryPkg,
+    // markers the component detector cannot read (yet): used by the harvest
+    // to declare component metrics "not measured" instead of scoring zeros
+    unreadableComponentStack:
+      deps.vue || files.other.some((f) => f.endsWith('.vue')) ? 'Vue single-file components'
+      : deps['@angular/core'] ? 'Angular components'
+      : deps.svelte || files.other.some((f) => f.endsWith('.svelte')) ? 'Svelte components'
+      : null,
   };
 }

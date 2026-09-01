@@ -122,6 +122,31 @@ export function definedComponents(src) {
 
 const looksLikeJSXFile = (src) => /<[A-Za-z][\w.]*[\s/>]/.test(src);
 
+// ---------- web components: the tag-registered world ----------
+// Stencil, Lit and raw customElements.define register components by TAG, and
+// pages consume them as <kebab-tags> — invisible to the JSX pass, which is
+// how 93 Telekom components once scanned as one (telekom/scale, 2026-09-01).
+// Generated framework wrappers (Stencil's react/vue/angular output targets)
+// are skipped for definitions AND usage, or every component would gain
+// phantom adoption from its own machine-made bindings.
+const GENERATED_RE = /(@stencil\/(?:react|vue|angular)-output-target|output-target|auto-?generated|generated file|do not edit)/i;
+const TAG_RE = String.raw`([a-z][\w]*(?:-[\w]+)+)`;
+export function webComponentDefs(src) {
+  const defs = [];
+  const classAfter = (idx) => src.slice(idx).match(/(?:export\s+)?class\s+([A-Za-z]\w*)/)?.[1];
+  for (const m of src.matchAll(new RegExp(String.raw`@Component\(\s*\{[^{}]*?tag\s*:\s*['"]${TAG_RE}['"]`, 'g')))
+    defs.push({ name: classAfter(m.index) ?? m[1], tag: m[1] });
+  for (const m of src.matchAll(new RegExp(String.raw`@customElement\(\s*['"]${TAG_RE}['"]\s*\)\s*(?:export\s+)?class\s+([A-Za-z]\w*)`, 'g')))
+    defs.push({ name: m[2], tag: m[1] });
+  for (const m of src.matchAll(new RegExp(String.raw`customElements\.define\(\s*['"]${TAG_RE}['"]\s*,\s*([A-Za-z]\w*)`, 'g')))
+    defs.push({ name: m[2], tag: m[1] });
+  // Shoelace-style static registration: SlButton.define('sl-button')
+  for (const m of src.matchAll(new RegExp(String.raw`\b([A-Z]\w*)\.define\(\s*['"]${TAG_RE}['"]`, 'g')))
+    defs.push({ name: m[1], tag: m[2] });
+  const seen = new Set();
+  return defs.filter((d) => !seen.has(d.tag) && seen.add(d.tag));
+}
+
 /** Count real `<Name` tag usages of `name` in `src` (tag boundary checked). */
 function countUsages(src, name) {
   let count = 0, from = 0, open;
@@ -185,6 +210,34 @@ export function harvestComponents(root, codeFiles) {
       }
     }
   }
+
+  // Web-component pass: definitions by tag registration (any code file, JSX
+  // or not — Lit lives in plain .ts), usage counted as the kebab tag across
+  // every non-generated source.
+  const wcSources = new Map();
+  for (const f of codeFiles.filter((x) => /\.(tsx|jsx|ts|js|mjs)$/.test(x))) {
+    let src = sources.get(f);
+    if (src === undefined) { try { src = readFileSync(join(root, f), 'utf8'); } catch { continue; } }
+    if (GENERATED_RE.test(src.slice(0, 2000))) continue;
+    wcSources.set(f, src);
+  }
+  const wcComponents = [];
+  for (const [file, src] of wcSources) {
+    for (const def of webComponentDefs(src)) {
+      wcComponents.push({ name: def.name, tag: def.tag, file, isPage: false,
+        variants: extractVariants(src), propsHint: null, usageCount: 0, usedIn: [] });
+    }
+  }
+  for (const [file, src] of wcSources) {
+    for (const def of wcComponents) {
+      if (def.file === file) continue;
+      const u = countUsages(src, def.tag);
+      if (!u) continue;
+      def.usageCount += u;
+      if (def.usedIn.length < 8) def.usedIn.push(file);
+    }
+  }
+  components.push(...wcComponents);
 
   components.sort((a, b) => b.usageCount - a.usageCount || a.name.localeCompare(b.name));
 

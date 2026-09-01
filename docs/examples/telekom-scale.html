@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" data-theme="dark"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Design-system diagnosis:​‌‌​​‌‌‌​‌‌‌​​‌​​‌‌​​‌​‌​‌‌​​‌‌‌​‌‌​‌​‌‌​‌‌​‌‌‌‌​‌‌‌‌​‌​​‌‌​​​​‌​‌‌​‌​‌‌​‌‌​‌​​‌​‌‌​​‌​‌​‌‌‌​‌‌‌​‌‌​‌​​‌​‌‌​​​‌‌​‌‌‌‌​‌​ dubinc/dub</title>
+<title>Design-system diagnosis:​‌‌​​‌‌‌​‌‌‌​​‌​​‌‌​​‌​‌​‌‌​​‌‌‌​‌‌​‌​‌‌​‌‌​‌‌‌‌​‌‌‌‌​‌​​‌‌​​​​‌​‌‌​‌​‌‌​‌‌​‌​​‌​‌‌​​‌​‌​‌‌‌​‌‌‌​‌‌​‌​​‌​‌‌​​​‌‌​‌‌‌‌​‌​ telekom/scale</title>
 <meta name="author" content="Greg Kozakiewicz · gregkozakiewicz.com">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==">
 <link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAACXBIWXMAAAAAAAAAAQCEeRdzAAAQAElEQVR4nO1de0xVV/Y+tJ2mVSeAEBQlokMUNFZsUDSOjqmisaNNRqcRrbE+Ym0NLWJ8jKGCkRlMO9ZowbSOjVaMUyW+CLYayoypWkypNlRrfGAc0OioKT5SO5oWrvf3zfnmrN/23HuP1lYvj/X9cXO4HDaHuz/W+tbaa69tWQqFQqFQKBQKhUKhUCgUCoVCoVAoFAqFQqFQKBQKhUKhUCgUCoUi7Hjsscd48atf/eqpp57Cl08++eTTTz8d3qdStBg8/vjjXbp06dWrl3wJGuE1vE+laBkgUUaPHr1t27YBAwaY3xLLpFCEBAjUvn37xYsX+/3+HTt2dO3a1fxWGB9M0QJAG5OWllZRUXH79u3Gxsa8vLyOHTviTXixiIiIcD+gorniMRu8fuONN3w+339s/Pjjj7m5ubQ9TzzxRFifUdGMAfaQH3Fxce+99x78161bt77//ntcnDp1asqUKZYdlKkRUoQEYnXwY8KECV988QUsEPzXDz/8cO3aNXDo2LFjv//973EPblAprQiOdu3a4bWwsBCMaWpqunPnDjgEAsGL4Z3y8vLk5GTeqXZIEQSwQNHR0bt27QJdSBrQCDLoxo0bMEV4LSkpiY2NtTQcU7ggFuXVV1+tr68ngWCBfDZwQT7hdcGCBSBZ4A8q2i5AAgmvSktLQRR4LtgeXwDwLcjq8ePHQ03zR5RAiv/GX+RBSkrK119/DZbAYQWyh6oI3z1z5kxGRgbu79ChQ7ifXdEMIFFVbm7u1atX6aoCCQT2gEPXr1/HDfv37x84cKClmSGF5ZCgffv21dXVFM5B/RcJBClNPbRly5bOnTtzBKhvOLWw/hGKcIBJHbqwIUOGMOUD/9VkIKgMun37Nm4uKiriKgfi/6eeeircf43ikUPkc1RUVH5+PvPOVNBBCUQNBCN0+fJlXDQ0NOTk5MD8mAOG769RPEJE2GClGL7s27fv0aNH/TY8CMS0EF7pxWCrPvzwQ/g+y15q1Qx1GwJNxeOPPw4LhImfMWMG2XPr1i2Qw8OFgV64jb7s/PnzWVlZpKDJHrIzbH+b4hGAqWTOfVJS0vbt2yXv7GGBhEBwdrj+8ssv8bMmV3Atalo51JpBI0ECjRgxoq6ujo4JXikUgSQKg4LGBV4/+OADF0t0qbUNgc4LF9nZ2WDDjzZc7HERCK+wPVeuXKH/Gj9+vDmgUEdktRqhVgtMLb0Y5PPu3btBCHKoKQCBURhziWVlZTExMa4xeaHZxVYOOi/O96xZsy5evAhmBDqvoBqIb0IqLV682ApmY6iBXDpaTVGrAsvmLTv9s379ejE/jTa8CUSVvW/fPigny1lHM6UPuYIvWV1k2ZRSYdTawGkeOXIkV09Z++xNIBHRuP+tt97iPsNAAuEiISEhPj6eRfhqe1obZEbhxZYuXfrdd98x/dPowNsCgWdweRMmTLCcEmkBpQ+IlZOTU1hY+Jvf/MayVznMVLWixUMI1Llz58rKSiaUxfx4EAjXTDb+/e9/T0pKspxyDjEzXA6Ljo7GsLgf7ISvxLfgKLWCsfVActDwX+fOnaP/ajQQSCB5kwSaN28e9Y25Ai80Sk1NvXDhAm7D6xtvvGGFSEyra2uRkOgdDFi9ejVXTwPXv0zgnps3b5I98HT19fWDBg3iCKZdoQbq2LHjwoULYc+gyqGZampqxo0bZ+pr2iTLIZBZDKloARACdevWraqqirnBUNQhQBqwAW6OVNu8eTMEsuVs4RCQBz169Pj8889xP36KnDt48CBLz/B7zaYflpF41BitBYB+hOzB/EEF0/xwx4UHjWicQAg6u8zMTMvJJJnjkwQvvPACkwL8KXKuoqICxLJsDokFshzNZGnisUXAXPzq1KlTSUkJCYEojPF5KFBlgxO4QMzfvXt3y47gTLPB65iYmFWrVpE0PzrglytWrOCvZv4p8NkezYegeHBwjjmLaWlply5dAnsaGhromzw0ENfeucmwuLiYkZfZbAoj07ANGzbs8OHDIqpEYOFXXL16ddq0abyfdojPoxqoxUBsBhzHnDlzMK/c7SVrqKGiMLokvP7rX//KyMjgfJuzLlJ67ty5IpW4LZpqGkzF69mzZydNmmQ5JHbpHjVCzR2YNhqPZ599ds+ePRQ990Mg7tCglIGTMpt4WDYdSSC4to0bN5JtFNEYii6SNgx8ggeESOIPyl4iRYsBJ2zq1KlwKCSNizpBCQQSUGvn5uZaRhwnIJ8mT5584sQJWDWpeQVpOD449IMNjLN79+6UlBQYMK0cannAhHXs2PGvf/0rdUkgdYISiItf1dXVQ4cODTos9RDlM9hDcwUm0RThF5FJjOOA0tLSuLg4SytfWwrMxB1ETFVVFaOk+yQQLdDatWvbtWsXWH9IFQyjwlURYQk5xPCNYgsXN2/eZOEsSMz9QE/YUBo1a5grnQsXLoQ9oJe5H7AC+uLFi7NmzZLRZGR2b8VFTk7O+fPnzWhOqs/IJNFblERAdnZ2ZGQkRoMBU1/WfCFL5bAfCQkJmzdvDtw66AEmcvbu3QvpbRnL75xyfBkVFQUGbNiwgZ4LBDLLPwizEo0MwwN88803bAGr66zNFEIdmaEXX3wRoTgDpaB1hqEI9Oabb3IEcEUcopgNcKu2tjawJYMHgfBaU1PDeo+gqUVF+CGmQnI2q1evpluh1A1FIJcYOn369PDhwy27fJFBO4flehZeQS/qJCa1PQjE5BClEn5KqdPcIQtPmObU1NQjR45IVtAXAk3OAhbVD/D222+ziYJZvAFS8svY2Fi2ZKBMNrnoczZymASSnKSrhbmiOULiZMx3VlYWd1NwhaEpWP8N03KQSZjy0aNHWwGtgGQldcSIEWzJQPXj8oDmsLK8CkO1adMmRmGEiujmCxII079lyxZOIdyNaRgC2cNwCRegGveeWk7GmVvJoIRkUfb999+nUQlMAbhGZlqIMd20adNkLUwQ3g9KERKYm/T09H//+98UH6yfD0UggtoZN+fm5lKpmHIK79B/DRkyhNE7TZo3gTAa80DwpCkpKXw2rqoqgZo1uHrKWeSqAuYyFHUwwZhmZp9xc1paWuCA0k4qMzPT7zQEpunyIBBvwK9et24dx3nMgcke11qbIpzgNMMH7dq1iwKF29rNdF8gpILsk08+oXx2zSiThz179vzoo4+YJ5RUoQeBKIBOnDgxYcIE2TsmEi0wIjMX/CNC4CF/fm0bsBOc6VGjRsGi0AA0Ou1XPQjESBtKZdGiRZxFieYw5ZBTkZGRuB43bhzuIS0C/VcoAm3bti0uLs4lgPjAv/71r+Pj4zMyMiRpyYUO8XFKoEcKLl3JwU1kBqVuKP9FR0OlcvTo0d/97nccykUgCpclS5b4nYaKQevRXCNzHSMvL0+e0EUF0B2kPHToUHFxMfOfUOvMgiqBwgDRuQcPHnQ13/AgEHmGOxG1gXyiUQQ0Hv3795c9ZaGqGV1u0W/3dn3uueesAOrgUbmkv3z5ctx28uTJF154wVziUAKFAZyA1157jdWl98kezjRiq7lz53IcF4Ho1LKystjkJWhDDxeBWA6Lm8EPUzi7EBMTs2/fPtoz2L/BgwfzTi7XK4HCgB49eqxdu9Zn52BM9nhMNgXQP//5z2eeeQYzBLciHelFSst5Gty7c0/zwzj/22+/ZT+hqKgoyzAqUqwNcc1cQ0NDA15ra2tl/xBsIcWQ1FMrhx4u+MliSo4cOcJCHNPReAheZoDeeecdy146ZWMNc6aBsWPHsnj+nmUhPievjd+4fft2JgVYne0yafhF4DrtGTPm+Fm40W7dullO4jvC7p9nPpIS6GGBn+zKlSu5dgH1KksNQavGxDJx7w4oYhmLX5wwEgivRUVFMBIY08MC8RfR/DTZSYFXXnkFcVaEE7cLKTlscnLy6dOnxaqBSXCR4P2KFSuYSohw9iTRqWn68aEjKSkJnogEMqP3oJWHpvlZt24d5AgXLjhUhFHT2KlTJ6hyzjSzSqFsD9dWeee5c+egaayAdjCyUQT0ovekt+UZU0xpzp8/H9Sh85LYXjgUts+3tUKCF+hcObhJUjVBS1fF/PDO7Oxsy55UOeAywum9igvomLq6Oi5+eStoRnMk0NatW1n9QxLIozJTlZCQsG3bNgptmiumEkip48ePT5kyhX9XZGQka5JECYXjM269iDC67JaVlfmdY1PEp4TyX3gT0wax8tlnn1GpYBzhomwJwjtQKix8DtqR0wR3aLAyevLkyXRA5tZmUIEb7DMyMiCx+Rg+p5MVwd914MABbrCnBlIB9FDAdXJ+rH379j158qRUCTaFkD5kD1N8nKrCwkIWWpidD2SqEhMT9+/fz+ULb/Y0Ov3IceeJEyfg+CyjLywGhB6i+YFRWbp0qaQ6fU4VkYzD0oBPP/20d+/eLApQ2/OwIIdz5+bmskyHXiYUe4RDjLShW1n9Y86QlP6AnTNmzJBhvQkku+Iht9esWcNBZAOGmSCANuJGEdYrNhkrLTRjkEH8E2D8QDvzkRS/MEggSGDTToTyXC5rAVRWVgYWH4JMXOmEFYFS4Z0e6sfFodra2jFjxtADCi/5Sv81bdo0bv0JmqBqsivwWTKLaCA/P5/PpocD/fIQB/Hb3/6WPcK89yybM0QP8qc//YkT41pGIIEw7NWrV71beZhg6eOePXvw4+aqluVsb4UhASnfffddv3P4RlAaSaEIl3ghp+TvffQfcmsG/6HBoWXLlkkUcz/mh5OH2Kpfv35WQPEG/QX+77l6+pPMD6QxforjuE5j4dM+//zz33zzDYMvqQwhhyS3Kc/JNZmvvvqKJ9irEfqFwZnu2bMn08TSO9ybQJxpzNOOHTtoJFwbtThPUOXMKt1TPhOsXsWTDB8+XIRz4NOC6ySlz9jFEbTitslJoOOB4WrhFh/ZB9u2MH36dL/TEqopdOhu/lvj/tOnT7/66qscwUUgfvnKK694Zw6DEmj9+vUwXS7NK0xKSkrikj41kDeBhEO8LigosO5uU6T4WeCsYErYeb7JVjbeAoiTwZmurq7myqU5mlxERUVRqcCDeJCGv8jn1DQipnv99dctw9e4jNDEiRO50dGjxNYXsDcIgBKaOXNm4ICKBwfdBMQB5DN1rrej8Tmnn9LTvfXWW+ZoInU57HPPPcflC4/VUwnluBbB4sPevXtLupl4ygavN2zYIKLKgz3SKg/XTFaVlpYmJydbSqCfCXPXKYEwShIq3sKZW1QZKB0/fnzkyJHmOJLqpf/Ky8trsqMh79VTn1P6Y26Ihlg22yfIyZhgwLFjx/xON0UPC8RTzPjYJBA7FcE5ujrFKn4aWIsukmXgwIGffPKJ3+mG4YFGo4UqsHXr1i5dupgjy0IBJrtr165yHpR3AZD04sSUwze9+OKLlj3NPDRDRubF/PnzeXJv0DU102fRIyOu5OC1tbWI3Sw9ROHngytfmB7+I86ZM4dpYuKeHOJ/840bN9hP3jyqfiQsIQAAD1ZJREFUUvpmWrYqP3v2LEjZ0NBgzrQpSpocqybFh5BiiYmJVkDykK8xMTEVFRU+p9jDg0Bi1bidDfdDjfGcMhamKR4csu/Csl3DBx984Lc3c92TQNS5IAQ4BPmckZFhGZuXWaMjBNq4caP0qwuMj1wEwiuL10A7VzQX4VTOg+79+/evr69nirnJ1vuhCESJBki3IZY1mmu9igcHOETzM2rUqAMHDrCfnGRWvNM/sD1g25///Ofo6GhzTOm8YdlFsTU1NX57t2HjvbZz0IVh5MOHD/fp08cKSBZT/eDXLVq06OrVq01OqHhPCwSe0V4eOXKE8lnPkvoFwCI9NsooKipiMIyZBi1YROYL3fiHJKurqxs3bpxlmx+MI//TEivNmDFD9kQLHUMRiAUhuKGgoCCwG7AgJSXlyy+/5NN6VJiYwF/ENyHMuStNClsf3cfdioHJnj179j/+8Y+LFy9KWRYbXAZdNpd39u7dm5qaKuOw0k++7Ny5c3l5udSYehCoyRHR+NWQxkOGDOEIQSd40qRJ0jgxlI00eclO0ywWGDp0qEg0JdDPgiuuwX/kgAEDcnJySktLEafAQYialn90mRsqaCju/fv3L1iwAD9oejGxQ6zzktROUAKZpKQzqqysRGwoq10CRkyI6YqLi/lU97MlyOdUmeFN6G6zrkgJ9EvCtByDBg3Kz89HIM3gxecsM7k8mpTsnDhxAh4QUTeCeTnrFDEO5JFrUdaDQDQ/8HdgJKfWtdhJkQ5ScvXU5ynRzPH5kBcuXEDkL/8tSqCHCGqj+Pj4559//r333jt16hRnl1ES0zk+p4iMEpXq+/PPP8/Ly+Nput27d6+qquLiV6CvMSdY1skxGn5XQkIC66lduwcZM0Ie+Z06f4+VFpOjlM8wq/369WNJGv2XNvH4hUFxYP5T4oPu2LFjWloatPCmTZuYuJPVA+nz4jdw6dIlBPZ/+9vfSkpKGDx7z3GTU3VKe7Z161bJ95jgZCM027Fjh//uI1q9CcQv8RgYWepVBOH6qFs5+D/Kne18B/+4SUlJf/zjHwsLCz/++GOwhE7klg36OFoFYRKdlyT6glogYQ9zxKdPnwZT5TFMC0RdNW3atPr6epHP90Mg8hKGjQe1cFuPuaFM8VAgu664DVQ+a7Bq4MCBM2fOhI05dOiQHK5Dt8IjUfilubQuGSDOrsy3TD/ZJiLXups9liPRuHqKm++TQCKtEAzCM1pOnKgW6NFBasS4T9l8f8yYMWvWrIHDgj6VIwrE3lAVSaKPGYGmu+vzxfwwzF69erVlt/kx9+4I0tPTjx49ituYQvQgkM8p4ZCOIsuXLwdvJFeuGihsoGEw17EhkhB/bd68GQ4Iro3N7WSNk6QBva5fv06SueZeTsA4duwYj3Iy64pMIDBkSTXzjd4WiG/Sf4HirhpW3RsfNgR+6PBxT9tISUmZPXs2FZKsPf3gQGJ+KdDhApZ4wJUrV8bFxWE02QAvRgIGIzExEW6I4v27777jwkhQAvnsGjfwWI7thfxnsQAeMrDVS1g+xrYL7w8dPqJbt24jR47Mzc2trKwU0rA5Jju8kkzSVlxYtWrVKi6Syy+SbsC4gHHiRkdQh9S8pwtrchZZs7KyLGcftKuzhxIozKDK5sqXWVsTGRnZu3dvBD7FxcWHDx8WS4MZpf2gNiIVaI3OnDlTVla2ZMmSIUOGSF6bO2XxW0AvUkcSm94uTBwZ/BcPWjCDSrMyRBFOUFxLJ01WF5laG/4I+qOgoAAOiPXLorVZoMMaj0Yn/sf7Bw4cKCoqmjx5ct++fSl7Y2NjWXwousqjXpsuTGoK8vLy2CpEN/G0DEjaRppBE5DG06dPp9bmIbr0Xz5nQyAMjJwBDVy7dg1R/Zw5cwYPHjxv3jwKbXPxK5TVaTJOacVPsdGnBlwtD7LoHWGczI13evXq9dprr+3evRtam5NN34QLRGqsJJGNpADePH/+vPd2DpfbEmO2c+fOnj17WnqmWMsF2YOY3zWFCQkJ0NrwL9Ao0n8IUfrly5dhe7jZg0cj+p2mY77QxUku80MCXblyZerUqbSCaoFaMLj3QwjETmF0c9DazzzzDKZ5w4YNbFBnam14NDlaSnJLPs9eM03GXsezZ892797d0gPCWxkYtZnyyLIrX4cOHTp37tyPP/4YE+83ADLBi0nwb+a1G53TCwMJBLe4fft2uk7detE6QSPkcm2IvDIzMxH8Hzx4kN16aYFu3LjB5KSscIXqHEKjdeHChZdfftnso6hotSCTYC1k02D79u0HDBgAg7Rr164zZ87IRhFRx40BcBGIW61ddk7RykFVFB0dLWYpJiYGcXhBQQEIAX0tCxS+u/vFCoGYVYL0ZqNqRRuC6Fxm/GRDKhRMXFxcp06dJk2a9P7773/99deNTpcWrrKZ5odppJqamj/84Q8aurdpBJZb4MuoqCi4tuzs7C1btrBc32/XIXGpn2tteKesrAx3muf0hOmPUDQbmGSCcerTp8+ECRP+8pe/fPrpp6KQuIIBLF682DKOLQ/fUyuaGVztRDp06IDgf+HChTt37jx16hSZdOjQoUGDBllOR2k1P4r/gUlt5iTBJDOZhHcgelatWnX8+PElS5aAWIzslECK/4dpe+QcBbNvEF67dOnCBXzpKK1QuGEyQ2yMuRnIUu2suE+IUpbt7rrpXfETYO48lFVbNT+PDuYHLamXlvXpmwSSHe8t609ohTAby0UEbHluhjMUEYBwP1FbglCEmxYsJ2bmPzRXFczjB10bG3Ta2iioNy07t9utW7esrKx58+YlJSXxu+3bt5dCdGZcWEIvDFMCtXXIlNO6rFix4tatWzU1NRs3bszMzIyNjZU7QaZ27dpJeY2exK74L+ieZOLl4JLr16+fPHmyrKyssLBw3Lhxru5jrlMjTQ2rBGpbkHaqnPjXX3/90qVLV69eNbtFV1dXFxcXz549Oz09XZoTyI+zpNBcsFQatUWQARMnTmRl++3bt3lQvFnQXlVVtWjRoqFDh0IksdGp68cVbRdkwOjRo7/44gsSiG1QuZePp6+TT/BuFRUVkNspKSk8XJeIcHpAKdoi6HT69eu3c+dOv3N8SZPTkJWFf+Y2ie+///7y5cslJSXjx4/v2rWrGeFLXbOiDYEESkxMZAuwwHr1RrsJJvdFyJkBkEpnzpzZt2/f22+/PWrUKB6MGmF31dCIrG2B8/3kk08uX77ctQXdbJUiZBITJUWlp06d+uijj2bOnAmR5GovL/vkufVCidU6QQUzf/58OimhjnSIDuwTTe/GbTQEIjgopPz8fAT/vXr1kgMlZcuOHAytaG0ggaZPn474SwSQ6whSj63Et27dMndvQWtv2bJl1qxZffv2RcjmsjpBWyAqWjbod8aMGVNbW8tNn/dPIN7DBuRmo1ZQCmHdihUrEN9BYJnncymBWhuYUUxPT6+urm50DlDyGyexezTHkIaHuICyZudo5gKa7KMCv/322wMHDuTm5o4YMYJa27IpK8VfKrpbPGiBevbsWVpa6ndOmwt1frYL5s3SO4yH/UgeEjeARjBv5eXlOTk5qamporXN2viw/f2KnwlOXnx8/Jo1a/zOUSb3wx7CRTXxbjRONEWikM6dO1dZWbl27VpEbT169JBn0DYaLRgkEATv0qVL/c65u/dPIBd1mgL6H0ijVrNNwsmTJ0tKShYtWjRs2DDXQpuihUE6Ms+ZM0eczgMQSGgU2ECDkDzkDRu8Lioq4sKIKqGWCpm5zMxMupsHZo/POIkyEGxBx46IVOifffbZ8OHDdRm/ZSPC2aTXv3//CxcuSGenOz8RQiB4Kx5U6LJGZM+VK1e4ZrJ69WoIL7OaVtFSQRmUnJzMM00ejEB37LMsmJ6+YzfKZIQvBMI7Fy9eZLJxwYIFrsoQRQsG4+rExMS9e/f6nCbOD0AgJoQYxrucF8+o89unZE6dOhXCmcdG8wHUhbVscCLj4uI2bdrU6Jzd/FPZI8z7jw26M+lnSMP21VdfjR071rKVe5cuXVi6j1dZO1O0SDChFxUV9c4774hYCRTI9+QQzQ+VuHlMmM8+lL68vDwtLc2y7Q0PRmUX6cCGm4oWBhIIPiUrK4sEkmX5n0QjsOfatWty5CVtEsY5e/bs2rVreSahnLChaD3gjMIkTJw4kRkaCaPM8iBvAvntxvJwXo32keF3bE2NNxsaGt58801ZCOPujrD+uYpfGuJBBg8eXFdX53fOew9KoFDWSOwWrmGHWOOBsO7ll1/mIYfgDYycbOdQ4dwK0b17d0RJ1ED3QyDhEC/otuDCGMxXVlaOGTNGWl5atqnj6clKoNaJ6OjoqqqqO/YxXmZ5a1ACNRmlZ36jCzgF0J49e9LT0zmsmSrUM29bG0xLAF+zY8cOltCLFxO6mEySL+84K1zcU0YltGnTJu60ZzW0pTvIWjFMAsFUFBUVkQeuQCwogXxO0Q+DdryeO3du2bJlpIsUaeiZga0fsiafnZ196dIlWpSgBDIrfoQ9sDp45/jx4y+99BLHYcNUbsmw7m6UqWiFEKmLSL6+vp4E8hn1Yi4C+Zyzc3gcMyXz2LFjaXXkxMIIo4NYuP9ExcOETPCzzz7LY7apgcAP023xAu9fv34dDKPQxuvmzZtFMovDinA6nWmiufVDittjY2O5T57rEjdu3JCqZylOZU0Pz0fGxbvvvisnBJqWRmvm2xY40/BB5eXlLNnhfh1TBgmBmPKBrVq6dClLCiMjI2WPswyoBGpDEOOxbt068oMLGkEzh3gf7JkyZYplc84kjQyoBGpbkJleuXIldbGcNSmA7aEqqqioGDZsGO/XKF3xXwiBcnJyGMmTRuANTwukC4NZWr9+ff/+/XmzFmMo/gch0EsvvVRbW8uc8h2n2RRX6SGZCwoKUlNTeaerqXTYHl3RHCAMyMjIqKmp8dvdW2Q7DswPWLVs2bK4uDjLdlu8X/vDK9zo06fPwYMHuYGLeULg8OHDU6dObdeuHUMt6bOhSlnhRufOnffs2UMCsaMUJPPgwYMto4+93KwEUtwFdjssLi7mYipo9OGHHyYnJ1tORVjQH1EOKf4HWhd2vLt582ZRUVF8fLz5LRMRAXjUj6tobmBMvnjx4rq6uvz8fGlWH2o5XUmjuAskxLBhwyZNmsRDM0T0ROhZ2or7AQ/EsGyf1aFDB3N1Xe2NQqFQKBQKhUKhUCgUCoVCoVAoFAqFQqFQKBQKhUKhUCgUCoVC0Wrxf0UR0D7z0nlYAAAAAElFTkSuQmCC">
@@ -389,40 +389,46 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 2884ms · 4,110 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 83ms · 210 code files</div>
       <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-09-01</div>
+      <div class="meta"><span class="mono">telekom/scale</span> · scanned 2026-09-01</div>
     </div>
-    <div class="score"><div class="eyebrow">Health score</div><div class="val">25<span class="slash">/</span><span class="of">100</span></div></div>
+    <div class="score"><div class="eyebrow">Health score</div><div class="val">49<span class="slash">/</span><span class="of">100</span></div></div>
   </div>
-  <div class="chips"><span class="chip">next</span><span class="chip">TypeScript</span><span class="chip">Tailwind CSS</span><span class="chip">CVA</span><span class="chip">monorepo</span><span class="chip chip-dim">design system: unrecognised</span></div>
+  <div class="chips"><span class="chip">web components (Stencil)</span><span class="chip">TypeScript</span><span class="chip">plain CSS</span><span class="chip">custom design system (--telekom-*)</span><span class="chip">monorepo</span><span class="chip chip-dim">also present: --scl-*</span></div>
   
   
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">636 arbitrary values like [400px] punched through the Tailwind scale, each one a precedent your agent will follow. 22 components implemented more than once, so an agent asked for a Button has several random options. 60 off-scale spacing values where a dozen would do.</div>
+    <div class="verdict">69 off-scale spacing values where a dozen would do. 1 typeface declared 14 different ways. 6 colour pairs are nearly identical (#1b1b1b next to #191919), copy-paste, not decisions.</div>
   </div>
 </header>
 
-
+<section class="glass pad notes-sec">
+    <div class="sec-head">
+      <div class="eyebrow">Written by Claude from this scan · 2026-09-01 · not part of the measurement</div>
+      <h2>What the numbers mean</h2>
+    </div>
+    <div class="notes-body"><p>Scale is architecturally sound, and this scan can now say so with the components read: 95 Stencil web components, generated React, Vue and Angular wrappers, and a real composition core where <strong>scale-dropdown-select-item</strong>, <strong>scale-combobox</strong> and <strong>scale-button</strong> do the heavy lifting. The findings below are not quality problems. They are the residue of a token migration that was started and never closed out.</p><p><strong>The headline is still the token migration.</strong> One font, TeleNeo, is declared 14 different ways across the component source, and the token traffic tells the same story in numbers: roughly 2,000 references answer to the current <span class="mono">--telekom-*</span> namespace while around 100 still call <span class="mono">--scl-*</span>, whose definitions sit in the in-repo <span class="mono">@telekom/scale-design-tokens</span> package that is itself marked deprecated in favour of the separate <span class="mono">@telekom/design-tokens</span>. The source of truth moved; about a tenth of the calls have not followed it yet. The 69 off-scale spacing values and the 6 near-identical colour pairs are the same unfinished move wearing different clothes.</p><p><strong>Where the specificity fights are.</strong> The 27 !important declarations cluster instead of spreading: data-grid carries 8, then tag with 4, switch and tab-header with 3 each. The composite components are where the cascade is being argued with, and those are also the components consumers can least work around.</p><p><strong>Three names are defined twice.</strong> TelekomNavItem, Logo and Shell each have two implementations. In a system whose whole promise is one canonical answer per question, an agent asked for the nav item has a coin to flip. Small list, cheap fix, outsized signal.</p><p><strong>Two colour findings worth separating.</strong> #cb0068, the pressed state of Telekom magenta, appears hardcoded rather than derived from the brand token, and it is the one colour the licence specifically ring-fences: the clearest commercial argument for a real token boundary. Separately, the near-identical dark pair #1b1b1b next to #191919 is copy-paste, not a decision.</p><p><strong>What is genuinely working.</strong> 302 colours sounds alarming and is not: the palette is token-led, greys are disciplined at 24, and there are zero arbitrary bracket values and zero unimported components in the design-system scope. The web component core with generated framework wrappers remains the right call for an organisation with this many product estates.</p><p><strong>One gap that grows monthly.</strong> No CLAUDE.md, no AGENTS.md. For a design system whose entire job is telling people which component is canonical, every agent-written UI change is currently a guess. The rules file this scan can generate would name the canonical components, the <span class="mono">--telekom-*</span> namespace and the duplicates to avoid, in one page.</p></div>
+</section>
 
 
 
 <section class="glass pad">
-    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks · <b class="proj">25 &rarr; 55</b></p></div>
+    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks · <b class="proj">49 &rarr; 78</b></p></div>
     <div class="ledger">
       <div class="ledger-row start-row">
         <span class="ledger-idx">01</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Collapse the 14 near-identical colours</div><span class="delta">+10</span></div><div class="sub">#ffffff and #fafafa are the same colour to any eye, and they are used 9 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.</div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Unwind the 27 !important declarations</div><span class="delta">+11</span></div><div class="sub">Each one is a selector losing an argument with another selector; data-grid.css alone carries 8. Fix the specificity at the source and they stop being necessary.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="0">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="0">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the dub repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the scale repository, measured by roast-my-design-system.
 
-The finding: Collapse the 14 near-identical colours
+The finding: Unwind the 27 !important declarations
 
-The detail: #ffffff and #fafafa are the same colour to any eye, and they are used 9 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.
+The detail: Each one is a selector losing an argument with another selector; data-grid.css alone carries 8. Fix the specificity at the source and they stop being necessary.
 
-Expected payoff: about +10 points on the report's 0-100 score.
+Expected payoff: about +11 points on the report's 0-100 score.
 
 How to fix it, calmly and with respect for intent:
 - A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
@@ -436,15 +442,15 @@ npx roast-my-design-system@latest</div></div>
       </div>
       <div class="ledger-row start-row">
         <span class="ledger-idx">02</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Decide about the 16 components nobody imports</div><span class="delta">+10</span></div><div class="sub">&lt;Alert&gt;, &lt;AlertDescription&gt;, &lt;AlertTitle&gt; and others sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.</div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Collapse the 6 near-identical colours</div><span class="delta">+11</span></div><div class="sub">#1b1b1b and #191919 are the same colour to any eye, and they are used 8 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="1">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="1">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-1">You are fixing one design-system finding in the dub repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-1">You are fixing one design-system finding in the scale repository, measured by roast-my-design-system.
 
-The finding: Decide about the 16 components nobody imports
+The finding: Collapse the 6 near-identical colours
 
-The detail: &lt;Alert&gt;, &lt;AlertDescription&gt;, &lt;AlertTitle&gt; and others sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.
+The detail: #1b1b1b and #191919 are the same colour to any eye, and they are used 8 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.
 
-Expected payoff: about +10 points on the report's 0-100 score.
+Expected payoff: about +11 points on the report's 0-100 score.
 
 How to fix it, calmly and with respect for intent:
 - A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
@@ -458,15 +464,15 @@ npx roast-my-design-system@latest</div></div>
       </div>
       <div class="ledger-row start-row">
         <span class="ledger-idx">03</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Fold 48 inline style blocks back into the system</div><span class="delta">+10</span></div><div class="sub">These are static values written as style attributes; start with apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx (4 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Crown the canonical &lt;TelekomNavItem&gt;</div><span class="delta">+6</span></div><div class="sub">3 component names have competing implementations. Start with &lt;TelekomNavItem&gt;: packages/components/src/components/telekom/telekom-nav-item/telekom-nav-item.tsx vs packages/components/src/components/telekom/telekom-nav-flyout/telekom-nav-flyout.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="2">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="2">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-2">You are fixing one design-system finding in the dub repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-2">You are fixing one design-system finding in the scale repository, measured by roast-my-design-system.
 
-The finding: Fold 48 inline style blocks back into the system
+The finding: Crown the canonical &lt;TelekomNavItem&gt;
 
-The detail: These are static values written as style attributes; start with apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx (4 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.
+The detail: 3 component names have competing implementations. Start with &lt;TelekomNavItem&gt;: packages/components/src/components/telekom/telekom-nav-item/telekom-nav-item.tsx vs packages/components/src/components/telekom/telekom-nav-flyout/telekom-nav-flyout.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.
 
-Expected payoff: about +10 points on the report's 0-100 score.
+Expected payoff: about +6 points on the report's 0-100 score.
 
 How to fix it, calmly and with respect for intent:
 - A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
@@ -494,10 +500,10 @@ npx roast-my-design-system@latest</div></div>
       <div class="gift-pop" id="gift-pop" aria-hidden="true"></div>
       <div class="gift-reveal" id="gift-reveal" hidden>
         <div class="gift-head"><span class="mono strong">design-system-rules.md</span>
-          <span class="gift-count">18 rules generated from this scan, every one with a receipt</span></div>
+          <span class="gift-count">14 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-09-01.
+&lt;!-- Generated by roast-my-design-system from a scan of telekom/scale on 2026-09-01.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system@latest --rules --&gt;
 
@@ -505,56 +511,43 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 ### Colours and tokens
 
-- Design tokens live in `packages/tailwind-config/themes.css`. Reach for an existing token before inventing any value.
-- Never hardcode colour values in components. The palette already has 49 tokens; the scan still found 55 hardcoded colours sitting next to them. Do not add more.
-- Never eyeball a colour from memory: the scan found 14 nearly identical pairs (like #ffffff next to #fafafa). Look the exact value up, or better, use its token.
+- This system's tokens answer to the `--telekom-*` namespace. Reach for an existing `var(--...)` from them before inventing any value.
+- `--scl-*` is also present in the code. Before writing new references to it, check whether this repo treats it as current or as a migration source; when unsure, prefer `--telekom-*`.
+- Design tokens live in `packages/components/src/global/legacy-scale-design-tokens.css`. Reach for an existing token before inventing any value.
+- Never hardcode colour values in components. The palette already has 297 tokens; the scan still found 5 hardcoded colours sitting next to them. Do not add more.
+- Never eyeball a colour from memory: the scan found 6 nearly identical pairs (like #1b1b1b next to #191919). Look the exact value up, or better, use its token.
 
 ### Canonical components
 
 - Use these existing components instead of writing new ones, the way this repo already uses them:
-  - `&lt;Button&gt;` from `packages/ui/src/button.tsx` (used 995x · props: text, variant, textWrapperClassName, shortcutClassName)
-  - `&lt;Modal&gt;` from `packages/ui/src/modal.tsx` (used 187x · props: showModal, setShowModal, onClose, desktopOnly)
-    - most common usage, as in `apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/groups/[groupSlug]/links/add-edit-group-additional-link-modal.tsx` (matching 98 of 184 usages): `&lt;Modal showModal={isOpen} setShowModal={setIsOpen}&gt;…&lt;/Modal&gt;`
-  - `&lt;Tooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 145x · props: content, contentClassName, disabled, side)
-    - most common usage, as in `apps/web/ui/support/chat-bubble.tsx` (matching 50 of 69 usages): `&lt;Tooltip content=&quot;Close&quot;&gt;…&lt;/Tooltip&gt;`
-  - `&lt;LoadingSpinner&gt;` from `packages/ui/src/icons/loading-spinner.tsx` (used 113x)
-    - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/programs/page.tsx` (matching 58 of 113 usages): `&lt;LoadingSpinner className=&quot;size-4&quot; /&gt;`
-  - `&lt;Popover&gt;` from `packages/ui/src/popover.tsx` (used 100x · props: content, align, side, openPopover)
-  - `&lt;InfoTooltip&gt;` from `packages/ui/src/tooltip.tsx` (used 97x)
-    - most common usage, as in `apps/web/ui/modals/qr-code-design-fields.tsx` (matching 76 of 78 usages): `&lt;InfoTooltip content={tooltip} /&gt;`
-  - `&lt;X&gt;` from `apps/web/ui/shared/icons/x.tsx` (used 91x)
-    - most common usage, as in `apps/web/app/(ee)/admin.dub.co/(dashboard)/partners/network/network-partner-application-sheet.tsx` (matching 87 of 91 usages): `&lt;X className=&quot;size-5&quot; /&gt;`
-  - `&lt;AnimatedSizeContainer&gt;` from `packages/ui/src/animated-size-container.tsx` (used 89x)
-    - most common usage, as in `apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx` (matching 38 of 85 usages): `&lt;AnimatedSizeContainer height&gt;…&lt;/AnimatedSizeContainer&gt;`
+  - `&lt;DropdownSelectItem&gt;` from `packages/components/src/components/dropdown-select-item/dropdown-select-item.tsx` (used 21x)
+  - `&lt;Combobox&gt;` from `packages/components/src/components/combobox/combobox.tsx` (used 15x)
+  - `&lt;Tag&gt;` from `packages/components/src/components/tag/tag.tsx` (used 11x)
+  - `&lt;Button&gt;` from `packages/components/src/components/button/button.tsx` (used 10x)
+  - `&lt;HelperText&gt;` from `packages/components/src/components/helper-text/helper-text.tsx` (used 9x)
+  - `&lt;AppNavigationUserMenu&gt;` from `packages/components/src/components/telekom/app-navigation-user-menu/app-navigation-user-menu.tsx` (used 8x)
+  - `&lt;Checkbox&gt;` from `packages/components/src/components/checkbox/checkbox.tsx` (used 8x)
+  - `&lt;Breadcrumb&gt;` from `packages/components/src/components/breadcrumb/breadcrumb.tsx` (used 6x)
 
 ### Known duplicates: do not make it worse
 
-- `&lt;PayoutStats&gt;` exists in 3 places. Treat `apps/web/ui/layout/sidebar/payout-stats.tsx` as canonical; do not import the other copies, and never create another.
-- `&lt;Logo&gt;` exists in 2 places. Treat `packages/ui/src/logo.tsx` as canonical; do not import the other copy, and never create another.
-- `&lt;EmptyState&gt;` is defined twice and one wraps the other. Import `packages/ui/src/empty-state.tsx`; do not create a third.
-- `&lt;FormControl&gt;` exists in 2 places (`apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx`, `apps/web/ui/submitted-leads/form-fields/form-control.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `&lt;SettingsRow&gt;` exists in 2 places (`apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx`, `apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/program-settings-row.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `&lt;Hero&gt;` exists in 2 places (`apps/web/ui/placeholders/hero.tsx`, `apps/web/ui/modals/dot-link-offer-modal.tsx`). Match whichever the surrounding code already imports, and never create another.
-- Two icon sets collide on 11 names. Before adding any icon, check which set the surrounding file already imports and stay with it.
-
-### Components nobody imports
-
-- 16 components are defined but never imported (`&lt;Alert&gt;`, `&lt;AlertDescription&gt;`, `&lt;AlertTitle&gt;`…). Before writing any new component, check this list first; adopt one or flag it for deletion instead of adding another.
+- `&lt;TelekomNavItem&gt;` exists in 2 places (`packages/components/src/components/telekom/telekom-nav-item/telekom-nav-item.tsx`, `packages/components/src/components/telekom/telekom-nav-flyout/telekom-nav-flyout.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;Logo&gt;` exists in 2 places (`packages/components/src/components/telekom/logo/logo.tsx`, `packages/components/src/components/telekom/app-logo/app-logo.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;Shell&gt;` exists in 2 places (`packages/components/src/components/telekom/app-shell/app-shell.tsx`, `packages/components/src/components/telekom/telekom-app-shell/telekom-app-shell.tsx`). Match whichever the surrounding code already imports, and never create another.
 
 ### Spacing and sizing
 
-- Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
-- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 636 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
-- Avoid new one-off CSS spacing values; 33 off-scale values are already in play.
+- Avoid new one-off CSS spacing values; 69 off-scale values are already in play.
 
 ### Typography
 
-- The repo uses 3 typefaces: Inter, satoshi, Geist. Do not introduce another, and do not re-declare font stacks by hand; use the existing setup.
+- The repo uses 1 typeface: TeleNeoWeb. Do not introduce another, and do not re-declare font stacks by hand; use the existing setup.
 
 ### Styling discipline
 
 - Never write `style={{ ... }}` for static values; styling belongs to classes and tokens where the system can see it.
-  (48 static inline blocks already exist; do not add to them.)
+  (7 static inline blocks already exist; do not add to them.)
+- Never write !important; the scan found 27 declarations already. When a style does not apply, fix the selector or the source of the conflict instead of shouting over it.
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
@@ -569,57 +562,53 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
   </section>
 
-<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> &lt;PayoutStats&gt; alone has 3 implementations. An agent asked for one cannot tell which is canonical, so it picks at random or writes another, and every wrong pick becomes the example the next agent copies. This is the finding that multiplies itself.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> [400px] appears 24 times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence 25. The most copied pattern here is the one you least want copied.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> This palette holds 14 pairs of colours a screen can barely tell apart. An agent asked for the brand grey cannot see the difference either, so it copies whichever twin is nearest, and when unsure it invents a third between them. Twins breed triplets.</span></div>
+<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> &lt;TelekomNavItem&gt; alone has 2 implementations. An agent asked for one cannot tell which is canonical, so it picks at random or writes another, and every wrong pick becomes the example the next agent copies. This is the finding that multiplies itself.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> -1px appears 22 times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence 23. The most copied pattern here is the one you least want copied.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> This palette holds 6 pairs of colours a screen can barely tell apart. An agent asked for the brand grey cannot see the difference either, so it copies whichever twin is nearest, and when unsure it invents a third between them. Twins breed triplets.</span></div>
 
-<div class="stats"><div class="stat glass st-warn">
-  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
-  <div class="num">104</div><div class="lab">distinct colours</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~24 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">130 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">24 <span class="dir d-up">▲</span></span></div></div>
+<div class="stats"><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <div class="num">302</div><div class="lab">distinct colours</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~24 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">130 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">24 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <div class="num">24</div><div class="lab">shades of grey</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~13 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">17 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">5 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-bad">
+  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <div class="num">69</div><div class="lab">off-scale spacing values</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">34 · messier than 79% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-bad">
+  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <div class="num">3</div><div class="lab">duplicated components</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 · cleaner than 71% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-warn">
   <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
-  <div class="num">15</div><div class="lab">shades of grey</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~13 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">17 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">5 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">7</div><div class="lab">inline style blocks</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">49 · cleaner than 76% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">60</div><div class="lab">off-scale spacing values</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">34 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">6</div><div class="lab">near-identical colour pairs</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">22</div><div class="lab">duplicated components</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">48</div><div class="lab">inline style blocks</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">49 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">14</div><div class="lab">near-identical colour pairs</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-warn">
-  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
-  <div class="num">1</div><div class="lab">!important declarations</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">7 · cleaner than 62% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">3 <span class="dir d-down">▼</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">16</div><div class="lab">components never imported</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">14 · messier than 74% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">636</div><div class="lab">arbitrary bracket values</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">70 · messier than 91% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">27</div><div class="lab">!important declarations</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">7 · messier than 71% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">3 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-info">
+  
+  <div class="num">0</div><div class="lab">components never imported</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">14 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">library: internal use only, downstream consumers invisible</span><span class="rval"> </span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <div class="num">0</div><div class="lab">arbitrary bracket values</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">70 · cleaner than 71% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-eq">=</span></span></div></div>
 </div></div>
 
 <section class="glass pad">
-    <div class="sec-head"><h2>Package by package</h2><p class="sub">2 packages with enough UI to judge · the repo score above is the whole thing blended, and 7 packages were too small or too backend to score</p></div>
+    <div class="sec-head"><h2>Package by package</h2><p class="sub">1 package with enough UI to judge · the repo score above is the whole thing blended, and 6 packages were too small or too backend to score</p></div>
     <div class="tbl-wrap"><table><thead><tr><th>package</th><th>score</th><th>worst finding</th><th>size</th></tr></thead><tbody>
-    <tr><td class="mono strong">apps/web</td>
-    <td><span class="pkg-score pkg-bad">40</span></td>
-    <td>39 inline style blocks</td>
-    <td class="dim">3,378 files</td></tr>
-    <tr><td class="mono strong">packages/ui</td>
-    <td><span class="pkg-score pkg-warn">80</span></td>
-    <td>16 components nobody imports</td>
-    <td class="dim">480 files</td></tr></tbody></table></div>
+    <tr><td class="mono strong">packages/components</td>
+    <td><span class="pkg-score pkg-warn">60</span></td>
+    <td>27 !important declarations</td>
+    <td class="dim">162 files</td></tr></tbody></table></div>
     
     <p class="sub" style="margin-top:12px">A repo scores below its own packages by arithmetic, not by accident: distinct values add up across packages, so the whole always carries more than any part. Read the package scores for where each team stands, and the repo score for what your agent sees when it looks at everything at once.</p></section>
 
@@ -631,10 +620,10 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="glass pal-hero grad">
     <div class="blob b1"></div>
     <div class="eyebrow">Palette</div>
-    <div class="pal-num"><span class="huge">104</span><span class="huge-unit">colours</span></div>
+    <div class="pal-num"><span class="huge">302</span><span class="huge-unit">colours</span></div>
     <p class="sub">A healthy product palette is <b>up to ~24 colours</b>: one brand hue with a few tints, one accent, up to 13 greys, and status colours.</p>
-    <div class="split-track"><div class="split"><span class="sp-tok" style="width:47%"></span><span class="sp-stray" style="width:53%"></span></div></div>
-    <div class="split-legend"><span>49 tokens</span><span>55 strays</span></div>
+    <div class="split-track"><div class="split"><span class="sp-tok" style="width:98%"></span><span class="sp-stray" style="width:2%"></span></div></div>
+    <div class="split-legend"><span>297 tokens</span><span>5 strays</span></div>
     
   </div>
   <div class="glass pal-usage">
@@ -642,147 +631,175 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       <div><div class="eyebrow">Colour usage</div><div class="h3d">Sized by how often each is used</div></div>
       <div class="legend"><span><i class="lg lg-tok"></i> token</span><span><i class="lg lg-stray"></i> stray</span></div>
     </div>
-    <div class="usage-bar"><div class="uc stray" style="background:#ffffff;flex-grow:7" title="#ffffff ×7 in apps/web/app/manifest.ts"><i></i></div><div class="uc stray" style="background:#ff0000;flex-grow:5" title="#ff0000 ×5 in apps/web/ui/modals/dot-link-offer-modal.tsx"><i></i></div><div class="uc stray" style="background:#855afc;flex-grow:4" title="#855afc ×4 in apps/web/ui/modals/dot-link-offer-modal.tsx"><i></i></div><div class="uc stray" style="background:#262626;flex-grow:3" title="#262626 ×3 in apps/web/styles/globals.css"><i></i></div><div class="uc stray" style="background:#d4d4d4;flex-grow:3" title="#d4d4d4 ×3 in apps/web/ui/modals/confirm-approve-bounty-submission-modal.tsx"><i></i></div><div class="uc stray" style="background:#7c3aed;flex-grow:3" title="#7c3aed ×3 in apps/web/ui/modals/register-domain-success-modal.tsx"><i></i></div><div class="uc stray" style="background:#1717171a;flex-grow:3" title="#1717171a ×3 in apps/web/ui/partners/payouts/payout-method-config.ts"><i></i></div><div class="uc" style="background:#f5f5f5;flex-grow:3" title="#f5f5f5 ×3 in apps/web/ui/program-marketplace/marketplace-program-hero.tsx"></div><div class="uc stray" style="background:#d1d5db;flex-grow:2" title="#d1d5db ×2 in apps/web/styles/globals.css"><i></i></div><div class="uc stray" style="background:rgba(255,255,255,0);flex-grow:2" title="rgba(255,255,255,0) ×2 in apps/web/app/api/og/avatar/[[...seed]]/route.tsx"><i></i></div><div class="uc stray" style="background:rgba(0,0,0,0.2);flex-grow:2" title="rgba(0,0,0,0.2) ×2 in apps/web/app/api/og/avatar/[[...seed]]/route.tsx"><i></i></div><div class="uc stray" style="background:rgba(255,255,255,0.4);flex-grow:2" title="rgba(255,255,255,0.4) ×2 in apps/web/app/api/og/avatar/[[...seed]]/route.tsx"><i></i></div><div class="uc" style="background:#000000;flex-grow:2" title="#000000 ×2 in apps/web/lib/qr/constants.ts"></div><div class="uc stray" style="background:#ee535d;flex-grow:2" title="#ee535d ×2 in apps/web/ui/colors.ts"><i></i></div><div class="uc stray" style="background:#eab308;flex-grow:2" title="#eab308 ×2 in apps/web/ui/modals/dot-link-offer-modal.tsx"><i></i></div><div class="uc stray" style="background:#5cff80;flex-grow:2" title="#5cff80 ×2 in apps/web/ui/modals/dot-link-offer-modal.tsx"><i></i></div><div class="uc stray" style="background:#db2777;flex-grow:2" title="#db2777 ×2 in apps/web/ui/modals/register-domain-success-modal.tsx"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.01);flex-grow:2" title="rgba(0, 0, 0, 0.01) ×2 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:#f0f0f0;flex-grow:2" title="#f0f0f0 ×2 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc" style="background:#fafafa;flex-grow:2" title="#fafafa ×2 in packages/utils/src/functions/avatar.ts"></div><div class="uc stray" style="background:rgba(115, 138, 148, 0.4);flex-grow:1" title="rgba(115, 138, 148, 0.4) ×1 in apps/web/styles/globals.css"><i></i></div><div class="uc stray" style="background:#da2778;flex-grow:1" title="#da2778 ×1 in apps/web/app/(ee)/partners.dub.co/(dashboard)/programs/[programSlug]/(enrolled)/page-client.tsx"><i></i></div><div class="uc stray" style="background:#3b82f6;flex-grow:1" title="#3b82f6 ×1 in apps/web/app/api/og/analytics/route.tsx"><i></i></div><div class="uc stray" style="background:rgba(0,0,0,0.13);flex-grow:1" title="rgba(0,0,0,0.13) ×1 in apps/web/app/api/og/avatar/[[...seed]]/route.tsx"><i></i></div><div class="uc stray" style="background:rgba(0,0,0,0.4);flex-grow:1" title="rgba(0,0,0,0.4) ×1 in apps/web/app/api/og/avatar/[[...seed]]/route.tsx"><i></i></div><div class="uc stray" style="background:rgba(0,0,0,0.1);flex-grow:1" title="rgba(0,0,0,0.1) ×1 in apps/web/app/api/og/avatar/[[...seed]]/route.tsx"><i></i></div><div class="uc stray" style="background:#e9d988;flex-grow:1" title="#e9d988 ×1 in apps/web/ui/colors.ts"><i></i></div><div class="uc stray" style="background:#9fe0b8;flex-grow:1" title="#9fe0b8 ×1 in apps/web/ui/colors.ts"><i></i></div><div class="uc stray" style="background:#bf87e4;flex-grow:1" title="#bf87e4 ×1 in apps/web/ui/colors.ts"><i></i></div><div class="uc stray" style="background:#0000000d;flex-grow:1" title="#0000000d ×1 in apps/web/ui/layout/sidebar/news.tsx"><i></i></div><div class="uc stray" style="background:#000000e6;flex-grow:1" title="#000000e6 ×1 in apps/web/ui/links/link-builder/link-preview.tsx"><i></i></div><div class="uc stray" style="background:#e5e5e5;flex-grow:1" title="#e5e5e5 ×1 in apps/web/ui/partners/lander/blocks/earnings-calculator-block.tsx"><i></i></div><div class="uc stray" style="background:#1717170d;flex-grow:1" title="#1717170d ×1 in apps/web/ui/partners/payouts/payout-method-config.ts"><i></i></div><div class="uc stray" style="background:rgba(238, 221, 238, 0.025);flex-grow:1" title="rgba(238, 221, 238, 0.025) ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:rgba(74, 0, 74, 0.025);flex-grow:1" title="rgba(74, 0, 74, 0.025) ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.05);flex-grow:1" title="rgba(0, 0, 0, 0.05) ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.09);flex-grow:1" title="rgba(0, 0, 0, 0.09) ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.1);flex-grow:1" title="rgba(0, 0, 0, 0.1) ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:#155dfc;flex-grow:1" title="#155dfc ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.08);flex-grow:1" title="rgba(0, 0, 0, 0.08) ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:rgba(255, 255, 255, 0.25);flex-grow:1" title="rgba(255, 255, 255, 0.25) ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.25);flex-grow:1" title="rgba(0, 0, 0, 0.25) ×1 in apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx"><i></i></div><div class="uc stray" style="background:#ede8fd;flex-grow:1" title="#ede8fd ×1 in apps/web/ui/submitted-leads/submitted-lead-status-badges.ts"><i></i></div><div class="uc stray" style="background:#7b3aff;flex-grow:1" title="#7b3aff ×1 in apps/web/ui/submitted-leads/submitted-lead-status-badges.ts"><i></i></div><div class="uc stray" style="background:#fff3ec;flex-grow:1" title="#fff3ec ×1 in apps/web/ui/submitted-leads/submitted-lead-status-badges.ts"><i></i></div><div class="uc stray" style="background:#ff4d00;flex-grow:1" title="#ff4d00 ×1 in apps/web/ui/submitted-leads/submitted-lead-status-badges.ts"><i></i></div><div class="uc stray" style="background:#f5edff;flex-grow:1" title="#f5edff ×1 in apps/web/ui/submitted-leads/submitted-lead-status-badges.ts"><i></i></div><div class="uc stray" style="background:#ce00ff;flex-grow:1" title="#ce00ff ×1 in apps/web/ui/submitted-leads/submitted-lead-status-badges.ts"><i></i></div><div class="uc stray" style="background:#ffebeb;flex-grow:1" title="#ffebeb ×1 in apps/web/ui/submitted-leads/submitted-lead-status-badges.ts"><i></i></div><div class="uc stray" style="background:#d60000;flex-grow:1" title="#d60000 ×1 in apps/web/ui/submitted-leads/submitted-lead-status-badges.ts"><i></i></div><div class="uc stray" style="background:#65b741;flex-grow:1" title="#65b741 ×1 in packages/cli/src/commands/config.ts"><i></i></div><div class="uc stray" style="background:#7e30e1;flex-grow:1" title="#7e30e1 ×1 in packages/cli/src/commands/config.ts"><i></i></div><div class="uc" style="background:#fdf8f6;flex-grow:1" title="#fdf8f6 ×1 in packages/tailwind-config/tailwind.config.ts"></div><div class="uc" style="background:#f2e8e5;flex-grow:1" title="#f2e8e5 ×1 in packages/tailwind-config/tailwind.config.ts"></div><div class="uc" style="background:#eaddd7;flex-grow:1" title="#eaddd7 ×1 in packages/tailwind-config/tailwind.config.ts"></div><div class="uc" style="background:#e0cec7;flex-grow:1" title="#e0cec7 ×1 in packages/tailwind-config/tailwind.config.ts"></div><div class="uc" style="background:#d2bab0;flex-grow:1" title="#d2bab0 ×1 in packages/tailwind-config/tailwind.config.ts"></div><div class="uc" style="background:#bfa094;flex-grow:1" title="#bfa094 ×1 in packages/tailwind-config/tailwind.config.ts"></div><div class="uc" style="background:#a18072;flex-grow:1" title="#a18072 ×1 in packages/tailwind-config/tailwind.config.ts"></div><div class="uc" style="background:#977669;flex-grow:1" title="#977669 ×1 in packages/tailwind-config/tailwind.config.ts"></div><div class="uc uc-rest" style="flex-grow:44" title="44 more colours">+44</div></div>
+    <div class="usage-bar"><div class="uc" style="background:hsla(0, 0%, 0%, 0.1);flex-grow:32" title="hsla(0, 0%, 0%, 0.1) ×32 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:#ffffff;flex-grow:21" title="#ffffff ×21 in packages/components/src/components/alert/alert.css"></div><div class="uc" style="background:hsl(0, 0%, 100%);flex-grow:12" title="hsl(0, 0%, 100%) ×12 in packages/components/src/components/notification-message/notification-message.css"></div><div class="uc" style="background:#cb0068;flex-grow:11" title="#cb0068 ×11 in packages/components/src/components/input/input.css"></div><div class="uc" style="background:#f90984;flex-grow:7" title="#f90984 ×7 in packages/components/src/components/input/input.css"></div><div class="uc" style="background:rgba(0, 0, 0, 0.1);flex-grow:6" title="rgba(0, 0, 0, 0.1) ×6 in packages/components/src/components/chip/chip.css"></div><div class="uc" style="background:#000000;flex-grow:5" title="#000000 ×5 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#e20074;flex-grow:5" title="#e20074 ×5 in packages/components/src/components/input/input.css"></div><div class="uc" style="background:hsl(227.39999999999998, 89%, 46.3%);flex-grow:5" title="hsl(227.39999999999998, 89%, 46.3%) ×5 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:#333333;flex-grow:4" title="#333333 ×4 in packages/components/src/components/alert/alert.css"></div><div class="uc stray" style="background:#1b1b1b;flex-grow:4" title="#1b1b1b ×4 in packages/components/src/components/dropdown/dropdown.css"><i></i></div><div class="uc" style="background:#191919;flex-grow:4" title="#191919 ×4 in packages/components/src/components/notification-banner/notification-banner.css"></div><div class="uc" style="background:rgba(0, 0, 0, 0.24);flex-grow:4" title="rgba(0, 0, 0, 0.24) ×4 in packages/components/src/components/slider/slider.css"></div><div class="uc" style="background:hsl(349.70000000000005, 69%, 50.6%);flex-grow:4" title="hsl(349.70000000000005, 69%, 50.6%) ×4 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(136.3, 65.7%, 27.5%);flex-grow:4" title="hsl(136.3, 65.7%, 27.5%) ×4 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(0, 0%, 80%);flex-grow:3" title="hsl(0, 0%, 80%) ×3 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc stray" style="background:#eeeeee;flex-grow:2" title="#eeeeee ×2 in packages/components/src/components/alert/alert.css"><i></i></div><div class="uc" style="background:rgba(0, 0, 0, 0.26);flex-grow:2" title="rgba(0, 0, 0, 0.26) ×2 in packages/components/src/components/slider/slider.css"></div><div class="uc" style="background:hsl(0, 0%, 0%);flex-grow:2" title="hsl(0, 0%, 0%) ×2 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(0, 0%, 94.9%);flex-grow:2" title="hsl(0, 0%, 94.9%) ×2 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(0, 0%, 49.8%);flex-grow:2" title="hsl(0, 0%, 49.8%) ×2 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(0, 0%, 40%);flex-grow:2" title="hsl(0, 0%, 40%) ×2 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(0, 0%, 9.8%);flex-grow:2" title="hsl(0, 0%, 9.8%) ×2 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(215.60000000000002, 100%, 62%);flex-grow:2" title="hsl(215.60000000000002, 100%, 62%) ×2 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(220, 100%, 56.5%);flex-grow:2" title="hsl(220, 100%, 56.5%) ×2 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:hsl(236.5, 100%, 37.5%);flex-grow:2" title="hsl(236.5, 100%, 37.5%) ×2 in packages/components/src/global/legacy-scale-design-tokens.css"></div><div class="uc" style="background:#f2f2f2;flex-grow:2" title="#f2f2f2 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#e5e5e5;flex-grow:2" title="#e5e5e5 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#cccccc;flex-grow:2" title="#cccccc ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#b2b2b2;flex-grow:2" title="#b2b2b2 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#999999;flex-grow:2" title="#999999 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#7f7f7f;flex-grow:2" title="#7f7f7f ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#666666;flex-grow:2" title="#666666 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#4c4c4c;flex-grow:2" title="#4c4c4c ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#fffcdf;flex-grow:2" title="#fffcdf ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#fff4c6;flex-grow:2" title="#fff4c6 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ffe9ae;flex-grow:2" title="#ffe9ae ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ffda97;flex-grow:2" title="#ffda97 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ffc780;flex-grow:2" title="#ffc780 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ffb26a;flex-grow:2" title="#ffb26a ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#fc9a55;flex-grow:2" title="#fc9a55 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#df6d3f;flex-grow:2" title="#df6d3f ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ae461c;flex-grow:2" title="#ae461c ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#973209;flex-grow:2" title="#973209 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#7d1f09;flex-grow:2" title="#7d1f09 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ffc5cb;flex-grow:2" title="#ffc5cb ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ffaab6;flex-grow:2" title="#ffaab6 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#fe94a5;flex-grow:2" title="#fe94a5 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#f98093;flex-grow:2" title="#f98093 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#f36a80;flex-grow:2" title="#f36a80 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ef556e;flex-grow:2" title="#ef556e ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ed425b;flex-grow:2" title="#ed425b ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#d82a48;flex-grow:2" title="#d82a48 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#c31c3b;flex-grow:2" title="#c31c3b ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#ad0f31;flex-grow:2" title="#ad0f31 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#990024;flex-grow:2" title="#990024 ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#d6f8ff;flex-grow:2" title="#d6f8ff ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#b5ebff;flex-grow:2" title="#b5ebff ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#95daff;flex-grow:2" title="#95daff ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc" style="background:#77c4ff;flex-grow:2" title="#77c4ff ×2 in packages/design-tokens/src/telekom/tokens.js"></div><div class="uc uc-rest" style="flex-grow:337" title="242 more colours">+242</div></div>
     
     <div class="ramp-head"><div class="eyebrow">Grey ramp · sorted dark → light · how many can you tell apart?</div></div>
     <div class="only-dark">
-    <div class="grey-strip"><div class="grey-cell" style="background:#000000" title="#000000 ×2"></div><div class="grey-cell" style="background:#000000e6" title="#000000e6 ×1"></div><div class="grey-cell" style="background:#0000000d" title="#0000000d ×1"></div><div class="grey-cell" style="background:#1717170d" title="#1717170d ×1"></div><div class="grey-cell" style="background:#1717171a" title="#1717171a ×3"></div><div class="grey-cell" style="background:#262626" title="#262626 ×3"></div><div class="grey-cell" style="background:#404040" title="#404040 ×1"></div><div class="grey-cell" style="background:#d4d4d4" title="#d4d4d4 ×3"></div><div class="grey-cell" style="background:#d1d5db" title="#d1d5db ×2"></div><div class="grey-cell" style="background:#e5e5e5" title="#e5e5e5 ×1"></div><div class="grey-cell" style="background:#f0f0f0" title="#f0f0f0 ×2"></div><div class="grey-cell" style="background:#f5f5f5" title="#f5f5f5 ×3"></div><div class="grey-cell" style="background:#fdf8f6" title="#fdf8f6 ×1"></div><div class="grey-cell" style="background:#fafafa" title="#fafafa ×2"></div><div class="grey-cell" style="background:#ffffff" title="#ffffff ×7"></div></div>
+    <div class="grey-strip"><div class="grey-cell" style="background:#000000" title="#000000 ×5"></div><div class="grey-cell" style="background:#191919" title="#191919 ×4"></div><div class="grey-cell" style="background:#1b1b1b" title="#1b1b1b ×4"></div><div class="grey-cell" style="background:#262626" title="#262626 ×1"></div><div class="grey-cell" style="background:#333333" title="#333333 ×4"></div><div class="grey-cell" style="background:#383838" title="#383838 ×1"></div><div class="grey-cell" style="background:#4c4c4c" title="#4c4c4c ×2"></div><div class="grey-cell" style="background:#666666" title="#666666 ×2"></div><div class="grey-cell" style="background:#6b6b6b" title="#6b6b6b ×1"></div><div class="grey-cell" style="background:#7c7c7c" title="#7c7c7c ×1"></div><div class="grey-cell" style="background:#7f7f7f" title="#7f7f7f ×2"></div><div class="grey-cell" style="background:#999999" title="#999999 ×2"></div><div class="grey-cell" style="background:#a4a4a4" title="#a4a4a4 ×1"></div><div class="grey-cell" style="background:#b2b2b2" title="#b2b2b2 ×2"></div><div class="grey-cell" style="background:#cccccc" title="#cccccc ×2"></div><div class="grey-cell" style="background:#d0d0d0" title="#d0d0d0 ×1"></div><div class="grey-cell" style="background:#dcdcdc" title="#dcdcdc ×1"></div><div class="grey-cell" style="background:#e5e5e5" title="#e5e5e5 ×2"></div><div class="grey-cell" style="background:#ededed" title="#ededed ×1"></div><div class="grey-cell" style="background:#eeeeee" title="#eeeeee ×2"></div><div class="grey-cell" style="background:#f7eff6" title="#f7eff6 ×2"></div><div class="grey-cell" style="background:#f2f2f2" title="#f2f2f2 ×2"></div><div class="grey-cell" style="background:#f4f4f4" title="#f4f4f4 ×1"></div><div class="grey-cell" style="background:#ffffff" title="#ffffff ×21"></div></div>
     </div>
     <div class="only-light">
-    <div class="grey-strip"><div class="grey-cell" style="background:#000000" title="#000000 ×2"></div><div class="grey-cell" style="background:#000000e6" title="#000000e6 ×1"></div><div class="grey-cell" style="background:#262626" title="#262626 ×3"></div><div class="grey-cell" style="background:#404040" title="#404040 ×1"></div><div class="grey-cell" style="background:#d4d4d4" title="#d4d4d4 ×3"></div><div class="grey-cell" style="background:#d1d5db" title="#d1d5db ×2"></div><div class="grey-cell" style="background:#1717171a" title="#1717171a ×3"></div><div class="grey-cell" style="background:#0000000d" title="#0000000d ×1"></div><div class="grey-cell" style="background:#1717170d" title="#1717170d ×1"></div><div class="grey-cell" style="background:#e5e5e5" title="#e5e5e5 ×1"></div><div class="grey-cell" style="background:#f0f0f0" title="#f0f0f0 ×2"></div><div class="grey-cell" style="background:#f5f5f5" title="#f5f5f5 ×3"></div><div class="grey-cell" style="background:#fdf8f6" title="#fdf8f6 ×1"></div><div class="grey-cell" style="background:#fafafa" title="#fafafa ×2"></div><div class="grey-cell" style="background:#ffffff" title="#ffffff ×7"></div></div>
+    <div class="grey-strip"><div class="grey-cell" style="background:#000000" title="#000000 ×5"></div><div class="grey-cell" style="background:#191919" title="#191919 ×4"></div><div class="grey-cell" style="background:#1b1b1b" title="#1b1b1b ×4"></div><div class="grey-cell" style="background:#262626" title="#262626 ×1"></div><div class="grey-cell" style="background:#333333" title="#333333 ×4"></div><div class="grey-cell" style="background:#383838" title="#383838 ×1"></div><div class="grey-cell" style="background:#4c4c4c" title="#4c4c4c ×2"></div><div class="grey-cell" style="background:#666666" title="#666666 ×2"></div><div class="grey-cell" style="background:#6b6b6b" title="#6b6b6b ×1"></div><div class="grey-cell" style="background:#7c7c7c" title="#7c7c7c ×1"></div><div class="grey-cell" style="background:#7f7f7f" title="#7f7f7f ×2"></div><div class="grey-cell" style="background:#999999" title="#999999 ×2"></div><div class="grey-cell" style="background:#a4a4a4" title="#a4a4a4 ×1"></div><div class="grey-cell" style="background:#b2b2b2" title="#b2b2b2 ×2"></div><div class="grey-cell" style="background:#cccccc" title="#cccccc ×2"></div><div class="grey-cell" style="background:#d0d0d0" title="#d0d0d0 ×1"></div><div class="grey-cell" style="background:#dcdcdc" title="#dcdcdc ×1"></div><div class="grey-cell" style="background:#e5e5e5" title="#e5e5e5 ×2"></div><div class="grey-cell" style="background:#ededed" title="#ededed ×1"></div><div class="grey-cell" style="background:#eeeeee" title="#eeeeee ×2"></div><div class="grey-cell" style="background:#f7eff6" title="#f7eff6 ×2"></div><div class="grey-cell" style="background:#f2f2f2" title="#f2f2f2 ×2"></div><div class="grey-cell" style="background:#f4f4f4" title="#f4f4f4 ×1"></div><div class="grey-cell" style="background:#ffffff" title="#ffffff ×21"></div></div>
     </div>
     
-    <div class="receipts"><div class="eyebrow">14 nearly identical pairs · copy-paste, not decisions</div>
-    <div class="chips-row"><span class="vchip" title="every channel within 5 of its twin"><i class="ndot" style="background:#ffffff"></i>#ffffff ×7 <b class="nsim">≈</b> <i class="ndot" style="background:#fafafa"></i>#fafafa ×2</span><span class="vchip" title="every channel within 7 of its twin"><i class="ndot" style="background:#d4d4d4"></i>#d4d4d4 ×3 <b class="nsim">≈</b> <i class="ndot" style="background:#d1d5db"></i>#d1d5db ×2</span><span class="vchip" title="every channel within 5 of its twin"><i class="ndot" style="background:#f5f5f5"></i>#f5f5f5 ×3 <b class="nsim">≈</b> <i class="ndot" style="background:#f0f0f0"></i>#f0f0f0 ×2</span><span class="vchip" title="every channel within 8 of its twin"><i class="ndot" style="background:#eab308"></i>#eab308 ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#efb100"></i>#efb100 ×1</span><span class="vchip" title="every channel within 1 of its twin"><i class="ndot" style="background:#db2777"></i>#db2777 ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#da2778"></i>#da2778 ×1</span><span class="vchip" title="every channel within 8 of its twin"><i class="ndot" style="background:#ede8fd"></i>#ede8fd ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#f5edff"></i>#f5edff ×1</span><span class="vchip" title="every channel within 1 of its twin"><i class="ndot" style="background:#ede8fd"></i>#ede8fd ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#ede9fe"></i>#ede9fe ×1</span><span class="vchip" title="every channel within 6 of its twin"><i class="ndot" style="background:#ede8fd"></i>#ede8fd ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#f3e8ff"></i>#f3e8ff ×1</span><span class="vchip dim">+6 more</span></div></div>
+    <div class="receipts"><div class="eyebrow">6 nearly identical pairs · copy-paste, not decisions</div>
+    <div class="chips-row"><span class="vchip" title="every channel within 2 of its twin"><i class="ndot" style="background:#1b1b1b"></i>#1b1b1b ×4 <b class="nsim">≈</b> <i class="ndot" style="background:#191919"></i>#191919 ×4</span><span class="vchip" title="every channel within 4 of its twin"><i class="ndot" style="background:#eeeeee"></i>#eeeeee ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#f2f2f2"></i>#f2f2f2 ×2</span><span class="vchip" title="every channel within 8 of its twin"><i class="ndot" style="background:#eeeeee"></i>#eeeeee ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#e9ecf6"></i>#e9ecf6 ×2</span><span class="vchip" title="every channel within 7 of its twin"><i class="ndot" style="background:#eeeeee"></i>#eeeeee ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#ecf3e7"></i>#ecf3e7 ×2</span><span class="vchip" title="every channel within 1 of its twin"><i class="ndot" style="background:#eeeeee"></i>#eeeeee ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#ededed"></i>#ededed ×1</span><span class="vchip" title="every channel within 6 of its twin"><i class="ndot" style="background:#eeeeee"></i>#eeeeee ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#f4f4f4"></i>#f4f4f4 ×1</span></div></div>
   </div>
 </section></section>
 
 <section class="glass pad">
-    <div class="sec-head"><h2>60 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
+    <div class="sec-head"><h2>69 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
     <div class="bars">
-    <div class="bar-row"><span class="bar-label">·2</span>
+    <div class="bar-row"><span class="bar-label">-1px</span>
     <div class="bar-track"><div class="bar" style="width:100%"></div></div>
-    <span class="bar-count">2,714</span></div>
-    <div class="bar-row"><span class="bar-label">·4</span>
-    <div class="bar-track"><div class="bar" style="width:72%"></div></div>
-    <span class="bar-count">1,967</span></div>
-    <div class="bar-row"><span class="bar-label">·3</span>
-    <div class="bar-track"><div class="bar" style="width:55%"></div></div>
-    <span class="bar-count">1,505</span></div>
-    <div class="bar-row"><span class="bar-label">·1</span>
-    <div class="bar-track"><div class="bar" style="width:42%"></div></div>
-    <span class="bar-count">1,136</span></div>
-    <div class="bar-row"><span class="bar-label">·6</span>
-    <div class="bar-track"><div class="bar" style="width:39%"></div></div>
-    <span class="bar-count">1,054</span></div>
-    <div class="bar-row"><span class="bar-label">·0</span>
-    <div class="bar-track"><div class="bar" style="width:29%"></div></div>
-    <span class="bar-count">800</span></div>
-    <div class="bar-row"><span class="bar-label">·1.5</span>
-    <div class="bar-track"><div class="bar" style="width:22%"></div></div>
-    <span class="bar-count">603</span></div>
-    <div class="bar-row"><span class="bar-label">·2.5</span>
-    <div class="bar-track"><div class="bar" style="width:15%"></div></div>
-    <span class="bar-count">415</span></div>
-    <div class="bar-row"><span class="bar-label">·5</span>
-    <div class="bar-track"><div class="bar" style="width:14%"></div></div>
-    <span class="bar-count">373</span></div>
-    <div class="bar-row"><span class="bar-label">·0.5</span>
-    <div class="bar-track"><div class="bar" style="width:10%"></div></div>
-    <span class="bar-count">278</span></div>
-    <div class="bar-row"><span class="bar-label">·8</span>
-    <div class="bar-track"><div class="bar" style="width:9%"></div></div>
-    <span class="bar-count">252</span></div>
-    <div class="bar-row"><span class="bar-label">·10</span>
-    <div class="bar-track"><div class="bar" style="width:8%"></div></div>
-    <span class="bar-count">217</span></div>
-    <div class="bar-row"><span class="bar-label">·px</span>
-    <div class="bar-track"><div class="bar" style="width:6%"></div></div>
-    <span class="bar-count">176</span></div>
-    <div class="bar-row"><span class="bar-label">·16</span>
-    <div class="bar-track"><div class="bar" style="width:3%"></div></div>
-    <span class="bar-count">91</span></div>
-    <div class="bar-row"><span class="bar-label">·12</span>
-    <div class="bar-track"><div class="bar" style="width:3%"></div></div>
-    <span class="bar-count">86</span></div>
-    <div class="bar-row"><span class="bar-label">·3.5</span>
-    <div class="bar-track"><div class="bar" style="width:2%"></div></div>
-    <span class="bar-count">35</span></div>
-    <div class="bar-row"><span class="bar-label">·7</span>
-    <div class="bar-track"><div class="bar" style="width:2%"></div></div>
-    <span class="bar-count">34</span></div>
-    <div class="bar-row"><span class="bar-label">·20</span>
-    <div class="bar-track"><div class="bar" style="width:2%"></div></div>
-    <span class="bar-count">22</span></div></div>
-    <div class="receipts"><div class="eyebrow">636 arbitrary values punched through the scale, one bracket at a time</div>
-    <div class="chips-row"><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×24</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/billing/payment-methods.tsx">[0.625rem] ×22</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/partners-table.tsx">[200px] ×20</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/applications/applications-analytics-cards.tsx">[300px] ×19</span><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×18</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×16</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×11</span><span class="vchip bad" title="apps/web/app/(ee)/partners.dub.co/(auth-login-register)/(generic)/layout.tsx">[50px] ×11</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/commissions/[commissionId]/page.tsx">[360px] ×11</span><span class="vchip dim">+169 more</span></div></div></section>
+    <span class="bar-count">22</span></div>
+    <div class="bar-row"><span class="bar-label">0px</span>
+    <div class="bar-track"><div class="bar" style="width:95%"></div></div>
+    <span class="bar-count">21</span></div>
+    <div class="bar-row"><span class="bar-label">12px</span>
+    <div class="bar-track"><div class="bar" style="width:73%"></div></div>
+    <span class="bar-count">16</span></div>
+    <div class="bar-row"><span class="bar-label">8px</span>
+    <div class="bar-track"><div class="bar" style="width:64%"></div></div>
+    <span class="bar-count">14</span></div>
+    <div class="bar-row"><span class="bar-label">1px</span>
+    <div class="bar-track"><div class="bar" style="width:64%"></div></div>
+    <span class="bar-count">14</span></div>
+    <div class="bar-row"><span class="bar-label">2em</span>
+    <div class="bar-track"><div class="bar" style="width:50%"></div></div>
+    <span class="bar-count">11</span></div>
+    <div class="bar-row"><span class="bar-label">-2px</span>
+    <div class="bar-track"><div class="bar" style="width:41%"></div></div>
+    <span class="bar-count">9</span></div>
+    <div class="bar-row"><span class="bar-label">4px</span>
+    <div class="bar-track"><div class="bar" style="width:41%"></div></div>
+    <span class="bar-count">9</span></div>
+    <div class="bar-row"><span class="bar-label">1rem</span>
+    <div class="bar-track"><div class="bar" style="width:36%"></div></div>
+    <span class="bar-count">8</span></div>
+    <div class="bar-row"><span class="bar-label">-10px</span>
+    <div class="bar-track"><div class="bar" style="width:36%"></div></div>
+    <span class="bar-count">8</span></div>
+    <div class="bar-row"><span class="bar-label">48px</span>
+    <div class="bar-track"><div class="bar" style="width:36%"></div></div>
+    <span class="bar-count">8</span></div>
+    <div class="bar-row"><span class="bar-label">-4px</span>
+    <div class="bar-track"><div class="bar" style="width:32%"></div></div>
+    <span class="bar-count">7</span></div>
+    <div class="bar-row"><span class="bar-label">6px</span>
+    <div class="bar-track"><div class="bar" style="width:32%"></div></div>
+    <span class="bar-count">7</span></div>
+    <div class="bar-row"><span class="bar-label">5px</span>
+    <div class="bar-track"><div class="bar" style="width:32%"></div></div>
+    <span class="bar-count">7</span></div>
+    <div class="bar-row"><span class="bar-label">10px</span>
+    <div class="bar-track"><div class="bar" style="width:32%"></div></div>
+    <span class="bar-count">7</span></div>
+    <div class="bar-row"><span class="bar-label">1.5em</span>
+    <div class="bar-track"><div class="bar" style="width:32%"></div></div>
+    <span class="bar-count">7</span></div>
+    <div class="bar-row"><span class="bar-label">17px</span>
+    <div class="bar-track"><div class="bar" style="width:27%"></div></div>
+    <span class="bar-count">6</span></div>
+    <div class="bar-row"><span class="bar-label">1em</span>
+    <div class="bar-track"><div class="bar" style="width:27%"></div></div>
+    <span class="bar-count">6</span></div></div></section>
 <section>
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  <div class="num">3</div><div class="lab">typefaces</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">1</div><div class="lab">typefaces</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~3 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">3 · cleaner than 71% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-eq">=</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">41</div><div class="lab">font sizes</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 · messier than 88% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">52</div><div class="lab">font sizes</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 · messier than 94% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  <div class="num">27</div><div class="lab">border radii</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 · messier than 88% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">48</div><div class="lab">border radii</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 · messier than 97% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-bad">
+  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <div class="num">34</div><div class="lab">shadow styles</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~6 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">2 · messier than 94% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
-    <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×2256</span><span class="vchip">·xs ×817</span><span class="vchip">·lg ×272</span><span class="vchip">·base ×230</span><span class="vchip">·xl ×69</span><span class="vchip">·3xl ×14</span><span class="vchip">·2xl ×14</span><span class="vchip">·[0.625rem] ×14</span><span class="vchip">·[13px] ×11</span><span class="vchip">·4xl ×10</span><span class="vchip">·5xl ×8</span><span class="vchip">·[0.8125rem] ×7</span><span class="vchip">·[0.7rem] ×6</span><span class="vchip">·[11px] ×6</span></div></div>
-    <div class="spec"><div class="eyebrow">the corners, drawn · 27 radii in one interface</div>
+    <div class="spec"><div class="eyebrow">the type scale, at its real sizes · how many of these are the same decision?</div>
+      <div class="spec-rows">
+        <div class="spec-type">
+          <span class="spec-val">1rem ×2</span>
+          <span class="spec-sample" style="font-size:16px">Almost but not quite</span>
+        </div>
+        <div class="spec-type">
+          <span class="spec-val">16px ×1</span>
+          <span class="spec-sample" style="font-size:16px">Almost but not quite</span>
+        </div>
+        <div class="spec-type">
+          <span class="spec-val">12px ×1</span>
+          <span class="spec-sample" style="font-size:12px">Almost but not quite</span>
+        </div>
+        <div class="spec-type">
+          <span class="spec-val">0.75rem ×1</span>
+          <span class="spec-sample" style="font-size:12px">Almost but not quite</span>
+        </div></div>
+      </div>
+    <div class="spec"><div class="eyebrow">the corners, drawn · 48 radii in one interface</div>
       <div class="spec-grid">
-        <div class="spec-cell"><div class="spec-box" style="border-radius:999px"></div>
-        <span class="spec-cap">999px ×3</span></div>
         <div class="spec-cell"><div class="spec-box" style="border-radius:50%"></div>
-        <span class="spec-cap">50% ×2</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:10px"></div>
-        <span class="spec-cap">10px ×1</span></div></div></div>
+        <span class="spec-cap">50% ×7</span></div>
+        <div class="spec-cell"><div class="spec-box" style="border-radius:20%"></div>
+        <span class="spec-cap">20% ×3</span></div>
+        <div class="spec-cell"><div class="spec-box" style="border-radius:2px"></div>
+        <span class="spec-cap">2px ×2</span></div>
+        <div class="spec-cell"><div class="spec-box" style="border-radius:100%"></div>
+        <span class="spec-cap">100% ×1</span></div>
+        <div class="spec-cell"><div class="spec-box" style="border-radius:1rem"></div>
+        <span class="spec-cap">1rem ×1</span></div>
+        <div class="spec-cell"><div class="spec-box" style="border-radius:3px"></div>
+        <span class="spec-cap">3px ×1</span></div>
+        <div class="spec-cell"><div class="spec-box" style="border-radius:0 0 3px 3px"></div>
+        <span class="spec-cap">0 0 3px 3px ×1</span></div></div></div>
     
-    <div class="glass pad" style="margin-top:16px"><div class="sec-head"><h2>3 typefaces, declared 5 different ways</h2><p class="sub">every distinct declaration is a chance for the next one to be wrong</p></div><div class="fam-rows"><div class="mini-card"><span class="mc-path">system-ui</span><span class="pill pill-mint">×2</span></div><div class="mini-card"><span class="mc-path">Inter</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">satoshi</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">Geist</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">ui-monospace</span><span class="pill pill-mint">×1</span></div></div></div>
+    <div class="glass pad" style="margin-top:16px"><div class="sec-head"><h2>1 typeface, declared 14 different ways</h2><p class="sub">every distinct declaration is a chance for the next one to be wrong</p></div><div class="fam-rows"><div class="mini-card"><span class="mc-path">'TeleNeoWeb'</span><span class="pill pill-coral">×24</span></div><div class="mini-card"><span class="mc-path">'TeleNeoWeb', sans-serif</span><span class="pill pill-mint">×2</span></div><div class="mini-card"><span class="mc-path">var(--scl-font-variant-body-family, TeleNeoWeb, sans-serif)</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">var( --scl-font-variant-body-short-family, TeleNeoWeb, sans-serif )</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">var( --scl-font-variant-body-large-family, TeleNeoWeb, sans-serif )</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">var(--scl-font-variant-smaller-family, TeleNeoWeb, sans-serif)</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">var(--scl-font-variant-label-family, TeleNeoWeb, sans-serif)</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">var(--scl-font-variant-caption-family, TeleNeoWeb, sans-serif)</span><span class="pill pill-mint">×1</span></div></div></div>
   </section>
 <section class="glass pad">
     <div class="sec-head"><h2>Where it hurts most</h2><p class="sub">the 5 files carrying the most off-system styling</p></div>
     <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/dropdown/dropdown.css">packages/components/src/components/dropdown/dropdown.css</a>
       <span class="ledger-pills">
-        <span class="pill pill-amber">15 stray colours</span>
-        <span class="pill pill-coral">3 inline</span>
+        <span class="pill pill-amber">4 stray colours</span>
+        
       </span>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/api/og/avatar/%5B%5B...seed%5D%5D/route.tsx">apps/web/app/api/og/avatar/[[...seed]]/route.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/alert/alert.css">packages/components/src/components/alert/alert.css</a>
       <span class="ledger-pills">
-        <span class="pill pill-amber">9 stray colours</span>
+        <span class="pill pill-amber">2 stray colours</span>
         
       </span>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/submitted-leads/submitted-lead-status-badges.ts">apps/web/ui/submitted-leads/submitted-lead-status-badges.ts</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/data-grid/cell-handlers/number-cell.tsx">packages/components/src/components/data-grid/cell-handlers/number-cell.tsx</a>
       <span class="ledger-pills">
-        <span class="pill pill-amber">8 stray colours</span>
         
+        <span class="pill pill-coral">2 inline</span>
       </span>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">04</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/data-grid/data-grid.tsx">packages/components/src/components/data-grid/data-grid.tsx</a>
       <span class="ledger-pills">
-        <span class="pill pill-amber">6 stray colours</span>
-        <span class="pill pill-coral">1 inline</span>
+        
+        <span class="pill pill-coral">2 inline</span>
       </span>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">05</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/styles/globals.css">apps/web/styles/globals.css</a>
+      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/carousel/carousel.css">packages/components/src/components/carousel/carousel.css</a>
       <span class="ledger-pills">
-        <span class="pill pill-amber">6 stray colours</span>
+        <span class="pill pill-amber">1 stray colour</span>
         
       </span>
     </div></div></section>
@@ -791,273 +808,218 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="sec-head"><h2>Duplicated components</h2><p class="sub">an agent asking which one is canonical gets several plausible answers. Paths open in VS Code</p></div>
     <div class="fams">
     <div class="fam">
-      <div class="eyebrow">two icon sets collide on 11 names · one problem, not 11</div>
-      <div class="chips-row"><span class="vchip">&lt;Lock&gt;</span><span class="vchip">&lt;Download&gt;</span><span class="vchip">&lt;Users&gt;</span><span class="vchip">&lt;CursorRays&gt;</span><span class="vchip">&lt;Hyperlink&gt;</span><span class="vchip">&lt;User&gt;</span><span class="vchip">&lt;Gear&gt;</span><span class="vchip">&lt;Eye&gt;</span><span class="vchip">&lt;LinesY&gt;</span><span class="vchip">&lt;ConnectedDots4&gt;</span><span class="vchip">&lt;Heart&gt;</span></div>
-      <p class="sub" style="margin-top:8px">apps/web/ui/shared/icons/lock.tsx vs packages/ui/src/icons/nucleo/lock.tsx</p>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">&lt;PayoutStats&gt; · 3 implementations</div>
+      <div class="eyebrow">&lt;TelekomNavItem&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/payouts/payout-stats.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/payouts/payout-stats.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/layout/sidebar/payout-stats.tsx">apps/web/ui/layout/sidebar/payout-stats.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/telekom/telekom-nav-item/telekom-nav-item.tsx">packages/components/src/components/telekom/telekom-nav-item/telekom-nav-item.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/telekom/telekom-nav-flyout/telekom-nav-flyout.tsx">packages/components/src/components/telekom/telekom-nav-flyout/telekom-nav-flyout.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Logo&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx">apps/web/app/(ee)/partners.dub.co/(auth-other)/logo.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/packages/ui/src/logo.tsx">packages/ui/src/logo.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/telekom/logo/logo.tsx">packages/components/src/components/telekom/logo/logo.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/telekom/app-logo/app-logo.tsx">packages/components/src/components/telekom/app-logo/app-logo.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;EmptyState&gt; · defined twice, one wraps the other</div>
+      <div class="eyebrow">&lt;Shell&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/shared/empty-state.tsx">apps/web/ui/shared/empty-state.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/packages/ui/src/empty-state.tsx">packages/ui/src/empty-state.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/telekom/app-shell/app-shell.tsx">packages/components/src/components/telekom/app-shell/app-shell.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/telekom/telekom-app-shell/telekom-app-shell.tsx">packages/components/src/components/telekom/telekom-app-shell/telekom-app-shell.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;FormControl&gt; · 2 implementations</div>
+      <div class="eyebrow">footer family · 6 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx">apps/web/ui/partners/groups/design/application-form/fields/form-control.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/submitted-leads/form-fields/form-control.tsx">apps/web/ui/submitted-leads/form-fields/form-control.tsx</a></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TelekomFooter&gt;</div><div class="mc-path">packages/components/src/components/telekom/telekom-footer/telekom-footer.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TelekomFooterContent&gt;</div><div class="mc-path">packages/components/src/components/telekom/telekom-footer/telekom-footer-content.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AppFooter&gt;</div><div class="mc-path">packages/components/src/components/telekom/app-footer/app-footer.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TelekomFooterDataBackCompat&gt;</div><div class="mc-path">packages/components/src/components/telekom/telekom-footer-data-back-compat/telekom-footer-data-back-compat.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TelekomFooterExtendedNavigation&gt;</div><div class="mc-path">packages/components/src/components/telekom/telekom-footer-extended-navigation/telekom-footer-extended-navigation.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TelekomFooterExtendedNavigationColumn&gt;</div><div class="mc-path">packages/components/src/components/telekom/telekom-footer-extended-navigation/telekom-footer-extended-navigation-column.tsx</div></div></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;SettingsRow&gt; · 2 implementations</div>
+      <div class="eyebrow">button family · 5 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/profile/settings-row.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/app.dub.co/(dashboard)/%5Bslug%5D/(ee)/program/program-settings-row.tsx">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/program-settings-row.tsx</a></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Button&gt;</div><div class="mc-path">packages/components/src/components/button/button.tsx</div></div><span class="pill pill-mint">used 10×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;RadioButton&gt;</div><div class="mc-path">packages/components/src/components/radio-button/radio-button.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;RadioButtonGroup&gt;</div><div class="mc-path">packages/components/src/components/radio-button-group/radio-button-group.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SegmentedButton&gt;</div><div class="mc-path">packages/components/src/components/segmented-button/segmented-button.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ToggleButton&gt;</div><div class="mc-path">packages/components/src/components/toggle-button/toggle-button.tsx</div></div></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;Hero&gt; · 2 implementations</div>
+      <div class="eyebrow">toast family · 5 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/placeholders/hero.tsx">apps/web/ui/placeholders/hero.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/modals/dot-link-offer-modal.tsx">apps/web/ui/modals/dot-link-offer-modal.tsx</a></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Toast&gt;</div><div class="mc-path">packages/components/src/components/toast/toast.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Notification&gt;</div><div class="mc-path">packages/components/src/components/notification/notification.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;NotificationBanner&gt;</div><div class="mc-path">packages/components/src/components/notification-banner/notification-banner.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;NotificationMessage&gt;</div><div class="mc-path">packages/components/src/components/notification-message/notification-message.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;NotificationToast&gt;</div><div class="mc-path">packages/components/src/components/notification-toast/notification-toast.tsx</div></div></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;QRCode&gt; · 2 implementations</div>
+      <div class="eyebrow">list family · 4 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/shared/qr-code.tsx">apps/web/ui/shared/qr-code.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/packages/ui/src/icons/nucleo/qrcode.tsx">packages/ui/src/icons/nucleo/qrcode.tsx</a></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MenuFlyoutList&gt;</div><div class="mc-path">packages/components/src/components/menu-flyout-list/menu-flyout-list.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TelekomNavList&gt;</div><div class="mc-path">packages/components/src/components/telekom/telekom-nav-list/telekom-nav-list.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;List&gt;</div><div class="mc-path">packages/components/src/components/list/list.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ListItem&gt;</div><div class="mc-path">packages/components/src/components/list-item/list-item.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;Analytics&gt; · 2 implementations</div>
+      <div class="eyebrow">header family · 4 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/analytics/index.tsx">apps/web/ui/analytics/index.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/placeholders/feature-graphics/analytics.tsx">apps/web/ui/placeholders/feature-graphics/analytics.tsx</a></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TabHeader&gt;</div><div class="mc-path">packages/components/src/components/tab-header/tab-header.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Header&gt;</div><div class="mc-path">packages/components/src/components/telekom/app-header/app-header.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TelekomHeader&gt;</div><div class="mc-path">packages/components/src/components/telekom/telekom-header/telekom-header.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TelekomHeaderDataBackCompat&gt;</div><div class="mc-path">packages/components/src/components/telekom/telekom-header-data-back-compat/telekom-header-data-back-compat.tsx</div></div></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">dropdown family · 8 variants</div>
+      <div class="eyebrow">select family · 2 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FolderDropdown&gt;</div><div class="mc-path">apps/web/ui/folders/folder-dropdown.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PartnerProgramDropdown&gt;</div><div class="mc-path">apps/web/ui/layout/sidebar/partner-program-dropdown.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;UserDropdown&gt;</div><div class="mc-path">apps/web/ui/layout/sidebar/user-dropdown.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MoreDropdown&gt;</div><div class="mc-path">apps/web/ui/links/link-builder/more-dropdown.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PayoutMethodDropdown&gt;</div><div class="mc-path">apps/web/ui/partners/payouts/payout-method-dropdown.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SubmittedLeadStatusDropdown&gt;</div><div class="mc-path">apps/web/ui/submitted-leads/submitted-lead-status-dropdown.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
-      <div class="mini-card dim">…and 2 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">header family · 8 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;InviteSheetHeader&gt;</div><div class="mc-path">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/invite-sheet-ui.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LinkBuilderHeader&gt;</div><div class="mc-path">apps/web/ui/links/link-builder/link-builder-header.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PageContentHeader&gt;</div><div class="mc-path">apps/web/ui/layout/page-content/page-content-header.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;BountyHeaderTitle&gt;</div><div class="mc-path">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/bounties/[bountyId]/bounty-header.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;GroupHeaderTabs&gt;</div><div class="mc-path">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/groups/[groupSlug]/group-header.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;GroupHeaderTitle&gt;</div><div class="mc-path">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/groups/[groupSlug]/group-header.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
-      <div class="mini-card dim">…and 2 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">avatar family · 7 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PartnerAvatar&gt;</div><div class="mc-path">apps/web/ui/partners/partner-avatar.tsx</div></div><span class="pill pill-mint">used 74×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;UserAvatar&gt;</div><div class="mc-path">apps/web/ui/users/user-avatar.tsx</div></div><span class="pill pill-mint">used 34×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CustomerAvatar&gt;</div><div class="mc-path">apps/web/ui/customers/customer-avatar.tsx</div></div><span class="pill pill-mint">used 9×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TokenAvatar&gt;</div><div class="mc-path">apps/web/ui/token-avatar.tsx</div></div><span class="pill pill-mint">used 9×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Avatar&gt;</div><div class="mc-path">packages/ui/src/avatar.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ActivityLogUserAvatar&gt;</div><div class="mc-path">apps/web/ui/activity-logs/activity-entry-chips.tsx</div></div><span class="pill pill-mint">used 2×</span></div>
-      <div class="mini-card dim">…and 1 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">alert family · 7 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AlertCircleFill&gt;</div><div class="mc-path">apps/web/ui/shared/icons/alert-circle-fill.tsx</div></div><span class="pill pill-mint">used 12×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ShieldAlert&gt;</div><div class="mc-path">packages/ui/src/icons/nucleo/shield-alert.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ReviewFraudAlertSheet&gt;</div><div class="mc-path">apps/web/app/(ee)/admin.dub.co/(dashboard)/partners/fraud/review-fraud-alert-sheet.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Alert&gt;</div><div class="mc-path">packages/ui/src/alert.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AlertDescription&gt;</div><div class="mc-path">packages/ui/src/alert.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AlertTitle&gt;</div><div class="mc-path">packages/ui/src/alert.tsx</div></div></div>
-      <div class="mini-card dim">…and 1 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">progress family · 6 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgressCircle&gt;</div><div class="mc-path">packages/ui/src/progress-circle.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;BountyProgressBarRow&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-progress-bar-row.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StepProgressBar&gt;</div><div class="mc-path">apps/web/ui/partners/merge-accounts/step-progress-bar.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PerformanceBountyProgress&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-performance.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SubmissionBountyProgress&gt;</div><div class="mc-path">apps/web/ui/partners/bounties/bounty-performance.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgressBar&gt;</div><div class="mc-path">packages/ui/src/progress-bar.tsx</div></div></div>
-      
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">sidebar family · 6 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LayoutSidebar&gt;</div><div class="mc-path">packages/ui/src/icons/nucleo/layout-sidebar.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MarketplaceSidebarFilters&gt;</div><div class="mc-path">apps/web/ui/program-marketplace/marketplace-sidebar-filters.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ProgramSidebar&gt;</div><div class="mc-path">apps/web/app/(ee)/partners.dub.co/(dashboard)/programs/[programSlug]/apply/program-sidebar.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SidebarProvider&gt;</div><div class="mc-path">apps/web/app/(ee)/app.dub.co/(new-program)/sidebar-context.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SidebarUsage&gt;</div><div class="mc-path">apps/web/ui/layout/sidebar/sidebar-usage.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FilterSidebar&gt;</div><div class="mc-path">packages/ui/src/filter/filter-sidebar.tsx</div></div></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownSelectItem&gt;</div><div class="mc-path">packages/components/src/components/dropdown-select-item/dropdown-select-item.tsx</div></div><span class="pill pill-mint">used 21×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownSelect&gt;</div><div class="mc-path">packages/components/src/components/dropdown-select/dropdown-select.tsx</div></div><span class="pill pill-mint">used 5×</span></div>
       
       </div>
     </div></div></div>
 <div class="glass pad half">
-    <div class="sec-head"><h2>48 inline style blocks</h2><p class="sub">styling no system can see</p></div>
+    <div class="sec-head"><h2>7 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/accordion-block-modal.tsx</a><span class="mc-count">×4</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/data-grid/cell-handlers/number-cell.tsx">packages/components/src/components/data-grid/cell-handlers/number-cell.tsx</a><span class="mc-count">×2</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx">apps/web/ui/partners/groups/design/lander/modals/files-block-modal.tsx</a><span class="mc-count">×3</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:75%"></div></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/data-grid/data-grid.tsx">packages/components/src/components/data-grid/data-grid.tsx</a><span class="mc-count">×2</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx">apps/web/ui/partners/payouts/stablecoin-payout-modal.tsx</a><span class="mc-count">×3</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:75%"></div></div>
-      </div>
-      <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/packages/ui/src/icons/youtube.tsx">packages/ui/src/icons/youtube.tsx</a><span class="mc-count">×2</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/data-grid/cell-handlers/select-cell.tsx">packages/components/src/components/data-grid/cell-handlers/select-cell.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx">apps/web/app/(ee)/app.dub.co/embed/referrals/bounties/index.tsx</a><span class="mc-count">×1</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:25%"></div></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/data-grid/cell-handlers/text-cell.tsx">packages/components/src/components/data-grid/cell-handlers/text-cell.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/dub/apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/%5BprogramSlug%5D/page.tsx">apps/web/app/(ee)/partners.dub.co/(dashboard)/messages/[programSlug]/page.tsx</a><span class="mc-count">×1</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:25%"></div></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/scale/packages/components/src/components/telekom/telekom-footer/telekom-footer-content.tsx">packages/components/src/components/telekom/telekom-footer/telekom-footer-content.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:50%"></div></div>
       </div></div>
-    <div class="receipts"><div class="eyebrow">1 !important declaration · the cascade admitting defeat</div>
-    <div class="chips-row"><span class="vchip bad" title="apps/web/styles/globals.css">globals.css ×1</span></div></div></div>
+    <div class="receipts"><div class="eyebrow">27 !important declarations · the cascade admitting defeat</div>
+    <div class="chips-row"><span class="vchip bad" title="packages/components/src/components/data-grid/data-grid.css">data-grid.css ×8</span><span class="vchip bad" title="packages/components/src/components/tag/tag.css">tag.css ×4</span><span class="vchip bad" title="packages/components/src/components/switch/switch.css">switch.css ×3</span><span class="vchip bad" title="packages/components/src/components/tab-header/tab-header.css">tab-header.css ×3</span><span class="vchip bad" title="packages/components/src/components/date-picker/date-picker.css">date-picker.css ×2</span><span class="vchip bad" title="packages/components/src/components/segment/segment.css">segment.css ×2</span></div></div></div>
 </div>
 <section class="glass pad">
-    <div class="sec-head"><h2>The adoption map</h2><p class="sub">1,573 components defined · tile area is import count · the real system, drawn to scale</p></div>
-    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="295.7" height="438.0" class="atile">
-      <title>&lt;Button&gt; · used 995× · packages/ui/src/button.tsx</title></rect>
-    <text x="147.9" y="215.0" class="adot-n">Button</text>
-    <text x="147.9" y="233.0" class="adot-c">995×</text></g><g><rect x="295.7" y="0.0" width="238.7" height="336.0" class="atile">
-      <title>&lt;Link&gt; · used 616× · apps/web/ui/shared/icons/link.tsx</title></rect>
-    <text x="415.1" y="164.0" class="adot-n">Link</text>
-    <text x="415.1" y="182.0" class="adot-c">616×</text></g><g><rect x="295.7" y="336.0" width="238.7" height="102.0" class="atile">
-      <title>&lt;Modal&gt; · used 187× · packages/ui/src/modal.tsx</title></rect>
-    <text x="415.1" y="383.0" class="adot-n">Modal</text>
-    <text x="415.1" y="401.0" class="adot-c">187×</text></g><g><rect x="534.4" y="0.0" width="140.3" height="134.6" class="atile">
-      <title>&lt;Tooltip&gt; · used 145× · packages/ui/src/tooltip.tsx</title></rect>
-    <text x="604.6" y="63.3" class="adot-n">Tooltip</text>
-    <text x="604.6" y="81.3" class="adot-c">145×</text></g><g><rect x="534.4" y="134.6" width="140.3" height="104.9" class="atile">
-      <title>&lt;LoadingSpinner&gt; · used 113× · packages/ui/src/icons/loading-spinner.tsx</title></rect>
-    <text x="604.6" y="183.0" class="adot-n">LoadingSpinner</text>
-    <text x="604.6" y="201.0" class="adot-c">113×</text></g><g><rect x="534.4" y="239.4" width="140.3" height="99.3" class="atile">
-      <title>&lt;Footer&gt; · used 107× · packages/email/src/components/footer.tsx</title></rect>
-    <text x="604.6" y="285.1" class="adot-n">Footer</text>
-    <text x="604.6" y="303.1" class="adot-c">107×</text></g><g><rect x="534.4" y="338.7" width="140.3" height="99.3" class="atile">
-      <title>&lt;Footer&gt; · used 107× · packages/ui/src/footer.tsx</title></rect>
-    <text x="604.6" y="384.4" class="adot-n">Footer</text>
-    <text x="604.6" y="402.4" class="adot-c">107×</text></g><g><rect x="674.7" y="0.0" width="126.8" height="102.6" class="atile">
-      <title>&lt;Popover&gt; · used 100× · packages/ui/src/popover.tsx</title></rect>
-    <text x="738.1" y="47.3" class="adot-n">Popover</text>
-    <text x="738.1" y="65.3" class="adot-c">100×</text></g><g><rect x="801.5" y="0.0" width="123.0" height="102.6" class="atile">
-      <title>&lt;InfoTooltip&gt; · used 97× · packages/ui/src/tooltip.tsx</title></rect>
-    <text x="863.1" y="47.3" class="adot-n">InfoTooltip</text>
-    <text x="863.1" y="65.3" class="adot-c">97×</text></g><g><rect x="924.6" y="0.0" width="115.4" height="102.6" class="atile">
-      <title>&lt;X&gt; · used 91× · apps/web/ui/shared/icons/x.tsx</title></rect>
-    <text x="982.3" y="47.3" class="adot-n">X</text>
-    <text x="982.3" y="65.3" class="adot-c">91×</text></g><g><rect x="674.7" y="102.6" width="98.6" height="117.5" class="atile">
-      <title>&lt;AnimatedSizeContainer&gt; · used 89× · packages/ui/src/animated-size-container.tsx</title></rect>
+    <div class="sec-head"><h2>The composition map</h2><p class="sub">95 components defined · tile area is internal use: how the system builds from itself, downstream consumers invisible from here · the real system, drawn to scale</p></div>
+    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="217.7" height="255.5" class="atile">
+      <title>&lt;DropdownSelectItem&gt; · used 21× · packages/components/src/components/dropdown-select-item/dropdown-select-item.tsx</title></rect>
+    <text x="108.8" y="123.8" class="adot-n">DropdownSelectItem</text>
+    <text x="108.8" y="141.8" class="adot-c">21×</text></g><g><rect x="0.0" y="255.5" width="217.7" height="182.5" class="atile">
+      <title>&lt;Combobox&gt; · used 15× · packages/components/src/components/combobox/combobox.tsx</title></rect>
+    <text x="108.8" y="342.8" class="adot-n">Combobox</text>
+    <text x="108.8" y="360.8" class="adot-c">15×</text></g><g><rect x="217.7" y="0.0" width="193.5" height="150.6" class="atile">
+      <title>&lt;Tag&gt; · used 11× · packages/components/src/components/tag/tag.tsx</title></rect>
+    <text x="314.4" y="71.3" class="adot-n">Tag</text>
+    <text x="314.4" y="89.3" class="adot-c">11×</text></g><g><rect x="217.7" y="150.6" width="193.5" height="150.6" class="atile">
+      <title>&lt;TelekomNavItem&gt; · used 11× · packages/components/src/components/telekom/telekom-nav-item/telekom-nav-item.tsx</title></rect>
+    <text x="314.4" y="221.8" class="adot-n">TelekomNavItem</text>
+    <text x="314.4" y="239.8" class="adot-c">11×</text></g><g><rect x="217.7" y="301.1" width="193.5" height="136.9" class="atile">
+      <title>&lt;Button&gt; · used 10× · packages/components/src/components/button/button.tsx</title></rect>
+    <text x="314.4" y="365.6" class="adot-n">Button</text>
+    <text x="314.4" y="383.6" class="adot-c">10×</text></g><g><rect x="411.2" y="0.0" width="163.3" height="162.2" class="atile">
+      <title>&lt;Link&gt; · used 10× · packages/components/src/components/link/link.tsx</title></rect>
+    <text x="492.8" y="77.1" class="adot-n">Link</text>
+    <text x="492.8" y="95.1" class="adot-c">10×</text></g><g><rect x="411.2" y="162.2" width="163.3" height="146.0" class="atile">
+      <title>&lt;HelperText&gt; · used 9× · packages/components/src/components/helper-text/helper-text.tsx</title></rect>
+    <text x="492.8" y="231.2" class="adot-n">HelperText</text>
+    <text x="492.8" y="249.2" class="adot-c">9×</text></g><g><rect x="411.2" y="308.2" width="163.3" height="129.8" class="atile">
+      <title>&lt;AppNavigationUserMenu&gt; · used 8× · packages/components/src/components/telekom/app-navigation-user-menu/app-navigation-user-menu.tsx</title></rect>
     
-    <text x="724.0" y="165.4" class="adot-c">89×</text></g><g><rect x="674.7" y="220.1" width="98.6" height="110.9" class="atile">
-      <title>&lt;PageContent&gt; · used 84× · apps/web/ui/layout/page-content/index.tsx</title></rect>
-    <text x="724.0" y="271.6" class="adot-n">PageContent</text>
-    <text x="724.0" y="289.6" class="adot-c">84×</text></g><g><rect x="674.7" y="331.1" width="98.6" height="106.9" class="atile">
-      <title>&lt;PageWidthWrapper&gt; · used 81× · apps/web/ui/layout/page-width-wrapper.tsx</title></rect>
+    <text x="492.8" y="377.1" class="adot-c">8×</text></g><g><rect x="574.4" y="0.0" width="120.9" height="175.2" class="atile">
+      <title>&lt;Checkbox&gt; · used 8× · packages/components/src/components/checkbox/checkbox.tsx</title></rect>
+    <text x="634.9" y="83.6" class="adot-n">Checkbox</text>
+    <text x="634.9" y="101.6" class="adot-c">8×</text></g><g><rect x="574.4" y="175.2" width="120.9" height="131.4" class="atile">
+      <title>&lt;Breadcrumb&gt; · used 6× · packages/components/src/components/breadcrumb/breadcrumb.tsx</title></rect>
+    <text x="634.9" y="236.9" class="adot-n">Breadcrumb</text>
+    <text x="634.9" y="254.9" class="adot-c">6×</text></g><g><rect x="574.4" y="306.6" width="120.9" height="131.4" class="atile">
+      <title>&lt;Icon&gt; · used 6× · packages/components/src/components/icon/icon.tsx</title></rect>
+    <text x="634.9" y="368.3" class="adot-n">Icon</text>
+    <text x="634.9" y="386.3" class="adot-c">6×</text></g><g><rect x="695.3" y="0.0" width="114.9" height="138.3" class="atile">
+      <title>&lt;Logo&gt; · used 6× · packages/components/src/components/telekom/logo/logo.tsx</title></rect>
+    <text x="752.8" y="65.2" class="adot-n">Logo</text>
+    <text x="752.8" y="83.2" class="adot-c">6×</text></g><g><rect x="810.2" y="0.0" width="114.9" height="138.3" class="atile">
+      <title>&lt;MenuFlyoutList&gt; · used 6× · packages/components/src/components/menu-flyout-list/menu-flyout-list.tsx</title></rect>
     
-    <text x="724.0" y="388.5" class="adot-c">81×</text></g><g><rect x="773.3" y="102.6" width="92.0" height="113.3" class="atile">
-      <title>&lt;Switch&gt; · used 80× · packages/ui/src/switch.tsx</title></rect>
-    <text x="819.3" y="155.3" class="adot-n">Switch</text>
-    <text x="819.3" y="173.3" class="adot-c">80×</text></g><g><rect x="865.3" y="102.6" width="89.7" height="113.3" class="atile">
-      <title>&lt;StatusBadge&gt; · used 78× · packages/ui/src/status-badge.tsx</title></rect>
+    <text x="867.7" y="73.2" class="adot-c">6×</text></g><g><rect x="925.1" y="0.0" width="114.9" height="138.3" class="atile">
+      <title>&lt;TelekomNavList&gt; · used 6× · packages/components/src/components/telekom/telekom-nav-list/telekom-nav-list.tsx</title></rect>
     
-    <text x="910.1" y="163.3" class="adot-c">78×</text></g><g><rect x="954.9" y="102.6" width="85.1" height="113.3" class="atile">
-      <title>&lt;PartnerAvatar&gt; · used 74× · apps/web/ui/partners/partner-avatar.tsx</title></rect>
+    <text x="982.6" y="73.2" class="adot-c">6×</text></g><g><rect x="695.3" y="138.3" width="132.6" height="99.9" class="atile">
+      <title>&lt;Badge&gt; · used 5× · packages/components/src/components/badge/badge.tsx</title></rect>
+    <text x="761.6" y="184.3" class="adot-n">Badge</text>
+    <text x="761.6" y="202.3" class="adot-c">5×</text></g><g><rect x="695.3" y="238.2" width="132.6" height="99.9" class="atile">
+      <title>&lt;DropdownSelect&gt; · used 5× · packages/components/src/components/dropdown-select/dropdown-select.tsx</title></rect>
+    <text x="761.6" y="284.2" class="adot-n">DropdownSelect</text>
+    <text x="761.6" y="302.2" class="adot-c">5×</text></g><g><rect x="695.3" y="338.1" width="132.6" height="99.9" class="atile">
+      <title>&lt;MenuFlyoutItem&gt; · used 5× · packages/components/src/components/menu-flyout-item/menu-flyout-item.tsx</title></rect>
+    <text x="761.6" y="384.1" class="adot-n">MenuFlyoutItem</text>
+    <text x="761.6" y="402.1" class="adot-c">5×</text></g><g><rect x="827.9" y="138.3" width="106.0" height="99.9" class="atile">
+      <title>&lt;MenuFlyout&gt; · used 4× · packages/components/src/components/menu-flyout/menu-flyout.tsx</title></rect>
+    <text x="880.9" y="184.3" class="adot-n">MenuFlyout</text>
+    <text x="880.9" y="202.3" class="adot-c">4×</text></g><g><rect x="934.0" y="138.3" width="106.0" height="99.9" class="atile">
+      <title>&lt;NavIcon&gt; · used 4× · packages/components/src/components/telekom/nav-icon/nav-icon.tsx</title></rect>
+    <text x="987.0" y="184.3" class="adot-n">NavIcon</text>
+    <text x="987.0" y="202.3" class="adot-c">4×</text></g><g><rect x="827.9" y="238.2" width="92.8" height="114.2" class="atile">
+      <title>&lt;TelekomNavItem&gt; · used 4× · packages/components/src/components/telekom/telekom-nav-flyout/telekom-nav-flyout.tsx</title></rect>
     
-    <text x="997.5" y="163.3" class="adot-c">74×</text></g><g><rect x="773.3" y="215.9" width="79.7" height="112.7" class="atile">
-      <title>&lt;Table&gt; · used 69× · packages/ui/src/table/table.tsx</title></rect>
-    <text x="813.2" y="268.2" class="adot-n">Table</text>
-    <text x="813.2" y="286.2" class="adot-c">69×</text></g><g><rect x="773.3" y="328.6" width="79.7" height="109.4" class="atile">
-      <title>&lt;MenuItem&gt; · used 67× · packages/ui/src/menu-item.tsx</title></rect>
-    <text x="813.2" y="379.3" class="adot-n">MenuItem</text>
-    <text x="813.2" y="397.3" class="adot-c">67×</text></g><g><rect x="853.0" y="215.9" width="101.3" height="83.6" class="atile">
-      <title>&lt;TimestampTooltip&gt; · used 65× · packages/ui/src/timestamp-tooltip.tsx</title></rect>
+    <text x="874.3" y="299.3" class="adot-c">4×</text></g><g><rect x="827.9" y="352.4" width="92.8" height="85.6" class="atile">
+      <title>&lt;ProgressBar&gt; · used 3× · packages/components/src/components/progress-bar/progress-bar.tsx</title></rect>
+    <text x="874.3" y="391.2" class="adot-n">ProgressBar</text>
+    <text x="874.3" y="409.2" class="adot-c">3×</text></g><g><rect x="920.7" y="238.2" width="119.3" height="66.6" class="atile">
+      <title>&lt;SidebarNav&gt; · used 3× · packages/components/src/components/sidebar-nav/sidebar-nav.tsx</title></rect>
+    <text x="980.3" y="267.5" class="adot-n">SidebarNav</text>
+    <text x="980.3" y="285.5" class="adot-c">3×</text></g><g><rect x="920.7" y="304.8" width="119.3" height="66.6" class="atile">
+      <title>&lt;TelekomMobileFlyoutCanvas&gt; · used 3× · packages/components/src/components/telekom/telekom-mobile-flyout-canvas/telekom-mobile-flyout-canvas.tsx</title></rect>
     
-    <text x="903.7" y="261.7" class="adot-c">65×</text></g><g><rect x="954.3" y="215.9" width="85.7" height="83.6" class="atile">
-      <title>&lt;ChevronRight&gt; · used 55× · packages/ui/src/icons/nucleo/chevron-right.tsx</title></rect>
+    <text x="980.3" y="342.1" class="adot-c">3×</text></g><g><rect x="920.7" y="371.4" width="119.3" height="66.6" class="atile">
+      <title>&lt;TelekomMobileMenuItem&gt; · used 3× · packages/components/src/components/telekom/telekom-mobile-menu-item/telekom-mobile-menu-item.tsx</title></rect>
     
-    <text x="997.2" y="261.7" class="adot-c">55×</text></g><g><rect x="853.0" y="299.4" width="101.5" height="70.6" class="atile">
-      <title>&lt;InlineBadgePopover&gt; · used 55× · apps/web/ui/shared/inline-badge-popover.tsx</title></rect>
-    
-    <text x="903.8" y="338.7" class="adot-c">55×</text></g><g><rect x="853.0" y="370.0" width="101.5" height="68.0" class="atile">
-      <title>&lt;BlurImage&gt; · used 53× · packages/ui/src/blur-image.tsx</title></rect>
-    <text x="903.8" y="400.0" class="adot-n">BlurImage</text>
-    <text x="903.8" y="418.0" class="adot-c">53×</text></g><g><rect x="954.5" y="299.4" width="85.5" height="70.0" class="atile">
-      <title>&lt;AnimatedEmptyState&gt; · used 46× · apps/web/ui/shared/animated-empty-state.tsx</title></rect>
-    
-    <text x="997.2" y="338.5" class="adot-c">46×</text></g><g><rect x="954.5" y="369.5" width="85.5" height="68.5" class="atile">
-      <title>&lt;TooltipContent&gt; · used 45× · packages/ui/src/tooltip.tsx</title></rect>
-    
-    <text x="997.2" y="407.7" class="adot-c">45×</text></g></svg>
-    <p class="sub">558 more adopted components below the top 24, not drawn.</p>
-    <p class="sub">534 components are imported exactly once: &lt;AboutYouForm&gt;, &lt;AcceptProgramInviteButton&gt;, &lt;AccordionBlockThumbnail&gt;, &lt;ActivityLogDescription&gt;, &lt;ActivityLogProvider&gt;, &lt;ActivityRing&gt; and 528 more. Quiet corners, not yet a system.</p>
+    <text x="980.3" y="408.7" class="adot-c">3×</text></g></svg>
+    <p class="sub">9 more adopted components below the top 24, not drawn.</p>
+    <p class="sub">30 components are imported exactly once: &lt;Accordion&gt;, &lt;Carousel&gt;, &lt;ChartStackCard&gt;, &lt;Collapsible&gt;, &lt;Divider&gt;, &lt;Dropdown&gt; and 24 more. Quiet corners, not yet a system.</p>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
+    <tr><td class="mono strong">&lt;DropdownSelectItem&gt;</td>
+    <td><span class="pill pill-mint">21×</span></td>
+    <td class="path">packages/components/src/components/dropdown-select-item/dropdown-select-item.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;Combobox&gt;</td>
+    <td><span class="pill pill-mint">15×</span></td>
+    <td class="path">packages/components/src/components/combobox/combobox.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;Tag&gt;</td>
+    <td><span class="pill pill-mint">11×</span></td>
+    <td class="path">packages/components/src/components/tag/tag.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;TelekomNavItem&gt;</td>
+    <td><span class="pill pill-mint">11×</span></td>
+    <td class="path">packages/components/src/components/telekom/telekom-nav-item/telekom-nav-item.tsx</td>
+    <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;Button&gt;</td>
-    <td><span class="pill pill-mint">995×</span></td>
-    <td class="path">packages/ui/src/button.tsx</td>
-    <td><span class="chip chip-xs">text</span> <span class="chip chip-xs">variant</span> <span class="chip chip-xs">textWrapperClassName</span> <span class="chip chip-xs">shortcutClassName</span> <span class="chip chip-xs">loading</span></td></tr>
+    <td><span class="pill pill-mint">10×</span></td>
+    <td class="path">packages/components/src/components/button/button.tsx</td>
+    <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;Link&gt;</td>
-    <td><span class="pill pill-mint">616×</span></td>
-    <td class="path">apps/web/ui/shared/icons/link.tsx</td>
+    <td><span class="pill pill-mint">10×</span></td>
+    <td class="path">packages/components/src/components/link/link.tsx</td>
     <td><span class="dim">none</span></td></tr>
-    <tr><td class="mono strong">&lt;Modal&gt;</td>
-    <td><span class="pill pill-mint">187×</span></td>
-    <td class="path">packages/ui/src/modal.tsx</td>
-    <td><span class="chip chip-xs">showModal</span> <span class="chip chip-xs">setShowModal</span> <span class="chip chip-xs">onClose</span> <span class="chip chip-xs">desktopOnly</span> <span class="chip chip-xs">preventDefaultClose</span></td></tr>
-    <tr><td class="mono strong">&lt;Tooltip&gt;</td>
-    <td><span class="pill pill-mint">145×</span></td>
-    <td class="path">packages/ui/src/tooltip.tsx</td>
-    <td><span class="chip chip-xs">content</span> <span class="chip chip-xs">contentClassName</span> <span class="chip chip-xs">disabled</span> <span class="chip chip-xs">side</span> <span class="chip chip-xs">disableHoverableContent</span></td></tr>
-    <tr><td class="mono strong">&lt;LoadingSpinner&gt;</td>
-    <td><span class="pill pill-mint">113×</span></td>
-    <td class="path">packages/ui/src/icons/loading-spinner.tsx</td>
+    <tr><td class="mono strong">&lt;HelperText&gt;</td>
+    <td><span class="pill pill-mint">9×</span></td>
+    <td class="path">packages/components/src/components/helper-text/helper-text.tsx</td>
     <td><span class="dim">none</span></td></tr>
-    <tr><td class="mono strong">&lt;Footer&gt;</td>
-    <td><span class="pill pill-mint">107×</span></td>
-    <td class="path">packages/email/src/components/footer.tsx</td>
-    <td><span class="chip chip-xs">email</span> <span class="chip chip-xs">marketing</span> <span class="chip chip-xs">unsubscribeUrl</span> <span class="chip chip-xs">https</span> <span class="chip chip-xs">notificationSettingsUrl</span></td></tr>
-    <tr><td class="mono strong">&lt;Footer&gt;</td>
-    <td><span class="pill pill-mint">107×</span></td>
-    <td class="path">packages/ui/src/footer.tsx</td>
-    <td><span class="chip chip-xs">staticDomain</span></td></tr>
-    <tr><td class="mono strong">&lt;Popover&gt;</td>
-    <td><span class="pill pill-mint">100×</span></td>
-    <td class="path">packages/ui/src/popover.tsx</td>
-    <td><span class="chip chip-xs">content</span> <span class="chip chip-xs">align</span> <span class="chip chip-xs">side</span> <span class="chip chip-xs">openPopover</span> <span class="chip chip-xs">setOpenPopover</span></td></tr>
-    <tr><td class="mono strong">&lt;InfoTooltip&gt;</td>
-    <td><span class="pill pill-mint">97×</span></td>
-    <td class="path">packages/ui/src/tooltip.tsx</td>
+    <tr><td class="mono strong">&lt;AppNavigationUserMenu&gt;</td>
+    <td><span class="pill pill-mint">8×</span></td>
+    <td class="path">packages/components/src/components/telekom/app-navigation-user-menu/app-navigation-user-menu.tsx</td>
     <td><span class="dim">none</span></td></tr>
-    <tr><td class="mono strong">&lt;X&gt;</td>
-    <td><span class="pill pill-mint">91×</span></td>
-    <td class="path">apps/web/ui/shared/icons/x.tsx</td>
+    <tr><td class="mono strong">&lt;Checkbox&gt;</td>
+    <td><span class="pill pill-mint">8×</span></td>
+    <td class="path">packages/components/src/components/checkbox/checkbox.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;Breadcrumb&gt;</td>
+    <td><span class="pill pill-mint">6×</span></td>
+    <td class="path">packages/components/src/components/breadcrumb/breadcrumb.tsx</td>
     <td><span class="dim">none</span></td></tr></tbody></table></div>
-    
-    <div class="receipts"><div class="eyebrow">16 components defined but never imported · they sit in the system as wrong answers waiting to be picked</div>
-    
-    <div class="orow"><span class="oyear">untouched since 2023</span>
-    <div class="chips-row"><span class="vchip" title="packages/ui/src/inline-snippet.tsx · untouched since 2023-10-16">&lt;InlineSnippet&gt;</span></div></div>
-    <div class="orow"><span class="oyear">untouched since 2024</span>
-    <div class="chips-row"><span class="vchip" title="packages/ui/src/alert.tsx · untouched since 2024-06-19">&lt;Alert&gt;</span><span class="vchip" title="packages/ui/src/alert.tsx · untouched since 2024-06-19">&lt;AlertDescription&gt;</span><span class="vchip" title="packages/ui/src/alert.tsx · untouched since 2024-06-19">&lt;AlertTitle&gt;</span><span class="vchip" title="packages/ui/src/composite-logo.tsx · untouched since 2024-04-30">&lt;CompositeLogo&gt;</span></div></div>
-    <div class="orow"><span class="oyear">untouched since 2025</span>
-    <div class="chips-row"><span class="vchip" title="packages/ui/src/card-list/card-list-card.tsx · untouched since 2025-04-15">&lt;CardContext&gt;</span><span class="vchip" title="packages/ui/src/card-list/card-list-card.tsx · untouched since 2025-04-15">&lt;CardListCard&gt;</span><span class="vchip" title="packages/ui/src/nav/content/graphics/dub-wireframe-graphic.tsx · untouched since 2025-01-15">&lt;DubWireframeGraphic&gt;</span><span class="vchip" title="packages/ui/src/progress-bar.tsx · untouched since 2025-09-27">&lt;ProgressBar&gt;</span></div></div>
-    <div class="orow"><span class="oyear">untouched since 2026</span>
-    <div class="chips-row"><span class="vchip" title="packages/ui/src/filter/filter-list.tsx · untouched since 2026-05-19">&lt;FilterList&gt;</span><span class="vchip" title="packages/ui/src/filter/filter-select.tsx · untouched since 2026-04-11">&lt;FilterSelect&gt;</span><span class="vchip" title="packages/ui/src/filter/filter-sidebar.tsx · untouched since 2026-06-25">&lt;FilterSidebar&gt;</span><span class="vchip" title="packages/ui/src/rich-text-area/image-alt-node-view.tsx · untouched since 2026-06-25">&lt;ImageAltNodeView&gt;</span><span class="vchip" title="packages/ui/src/nav/content/product-content.tsx · untouched since 2026-08-04">&lt;ProductContent&gt;</span><span class="vchip" title="packages/ui/src/nav/content/resources-content.tsx · untouched since 2026-08-04">&lt;ResourcesContent&gt;</span><span class="vchip" title="packages/ui/src/nav/content/solutions-content.tsx · untouched since 2026-08-04">&lt;SolutionsContent&gt;</span></div></div>
-    <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p></section>
+    </section>
 
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 5.7.0</span>, free on npm and as a Claude Code + Codex skill</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">148048c10fee</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.7.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 6 12 9 3 15 21 18 12 22 12"/></svg>Say so, and say which bit</a></div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">1d8372b7fbae</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.7.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 6 12 9 3 15 21 18 12 22 12"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

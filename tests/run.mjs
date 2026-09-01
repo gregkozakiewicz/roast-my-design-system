@@ -210,6 +210,43 @@ console.log('fix prompts:');
   ok('buttons equal moves on every fixture');
 }
 
+// ---------- component stacks: web components read, unreadable declared ----------
+// Born on telekom/scale (2026-09-01): 93 Stencil components scanned as one,
+// and the report presented the blindness as discipline. Never again, twice
+// over: the tag-registered world is read, and what cannot be read says so.
+console.log('component stacks:');
+{
+  const wc = JSON.parse(readFileSync(join(tmp, 'webcomp.json'), 'utf8'));
+  const btn = wc.components.find((c) => c.tag === 'acme-button');
+  btn?.usageCount === 3 ? ok('stencil usage counted by kebab tag') : bad('stencil usage', `acme-button ×${btn?.usageCount}, want 3`);
+  !btn?.usedIn.some((f) => f.includes('react-wrapper')) ? ok('generated wrappers add no phantom adoption')
+    : bad('generated wrappers', 'react-wrapper counted as usage');
+  wc.components.some((c) => c.tag === 'acme-icon') && wc.components.some((c) => c.tag === 'acme-chip')
+    ? ok('lit and customElements.define detected') : bad('lit/define detection', 'missing');
+  wc.profile.role === 'library' ? ok('published components package profiles as library') : bad('library role', wc.profile.role);
+  const wcHtml = readFileSync(join(tmp, 'webcomp.html'), 'utf8');
+  wcHtml.includes('The composition map') && wcHtml.includes('unused internally')
+    && (wcHtml.includes('component library') || wcHtml.includes('custom design system'))
+    ? ok('library language: composition, not adoption; stock, not corpses')
+    : bad('library language', 'composition/unused-internally/ds-chip copy missing');
+  wcHtml.includes('web components (Stencil)') ? ok('header names Stencil') : bad('header chip', 'no Stencil chip');
+  wcHtml.includes('custom design system (--acme-*)') ? ok('namespace earns the design-system title')
+    : bad('namespace chip', 'no custom design system (--acme-*) chip');
+  wcHtml.includes('also present: --old-*') ? ok('secondary namespace reported as fact, never verdict')
+    : bad('also-present chip', 'missing');
+  const wcRules = rulesMarkdown(wc).text;
+  wcRules.includes('--acme-*') && wcRules.includes('also') && wcRules.includes('--old-*')
+    ? ok('rules teach the namespace and flag the second, verdict-free')
+    : bad('rules namespace', 'missing --acme-*/--old-* guidance');
+
+  const vue = JSON.parse(readFileSync(join(tmp, 'vueapp-s.json'), 'utf8'));
+  vue.componentsMeasured === false ? ok('vue declared not measured') : bad('vue measurability', 'claimed measured');
+  const vueHtml = readFileSync(join(tmp, 'vueapp.html'), 'utf8');
+  vueHtml.includes('not measured: Vue single-file components') && vueHtml.includes('cannot read yet')
+    ? ok('unmeasured tiles and ledger say why') : bad('not-measured copy', 'missing tile note or ledger sentence');
+  !vueHtml.includes('class="amap"') ? ok('no map drawn from blindness') : bad('map on unmeasured repo', 'rendered');
+}
+
 // ---------- MCP: the five tools, snapshotted per fixture ----------
 // Dates stripped (scan stamp changes daily); the answers are the contract.
 // The token budget is an ASSERTION, not an aspiration: get_context over

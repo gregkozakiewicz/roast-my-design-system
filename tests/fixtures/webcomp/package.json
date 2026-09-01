@@ -1,0 +1,9 @@
+{
+  "name": "acme-components",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "devDependencies": {
+    "@stencil/core": "^4.0.0",
+    "lit": "^3.0.0"
+  }
+}

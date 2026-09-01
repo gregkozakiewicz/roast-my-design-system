@@ -3,6 +3,8 @@
   "score": 100,
   "noSystemLikely": false,
   "verdict": "no agent rules, so your AI is guessing.",
+  "role": "product",
+  "componentsMeasured": true,
   "tiles": [
     {
       "label": "distinct colours",

@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.7.2 — 2026-09-02
+
+- Every tile on the adoption and composition maps now carries its component's name, truncated with an ellipsis when the tile is narrow (the hover keeps the full name and path). Anonymous count-only squares read as bugs, and Greg caught them on the scale map within the day. The suite now fails on any nameless tile. Example reports and the README screenshot regenerated.
+
 ## 5.7.1 — 2026-09-02
 
 - Docs only: the README's Live examples list catches up with 5.7.0 — five reports now, telekom/scale and adobe/spectrum-web-components included, labelled by framework. The landing page had them; the README's own list still said three, and Greg caught it within the hour. Published so npm's copy matches.

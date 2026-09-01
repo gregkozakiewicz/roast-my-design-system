@@ -1,6 +1,6 @@
 {
   "name": "roast-my-design-system",
-  "version": "5.7.1",
+  "version": "5.7.2",
   "mcpName": "io.github.gregkozakiewicz/roast-my-design-system",
   "description": "Your AI can write the UI. This makes sure it writes your UI. A deterministic scanner scores your design system 0-100 against 34 public repos, reads React and web components (Stencil, Lit), hands you a copy-paste fix prompt for each top finding, writes rules for Claude, Cursor, Copilot and Windsurf with --apply, and runs as a local MCP server with --mcp.",
   "keywords": [

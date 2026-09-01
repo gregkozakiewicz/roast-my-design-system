@@ -774,13 +774,19 @@ function adoptionMap(tiled) {
     i += row.length;
   }
   const tiles = rects.map(({ x, y, w, h, c }) => {
-    const fitsName = w > c.name.length * 7.5 + 10 && h > 34;
-    const fitsCount = w > 34 && h > (fitsName ? 52 : 22);
+    // Every tile gets a name, whatever its width allows: a long name is
+    // truncated with an ellipsis (the hover keeps the full identity), because
+    // an anonymous square reads as a bug, not a component (caught by Greg on
+    // the scale map, 2026-09-02). The count joins when the height allows.
+    const big = w > c.name.length * 7.5 + 10 && h > 34;
+    const maxChars = Math.max(3, Math.floor((w - 10) / (big ? 7.5 : 6.2)));
+    const label = c.name.length <= maxChars ? c.name : c.name.slice(0, Math.max(2, maxChars - 1)) + '…';
+    const fitsCount = h > 46;
     const cx = x + w / 2, cy = y + h / 2;
     return `<g><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" class="atile">
       <title>&lt;${esc(c.name)}&gt; · used ${c.usageCount}× · ${esc(c.file)}</title></rect>
-    ${fitsName ? `<text x="${cx.toFixed(1)}" y="${(fitsCount ? cy - 4 : cy + 4).toFixed(1)}" class="adot-n">${esc(c.name)}</text>` : ''}
-    ${fitsCount ? `<text x="${cx.toFixed(1)}" y="${(fitsName ? cy + 14 : cy + 4).toFixed(1)}" class="adot-c">${c.usageCount}×</text>` : ''}</g>`;
+    <text x="${cx.toFixed(1)}" y="${(fitsCount ? cy - 4 : cy + 4).toFixed(1)}" class="adot-n${big ? '' : ' s'}">${esc(label)}</text>
+    ${fitsCount ? `<text x="${cx.toFixed(1)}" y="${(cy + 14).toFixed(1)}" class="adot-c">${c.usageCount}×</text>` : ''}</g>`;
   }).join('');
   return `<svg viewBox="0 0 ${W} ${H}" class="amap" role="img" aria-label="Component adoption map: tile area is import count">${tiles}</svg>`;
 }

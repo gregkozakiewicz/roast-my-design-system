@@ -185,6 +185,12 @@ console.log('adoption map:');
   tiles >= 8 ? ok(`map draws ${tiles} tiles at scale`) : bad('map draws tiles at scale', `${tiles} tiles, need 8+`);
   mapHtml.includes('tile area is import count') ? ok('map section head names the encoding')
     : bad('map section head', 'missing "tile area is import count"');
+  // Every tile carries a name (truncated when narrow), never an anonymous
+  // square — Greg caught count-only tiles on the scale map (2026-09-02).
+  const tileGroups = [...mapHtml.matchAll(/<g><rect[^>]*class="atile"[\s\S]*?<\/g>/g)];
+  const unnamed = tileGroups.filter((g) => !g[0].includes('adot-n')).length;
+  unnamed === 0 ? ok(`all ${tileGroups.length} map tiles carry a name`)
+    : bad('map tile names', `${unnamed} anonymous tiles`);
 }
 
 // ---------- fix prompts: one copy button per Where-to-start move ----------

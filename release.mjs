@@ -58,6 +58,7 @@ const CARRIERS = [
   { file: 'package.json', find: /("version":\s*")[^"]+(")/, label: 'npm package' },
   { file: 'skills/roast-my-design-system/scripts/lib/version.mjs', find: /(export const VERSION = ')[^']+(')/, label: 'engine constant (report footer, rules header)' },
   { file: '.claude-plugin/plugin.json', find: /("version":\s*")[^"]+(")/, label: 'Claude Code plugin manifest' },
+  { file: '.claude-plugin/marketplace.json', find: /("version":\s*")[^"]+(")/, label: 'plugin marketplace manifest (was stale 5.0.2→5.8.0 for months before joining this list)' },
 ];
 
 const PKG = () => JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));

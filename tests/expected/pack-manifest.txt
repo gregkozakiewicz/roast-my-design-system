@@ -5,6 +5,7 @@ package.json
 skills/roast-my-design-system/scripts/benchmark/benchmark.json
 skills/roast-my-design-system/scripts/card/index.mjs
 skills/roast-my-design-system/scripts/diagnose/index.mjs
+skills/roast-my-design-system/scripts/diagnose/why.mjs
 skills/roast-my-design-system/scripts/harvest/components.mjs
 skills/roast-my-design-system/scripts/harvest/context.mjs
 skills/roast-my-design-system/scripts/harvest/duplicates.mjs

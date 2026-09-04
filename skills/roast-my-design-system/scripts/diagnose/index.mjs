@@ -29,6 +29,7 @@ import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { VERSION } from '../lib/version.mjs';
 import { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA } from '../lib/feedback.mjs';
 import { fixPrompt } from '../lib/fixprompt.mjs';
+import { WHY } from './why.mjs';
 
 // The benchmark (Ideal-2026 norms + scanned-repo stats) ships next to the
 // code so the page works offline; degrade gracefully when absent.
@@ -343,18 +344,22 @@ function healthOf(metric, value) {
   if (value <= warnCap) return 'warn';
   return 'bad';
 }
+// Our own marks, drawn by hand for this report: a tick that starts at the
+// left foot, a full-bleed cross, a round exclamation, a quiet dash. Generic
+// glyphs on purpose, and our own coordinates on purpose: nothing here is
+// copied from any icon set.
 const ICONS = {
-  good: '<svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
-  warn: '<svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>',
-  bad: '<svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  good: '<svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>',
+  warn: '<svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>',
+  bad: '<svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>',
   info: '',
-  na: '<svg class="ic ic-na" viewBox="0 0 24 24"><line x1="7" y1="12" x2="17" y2="12"/></svg>',
+  na: '<svg class="ic ic-na" viewBox="0 0 24 24"><line x1="6.5" y1="12" x2="17.5" y2="12"/></svg>',
 };
 
-// Feather "activity", the pulse line, points reversed so it traces left to
-// right. Sits before the footer's feedback link
-// and inherits its colour through currentColor, so it follows the theme.
-const PULSE_ICON = '<svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 6 12 9 3 15 21 18 12 22 12"/></svg>';
+// The heartbeat line, drawn by hand: flat, one beat, flat. It traces left to
+// right, sits before the footer's feedback link and inherits its colour
+// through currentColor, so it follows the theme.
+const PULSE_ICON = '<svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>';
 
 // Comparison rows inside a tile: your number vs each yardstick.
 // ▼ mint = you sit at or under the reference, ▲ coral = you're over it.
@@ -468,6 +473,12 @@ const statTile = (s) => `<div class="stat glass st-${s.health}">
 const eyebrow = (text) => `<div class="eyebrow">${text}</div>`;
 const sectionHead = (title, subtitle) => `<div class="sec-head"><h2>${title}</h2>${subtitle ? `<p class="sub">${subtitle}</p>` : ''}</div>`;
 
+// "Why this matters": the calm explanation folded under a brutal finding,
+// same unfold mechanics as the fix-prompt viewer. One per finding, rendered
+// only where that finding's evidence block rendered.
+const WHY_ICON = '<svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg>';
+const whyToggle = (key) => (WHY[key] ? `<div class="whywrap"><button type="button" class="whybtn" data-why="${key}">${WHY_ICON}<span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-${key}">${WHY[key].map((p) => `<p>${p}</p>`).join('')}</div></div>` : '');
+
 function paletteSection() {
   if (!colors.length) return '';
   const tokens = colors.filter((c) => c.isToken).length;
@@ -491,7 +502,8 @@ function paletteSection() {
   const ramp = greys.length >= 4 ? `
     <div class="ramp-head">${eyebrow('Grey ramp · sorted dark → light · how many can you tell apart?')}</div>
     <div class="only-dark">${rampFor(greys)}</div>
-    <div class="only-light">${rampFor(greysLight)}</div>` : '';
+    <div class="only-light">${rampFor(greysLight)}</div>
+    ${whyToggle('greys')}` : '';
 
   return `<section class="palette-grid">
   <div class="glass pal-hero grad">
@@ -502,6 +514,7 @@ function paletteSection() {
     <div class="split-track"><div class="split"><span class="sp-tok" style="width:${tokenPct}%"></span><span class="sp-stray" style="width:${100 - tokenPct}%"></span></div></div>
     <div class="split-legend"><span>${n(tokens)} tokens</span><span>${n(strays)} strays</span></div>
     ${tokens ? '' : `<p class="sub warn-text">None of these are defined as CSS variables. Every single one is a hardcoded value.</p>`}
+    ${whyToggle('colors')}
   </div>
   <div class="glass pal-usage">
     <div class="pal-usage-head">
@@ -512,7 +525,8 @@ function paletteSection() {
     ${ramp}
     ${nearPairs.length ? `
     <div class="receipts">${eyebrow(`${nearPairs.length} nearly identical pair${nearPairs.length === 1 ? '' : 's'} · copy-paste, not decisions`)}
-    <div class="chips-row">${nearPairs.slice(0, 8).map((pr) => `<span class="vchip" title="every channel within ${pr.d} of its twin"><i class="ndot" style="background:${esc(pr.a.value)}"></i>${esc(pr.a.value)} ×${pr.a.count} <b class="nsim">≈</b> <i class="ndot" style="background:${esc(pr.b.value)}"></i>${esc(pr.b.value)} ×${pr.b.count}</span>`).join('')}${nearPairs.length > 8 ? `<span class="vchip dim">+${nearPairs.length - 8} more</span>` : ''}</div></div>` : ''}
+    <div class="chips-row">${nearPairs.slice(0, 8).map((pr) => `<span class="vchip" title="every channel within ${pr.d} of its twin"><i class="ndot" style="background:${esc(pr.a.value)}"></i>${esc(pr.a.value)} ×${pr.a.count} <b class="nsim">≈</b> <i class="ndot" style="background:${esc(pr.b.value)}"></i>${esc(pr.b.value)} ×${pr.b.count}</span>`).join('')}${nearPairs.length > 8 ? `<span class="vchip dim">+${nearPairs.length - 8} more</span>` : ''}</div>
+    ${whyToggle('nearPairs')}</div>` : ''}
   </div>
 </section>`;
 }
@@ -580,10 +594,12 @@ function spacingBars() {
     <span class="bar-count">${n(s.count)}</span></div>`).join('');
   const arb = arbitraryCount ? `
     <div class="receipts">${eyebrow(`${n(arbitraryCount)} arbitrary values punched through the scale, one bracket at a time`)}
-    <div class="chips-row">${arbitrary.slice(0, 10).map((a) => `<span class="vchip bad" title="${esc(a.files?.[0]?.file ?? '')}">${esc(a.value)} ×${a.count}</span>`).join('')}${arbitrary.length > 10 ? `<span class="vchip dim">+${arbitrary.length - 10} more</span>` : ''}</div></div>` : '';
+    <div class="chips-row">${arbitrary.slice(0, 10).map((a) => `<span class="vchip bad" title="${esc(a.files?.[0]?.file ?? '')}">${esc(a.value)} ×${a.count}</span>`).join('')}${arbitrary.length > 10 ? `<span class="vchip dim">+${arbitrary.length - 10} more</span>` : ''}</div>
+    ${whyToggle('arbitrary')}</div>` : '';
   return `<section class="glass pad">
     ${sectionHead(`${n(spacingTotal)} off-scale spacing values`, `a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral`)}
-    <div class="bars">${rows}</div>${arb}</section>`;
+    <div class="bars">${rows}</div>
+    ${whyToggle('spacing')}${arb}</section>`;
 }
 
 function duplicatesSection() {
@@ -612,7 +628,8 @@ function duplicatesSection() {
     </div>`).join('');
   return `<div class="glass pad half">
     ${sectionHead('Duplicated components', 'an agent asking which one is canonical gets several plausible answers. Paths open in VS Code')}
-    <div class="fams">${iconCard}${dupeCards}${famCards}</div></div>`;
+    <div class="fams">${iconCard}${dupeCards}${famCards}</div>
+    ${whyToggle('duplicates')}</div>`;
 }
 
 // Scanned values get injected into style attributes below (a radius, a shadow,
@@ -695,6 +712,7 @@ function typographySection() {
   return `<section>
     ${sectionHead('Typography &amp; shape', '')}
     <div class="stats minis">${mini.map((s) => statTile(s)).join('')}</div>
+    ${typefaces.length ? whyToggle('typefaces') : ''}
     ${typeSpecimens || receipts('the font sizes, by use', sizeChips)}
     ${radiiSpecimens || receipts('the radii, by use', radiiChips)}
     ${shadowSpecimens}
@@ -723,7 +741,8 @@ function inlineSection() {
   const max = Math.max(...inline.files.slice(0, 6).map((f) => f.count), 1);
   const importantRow = important.count ? `
     <div class="receipts">${eyebrow(`${n(important.count)} !important declaration${important.count === 1 ? '' : 's'} · the cascade admitting defeat`)}
-    <div class="chips-row">${important.files.map((f) => `<span class="vchip bad" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('')}</div></div>` : '';
+    <div class="chips-row">${important.files.map((f) => `<span class="vchip bad" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('')}</div>
+    ${whyToggle('important')}</div>` : '';
   const blocks = inline.count >= 5 ? `<div class="fam-rows">${inline.files.slice(0, 6).map((f) => `
       <div class="mini-card col">
         <div class="mc-row">${fileLink(f.file)}<span class="mc-count">×${f.count}</span></div>
@@ -731,7 +750,7 @@ function inlineSection() {
       </div>`).join('')}</div>` : '';
   return `<div class="glass pad half">
     ${sectionHead(inline.count >= 5 ? `${n(inline.count)} inline style blocks` : `${n(important.count)} !important declarations`, 'styling no system can see')}
-    ${blocks}${importantRow}</div>`;
+    ${blocks}${inline.count >= 5 ? whyToggle('inline') : ''}${importantRow}</div>`;
 }
 
 // The adoption map: the real system drawn to scale as a treemap. Every
@@ -842,7 +861,8 @@ function componentsSection() {
     ${neverImported.length >= 2 ? `
     <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : `${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
     ${orphanRows()}
-    <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>` : ''}</section>`;
+    <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>
+    ${isLibrary ? '' : whyToggle('neverImported')}` : ''}</section>`;
 }
 
 // "Where to start" — at most three moves, every one derived from this repo's
@@ -1336,14 +1356,28 @@ const html = `<!doctype html>
   .only-light { display:none; }
   html[data-theme="light"] .only-light { display:block; }
   html[data-theme="light"] .only-dark { display:none; }
-  /* theme toggle */
-  .theme-toggle { position:fixed; top:18px; right:18px; z-index:10; width:40px; height:40px; border-radius:99px;
-    display:grid; place-items:center; cursor:pointer; color:var(--dim); }
+  /* theme toggle: a slide switch. The knob is a lightly rounded square that
+     carries the current mode's icon (moon in dark, sun in light) and slides
+     to the other side on click. The icons themselves never animate. */
+  .theme-toggle { position:fixed; top:18px; right:18px; z-index:10; width:88px; height:32px; border-radius:10px;
+    cursor:pointer; color:var(--dim); padding:0; }
   .theme-toggle:hover { color:var(--text); }
-  .theme-toggle svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  .theme-toggle .only-light, html[data-theme="light"] .theme-toggle .only-light { display:none; }
-  html[data-theme="light"] .theme-toggle .only-light { display:block; }
-  .theme-toggle .only-dark { display:block; }
+  .tt-lab { position:absolute; top:0; bottom:0; display:flex; align-items:center; font:700 9px var(--sans);
+    letter-spacing:.14em; text-transform:uppercase; transition:opacity .3s ease; }
+  .tt-day { left:13px; opacity:0; }
+  .tt-night { right:13px; opacity:1; }
+  html[data-theme="light"] .tt-day { opacity:1; }
+  html[data-theme="light"] .tt-night { opacity:0; }
+  .tt-knob { position:absolute; top:calc(50% - 13px); left:3px; width:26px; height:26px; border-radius:8px;
+    background:var(--card-solid); box-shadow:0 1px 4px rgba(0,0,0,.3), 0 0 0 1px var(--line-soft);
+    display:grid; place-items:center; transition:left .3s ease; }
+  html[data-theme="light"] .theme-toggle .tt-knob { left:59px; }
+  .tt-knob svg { grid-area:1/1; width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round; transition:opacity .3s ease; }
+  .tt-moon { opacity:1; } .tt-sun { opacity:0; }
+  html[data-theme="light"] .tt-moon { opacity:0; }
+  html[data-theme="light"] .tt-sun { opacity:1; }
+  @media (prefers-reduced-motion: reduce) { .tt-knob, .tt-knob svg, .tt-lab { transition:none; } }
 
   /* palette */
   .palette-grid { display:grid; grid-template-columns:1fr 1.6fr; gap:16px; }
@@ -1413,6 +1447,23 @@ const html = `<!doctype html>
     user-select:all; -webkit-user-select:all; }
   @media print { .start-actions { display:none; } }
 
+  .whywrap { margin-top:12px; }
+  .whybtn { font:500 11.5px/1 var(--sans); color:var(--dim); background:none; border:none; padding:0; cursor:pointer;
+    display:inline-flex; align-items:center; gap:5px; }
+  .whybtn .why-lab { text-decoration:underline; text-underline-offset:3px; }
+  .why-ic { width:15.5px; height:15.5px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .whybtn:hover { color:var(--accent); }
+  /* On the light-mode gradient hero the dim grey is unreadable: follow the
+     card's own white text treatment instead. */
+  html[data-theme="light"] .grad .whybtn { color:rgba(255,255,255,.82); }
+  html[data-theme="light"] .grad .whybtn:hover { color:#fff; }
+  html[data-theme="light"] .grad .whytext.shown { border-color:rgba(255,255,255,.35); }
+  html[data-theme="light"] .grad .whytext p { color:rgba(255,255,255,.88); }
+  .whytext.shown { display:block; border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-top:8px; }
+  .whytext p { font:13px/1.7 var(--sans); color:var(--dim); margin:0 0 10px; }
+  .whytext p:last-child { margin-bottom:0; }
+  @media print { .whybtn { display:none; } .whytext.shown { border:none; padding:0; } }
+
   .pill { border-radius:99px; padding:3px 10px; font:500 10.5px/1.5 var(--sans); white-space:nowrap; }
   .pill-mint { background:var(--ok-soft); color:var(--ok); }
   .pill-coral { background:var(--coral-soft); color:var(--coral); }
@@ -1478,10 +1529,10 @@ const html = `<!doctype html>
   .foot-sub .feedback:hover { text-decoration:underline; }
   .foot-sub .pulse { width:14px; height:14px; vertical-align:-3px; margin-right:5px; fill:none;
     stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  /* The line traces itself and sweeps out, like a heart monitor. 46 is the
+  /* The line traces itself and sweeps out, like a heart monitor. 44 is the
      polyline's own length, so the dash covers it exactly. */
-  .foot-sub .pulse polyline { stroke-dasharray:46; animation:pulse-trace 3.4s cubic-bezier(.5,0,.5,1) infinite; }
-  @keyframes pulse-trace { 0% { stroke-dashoffset:46; } 55% { stroke-dashoffset:0; } 100% { stroke-dashoffset:-46; } }
+  .foot-sub .pulse polyline { stroke-dasharray:44; animation:pulse-trace 3.4s cubic-bezier(.5,0,.5,1) infinite; }
+  @keyframes pulse-trace { 0% { stroke-dashoffset:44; } 55% { stroke-dashoffset:0; } 100% { stroke-dashoffset:-44; } }
   @media (prefers-reduced-motion: reduce) {
     .foot-sub .pulse polyline { animation:none; stroke-dashoffset:0; }
   }
@@ -1560,8 +1611,12 @@ const html = `<!doctype html>
 <!-- rmds-schema: ${NS_TAG} -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
-  <svg class="only-dark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
-  <svg class="only-light" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  <span class="tt-lab tt-day">Day</span>
+  <span class="tt-lab tt-night">Night</span>
+  <span class="tt-knob">
+    <svg class="tt-moon" viewBox="0 0 24 24"><path d="M20.5 13.2A8.8 8.8 0 1 1 10.8 3.5a6.9 6.9 0 0 0 9.7 9.7z"/></svg>
+    <svg class="tt-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><line x1="12" y1="2.2" x2="12" y2="5.4"/><line x1="12" y1="18.6" x2="12" y2="21.8"/><line x1="2.2" y1="12" x2="5.4" y2="12"/><line x1="18.6" y1="12" x2="21.8" y2="12"/><line x1="5.1" y1="5.1" x2="7.3" y2="7.3"/><line x1="16.7" y1="16.7" x2="18.9" y2="18.9"/><line x1="5.1" y1="18.9" x2="7.3" y2="16.7"/><line x1="16.7" y1="7.3" x2="18.9" y2="5.1"/></svg>
+  </span>
 </button>
 <script>try{var t=localStorage.getItem('roast-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <div class="wrap">
@@ -1671,6 +1726,15 @@ ${componentsSection()}
       var show=holder.hidden;
       holder.hidden=!show; holder.classList.toggle('shown', show);
       v.textContent=show?'hide it':'view it first';
+    });
+  });
+  document.querySelectorAll('.whybtn').forEach(function(b){
+    b.addEventListener('click', function(){
+      var holder=document.getElementById('why-'+b.getAttribute('data-why'));
+      if(!holder) return;
+      var show=holder.hidden;
+      holder.hidden=!show; holder.classList.toggle('shown', show);
+      var lab=b.querySelector('.why-lab'); if(lab) lab.textContent=show?'hide':'why this matters';
     });
   });
   var copyBtn=document.getElementById('gift-copy');

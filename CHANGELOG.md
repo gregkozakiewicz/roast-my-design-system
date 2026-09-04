@@ -2,6 +2,15 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.8.0 — 2026-09-05
+
+- **Every finding can now explain itself.** A small "why this matters" toggle sits under each of the ten finding blocks: colours, near-identical pairs, greys, off-scale spacing, arbitrary values, typefaces, duplicated components, inline styles, !important and never-imported components. It unfolds a calm, plain-language explanation of how the mess arrives innocently, what it costs later, how an agent multiplies it, and why the ideal sits where it sits, with the benchmark medians in the closing line. The findings stay brutal; the why is where the advice lives. Written to the GOV.UK plain-language standard and reviewed word by word. Asked for by Willem, and by Anna's question about where the numbers come from.
+- **The theme toggle is now a Day/Night slide switch.** A squarish knob with lightly rounded corners slides along the track, the sun and moon cross-fade instead of swapping, and the labels fade with them. The icons themselves never animate. The landing page carries the same switch.
+- **Every mark in the report is now drawn by hand for it.** The tick, cross, exclamation, dash, heartbeat, sun and moon previously used Feather geometry (MIT, legal, credit-free), and now use original coordinates instead, so no glyph traces to any icon set. Same look, same in-house CSS animation. Prompted by a licence check that came back clean: no third-party icon assets were ever in the package, and now no third-party coordinates either.
+- Light mode: the why toggle inside the gradient hero card now follows the card's white text treatment; it inherited a grey meant for pale backgrounds and was unreadable there.
+- The README gains one trust line where the no-network promise lives: dependency scanners such as Socket may flag URL strings in this package; they are product links and format identifiers written into generated reports, never fetched.
+- All five example reports regenerated from repos pinned to their original scan dates, so the numbers behind the embedded notes still hold to the digit. Screenshots reshot on the new report. The tarball-manifest tripwire caught the why-copy module joining the package and made it deliberate.
+
 ## 5.7.2 — 2026-09-02
 
 - Every tile on the adoption and composition maps now carries its component's name, truncated with an ellipsis when the tile is narrow (the hover keeps the full name and path). Anonymous count-only squares read as bugs, and Greg caught them on the scale map within the day. The suite now fails on any nameless tile. Example reports and the README screenshot regenerated.

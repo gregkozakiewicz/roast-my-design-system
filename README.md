@@ -60,17 +60,17 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 The full report for vercel/ai-chatbot, top to bottom — including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.7.2)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.8.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.2.3)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.8.0)
 
 ## What makes the numbers trustworthy
 
 - **Deterministic scanner, not AI sampling.** A zero-dependency Node script reads *every* file (about a second on a normal repo, a few on a large monorepo) and returns the same numbers every run. Claude narrates; it never counts.
 - **Read-only.** Nothing in your repo is modified. The only outputs are a temp JSON and the HTML report.
-- **No network, no telemetry.** Everything runs locally. Nothing about your code leaves your machine.
+- **No network, no telemetry.** Everything runs locally. Nothing about your code leaves your machine. Dependency scanners such as Socket may flag URL strings in this package; they are product links and format identifiers written into generated reports, never fetched.
 - **Zero dependencies, enforced by the test suite.** The package installs nothing but itself, and that is a tested promise rather than a habit: the suite fails if package.json ever declares a dependency, and the exact file list npm ships is a photographed contract, so nothing can stow away in a release.
 - **Honest gaps.** When a repo's components register in a pattern the scan cannot read, the component tiles say "not measured" and drop out of the score. A zero the scanner never earned is presented as blindness, not discipline.
 - **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality. Your own exclusions (`.roastignore`, `--exclude`) are printed in the report header with file counts, so a scoped scan can never pass itself off as the whole repo.

@@ -156,14 +156,28 @@
   .only-light { display:none; }
   html[data-theme="light"] .only-light { display:block; }
   html[data-theme="light"] .only-dark { display:none; }
-  /* theme toggle */
-  .theme-toggle { position:fixed; top:18px; right:18px; z-index:10; width:40px; height:40px; border-radius:99px;
-    display:grid; place-items:center; cursor:pointer; color:var(--dim); }
+  /* theme toggle: a slide switch. The knob is a lightly rounded square that
+     carries the current mode's icon (moon in dark, sun in light) and slides
+     to the other side on click. The icons themselves never animate. */
+  .theme-toggle { position:fixed; top:18px; right:18px; z-index:10; width:88px; height:32px; border-radius:10px;
+    cursor:pointer; color:var(--dim); padding:0; }
   .theme-toggle:hover { color:var(--text); }
-  .theme-toggle svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  .theme-toggle .only-light, html[data-theme="light"] .theme-toggle .only-light { display:none; }
-  html[data-theme="light"] .theme-toggle .only-light { display:block; }
-  .theme-toggle .only-dark { display:block; }
+  .tt-lab { position:absolute; top:0; bottom:0; display:flex; align-items:center; font:700 9px var(--sans);
+    letter-spacing:.14em; text-transform:uppercase; transition:opacity .3s ease; }
+  .tt-day { left:13px; opacity:0; }
+  .tt-night { right:13px; opacity:1; }
+  html[data-theme="light"] .tt-day { opacity:1; }
+  html[data-theme="light"] .tt-night { opacity:0; }
+  .tt-knob { position:absolute; top:calc(50% - 13px); left:3px; width:26px; height:26px; border-radius:8px;
+    background:var(--card-solid); box-shadow:0 1px 4px rgba(0,0,0,.3), 0 0 0 1px var(--line-soft);
+    display:grid; place-items:center; transition:left .3s ease; }
+  html[data-theme="light"] .theme-toggle .tt-knob { left:59px; }
+  .tt-knob svg { grid-area:1/1; width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round; transition:opacity .3s ease; }
+  .tt-moon { opacity:1; } .tt-sun { opacity:0; }
+  html[data-theme="light"] .tt-moon { opacity:0; }
+  html[data-theme="light"] .tt-sun { opacity:1; }
+  @media (prefers-reduced-motion: reduce) { .tt-knob, .tt-knob svg, .tt-lab { transition:none; } }
 
   /* palette */
   .palette-grid { display:grid; grid-template-columns:1fr 1.6fr; gap:16px; }
@@ -233,6 +247,23 @@
     user-select:all; -webkit-user-select:all; }
   @media print { .start-actions { display:none; } }
 
+  .whywrap { margin-top:12px; }
+  .whybtn { font:500 11.5px/1 var(--sans); color:var(--dim); background:none; border:none; padding:0; cursor:pointer;
+    display:inline-flex; align-items:center; gap:5px; }
+  .whybtn .why-lab { text-decoration:underline; text-underline-offset:3px; }
+  .why-ic { width:15.5px; height:15.5px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .whybtn:hover { color:var(--accent); }
+  /* On the light-mode gradient hero the dim grey is unreadable: follow the
+     card's own white text treatment instead. */
+  html[data-theme="light"] .grad .whybtn { color:rgba(255,255,255,.82); }
+  html[data-theme="light"] .grad .whybtn:hover { color:#fff; }
+  html[data-theme="light"] .grad .whytext.shown { border-color:rgba(255,255,255,.35); }
+  html[data-theme="light"] .grad .whytext p { color:rgba(255,255,255,.88); }
+  .whytext.shown { display:block; border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-top:8px; }
+  .whytext p { font:13px/1.7 var(--sans); color:var(--dim); margin:0 0 10px; }
+  .whytext p:last-child { margin-bottom:0; }
+  @media print { .whybtn { display:none; } .whytext.shown { border:none; padding:0; } }
+
   .pill { border-radius:99px; padding:3px 10px; font:500 10.5px/1.5 var(--sans); white-space:nowrap; }
   .pill-mint { background:var(--ok-soft); color:var(--ok); }
   .pill-coral { background:var(--coral-soft); color:var(--coral); }
@@ -298,10 +329,10 @@
   .foot-sub .feedback:hover { text-decoration:underline; }
   .foot-sub .pulse { width:14px; height:14px; vertical-align:-3px; margin-right:5px; fill:none;
     stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  /* The line traces itself and sweeps out, like a heart monitor. 46 is the
+  /* The line traces itself and sweeps out, like a heart monitor. 44 is the
      polyline's own length, so the dash covers it exactly. */
-  .foot-sub .pulse polyline { stroke-dasharray:46; animation:pulse-trace 3.4s cubic-bezier(.5,0,.5,1) infinite; }
-  @keyframes pulse-trace { 0% { stroke-dashoffset:46; } 55% { stroke-dashoffset:0; } 100% { stroke-dashoffset:-46; } }
+  .foot-sub .pulse polyline { stroke-dasharray:44; animation:pulse-trace 3.4s cubic-bezier(.5,0,.5,1) infinite; }
+  @keyframes pulse-trace { 0% { stroke-dashoffset:44; } 55% { stroke-dashoffset:0; } 100% { stroke-dashoffset:-44; } }
   @media (prefers-reduced-motion: reduce) {
     .foot-sub .pulse polyline { animation:none; stroke-dashoffset:0; }
   }
@@ -380,8 +411,12 @@
 <!-- rmds-schema: gregkozakiewicz/5.7.2 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
-  <svg class="only-dark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="7" y2="7"/><line x1="17" y1="17" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="7" y2="17"/><line x1="17" y1="7" x2="19.1" y2="4.9"/></svg>
-  <svg class="only-light" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  <span class="tt-lab tt-day">Day</span>
+  <span class="tt-lab tt-night">Night</span>
+  <span class="tt-knob">
+    <svg class="tt-moon" viewBox="0 0 24 24"><path d="M20.5 13.2A8.8 8.8 0 1 1 10.8 3.5a6.9 6.9 0 0 0 9.7 9.7z"/></svg>
+    <svg class="tt-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><line x1="12" y1="2.2" x2="12" y2="5.4"/><line x1="12" y1="18.6" x2="12" y2="21.8"/><line x1="2.2" y1="12" x2="5.4" y2="12"/><line x1="18.6" y1="12" x2="21.8" y2="12"/><line x1="5.1" y1="5.1" x2="7.3" y2="7.3"/><line x1="16.7" y1="16.7" x2="18.9" y2="18.9"/><line x1="5.1" y1="18.9" x2="7.3" y2="16.7"/><line x1="16.7" y1="7.3" x2="18.9" y2="5.1"/></svg>
+  </span>
 </button>
 <script>try{var t=localStorage.getItem('roast-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <div class="wrap">
@@ -389,9 +424,9 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 71ms · 146 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 65ms · 146 code files</div>
       <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">vercel/ai-chatbot</span> · scanned 2026-09-01</div>
+      <div class="meta"><span class="mono">vercel/ai-chatbot</span> · scanned 2026-09-04</div>
     </div>
     <div class="score"><div class="eyebrow">Health score</div><div class="val">75<span class="slash">/</span><span class="of">100</span></div></div>
   </div>
@@ -407,7 +442,7 @@
 
 <section class="glass pad notes-sec">
     <div class="sec-head">
-      <div class="eyebrow">Written by Claude from this scan · 2026-09-01 · not part of the measurement</div>
+      <div class="eyebrow">Written by Claude from this scan · 2026-09-04 · not part of the measurement</div>
       <h2>What the numbers mean</h2>
     </div>
     <div class="notes-body"><p>The 75 is real, but read it carefully: the tiles are green because shadcn carries them. All 61 colours are oklch tokens with <strong>zero hex strays</strong> — the token architecture is doing its job, and the score credits it. What the score can only partly price is where this repo's mess actually lives: <strong>103 arbitrary bracket values punched through the Tailwind scale</strong>. [13px] alone appears 26 times, led by components/chat/sidebar-user-nav.tsx, with [10px], [0.12em] and [3px] close behind. Each one is a precedent: an agent reading this code learns that when the scale doesn't fit, you punch through it.</p><p>The quieter finding is worse: <strong>the agent rules are stale</strong>. .cursor/rules/ultracite.mdc references pages/_document.jsx and pages/_document.js — files this scan cannot find, remnants of a pages-router past in an app-router repo. A rule the agent obeys is worse than no rule when the repo has moved on.</p><p>The component layer is disciplined at the top and fraying at the edges: MessageActions is defined in two files, and the button family has grown six members — Button, SubmitButton, ArtifactCloseButton, CodeBlockCopyButton, ConversationScrollButton, PromptInputButton. Most are legitimate specialisations, but nothing in the repo says which are canonical, so the next agent adds a seventh.</p><p>The fix, calmly: the bracket values are decisions without names. [13px] used 26 times is a font-size step this design wants and the scale doesn't have — add the step, then fold the brackets in as files get touched. Delete the two dead references from ultracite.mdc today; it is a two-line fix and the cheapest win on this page. And one line in the rules naming Button as the base others wrap would close the family to accidental growth.</p></div>
@@ -422,7 +457,7 @@
         <span class="ledger-idx">01</span>
         <div class="start-body"><div class="start-head"><div class="start-title">Give your repeated bracket values names</div><span class="delta">+5</span></div><div class="sub">[13px] appears 26 times, which reads as a decision, not drift. If it is one, name it in app/globals.css so the next component (and your agent) can reach for it; 5 more repeated values deserve the same look. The 14 values used once are worth a pass: keep the deliberate ones (optical nudges like the 4 under 4px, one-off layout widths) and round the accidents to a neighbouring step.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="0">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="0">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the ai-chatbot repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the vercel-ai-chatbot repository, measured by roast-my-design-system.
 
 The finding: Give your repeated bracket values names
 
@@ -459,7 +494,7 @@ npx roast-my-design-system@latest</div></div>
           <span class="gift-count">12 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of vercel/ai-chatbot on 2026-09-01.
+&lt;!-- Generated by roast-my-design-system from a scan of vercel/ai-chatbot on 2026-09-04.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system@latest --rules --&gt;
 
@@ -520,42 +555,42 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
   </section>
 
-<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg><span><b>Agent trap.</b> [13px] appears 26 times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence 27. The most copied pattern here is the one you least want copied.</span></div>
+<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> [13px] appears 26 times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence 27. The most copied pattern here is the one you least want copied.</span></div>
 
 <div class="stats"><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">61</div><div class="lab">distinct colours</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~24 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">130 · cleaner than 65% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">24 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">shades of grey</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~13 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">17 · cleaner than 88% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">5 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">6</div><div class="lab">off-scale spacing values</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">34 · cleaner than 79% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-eq">=</span></span></div></div>
 </div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">duplicated components</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 · cleaner than 85% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-warn">
-  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
+  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>
   <div class="num">7</div><div class="lab">inline style blocks</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">49 · cleaner than 76% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">near-identical colour pairs</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 · cleaner than 71% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
   <div class="num">9</div><div class="lab">!important declarations</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">7 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">3 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">components never imported</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">14 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-eq">=</span></span></div></div>
 </div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
   <div class="num">103</div><div class="lab">arbitrary bracket values</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">70 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
@@ -588,6 +623,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="split-track"><div class="split"><span class="sp-tok" style="width:80%"></span><span class="sp-stray" style="width:20%"></span></div></div>
     <div class="split-legend"><span>49 tokens</span><span>12 strays</span></div>
     
+    <div class="whywrap"><button type="button" class="whybtn" data-why="colors"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-colors"><p>Look, nobody consciously chooses 100 colours to start with. They were added with each change, and the change after that. No one was checking for the drift, because no one expected it. Then come the multipliers: a rebrand, a dark-mode pass, ad hoc files, each one multiplying the values again.</p><p>When an agent looks for Brand Blue it scans the repo, sees dozens of blues and logically picks the one used most often, which is how the most-used stray outvotes the actual token.</p><p>24 covers a whole product: a brand hue with its tints, an accent, the greys, the status colours. The median across 10 reputable design systems is exactly 24.</p></div></div>
   </div>
   <div class="glass pal-usage">
     <div class="pal-usage-head">
@@ -657,27 +693,30 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="bar-row"><span class="bar-label">·10</span>
     <div class="bar-track"><div class="bar" style="width:3%"></div></div>
     <span class="bar-count">3</span></div></div>
+    <div class="whywrap"><button type="button" class="whybtn" data-why="spacing"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-spacing"><p>Nobody starts a design system with 50 spacing values. A deadline, a last-minute change, and someone nudged a layout until it sat right, and 13px honestly sat better than 12px. The next person can not tell a deliberate exception from a new value, or honestly never noticed, and copies it either way.</p><p>That is how layout rhythm starts drifting. Two lists almost align, two cards almost match, and the page stops looking right. An agent copies nudge after nudge, because to an agent 13px looks as intentional as 12px. And once one page carries enough exceptions, the agent treats them as canonical, and the poison spreads to the other pages.</p><p>The 12 is a budget for values outside the scale, and it is a generous one: the 10 reputable design systems we scanned hold a median of 6. The average product repo carries 34, which is a second, unwritten scale.</p></div></div>
     <div class="receipts"><div class="eyebrow">103 arbitrary values punched through the scale, one bracket at a time</div>
-    <div class="chips-row"><span class="vchip bad" title="components/chat/sidebar-user-nav.tsx">[13px] ×26</span><span class="vchip bad" title="components/chat/sidebar-history.tsx">[10px] ×12</span><span class="vchip bad" title="components/chat/sidebar-history.tsx">[0.12em] ×9</span><span class="vchip bad" title="components/ui/input-group.tsx">[3px] ×9</span><span class="vchip bad" title="components/chat/multimodal-input.tsx">[12px] ×7</span><span class="vchip bad" title="artifacts/code/client.tsx">[200px] ×5</span><span class="vchip bad" title="components/ai-elements/reasoning.tsx">[11px] ×4</span><span class="vchip bad" title="components/chat/artifact-messages.tsx">[24px] ×4</span><span class="vchip bad" title="components/chat/document-preview.tsx">[257px] ×4</span><span class="vchip bad" title="components/chat/document-preview.tsx">[450px] ×3</span><span class="vchip dim">+17 more</span></div></div></section>
+    <div class="chips-row"><span class="vchip bad" title="components/chat/sidebar-user-nav.tsx">[13px] ×26</span><span class="vchip bad" title="components/chat/sidebar-history.tsx">[10px] ×12</span><span class="vchip bad" title="components/chat/sidebar-history.tsx">[0.12em] ×9</span><span class="vchip bad" title="components/ui/input-group.tsx">[3px] ×9</span><span class="vchip bad" title="components/chat/multimodal-input.tsx">[12px] ×7</span><span class="vchip bad" title="artifacts/code/client.tsx">[200px] ×5</span><span class="vchip bad" title="components/ai-elements/reasoning.tsx">[11px] ×4</span><span class="vchip bad" title="components/chat/artifact-messages.tsx">[24px] ×4</span><span class="vchip bad" title="components/chat/document-preview.tsx">[257px] ×4</span><span class="vchip bad" title="components/chat/document-preview.tsx">[450px] ×3</span><span class="vchip dim">+17 more</span></div>
+    <div class="whywrap"><button type="button" class="whybtn" data-why="arbitrary"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-arbitrary"><p>Brackets exist for a reason. Sometimes the scale really lacks a value, and one w-[137px] for a stubborn third-party embed is craft, done on purpose.</p><p>But a bracket is a value with no name. A search for the token will never find it, and a scale change leaves it untouched. An agent that sees brackets in the repo learns that the scale is optional. It can not tell which brackets were deliberate, so it feels free to add its own, and the escape hatch becomes the main door.</p><p>The 20 is a budget for real exceptions, and it is a generous one: 9 of the 10 reputable systems we scanned sit at 0, including systems built on Tailwind. The average product repo carries 70.</p></div></div></div></section>
 <section>
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">3</div><div class="lab">typefaces</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-warn">
-  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.01"/></svg>
+  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>
   <div class="num">12</div><div class="lab">font sizes</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">20 · cleaner than 62% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
   <div class="num">14</div><div class="lab">border radii</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">13 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">4</div><div class="lab">shadow styles</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~6 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">2 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
+    <div class="whywrap"><button type="button" class="whybtn" data-why="typefaces"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-typefaces"><p>One product should have a maximum of 3 font families. When they arrive on their own, it is usually one with a component library, one with a marketing page, one left over from an old logo. Bold and italic do not count; those are weights of one family. And no one will take the risk of removing a font, because nobody is sure what still uses it and what will break.</p><p>Every extra font makes pages heavier to load, adds a licence to track, and splits the product’s voice. An agent starting a new page scans the repo, sees several fonts in use, and may feel obligated to use all of them. The split grows on its own.</p><p>The ideal is 3, one for each real job: a sans for the interface, a serif if the brand wants an accent, a mono for code.</p></div></div>
     <div class="receipts"><div class="eyebrow">the font sizes, by use</div><div class="chips-row"><span class="vchip">·sm ×44</span><span class="vchip">·xs ×29</span><span class="vchip">·[13px] ×25</span><span class="vchip">·[10px] ×12</span><span class="vchip">·[12px] ×5</span><span class="vchip">·[11px] ×4</span><span class="vchip">·base ×4</span><span class="vchip">·2xl ×3</span><span class="vchip">·3xl ×2</span><span class="vchip">·lg ×2</span><span class="vchip">·[var(--shiki-dark)] ×1</span><span class="vchip">·xl ×1</span></div></div>
     <div class="receipts"><div class="eyebrow">the radii, by use</div><div class="chips-row"><span class="vchip">·md ×31</span><span class="vchip">·lg ×30</span><span class="vchip">·2xl ×18</span><span class="vchip">·xl ×18</span><span class="vchip">·full ×17</span><span class="vchip">·default ×13</span><span class="vchip">·none ×3</span><span class="vchip">·sm ×2</span><span class="vchip">·[12px] ×2</span><span class="vchip">2px ×1</span><span class="vchip">9999px ×1</span><span class="vchip">·3xl ×1</span><span class="vchip">·[inherit] ×1</span><span class="vchip">·[2px] ×1</span></div></div>
     <div class="spec"><div class="eyebrow">the elevations, cast, 2 of 4 · on the light surface they were drawn for</div>
@@ -693,7 +732,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/app/globals.css">app/globals.css</a>
+      <a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/app/globals.css">app/globals.css</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">11 stray colours</span>
         
@@ -701,7 +740,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/chat/sidebar-user-nav.tsx">components/chat/sidebar-user-nav.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/chat/sidebar-user-nav.tsx">components/chat/sidebar-user-nav.tsx</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">2 stray colours</span>
         
@@ -709,7 +748,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">1 inline</span>
@@ -717,7 +756,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">04</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">1 inline</span>
@@ -725,7 +764,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">05</span>
-      <a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a>
+      <a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">1 inline</span>
@@ -738,7 +777,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;MessageActions&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/ai-elements/message.tsx">components/ai-elements/message.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/chat/message-actions.tsx">components/chat/message-actions.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/ai-elements/message.tsx">components/ai-elements/message.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/chat/message-actions.tsx">components/chat/message-actions.tsx</a></div>
       
       </div>
     </div>
@@ -769,36 +808,38 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Dialog&gt;</div><div class="mc-path">components/ui/dialog.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SuggestionDialog&gt;</div><div class="mc-path">components/chat/suggestion.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
       
       </div>
-    </div></div></div>
+    </div></div>
+    <div class="whywrap"><button type="button" class="whybtn" data-why="duplicates"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-duplicates"><p>Nobody builds a second Button on purpose. The first one was hard to find, or almost right but easier to rewrite than to change. On the day, rewriting was the faster choice. And no one deletes the old one later, because nobody is sure what still uses it and what will break.</p><p>From then on, every fix reaches one copy and misses the other. Every search has a wrong answer on offer. An agent picks whichever version it happens to find, and every new page makes the more common copy stronger. Common wins over correct, and the drift only deepens.</p><p>The ideal is 0, because the fix is cheap: point one copy at the other and the multiplying stops. The average product repo carries 20 duplicated components.</p></div></div></div>
 <div class="glass pad half">
     <div class="sec-head"><h2>7 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/chat/multimodal-input.tsx">components/chat/multimodal-input.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/chat/multimodal-input.tsx">components/chat/multimodal-input.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/chat/sheet-editor.tsx">components/chat/sheet-editor.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/chat/sheet-editor.tsx">components/chat/sheet-editor.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/claude-502/-Users-greg-codework-roast-my-design-system/eb33040f-5675-4f0b-a43a-2b8160c6ff56/scratchpad/ai-chatbot/components/chat/suggested-actions.tsx">components/chat/suggested-actions.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//private/tmp/roast-examples/vercel-ai-chatbot/components/chat/suggested-actions.tsx">components/chat/suggested-actions.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
-      </div></div>
+      </div></div><div class="whywrap"><button type="button" class="whybtn" data-why="inline"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-inline"><p>An inline style is the fastest way to make one element behave. A deadline, one stubborn element, done. On the day, a fair trade.</p><p>The cost is that the design system can not see it. Theming misses it, dark mode misses it, a token change misses it. Every inline style is a private exception and requires someone to find it by hand. And agents like inline styles, because they always work and they need no knowledge of your system. Every block already in the repo teaches the agent that this is how styling is done here, so the habit spreads.</p><p>The ideal is 0, and the count is fair: only fully static blocks are counted, runtime positioning and canvas work are exempt. The average product repo carries 49 blocks. The 10 reputable systems hold a median of 12.</p></div></div>
     <div class="receipts"><div class="eyebrow">9 !important declarations · the cascade admitting defeat</div>
-    <div class="chips-row"><span class="vchip bad" title="app/globals.css">globals.css ×9</span></div></div></div>
+    <div class="chips-row"><span class="vchip bad" title="app/globals.css">globals.css ×9</span></div>
+    <div class="whywrap"><button type="button" class="whybtn" data-why="important"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-important"><p>Every !important marks a styling fight someone had to win by the end of the day. One is harmless. And no one removes it later, because nobody is sure what will break.</p><p>But each one raises the floor. The next override in that area has to shout at least as loud, so the count only climbs. An agent that loses a styling fight reaches for !important straight away, because it is the most common CSS fix it has ever seen.</p><p>The ideal is 0, because !important is CSS admitting defeat. Fix the rule that kept losing, and the next one is never needed. The average product repo carries 7.</p></div></div></div></div>
 </div>
 <section class="glass pad">
     <div class="sec-head"><h2>The adoption map</h2><p class="sub">315 components defined · tile area is import count · the real system, drawn to scale</p></div>
@@ -923,7 +964,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 5.7.2</span>, free on npm and as a Claude Code + Codex skill</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">be1fd983aee7</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.7.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 6 12 9 3 15 21 18 12 22 12"/></svg>Say so, and say which bit</a></div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">b66ecf5af857</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.7.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>
@@ -979,6 +1020,15 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       var show=holder.hidden;
       holder.hidden=!show; holder.classList.toggle('shown', show);
       v.textContent=show?'hide it':'view it first';
+    });
+  });
+  document.querySelectorAll('.whybtn').forEach(function(b){
+    b.addEventListener('click', function(){
+      var holder=document.getElementById('why-'+b.getAttribute('data-why'));
+      if(!holder) return;
+      var show=holder.hidden;
+      holder.hidden=!show; holder.classList.toggle('shown', show);
+      var lab=b.querySelector('.why-lab'); if(lab) lab.textContent=show?'hide':'why this matters';
     });
   });
   var copyBtn=document.getElementById('gift-copy');

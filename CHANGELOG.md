@@ -2,6 +2,16 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.9.0 — 2026-09-05
+
+- **The agent card knows which doors your rules actually reach.** A new "Readable by" line states, as plain fact, which tools can read the rules files the repo has: Claude Code reads CLAUDE.md, Codex reads AGENTS.md, Cursor reads AGENTS.md and .cursor/rules. Where a door is missing, the card shows the one-line fix; where the only Cursor door is the legacy .cursorrules, it says "legacy file only", a label, never a verdict. Gated the way every metric is gated: the fleet was probed first (15 of 34 repos have no rules at all, and the dead-door case appeared once), so coverage ships as fact on the card, not as a scored finding.
+- **Rules files are found where monorepos really keep them.** The scan now sweeps subfolders for nested CLAUDE.md, AGENTS.md, GEMINI.md, .cursor/rules and .windsurf/rules (twenty carries 35 AGENTS.md files; a root-only look reported 1 and called it the whole story). Nested files fold into one counted chip instead of 35. Three doors join the checklist: GEMINI.md, .windsurf/rules and .github/instructions.
+- **The generated rules file carries door advice** in its header: Codex and Cursor read AGENTS.md, Claude Code reads CLAUDE.md only, and the one-line @AGENTS.md import that closes the gap.
+- The agent card moved above the gift, so the report reads as a story: what to fix, what your agent sees today, then the rules file that fixes exactly that.
+- The footer now hands out the command: npx roast-my-design-system in mono with a small copy pill (which never fakes success: where a clipboard is blocked it selects the text and says so).
+- The GitHub About section is maintained by hand from this release on; the release script no longer touches it.
+- All five example reports re-harvested and regenerated on this engine; screenshots reshot; README's "New in" stack trimmed to 5.9, 5.8 and 5.0.
+
 ## 5.8.0 — 2026-09-05
 
 - **Every finding can now explain itself.** A small "why this matters" toggle sits under each of the ten finding blocks: colours, near-identical pairs, greys, off-scale spacing, arbitrary values, typefaces, duplicated components, inline styles, !important and never-imported components. It unfolds a calm, plain-language explanation of how the mess arrives innocently, what it costs later, how an agent multiplies it, and why the ideal sits where it sits, with the benchmark medians in the closing line. The findings stay brutal; the why is where the advice lives. Written to the GOV.UK plain-language standard and reviewed word by word. Asked for by Willem, and by Anna's question about where the numbers come from.

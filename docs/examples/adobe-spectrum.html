@@ -94,6 +94,9 @@
   .chip { border:1px solid var(--line); background:var(--card); border-radius:99px;
     padding:4px 12px; font:500 11.5px/1.5 var(--sans); color:var(--text); }
   .chip-agent { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
+  .coverage { margin-top:12px; }
+  .cov-yes { color:var(--ok); font-weight:700; }
+  .cov-no { color:var(--coral); font-weight:700; }
   .excl { margin-top:10px; font:500 12px/1.6 var(--sans); color:var(--dim); }
   .excl .mono { font-size:11.5px; color:var(--text); }
   .stale { margin-top:18px; }
@@ -337,6 +340,11 @@
     .foot-sub .pulse polyline { animation:none; stroke-dashoffset:0; }
   }
   .scan-id { font-family:var(--mono); font-size:11px; letter-spacing:.04em; }
+  .copy-pill { font:700 9.5px/1 var(--sans); letter-spacing:.06em; text-transform:uppercase; padding:3px 8px;
+    border-radius:99px; border:1px solid var(--line); background:transparent; color:var(--dim);
+    cursor:pointer; vertical-align:1px; }
+  .copy-pill:hover { color:var(--accent); border-color:var(--accent); }
+  @media print { .copy-pill { display:none; } }
   footer .brand { color:var(--accent); font-weight:700; text-decoration:none; }
   footer .brand:hover { text-decoration:underline; }
   footer .creds { display:flex; gap:16px; font:700 9.5px/1.6 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--dim2); }
@@ -408,7 +416,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/5.7.2 -->
+<!-- rmds-schema: gregkozakiewicz/5.9.0 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <span class="tt-lab tt-day">Day</span>
@@ -424,13 +432,13 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 254ms · 1,709 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 422ms · 1,709 code files</div>
       <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">adobe/spectrum-web-components</span> · scanned 2026-09-04</div>
+      <div class="meta"><span class="mono">adobe/spectrum-web-components</span> · scanned 2026-09-05</div>
     </div>
     <div class="score"><div class="eyebrow">Health score</div><div class="val">66<span class="slash">/</span><span class="of">100</span></div></div>
   </div>
-  <div class="chips"><span class="chip">web components (Lit)</span><span class="chip">TypeScript</span><span class="chip">plain CSS</span><span class="chip">custom design system (--spectrum-*)</span><span class="chip">monorepo</span><span class="chip chip-dim">also present: --swc-*, --mod-*, --system-*</span><span class="chip chip-agent">AGENTS.md</span><span class="chip chip-agent">.cursor/rules</span></div>
+  <div class="chips"><span class="chip">web components (Lit)</span><span class="chip">TypeScript</span><span class="chip">plain CSS</span><span class="chip">custom design system (--spectrum-*)</span><span class="chip">monorepo</span><span class="chip chip-dim">also present: --swc-*, --mod-*, --system-*</span><span class="chip chip-agent">AGENTS.md</span><span class="chip chip-agent">.cursor/rules</span><span class="chip chip-agent">1st-gen/AGENTS.md</span><span class="chip chip-agent">1st-gen/packages/AGENTS.md</span><span class="chip chip-agent">1st-gen/projects/AGENTS.md</span><span class="chip chip-agent">1st-gen/tools/AGENTS.md</span><span class="chip chip-agent">2nd-gen/AGENTS.md</span><span class="chip chip-agent">2nd-gen/packages/core/AGENTS.md</span><span class="chip chip-agent">2nd-gen/packages/swc/AGENTS.md</span></div>
   
   
   <div class="glass verdict-card">
@@ -514,6 +522,31 @@ Work through the files named in the finding. When you are done, re-run the scan 
 npx roast-my-design-system@latest</div></div>
       </div></div></section>
 
+<section class="glass pad agent">
+    <div class="sec-head"><h2>What your AI agent sees today</h2></div>
+    <p class="sub">Your agent reads <span class="mono">AGENTS.md</span>, <span class="mono">.cursor/rules</span>, plus 7 rules files nested in subfolders. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">AGENTS.md · generic (AGENTS.md standard)</span><span class="chip chip-agent">.cursor/rules · Cursor</span><span class="chip chip-agent">+7 nested in subfolders</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-no">—</b> · Codex <b class="cov-yes">✓</b> · Cursor <b class="cov-yes">✓</b> · <span class="dim">Claude Code skips AGENTS.md: add a CLAUDE.md containing the single line <span class="mono">@AGENTS.md</span> and it reads the same rules</span></p>
+    <div class="stale">
+      <div class="eyebrow">4 rule references gone stale · a rule your agent obeys is worse than no rule when the repo has moved on</div>
+      <div class="ledger">
+    <div class="ledger-row">
+      <span class="mono strong">@spectrum-web-components/COMPONENT/sp-COMPONENT.js</span>
+      <span class="dim">named in .cursor/rules/component-readme.mdc, but the path no longer exists</span>
+    </div>
+    <div class="ledger-row">
+      <span class="mono strong">2nd-gen/packages/swc/components/component-name/Component.ts</span>
+      <span class="dim">named in .cursor/rules/stories-documentation.mdc, but the path no longer exists</span>
+    </div>
+    <div class="ledger-row">
+      <span class="mono strong">2nd-gen/packages/core/components/component-name/Component.base.ts</span>
+      <span class="dim">named in .cursor/rules/stories-documentation.mdc, but the path no longer exists</span>
+    </div>
+    <div class="ledger-row">
+      <span class="mono strong">../../stylelint.config.js</span>
+      <span class="dim">named in .cursor/rules/styles.mdc, but the path no longer exists</span>
+    </div></div>
+      <p class="sub" style="margin-top:10px">Rules rot quietly: nobody edits them when a component is renamed or a file moves. Regenerate them from a fresh scan, or fix the lines by hand.</p>
+    </div></section>
+
 <section class="glass pad gift-sec">
     <div class="sec-head"><h2>You sat through the roast</h2><p class="sub">so you get a present.</p></div>
     <div class="gift-stage">
@@ -532,9 +565,11 @@ npx roast-my-design-system@latest</div></div>
           <span class="gift-count">11 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of adobe/spectrum-web-components on 2026-09-04.
+&lt;!-- Generated by roast-my-design-system from a scan of adobe/spectrum-web-components on 2026-09-05.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
-     npx roast-my-design-system@latest --rules --&gt;
+     npx roast-my-design-system@latest --rules
+     Door note: Codex and Cursor read AGENTS.md; Claude Code reads CLAUDE.md only.
+     If this lives in AGENTS.md, add the line &quot;@AGENTS.md&quot; to CLAUDE.md so Claude sees it too. --&gt;
 
 Follow these rules when writing or editing UI in this repo. Every rule below was derived from a scan of this codebase, with real paths and usage counts.
 
@@ -573,7 +608,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 5.7.2. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 5.9.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -637,31 +672,6 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td class="dim">7 files</td></tr></tbody></table></div>
     
     <p class="sub" style="margin-top:12px">A repo scores below its own packages by arithmetic, not by accident: distinct values add up across packages, so the whole always carries more than any part. Read the package scores for where each team stands, and the repo score for what your agent sees when it looks at everything at once.</p></section>
-
-<section class="glass pad agent">
-    <div class="sec-head"><h2>What your AI agent sees today</h2></div>
-    <p class="sub">Your agent reads <span class="mono">AGENTS.md</span>, <span class="mono">.cursor/rules</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">AGENTS.md · generic (AGENTS.md standard)</span><span class="chip chip-agent">.cursor/rules · Cursor</span></div>
-    <div class="stale">
-      <div class="eyebrow">4 rule references gone stale · a rule your agent obeys is worse than no rule when the repo has moved on</div>
-      <div class="ledger">
-    <div class="ledger-row">
-      <span class="mono strong">@spectrum-web-components/COMPONENT/sp-COMPONENT.js</span>
-      <span class="dim">named in .cursor/rules/component-readme.mdc, but the path no longer exists</span>
-    </div>
-    <div class="ledger-row">
-      <span class="mono strong">2nd-gen/packages/swc/components/component-name/Component.ts</span>
-      <span class="dim">named in .cursor/rules/stories-documentation.mdc, but the path no longer exists</span>
-    </div>
-    <div class="ledger-row">
-      <span class="mono strong">2nd-gen/packages/core/components/component-name/Component.base.ts</span>
-      <span class="dim">named in .cursor/rules/stories-documentation.mdc, but the path no longer exists</span>
-    </div>
-    <div class="ledger-row">
-      <span class="mono strong">../../stylelint.config.js</span>
-      <span class="dim">named in .cursor/rules/styles.mdc, but the path no longer exists</span>
-    </div></div>
-      <p class="sub" style="margin-top:10px">Rules rot quietly: nobody edits them when a component is renamed or a file moves. Regenerate them from a fresh scan, or fix the lines by hand.</p>
-    </div></section>
 
 <section style="margin-top:16px"><section class="palette-grid">
   <div class="glass pal-hero grad">
@@ -928,8 +938,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 5.7.2</span>, free on npm and as a Claude Code + Codex skill</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">35a3a6cbeb8c</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.7.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 5.9.0</span> · free to run: <a class="brand" href="https://www.npmjs.com/package/roast-my-design-system"><span class="mono" id="npx-cmd">npx roast-my-design-system</span></a> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">2cdfc5b2b840</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=5.9.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>
@@ -987,6 +997,17 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       v.textContent=show?'hide it':'view it first';
     });
   });
+  var npxCopy=document.getElementById('npx-copy');
+  if(npxCopy){
+    npxCopy.addEventListener('click', function(){
+      var text=document.getElementById('npx-cmd').textContent;
+      var done=function(){ npxCopy.textContent='copied'; setTimeout(function(){ npxCopy.textContent='copy'; },1600); };
+      var manual=function(){ var r=document.createRange(); r.selectNodeContents(document.getElementById('npx-cmd'));
+        var s=getSelection(); s.removeAllRanges(); s.addRange(r); npxCopy.textContent='select + copy'; setTimeout(function(){ npxCopy.textContent='copy'; },2600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, manual); }
+      else { manual(); }
+    });
+  }
   document.querySelectorAll('.whybtn').forEach(function(b){
     b.addEventListener('click', function(){
       var holder=document.getElementById('why-'+b.getAttribute('data-why'));

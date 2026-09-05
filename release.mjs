@@ -297,18 +297,10 @@ if (hasGh) {
   const madeRelease = spawnSync('gh', ['release', 'create', `v${version}`, '--title', `v${version}`, '--notes', notes], { cwd: ROOT, encoding: 'utf8' });
   madeRelease.status === 0 ? ok(`release v${version} created`) : say(`  \x1b[33m…release not created: ${(madeRelease.stderr || '').trim()}\x1b[0m`);
 
-  // The repo description carries a version prefix that drifts every time it is
-  // updated by hand. Swap just the prefix, keep the pitch, respect the 350 cap.
-  const desc = spawnSync('gh', ['repo', 'view', '--json', 'description', '--jq', '.description'], { cwd: ROOT, encoding: 'utf8' }).stdout.trim();
-  if (desc) {
-    const next = /^v\d+\.\d+\.\d+/.test(desc) ? desc.replace(/^v\d+\.\d+\.\d+/, `v${version}`) : `v${version} · ${desc}`;
-    if (next === desc) ok('repo description already current');
-    else if (next.length > 350) say(`  \x1b[33m…description would be ${next.length} chars, over GitHub's 350. Trim it by hand.\x1b[0m`);
-    else {
-      const set = spawnSync('gh', ['repo', 'edit', '--description', next], { cwd: ROOT, encoding: 'utf8' });
-      set.status === 0 ? ok(`repo description now reads v${version}`) : say(`  \x1b[33m…description not updated: ${(set.stderr || '').trim()}\x1b[0m`);
-    }
-  }
+  // The GitHub About section (repo description) is Greg's, maintained by hand
+  // (his call, 2026-09-05). The release never touches it any more; this line
+  // is only a reminder that it exists as a surface.
+  say('  repo description (About section) is maintained by hand — not touched');
 }
 
 say(`\n\x1b[32m${version} is out.\x1b[0m`);

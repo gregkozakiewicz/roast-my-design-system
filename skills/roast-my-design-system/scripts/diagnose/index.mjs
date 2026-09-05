@@ -1168,10 +1168,29 @@ function packagesSection() {
 }
 
 function agentSection() {
-  const have = agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)} · ${esc(c.tool ?? c.kind)}</span>`).join('');
+  // Root files get chips; nested ones (monorepo packages) fold into a single
+  // count chip, because 35 chips is wallpaper and one number is a finding.
+  const rootAgent = agentFiles.filter((c) => !c.nested);
+  const nestedAgent = agentFiles.filter((c) => c.nested);
+  const overflow = nestedAgent.find((c) => c.file.startsWith('(+'));
+  const nestedCount = nestedAgent.filter((c) => !c.file.startsWith('(+')).length
+    + (overflow ? parseInt(overflow.file.slice(2), 10) || 0 : 0);
+  const have = rootAgent.map((c) => `<span class="chip chip-agent">${esc(c.file)} · ${esc(c.tool ?? c.kind)}</span>`).join('')
+    + (nestedCount ? `<span class="chip chip-agent">+${nestedCount} nested in subfolders</span>` : '');
+  const readsList = (rootAgent.length ? rootAgent : nestedAgent.slice(0, 3)).map((c) => `<span class="mono">${esc(c.file)}</span>`).join(', ');
   const msg = agentFiles.length
-    ? `<p class="sub">Your agent reads ${agentFiles.map((c) => `<span class="mono">${esc(c.file)}</span>`).join(', ')}. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p>`
+    ? `<p class="sub">Your agent reads ${readsList}${nestedCount && rootAgent.length ? `, plus ${nestedCount} rules file${nestedCount === 1 ? '' : 's'} nested in subfolders` : ''}. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p>`
     : `<p class="sub">No <span class="mono">CLAUDE.md</span>, no <span class="mono">AGENTS.md</span>, no <span class="mono">.cursorrules</span>. Every time your AI builds UI here, it guesses, from everything below. This is why its output looks almost-but-not-quite right.</p>`;
+  // Door coverage, stated as fact: which tools can read what exists. Claude
+  // Code reads CLAUDE.md only; Codex reads AGENTS.md; Cursor reads AGENTS.md
+  // and .cursor/rules (its legacy .cursorrules is labelled, not judged).
+  const hasFile = (name) => agentFiles.some((c) => c.file === name || c.file.endsWith(`/${name}`));
+  const claudeOk = hasFile('CLAUDE.md');
+  const agentsOk = hasFile('AGENTS.md');
+  const cursorOk = agentsOk || agentFiles.some((c) => c.file.endsWith('.cursor/rules') || c.file === '.cursor/rules');
+  const cursorLegacyOnly = !cursorOk && hasFile('.cursorrules');
+  const mark = (ok) => (ok ? '<b class="cov-yes">✓</b>' : '<b class="cov-no">—</b>');
+  const coverage = agentFiles.length ? `<p class="sub coverage">Readable by: Claude Code ${mark(claudeOk)} · Codex ${mark(agentsOk)} · Cursor ${cursorLegacyOnly ? '<b class="cov-no">legacy file only</b>' : mark(cursorOk)}${claudeOk && !agentsOk ? ' · <span class="dim">copy the same rules into an AGENTS.md and the other tools see them too</span>' : ''}${agentsOk && !claudeOk ? ' · <span class="dim">Claude Code skips AGENTS.md: add a CLAUDE.md containing the single line <span class="mono">@AGENTS.md</span> and it reads the same rules</span>' : ''}</p>` : '';
   const stale = h.staleRules ?? [];
   const staleRows = stale.map((s) => `
     <div class="ledger-row">
@@ -1186,7 +1205,7 @@ function agentSection() {
     </div>` : '';
   return `<section class="glass pad agent">
     ${sectionHead('What your AI agent sees today', '')}
-    ${msg}${have ? `<div class="chips">${have}</div>` : ''}${staleBlock}</section>`;
+    ${msg}${have ? `<div class="chips">${have}</div>` : ''}${coverage}${staleBlock}</section>`;
 }
 
 // ---------- page ----------
@@ -1294,6 +1313,9 @@ const html = `<!doctype html>
   .chip { border:1px solid var(--line); background:var(--card); border-radius:99px;
     padding:4px 12px; font:500 11.5px/1.5 var(--sans); color:var(--text); }
   .chip-agent { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
+  .coverage { margin-top:12px; }
+  .cov-yes { color:var(--ok); font-weight:700; }
+  .cov-no { color:var(--coral); font-weight:700; }
   .excl { margin-top:10px; font:500 12px/1.6 var(--sans); color:var(--dim); }
   .excl .mono { font-size:11.5px; color:var(--text); }
   .stale { margin-top:18px; }
@@ -1537,6 +1559,11 @@ const html = `<!doctype html>
     .foot-sub .pulse polyline { animation:none; stroke-dashoffset:0; }
   }
   .scan-id { font-family:var(--mono); font-size:11px; letter-spacing:.04em; }
+  .copy-pill { font:700 9.5px/1 var(--sans); letter-spacing:.06em; text-transform:uppercase; padding:3px 8px;
+    border-radius:99px; border:1px solid var(--line); background:transparent; color:var(--dim);
+    cursor:pointer; vertical-align:1px; }
+  .copy-pill:hover { color:var(--accent); border-color:var(--accent); }
+  @media print { .copy-pill { display:none; } }
   footer .brand { color:var(--accent); font-weight:700; text-decoration:none; }
   footer .brand:hover { text-decoration:underline; }
   footer .creds { display:flex; gap:16px; font:700 9.5px/1.6 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--dim2); }
@@ -1646,6 +1673,8 @@ ${extraSectionsHtml()}
 
 ${whereToStartSection()}
 
+${agentSection()}
+
 ${giftSection()}
 
 ${trapsBlock()}
@@ -1653,8 +1682,6 @@ ${trapsBlock()}
 <div class="stats">${bigStats.map((s) => statTile(s)).join('')}</div>
 
 ${packagesSection()}
-
-${agentSection()}
 
 <section style="margin-top:16px">${paletteSection()}</section>
 
@@ -1669,7 +1696,7 @@ ${componentsSection()}
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. ${VERSION}</span>, free on npm and as a Claude Code + Codex skill</div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. ${VERSION}</span> · free to run: <a class="brand" href="https://www.npmjs.com/package/roast-my-design-system"><span class="mono" id="npx-cmd">npx roast-my-design-system</span></a> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
     <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">${scanId}</span> · ${FEEDBACK_ASK} <a class="feedback" href="${feedbackUrl(VERSION).replace(/&/g, '&amp;')}">${PULSE_ICON}${FEEDBACK_CTA}</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
@@ -1728,6 +1755,17 @@ ${componentsSection()}
       v.textContent=show?'hide it':'view it first';
     });
   });
+  var npxCopy=document.getElementById('npx-copy');
+  if(npxCopy){
+    npxCopy.addEventListener('click', function(){
+      var text=document.getElementById('npx-cmd').textContent;
+      var done=function(){ npxCopy.textContent='copied'; setTimeout(function(){ npxCopy.textContent='copy'; },1600); };
+      var manual=function(){ var r=document.createRange(); r.selectNodeContents(document.getElementById('npx-cmd'));
+        var s=getSelection(); s.removeAllRanges(); s.addRange(r); npxCopy.textContent='select + copy'; setTimeout(function(){ npxCopy.textContent='copy'; },2600); };
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, manual); }
+      else { manual(); }
+    });
+  }
   document.querySelectorAll('.whybtn').forEach(function(b){
     b.addEventListener('click', function(){
       var holder=document.getElementById('why-'+b.getAttribute('data-why'));

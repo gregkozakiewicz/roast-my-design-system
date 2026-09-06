@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.10.1 — 2026-09-06
+
+- Docs only: the README passed a GOV.UK plain-English pass. Prose went from an average of 35 words a sentence (16 sentences over 30 words, 10 em-dashes) to 13 words a sentence, none over 30, no em-dashes, no spelled-out numbers. Nothing was cut; long sentences were split. Published so npm's copy of the README reads the same.
+
 ## 5.10.0 — 2026-09-06
 
 - **The scan reads Tailwind v3 shadcn.** shadcn on Tailwind v3 stores a colour token as bare HSL channels (`--primary: 222.2 47.4% 11.2%`) and wraps it later as `hsl(var(--primary) / <alpha-value>)` so Tailwind can inject opacity. To every colour regex that was "some non-colour value", so a textbook shadcn repo (shadcn-ui/taxonomy) scanned as 2 colours, 0 tokens, and earned the banner "none of these are defined as CSS variables, every single one is a hardcoded value". It now reads 15 tokens, 0 strays, no banner. Bare triplets are recognised and normalised to `hsl()`, and `hsl(var(--x))` can never become a colour of its own.

@@ -1,0 +1,1 @@
+{ "style": "default", "tailwind": { "config": "tailwind.config.js", "css": "styles/globals.css", "baseColor": "slate", "cssVariables": true } }

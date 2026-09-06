@@ -30,6 +30,7 @@ import { VERSION } from '../lib/version.mjs';
 import { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA } from '../lib/feedback.mjs';
 import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
+import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 
 // The benchmark (Ideal-2026 norms + scanned-repo stats) ships next to the
 // code so the page works offline; degrade gracefully when absent.
@@ -168,26 +169,22 @@ const n = (x) => x.toLocaleString('en-US');
 // strip. Both themes ship in one file, so the ramp is emitted once per
 // compositing base and toggled with the theme.
 const bgLumOf = ([r, g, b]) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
-function hexLuminance(hex, bgLum) {
-  if (!/^#[0-9a-f]{6}/.test(hex)) return null;
-  const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-  const a = hex.length === 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1;
-  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return a * lum + (1 - a) * bgLum;
+// Every literal colour space, not just hex (5.10.0): a shadcn palette is hsl
+// or oklch, and it is mostly greys, which used to read as "0 greys".
+function colorLuminance(value, bgLum) {
+  const c = parseColor(value);
+  if (!c) return null;
+  return c.a * luminance(c) + (1 - c.a) * bgLum;
 }
-const isGreyHex = (v) => {
-  if (!/^#[0-9a-f]{6}/.test(v)) return false;
-  const r = parseInt(v.slice(1, 3), 16), g = parseInt(v.slice(3, 5), 16), b = parseInt(v.slice(5, 7), 16);
-  return Math.max(r, g, b) - Math.min(r, g, b) <= 10;
-};
 
 // ---------- derived numbers ----------
 const colors = h.tokens.colors ?? [];
-const greysSorted = (bgLum) => colors.filter((c) => isGreyHex(c.value))
-  .sort((a, b) => hexLuminance(a.value, bgLum) - hexLuminance(b.value, bgLum));
+const greysSorted = (bgLum) => colors.filter((c) => isGrey(c.value))
+  .sort((a, b) => colorLuminance(a.value, bgLum) - colorLuminance(b.value, bgLum));
 const greys = greysSorted(bgLumOf(THEMES.dark.pageBgHex));
 const greysLight = greysSorted(bgLumOf(THEMES.light.pageBgHex));
-const nonGreys = colors.filter((c) => !isGreyHex(c.value));
+const nonGreys = colors.filter((c) => !isGrey(c.value));
+const twColorUtils = (h.tokens.tailwind?.colors ?? []).length;
 const spacing = h.tokens.spacing ?? [];
 const twSpacing = h.tokens.tailwind?.spacing ?? [];
 // Off-scale spacing only: CSS-declared values plus arbitrary brackets. Using
@@ -455,7 +452,10 @@ function projectedScore(applied) {
 
 // A repo with essentially no colour/spacing signal most likely has no design
 // system in it at all; say that up front instead of quietly scoring zeros.
-const noSystemLikely = colors.length === 0 || (colors.length < 3 && spacingTotal === 0);
+// A utility-class shadcn repo with no hardcoded colours has zero literal
+// colours and a real system: the palette is bg-zinc-900 and friends.
+const utilityPalette = ds.kind === 'shadcn' && ds.cssVariables === false && twColorUtils >= 5;
+const noSystemLikely = !utilityPalette && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0));
 
 // ---------- section renderers ----------
 const DIR = {
@@ -513,7 +513,9 @@ function paletteSection() {
     <p class="sub">A healthy product palette is <b>up to ~24 colours</b>: one brand hue with a few tints, one accent, up to 13 greys, and status colours.</p>
     <div class="split-track"><div class="split"><span class="sp-tok" style="width:${tokenPct}%"></span><span class="sp-stray" style="width:${100 - tokenPct}%"></span></div></div>
     <div class="split-legend"><span>${n(tokens)} tokens</span><span>${n(strays)} strays</span></div>
-    ${tokens ? '' : `<p class="sub warn-text">None of these are defined as CSS variables. Every single one is a hardcoded value.</p>`}
+    ${tokens ? '' : ds.kind === 'shadcn' && ds.cssVariables === false
+      ? `<p class="sub">shadcn is configured without CSS variables here (<span class="mono">components.json</span>: cssVariables false), so the palette lives in Tailwind utility classes by design${twColorUtils ? `: ${n(twColorUtils)} colour utilities in use` : ''}. Nothing above is a token because nothing was meant to be; every value listed is a hardcoded colour outside those utilities.</p>`
+      : `<p class="sub warn-text">None of these are defined as CSS variables. Every single one is a hardcoded value.</p>`}
     ${whyToggle('colors')}
   </div>
   <div class="glass pal-usage">
@@ -1218,7 +1220,7 @@ function agentSection() {
 // quiet unrecognised chip, because not knowing IS a finding here.
 const ns = h.tokens.namespaces ?? null;
 const dsChip =
-  ds.kind === 'shadcn' ? 'shadcn/ui'
+  ds.kind === 'shadcn' ? (ds.cssVariables === false ? 'shadcn/ui (utility classes, no CSS variables)' : 'shadcn/ui')
   : ds.kind === 'library' ? ds.name
   : ns ? `custom design system (--${ns.primary}-*${ns.partner ? ` + --${ns.partner}-*` : ''})`
   // A tokenFile alone is a technicality (Lion's is one drawer style file);

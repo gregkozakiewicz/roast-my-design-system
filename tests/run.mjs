@@ -216,6 +216,45 @@ console.log('fix prompts:');
   ok('buttons equal moves on every fixture');
 }
 
+// ---------- shadcn tokens: bare HSL triplets are colours ----------
+// Born on shadcn/taxonomy (2026-09-06): a textbook shadcn repo on Tailwind v3
+// scanned as "2 colours, none defined as CSS variables" because its tokens are
+// bare HSL channels. The fixture holds the whole convention: triplets in two
+// themes, hsl(var()) wrappers in the config, one bracket-class stray that is a
+// token's twin, and an OG-image route whose artwork colours must not count.
+console.log('shadcn tokens:');
+{
+  const { nearColorPairs } = await import(pathToFileURL(join(ENGINE, 'lib/nearpairs.mjs')).href);
+  const sh = JSON.parse(readFileSync(join(tmp, 'shadcnv3.json'), 'utf8'));
+  const cols = sh.tokens.colors;
+  const tokens = cols.filter((c) => c.isToken);
+  tokens.length >= 12 && tokens.every((c) => c.value.startsWith('hsl(')) ? ok(`bare HSL triplets read as ${tokens.length} hsl() tokens`)
+    : bad('triplet tokens', `${tokens.length} tokens, values: ${tokens.slice(0, 3).map((c) => c.value).join(', ')}`);
+  !cols.some((c) => /var\(/.test(c.value)) ? ok('hsl(var(--x)) never becomes a colour') : bad('var ref leak', cols.filter((c) => /var\(/.test(c.value)).map((c) => c.value).join(', '));
+  const strays = cols.filter((c) => !c.isToken).map((c) => c.value).sort();
+  JSON.stringify(strays) === JSON.stringify(['#e11d48', '#f2f6fa']) ? ok('bracket-class colours are the only strays')
+    : bad('strays', `got ${strays.join(', ')}, want #e11d48 + #f2f6fa`);
+  !cols.some((c) => c.value === '#ff00ff' || c.value === '#00ffee') ? ok('OG-image artwork colours are not strays') : bad('og exemption', 'OG hexes counted');
+  const pairs = nearColorPairs(cols);
+  pairs.some((p) => [p.a.value, p.b.value].includes('#f2f6fa') && [p.a.value, p.b.value].includes('hsl(210 40% 96.1%)'))
+    ? ok('a hex stray is found as the twin of an hsl token') : bad('cross-space twin', `pairs: ${pairs.map((p) => `${p.a.value}≈${p.b.value}`).join(' | ') || 'none'}`);
+  const shHtml = readFileSync(join(tmp, 'shadcnv3.html'), 'utf8');
+  !shHtml.includes('None of these are defined as CSS variables') ? ok('the "every single one is hardcoded" banner stays off') : bad('banner', 'fired on a tokenised repo');
+  const shS = JSON.parse(readFileSync(join(tmp, 'shadcnv3-s.json'), 'utf8'));
+  const greyTile = (shS.tiles ?? []).find((t) => /grey/.test(t.label));
+  greyTile && Number(greyTile.value) >= 3 ? ok(`hsl greys are counted (${greyTile.value})`) : bad('hsl greys', `grey tile: ${greyTile?.value}`);
+
+  // cssVariables: false — shadcn's utility-class mode has no colour tokens BY
+  // DESIGN. The report must say so, never accuse it of hardcoding everything.
+  const su = JSON.parse(readFileSync(join(tmp, 'shadcnutil.json'), 'utf8'));
+  su.profile.designSystem?.kind === 'shadcn' && su.profile.designSystem.cssVariables === false
+    ? ok('components.json cssVariables:false is read') : bad('cssVariables flag', JSON.stringify(su.profile.designSystem));
+  const suHtml = readFileSync(join(tmp, 'shadcnutil.html'), 'utf8');
+  suHtml.includes('shadcn/ui (utility classes, no CSS variables)') ? ok('header chip names the utility-class mode') : bad('utility chip', 'missing');
+  !suHtml.includes('None of these are defined as CSS variables') && suHtml.includes('by design')
+    ? ok('utility-class mode explained, not accused') : bad('utility-mode copy', 'banner fired or note missing');
+}
+
 // ---------- component stacks: web components read, unreadable declared ----------
 // Born on telekom/scale (2026-09-01): 93 Stencil components scanned as one,
 // and the report presented the blindness as discipline. Never again, twice

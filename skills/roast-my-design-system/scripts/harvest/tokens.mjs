@@ -37,7 +37,23 @@ const FUNC_COLOR_RE = /\b(?:rgba?|hsla?|oklch|oklab|lab|lch)\(\s*[^)]{1,80}\)|\b
 /** Fully transparent values are the CSS word for "nothing here" — counting
  * rgba(0,0,0,0) as a palette colour 581 times (Siemens iX) inflates every
  * colour metric with non-decisions. */
-export const isTransparent = (v) => /^(?:rgba|hsla)\(\s*[\d.,%\s]+,\s*0(?:\.0+)?\s*\)$/.test(v) || /\/\s*0(?:\.0+)?\s*\)$/.test(v);
+// shadcn on Tailwind v3 stores a colour token as bare HSL channels
+// (--primary: 222.2 47.4% 11.2%) and wraps it later as hsl(var(--primary) /
+// <alpha-value>) so Tailwind can inject opacity. To every colour regex above
+// that is "some non-colour value", which is how a fully tokenised shadcn repo
+// scanned as 0 tokens until 5.10.0. Recognised here and normalised to hsl()
+// so it flows through greys, twins and the rest like any other colour.
+const HSL_TRIPLET_RE = /^\s*(-?\d+(?:\.\d+)?)(?:deg)?\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*$/;
+export const tripletToHsl = (v) => {
+  const m = HSL_TRIPLET_RE.exec(v);
+  return m ? `hsl(${m[1]} ${m[2]}% ${m[3]}%${m[4] ? ` / ${m[4]}` : ''})` : null;
+};
+// hsl(var(--primary)) is a reference to a colour, never a colour, and
+// oklch(0.35 0.08 ${hue}) is a template with a hole in it: neither may sit in
+// the palette as its own value.
+const isVarRef = (v) => /var\(|\$\{/.test(v);
+
+export const isTransparent = (v) => /^(?:rgba|hsla)\(\s*[\d.,%\s]+,\s*0(?:\.0+)?\s*\)$/.test(v) || /\/\s*0(?:\.0+)?%?\s*\)$/.test(v);
 
 /** normalize: lowercase; expand #abc → #aabbcc so duplicates merge. */
 export function normalizeHex(hex) {
@@ -139,7 +155,11 @@ export function extractStyling(src, { css = false } = {}) {
     for (const m of src.matchAll(/!\s*important/gi)) out.important.push({ index: m.index });
     for (const m of src.matchAll(/--[\w-]+\s*:\s*([^;{}]+)[;}]/g)) {
       for (const c of m[1].matchAll(HEX_RE)) out.tokenDefs.push({ value: normalizeHex(c[0]), index: m.index });
-      for (const c of m[1].matchAll(FUNC_COLOR_RE)) out.tokenDefs.push({ value: c[0].replace(/\s+/g, ' ').toLowerCase(), index: m.index });
+      for (const c of m[1].matchAll(FUNC_COLOR_RE)) {
+        if (!isVarRef(c[0])) out.tokenDefs.push({ value: c[0].replace(/\s+/g, ' ').toLowerCase(), index: m.index });
+      }
+      const trip = tripletToHsl(m[1]);
+      if (trip) out.tokenDefs.push({ value: trip, index: m.index });
     }
     const defIndexes = new Set(out.tokenDefs.map((d) => d.value));
     for (const m of src.matchAll(HEX_RE)) {
@@ -148,7 +168,7 @@ export function extractStyling(src, { css = false } = {}) {
     }
     for (const m of src.matchAll(FUNC_COLOR_RE)) {
       const v = m[0].replace(/\s+/g, ' ').toLowerCase();
-      if (!defIndexes.has(v)) out.colors.push({ value: v, index: m.index });
+      if (!isVarRef(v) && !defIndexes.has(v)) out.colors.push({ value: v, index: m.index });
     }
     for (const m of src.matchAll(SPACING_PROPS)) {
       for (const len of (m[2].match(LENGTH_RE) ?? [])) out.spacing.push({ value: len, index: m.index });
@@ -159,7 +179,10 @@ export function extractStyling(src, { css = false } = {}) {
   for (const m of src.matchAll(/class(?:Name)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`\})/g)) {
     const cls = m[1] ?? m[2] ?? m[3] ?? '';
     for (const c of cls.matchAll(TW_COLOR_RE)) {
-      if (c[1]) out.colors.push({ value: c[1].startsWith('#') ? normalizeHex(c[1]) : c[1], index: m.index });
+      // Index the colour itself, not the attribute: the raw-hex pass below
+      // dedupes by position, and the attribute's start was 20+ chars away, so
+      // every bracket colour used to be reported twice.
+      if (c[1]) out.colors.push({ value: c[1].startsWith('#') ? normalizeHex(c[1]) : c[1], index: m.index + m[0].indexOf(c[1]) });
     }
     for (const c of cls.matchAll(/[a-z][\w-]*-\[(-?\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|pt))\]/g)) {
       out.arbitrary.push({ value: `[${c[1]}]`, index: m.index });
@@ -213,7 +236,11 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       const stem = m[1].split('-')[0].toLowerCase();
       if (stem) nsDefs.set(stem, (nsDefs.get(stem) ?? 0) + 1);
       for (const c of m[2].matchAll(HEX_RE)) tokenDefined.add(normalizeHex(c[0]));
-      for (const c of m[2].matchAll(FUNC_COLOR_RE)) tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase());
+      for (const c of m[2].matchAll(FUNC_COLOR_RE)) {
+        if (!isVarRef(c[0])) tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase());
+      }
+      const trip = tripletToHsl(m[2]);
+      if (trip) { tokenDefined.add(trip); colors.add(trip, file); }
     }
     // References count too: a system whose tokens are defined in a package
     // dependency still answers to its namespace in every var(--telekom-...)
@@ -223,7 +250,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       if (stem) nsRefs.set(stem, (nsRefs.get(stem) ?? 0) + 1);
     }
     for (const m of text.matchAll(HEX_RE)) colors.add(normalizeHex(m[0]), file);
-    for (const m of text.matchAll(FUNC_COLOR_RE)) { const v = m[0].replace(/\s+/g, ' ').toLowerCase(); if (!isTransparent(v)) colors.add(v, file); }
+    for (const m of text.matchAll(FUNC_COLOR_RE)) { const v = m[0].replace(/\s+/g, ' ').toLowerCase(); if (!isTransparent(v) && !isVarRef(v)) colors.add(v, file); }
     for (const m of text.matchAll(SPACING_PROPS)) {
       for (const len of (m[2].match(LENGTH_RE) ?? [])) spacing.add(len, file);
     }
@@ -316,11 +343,25 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       for (const m of src.matchAll(HEX_RE)) tokenDefined.add(normalizeHex(m[0]));
     }
     if (ARTWORK_RE.test(f) || RENDERER_PATH_RE.test(f) || svgHeavy(src)) continue;
+    // A render-to-image surface (OG card, PDF invoice) is artwork drawn with
+    // code: its colours are the picture's, not the product's palette. Until
+    // 5.10.0 they were the only "strays" a clean shadcn repo had, and they
+    // triggered the "every single one is hardcoded" banner on it.
     const renderToImage = RENDER_TO_IMAGE_RE.test(src) || /(^|\/)api\/og\//.test(f);
+    if (renderToImage) continue;
 
     // Tailwind classes
     for (const cls of classStrings(src)) {
-      for (const m of cls.matchAll(TW_COLOR_RE)) twColors.add(m[1] ? normalizeHex(m[1].startsWith('#') ? m[1] : m[1]) : m[2], f);
+      for (const m of cls.matchAll(TW_COLOR_RE)) {
+        if (m[1]) {
+          // bg-[#f2f6fa] is a hardcoded colour wearing a utility class: it
+          // belongs in the palette as a stray (and can be a token's twin),
+          // not only in the Tailwind bucket where it hid until 5.10.0.
+          const lit = m[1].startsWith('#') ? normalizeHex(m[1]) : m[1].replace(/\s+/g, ' ').toLowerCase();
+          twColors.add(lit, f);
+          if (!isVarRef(lit) && !isTransparent(lit)) colors.add(lit, f);
+        } else twColors.add(m[2], f);
+      }
       for (const m of cls.matchAll(TW_SPACING_RE)) twSpacing.add(m[1], f);
       for (const m of cls.matchAll(TW_RADIUS_RE)) twRadii.add(m[1] ?? 'default', f);
       for (const m of cls.matchAll(TW_TEXTSIZE_RE)) twTextSizes.add(m[1], f);
@@ -341,7 +382,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     }
     for (const b of allBlocks) {
       for (const m of b.matchAll(HEX_RE)) colors.add(normalizeHex(m[0]), f);
-      for (const m of b.matchAll(FUNC_COLOR_RE)) colors.add(m[0].replace(/\s+/g, ' ').toLowerCase(), f);
+      for (const m of b.matchAll(FUNC_COLOR_RE)) { const v = m[0].replace(/\s+/g, ' ').toLowerCase(); if (!isVarRef(v)) colors.add(v, f); }
       for (const m of b.matchAll(LENGTH_RE)) spacing.add(m[0], f);
     }
 

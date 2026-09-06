@@ -5,14 +5,15 @@
  * designed ramp (every good grey scale has near neighbours) and are skipped;
  * drift needs at least one hardcoded stray. Shared by diagnose and rules.
  */
+import { parseColor } from './color.mjs';
+
+// Kept under its historical name (the MCP engine imports it): since 5.10.0 it
+// parses every literal colour space, not just hex, so an hsl or oklch
+// palette gets its twins found like a hex one. Alpha is rounded so that
+// float noise never splits two identical alphas into "different".
 export function hexRgb(v) {
-  const m = /^#([0-9a-f]{3,8})$/i.exec(v);
-  if (!m) return null;
-  let x = m[1];
-  if (x.length === 3 || x.length === 4) x = [...x].map((c) => c + c).join('');
-  if (x.length !== 6 && x.length !== 8) return null;
-  return { r: parseInt(x.slice(0, 2), 16), g: parseInt(x.slice(2, 4), 16), b: parseInt(x.slice(4, 6), 16),
-    a: x.length === 8 ? x.slice(6, 8) : 'ff' };
+  const c = parseColor(v);
+  return c ? { r: c.r, g: c.g, b: c.b, a: Math.round(c.a * 100) / 100 } : null;
 }
 
 export function nearColorPairs(colorList) {
@@ -23,9 +24,29 @@ export function nearColorPairs(colorList) {
       const a = hexes[i].rgb, b = hexes[j].rgb;
       if (a.a !== b.a) continue;
       if (hexes[i].isToken && hexes[j].isToken) continue;
-      const d = Math.max(Math.abs(a.r - b.r), Math.abs(a.g - b.g), Math.abs(a.b - b.b));
-      if (d > 0 && d <= 8) pairs.push({ a: hexes[i], b: hexes[j], d });
+      // Entries are distinct strings by construction, so d = 0 means the same
+      // colour written in two notations (hsl token, rgb stray): the strongest
+      // twin there is, not a non-event. Rounded so the report never prints
+      // 7.9199999.
+      const d = Math.round(Math.max(Math.abs(a.r - b.r), Math.abs(a.g - b.g), Math.abs(a.b - b.b)) * 10) / 10;
+      if (d <= 8) pairs.push({ a: hexes[i], b: hexes[j], d });
     }
   }
-  return pairs.sort((x, y) => (y.a.count + y.b.count) - (x.a.count + x.b.count));
+  // One twin per stray. A stray sitting inside a dense token ramp is within 8
+  // of many tokens, and counting every such pair turned one #eeeeee into
+  // eight findings (telekom/scale) and one Spectrum stray into dozens. The
+  // finding is "this stray has a token twin", and the fix is one redirect,
+  // so each stray keeps only its closest twin (a stray-stray pair survives
+  // when it is the closest for either side).
+  const best = new Map();
+  for (const p of pairs) {
+    for (const side of ['a', 'b']) {
+      const c = p[side];
+      if (c.isToken) continue;
+      const cur = best.get(c.value);
+      if (!cur || p.d < cur.d) best.set(c.value, p);
+    }
+  }
+  const kept = [...new Set(best.values())];
+  return kept.sort((x, y) => (y.a.count + y.b.count) - (x.a.count + x.b.count));
 }

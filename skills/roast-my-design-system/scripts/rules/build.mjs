@@ -39,7 +39,11 @@ const repoName = h.profile?.name ?? 'this repo';
   // spacing signal there is nothing to derive receipts from, so the preamble
   // must not claim any. Keep the two universal defaults, labelled as defaults.
   const spacingSignal = (t.spacing ?? []).length + (t.tailwind?.spacing ?? []).filter((v) => v.value.startsWith('[')).length;
-  const noSystemLikely = (t.colors ?? []).length === 0 || ((t.colors ?? []).length < 3 && spacingSignal === 0);
+  // Mirror of the report: shadcn in utility-class mode (components.json
+  // cssVariables: false) has no literal colours by design, not by absence.
+  const ds = h.profile?.designSystem ?? {};
+  const utilityPalette = ds.kind === 'shadcn' && ds.cssVariables === false && (t.tailwind?.colors ?? []).length >= 5;
+  const noSystemLikely = !utilityPalette && ((t.colors ?? []).length === 0 || ((t.colors ?? []).length < 3 && spacingSignal === 0));
   lines.push(noSystemLikely
     ? (compact
       ? 'Too little styling found to derive repo-specific rules; these are universal defaults. Rescan once real UI lands.'

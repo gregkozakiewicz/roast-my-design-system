@@ -8,6 +8,8 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
+> **New in 5.10: it reads Tailwind v3 shadcn, and every colour space.** shadcn on Tailwind v3 stores colour tokens as bare HSL channels for the opacity trick, so a textbook shadcn repo used to scan as "2 colours, none defined as CSS variables". It now reads its tokens, finds its greys (an oklch palette used to report 0 of them), and spots twins across notations: a token written as hsl and a hardcoded copy written as rgb are the same colour and now count as a near-identical pair. Validated before and after on six real shadcn repos.
+
 > **New in 5.9: the agent card knows which doors your rules actually reach.** The report now states, as plain fact, which tools can read the rules files you have: Claude Code reads CLAUDE.md, Codex reads AGENTS.md, Cursor reads AGENTS.md and `.cursor/rules`. Where a door is missing, the card shows the one-line fix (Claude Code skips AGENTS.md; a CLAUDE.md containing the single line `@AGENTS.md` closes the gap). The scan also finds rules files nested in subfolders now, which is how monorepos really do it (twenty carries 35 AGENTS.md files; a root-only look reported 1), and it recognises GEMINI.md, `.windsurf/rules` and `.github/instructions`.
 
 > **New in 5.8: every finding can explain itself.** A "why this matters" toggle under each finding unfolds the calm story behind the brutal number: how the mess arrives innocently, what it costs later, how an agent multiplies it, and why the ideal sits where it sits, benchmark medians included. Written to a plain-language standard, reviewed word by word.
@@ -60,11 +62,11 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 The full report for vercel/ai-chatbot, top to bottom — including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.9.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, three-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.10.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.9.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.10.0)
 
 ## What makes the numbers trustworthy
 

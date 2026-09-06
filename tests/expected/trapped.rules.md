@@ -11,7 +11,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Colours and tokens
 
 - There is no token file yet. Until one exists, reuse the colours already in the codebase instead of introducing new ones (24 distinct colours are already in play).
-- Never eyeball a colour from memory: the scan found 51 nearly identical pairs (like #6b6f70 next to #6b6f71). Look the exact value up, or better, use its token.
+- Never eyeball a colour from memory: the scan found 16 nearly identical pairs (like #6b6f70 next to #6b6f71). Look the exact value up, or better, use its token.
 
 ### Canonical components
 

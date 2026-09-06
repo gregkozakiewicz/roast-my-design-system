@@ -197,7 +197,12 @@ export function profileRepo(root, files) {
   }, 0);
 
   let designSystem;
-  if (isShadcn) designSystem = { kind: 'shadcn', name: 'shadcn/ui', confidence: 'high' };
+  // shadcn's components.json records whether colours live in CSS variables
+  // (the default) or in utility classes (cssVariables: false). In the second
+  // mode a repo has no colour tokens BY DESIGN, and the report must say so
+  // instead of reading "0 tokens" as neglect.
+  const shadcnCssVars = componentsJson?.tailwind?.cssVariables !== false;
+  if (isShadcn) designSystem = { kind: 'shadcn', name: 'shadcn/ui', confidence: 'high', cssVariables: shadcnCssVars };
   else if (knownLib) designSystem = { kind: 'library', name: knownLib.name, pkg: knownLib.pkg, confidence: 'high' };
   else if (homegrown.length >= 3) designSystem = { kind: 'custom', name: 'custom (unrecognized)', confidence: 'low' };
   else if (tokenDefs >= 5) designSystem = { kind: 'custom', name: 'CSS tokens', confidence: 'medium' };

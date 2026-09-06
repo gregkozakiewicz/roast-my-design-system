@@ -1,0 +1,1 @@
+{ "style": "new-york", "tailwind": { "config": "tailwind.config.js", "css": "app/globals.css", "baseColor": "zinc", "cssVariables": false } }

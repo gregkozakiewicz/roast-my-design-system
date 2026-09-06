@@ -1,0 +1,4 @@
+/* a side stylesheet with two custom properties and a pile of hardcoded colours */
+:root { --ext-bg: #101010; --ext-fg: #fafafa; }
+.ext-card { background: #123456; color: #234567; border: 1px solid #345678; }
+.ext-badge { background: #456789; color: #56789a; }

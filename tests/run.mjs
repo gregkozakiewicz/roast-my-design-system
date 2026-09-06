@@ -253,6 +253,16 @@ console.log('shadcn tokens:');
   suHtml.includes('shadcn/ui (utility classes, no CSS variables)') ? ok('header chip names the utility-class mode') : bad('utility chip', 'missing');
   !suHtml.includes('None of these are defined as CSS variables') && suHtml.includes('by design')
     ? ok('utility-class mode explained, not accused') : bad('utility-mode copy', 'banner fired or note missing');
+
+  // The token file is where the palette is, not where the most --vars are.
+  // jsoncrack (2026-09-06): the label went to the Chrome extension's CSS (2
+  // definitions, 33 strays) while constants/theme.ts held 57 tokens.
+  const jt = JSON.parse(readFileSync(join(tmp, 'jstheme.json'), 'utf8'));
+  jt.tokens.tokenFile === 'src/theme.ts' ? ok('token file is the JS palette, not the --var stylesheet')
+    : bad('token file choice', `got ${jt.tokens.tokenFile}`);
+  const jtRules = rulesMarkdown(jt).text;
+  jtRules.includes('src/theme.ts') && !jtRules.includes('extension.css') ? ok('rules name the real token source')
+    : bad('rules token source', 'extension.css named or theme.ts missing');
 }
 
 // ---------- component stacks: web components read, unreadable declared ----------

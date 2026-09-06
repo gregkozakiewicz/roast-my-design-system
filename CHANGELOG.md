@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.10.2 — 2026-09-06
+
+- **The token file is where the palette is, not where the most `--var`s are.** Greg read the generated rules for jsoncrack and found "Design tokens live in apps/chrome-extension/src/content-script.css", the one stylesheet with a custom property in it (2 definitions, 33 strays), while the real palette sat in `apps/www/src/constants/theme.ts` with 57 recognised tokens. The scanner knew the tokens were there; the label was chosen by a narrower rule. It is now chosen among definition sites (stylesheets defining colour custom properties, code files that are a palette) by how many token colours they hold, ties to the fewest strays, and needs at least 3 token colours to earn the name. jsoncrack names its theme.ts; every existing fixture keeps its answer. The rules file, the report copy and the MCP fix hints all read the corrected label. New fixture `jstheme`, two checks.
+
 ## 5.10.1 — 2026-09-06
 
 - Docs only: the README passed a GOV.UK plain-English pass. Prose went from an average of 35 words a sentence (16 sentences over 30 words, 10 em-dashes) to 13 words a sentence, none over 30, no em-dashes, no spelled-out numbers. Nothing was cut; long sentences were split. Published so npm's copy of the README reads the same.

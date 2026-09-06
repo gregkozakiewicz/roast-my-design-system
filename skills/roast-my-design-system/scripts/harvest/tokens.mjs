@@ -225,6 +225,13 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // hinges on this split.
   const tokenDefined = new Set();
   const tokenDefsPerFile = new Map();
+  // Definition sites only: stylesheets that define colour custom properties,
+  // and code files that are a palette. The "token file" is chosen among these
+  // by how many token colours they hold, never by raw --var count: jsoncrack's
+  // only stylesheet with a --var was the Chrome extension's (2 definitions,
+  // 33 strays) while the real palette sat in constants/theme.ts with 57.
+  const tokenColorDefsPerFile = new Map();
+  const paletteFiles = new Set();
   const nsDefs = new Map();  // --telekom-x: value  → 'telekom' (definitions)
   const nsRefs = new Map();  // var(--telekom-x)    → 'telekom' (references)
 
@@ -235,12 +242,14 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       tokenDefsPerFile.set(file, (tokenDefsPerFile.get(file) ?? 0) + 1);
       const stem = m[1].split('-')[0].toLowerCase();
       if (stem) nsDefs.set(stem, (nsDefs.get(stem) ?? 0) + 1);
-      for (const c of m[2].matchAll(HEX_RE)) tokenDefined.add(normalizeHex(c[0]));
+      let colourDef = false;
+      for (const c of m[2].matchAll(HEX_RE)) { tokenDefined.add(normalizeHex(c[0])); colourDef = true; }
       for (const c of m[2].matchAll(FUNC_COLOR_RE)) {
-        if (!isVarRef(c[0])) tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase());
+        if (!isVarRef(c[0])) { tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase()); colourDef = true; }
       }
       const trip = tripletToHsl(m[2]);
-      if (trip) { tokenDefined.add(trip); colors.add(trip, file); }
+      if (trip) { tokenDefined.add(trip); colors.add(trip, file); colourDef = true; }
+      if (colourDef) tokenColorDefsPerFile.set(file, (tokenColorDefsPerFile.get(file) ?? 0) + 1);
     }
     // References count too: a system whose tokens are defined in a package
     // dependency still answers to its namespace in every var(--telekom-...)
@@ -340,6 +349,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     }
     if (/from\s*["']geist\/font/.test(src)) fontFamilies.add('Geist', f);
     if (PALETTE_FILE_RE.test(f)) {
+      paletteFiles.add(f);
       for (const m of src.matchAll(HEX_RE)) tokenDefined.add(normalizeHex(m[0]));
     }
     if (ARTWORK_RE.test(f) || RENDERER_PATH_RE.test(f) || svgHeavy(src)) continue;
@@ -404,7 +414,9 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     for (const [file] of e.files) perFileDistinct.set(file, (perFileDistinct.get(file) ?? 0) + 1);
   }
   for (const e of colors.map.values()) {
-    if ([...e.files.keys()].some((f) => /\.[jt]sx?$/.test(f) && perFileDistinct.get(f) >= 15)) tokenDefined.add(e.value);
+    for (const f of e.files.keys()) {
+      if (/\.[jt]sx?$/.test(f) && perFileDistinct.get(f) >= 15) { tokenDefined.add(e.value); paletteFiles.add(f); }
+    }
   }
 
   const colorList = colors.toJSON().map((c) => ({ ...c, isToken: tokenDefined.has(c.value) }));
@@ -427,7 +439,22 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     .sort((a, b) => b.total - a.total)
     .slice(0, 10);
 
-  const tokenFile = [...tokenDefsPerFile.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+  // The token file: among definition sites, the one holding the most token
+  // colours (ties: fewest strays). At least 3 token colours to earn the name;
+  // otherwise the repo has no token file and the report must not invent one.
+  const tokenColoursIn = new Map(), straysIn = new Map();
+  for (const e of colors.map.values()) {
+    for (const f of e.files.keys()) {
+      if (tokenDefined.has(e.value)) tokenColoursIn.set(f, (tokenColoursIn.get(f) ?? 0) + 1);
+      else straysIn.set(f, (straysIn.get(f) ?? 0) + 1);
+    }
+  }
+  const candidates = new Set([...tokenColorDefsPerFile.keys(), ...paletteFiles]);
+  const tokenFile = [...candidates]
+    .map((f) => ({ f, tokens: tokenColoursIn.get(f) ?? 0, strays: straysIn.get(f) ?? 0 }))
+    .filter((c) => c.tokens >= 3)
+    .sort((a, b) => b.tokens - a.tokens || a.strays - b.strays)[0]?.f
+    ?? [...tokenDefsPerFile.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 
   // Token namespace: the brand stem the repo's custom properties answer to
   // (--telekom-*), named only when earned — enough definitions, a dominant

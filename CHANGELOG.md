@@ -2,6 +2,11 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.10.3 — 2026-09-07
+
+- **An order id is not a colour.** `roast_validate` told a repo that "#11004422 is new to this repo": it had read the order id `#1042` as 4-digit RGBA shorthand and expanded it. Three false accusations in one file, on the tool whose whole pitch is that it does not make them, caught by Greg reading an MCP review during demo prep. Loose hex in code now skips 4-digit shorthand, which in code is an order id, a ticket or an issue number far more often than a colour. In a real colour context — a stylesheet, a `style={{ }}` block, a `bg-[#1042]` class — all four lengths still count.
+- The harvest and the MCP validator now apply that rule identically. They had drifted: the harvest read loose hex only in `.ts`/`.js`, the validator in every code file, so a `.tsx` file could be accused by the review and cleared by the report. Four new checks pin all four contexts; suite grows to 142.
+
 ## 5.10.2 — 2026-09-06
 
 - **The token file is where the palette is, not where the most `--var`s are.** Greg read the generated rules for jsoncrack and found "Design tokens live in apps/chrome-extension/src/content-script.css", the one stylesheet with a custom property in it (2 definitions, 33 strays), while the real palette sat in `apps/www/src/constants/theme.ts` with 57 recognised tokens. The scanner knew the tokens were there; the label was chosen by a narrower rule. It is now chosen among definition sites (stylesheets defining colour custom properties, code files that are a palette) by how many token colours they hold, ties to the fewest strays, and needs at least 3 token colours to earn the name. jsoncrack names its theme.ts; every existing fixture keeps its answer. The rules file, the report copy and the MCP fix hints all read the corrected label. New fixture `jstheme`, two checks.

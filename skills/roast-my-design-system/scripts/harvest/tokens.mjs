@@ -48,6 +48,14 @@ export const tripletToHsl = (v) => {
   const m = HSL_TRIPLET_RE.exec(v);
   return m ? `hsl(${m[1]} ${m[2]}% ${m[3]}%${m[4] ? ` / ${m[4]}` : ''})` : null;
 };
+// Loose hex in CODE (not in a style block, a class string or a stylesheet) is
+// ambiguous: #RGBA shorthand is legal CSS but vanishingly rare in code, while
+// #1042 as an order id, ticket or issue number is everyday. Read as a colour
+// it expands to #11004422 and the review accuses an order id of being a
+// hardcoded colour (found on the demo repo, 2026-09-07). In a colour context
+// all four lengths still count; only the loose pass skips 4-digit.
+const isIdentifierHex = (raw) => /^#[0-9a-f]{4}$/i.test(raw);
+
 // hsl(var(--primary)) is a reference to a colour, never a colour, and
 // oklch(0.35 0.08 ${hue}) is a template with a hole in it: neither may sit in
 // the palette as its own value.
@@ -199,6 +207,7 @@ export function extractStyling(src, { css = false } = {}) {
   // colour consts) — everything not already collected above
   const seen = new Set(out.colors.map((c) => c.index));
   for (const m of src.matchAll(HEX_RE)) {
+    if (isIdentifierHex(m[0])) continue;
     if (![...seen].some((i) => Math.abs(i - m.index) < 4)) out.colors.push({ value: normalizeHex(m[0]), index: m.index });
   }
   for (const m of src.matchAll(/!\s*important/gi)) out.important.push({ index: m.index });
@@ -400,7 +409,10 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     // — cheap approximation: any hex in a .ts/.js file counts as a colour in code.
     if (/\.(ts|js)$/.test(f)) {
       for (const m of src.matchAll(HEX_RE)) {
-        // avoid counting hashes that aren't colors (e.g. IDs): require 3/4/6/8 hex digits already enforced by regex
+        // 4-digit shorthand in code is an identifier far more often than a
+        // colour (#1042 = an order id, not #11004422): same rule as the MCP
+        // validator, so both measure with one ruler.
+        if (isIdentifierHex(m[0])) continue;
         colors.add(normalizeHex(m[0]), f);
       }
     }

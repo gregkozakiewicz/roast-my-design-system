@@ -265,6 +265,26 @@ console.log('shadcn tokens:');
     : bad('rules token source', 'extension.css named or theme.ts missing');
 }
 
+// ---------- false positives the review must never raise ----------
+// An order id read as a colour (2026-09-07): roast_validate told a demo repo
+// that "#11004422 is new to this repo" — it had expanded the order id #1042
+// as 4-digit RGBA. In a colour context all four lengths are real; loose in
+// code they are identifiers far more often than colours.
+console.log('false positives:');
+{
+  const { extractStyling } = await import(pathToFileURL(join(ENGINE, 'harvest/tokens.mjs')).href);
+  const code = extractStyling('const orders=[{id:"#1042"},{id:"#1043"}]; const brand="#6d5bff"; const white="#fff";', { css: false });
+  const vals = code.colors.map((c) => c.value).sort();
+  JSON.stringify(vals) === JSON.stringify(['#6d5bff', '#ffffff'])
+    ? ok('order ids in code are not colours, real hex still is') : bad('identifier hex', `got ${vals.join(', ')}`);
+  extractStyling('<div style={{ color: "#1042" }} />', { css: false }).colors.length === 1
+    ? ok('4-digit hex inside a style block is still a colour') : bad('style-block 4-digit', 'dropped');
+  extractStyling('<div className="bg-[#1042]" />', { css: false }).colors.length === 1
+    ? ok('4-digit hex in a bracket class is still a colour') : bad('bracket 4-digit', 'dropped');
+  extractStyling('.a { background: #1042; }', { css: true }).colors.length === 1
+    ? ok('4-digit hex in CSS is still a colour') : bad('css 4-digit', 'dropped');
+}
+
 // ---------- component stacks: web components read, unreadable declared ----------
 // Born on telekom/scale (2026-09-01): 93 Stencil components scanned as one,
 // and the report presented the blindness as discipline. Never again, twice

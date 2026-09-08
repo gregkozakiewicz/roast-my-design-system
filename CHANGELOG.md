@@ -2,6 +2,15 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.11.0 — 2026-09-08
+
+- **`roast --check` and `guard-my-design-system` now give the same answer.** Two checkers, one question, seven places where they disagreed. A pull request that hand-rolled a second `<Button>` or added `style={{ display: 'flex' }}` walked past the guard. A new `border-radius: 7px`, font size, shadow or `font-family` came up clean under `--check` and was then stopped by the guard in CI. Same product, contradictory answers, and no way for the author to know which one to believe. Found by reading both sources side by side, not by a bug report.
+- **The check stops crying wolf on files that cannot be on-system.** Email and print styling has to be inline, because there is no cascade to inherit. An OG card or a PDF invoice is a picture drawn with code, and satori accepts nothing else. A canvas renderer draws pixels. A file that is mostly SVG is a drawing. The report has skipped all of these since 5.10; `--check` judged them anyway, which is the fastest way to get a checker switched off. One list now serves the report, the check and the guard, and a skipped file is never reported as clean: the result says which files were left unjudged and why.
+- **The check gained four measurements**: border radius, font size, shadow and typeface, in stylesheets, judged the guard's way. A value the repo already declares is consistency, not a sin. Where the repo declares none of that kind yet, the finding says there is nothing to compare it against rather than making an accusation.
+- **The public doorway carries the component ledger.** `learnSystem` now returns what components exist and where, and `definedComponents` is exported, so the guard can tell a second `<Button>` from an edit to the first one. Feature-detected on the guard's side, so an older pin means one check fewer rather than a crash.
+- A scale value is no longer offered as its own nearest neighbour. The file under review sits inside the scan, so the value being judged was in the learned map too, and the advice pointed back at itself: "New one-off border radius 7px. Closest value this repo already uses: 7px." Caught by running both checkers over the same change.
+- Suite grows to 166.
+
 ## 5.10.3 — 2026-09-07
 
 - **An order id is not a colour.** `roast_validate` told a repo that "#11004422 is new to this repo": it had read the order id `#1042` as 4-digit RGBA shorthand and expanded it. Three false accusations in one file, on the tool whose whole pitch is that it does not make them, caught by Greg reading an MCP review during demo prep. Loose hex in code now skips 4-digit shorthand, which in code is an order id, a ticket or an issue number far more often than a colour. In a real colour context — a stylesheet, a `style={{ }}` block, a `bg-[#1042]` class — all four lengths still count.

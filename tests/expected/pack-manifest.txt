@@ -14,7 +14,9 @@ skills/roast-my-design-system/scripts/harvest/summary.mjs
 skills/roast-my-design-system/scripts/harvest/tokens.mjs
 skills/roast-my-design-system/scripts/harvest/walk.mjs
 skills/roast-my-design-system/scripts/lib/color.mjs
+skills/roast-my-design-system/scripts/lib/declarations.mjs
 skills/roast-my-design-system/scripts/lib/exclusions.mjs
+skills/roast-my-design-system/scripts/lib/exempt.mjs
 skills/roast-my-design-system/scripts/lib/feedback.mjs
 skills/roast-my-design-system/scripts/lib/fixprompt.mjs
 skills/roast-my-design-system/scripts/lib/guard-api.mjs

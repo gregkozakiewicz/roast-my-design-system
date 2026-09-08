@@ -11,4 +11,4 @@ components/NewThing.tsx:
      Fix: Move the values to classes or tokens.
   ✕ L1 Defines <Button>, which already exists in 2 other places. This makes 3 competing copies, and every wrong pick becomes the example the next agent copies.
      Fix: Import components/Button.tsx instead of creating a copy.
-Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions. Fix the findings before finishing; rerun roast_review to confirm.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions. Fix the findings before finishing; rerun roast_review to confirm.

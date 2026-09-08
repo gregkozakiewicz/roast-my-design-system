@@ -13,11 +13,26 @@ import { extname, join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { walkRepo } from '../harvest/walk.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
+import { harvestComponents, definedComponents } from '../harvest/components.mjs';
 import { loadExclusions } from './exclusions.mjs';
 import { hexRgb } from './nearpairs.mjs';
 import { typefaceOf, GENERIC_FONTS } from './typefaces.mjs';
 
 export { extractStyling, normalizeHex, isGrey, hexRgb, typefaceOf, GENERIC_FONTS };
+
+// The components a piece of text defines. With the ledger below, a guard can
+// tell a second <Button> from an edit to the first one.
+export { definedComponents };
+
+// The files no checker should judge. Exported so a guard reads the same list
+// as the engine rather than keeping a copy that drifts.
+export { EMAIL_PRINT_RE, ARTWORK_NAME_RE, SVG_MARKUP_RE, exemptReason } from './exempt.mjs';
+
+// Radius, font size, shadow and typeface: the patterns, so both checkers agree
+// on what a declaration is and what counts as a disciplined value.
+export {
+  EXTRA_KINDS, FONT_LINE_RE, BENIGN_VALUE_RE, extraValue, extraDeclarations, fontDeclarations,
+} from './declarations.mjs';
 
 // Same classification walkRepo uses, exposed so a caller looking at one file
 // (a diff hunk) treats it the way the full scan would.
@@ -41,6 +56,7 @@ export const isStyleFile = (p) => STYLE_EXTS.has(extname(p));
  *   shadows,          // [{ value, count, files }] every box-shadow declared
  *   fontFamilies,     // [{ value, count, files }] every family declared
  *   tailwind,         // { colors, spacing, radii, textSizes, arbitrary }
+ *   components,       // [{ name, file, usageCount, isPage }] the ledger
  *   files,            // { styles: n, code: n } — how much was read
  * }
  */
@@ -74,6 +90,11 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     shadows: t.shadows,
     fontFamilies: t.fontFamilies,
     tailwind: t.tailwind,
+    // Trimmed to the four fields a guard can act on: what it is called, where
+    // it lives, how much the repo leans on it, and whether it is a page (pages
+    // are routes, not reusable parts, so two of a name is not a duplicate).
+    components: harvestComponents(repoRoot, files.code).components
+      .map(({ name, file, usageCount, isPage }) => ({ name, file, usageCount, isPage })),
     files: { styles: files.styles.length, code: files.code.length },
   };
 }

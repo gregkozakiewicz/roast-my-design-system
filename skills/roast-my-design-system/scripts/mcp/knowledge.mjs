@@ -20,6 +20,7 @@ import { harvestContext } from '../harvest/context.mjs';
 import { loadExclusions } from '../lib/exclusions.mjs';
 import { resolveWorkspaces } from '../lib/workspaces.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
+import { typefaceOf } from '../lib/typefaces.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
 
 const MAX_DEPTH = 14; // same ruler as the harvest CLI
@@ -57,6 +58,18 @@ export function loadKnowledge(root) {
   // spacing the repo already uses: raw CSS values with counts, plus whether
   // the repo styles spacing through Tailwind at all (decides what "on-scale" means)
   const spacingSeen = new Map(tokens.spacing.map((s) => [s.value, s.count]));
+
+  // the other declared scales, same shape: value → how often the repo says it.
+  // Typefaces collapse to the face itself, so "Inter" and "Inter, sans-serif"
+  // are one voice rather than two.
+  const radiiSeen = new Map((tokens.radii ?? []).map((r) => [r.value, r.count]));
+  const fontSizesSeen = new Map((tokens.fontSizes ?? []).map((f) => [f.value, f.count]));
+  const shadowsSeen = new Map((tokens.shadows ?? []).map((s) => [s.value, s.count]));
+  const faceCounts = new Map();
+  for (const f of tokens.fontFamilies ?? []) {
+    const face = typefaceOf(f.value);
+    if (face) faceCounts.set(face, (faceCounts.get(face) ?? 0) + f.count);
+  }
   const twSpacingUse = (tokens.tailwind?.spacing ?? []).reduce((sum, s) => sum + s.count, 0);
   const usesTailwind = twSpacingUse >= 20;
 
@@ -98,6 +111,10 @@ export function loadKnowledge(root) {
     tokenColors,
     tokenColorRgb: tokenColors.map((v) => ({ value: v, rgb: hexRgb(v) })).filter((t) => t.rgb),
     spacingSeen,
+    radiiSeen,
+    fontSizesSeen,
+    shadowsSeen,
+    faceCounts,
     usesTailwind,
     byName,
     canonical,

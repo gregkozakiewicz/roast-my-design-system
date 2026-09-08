@@ -201,7 +201,8 @@ function toPxLocal(len) {
 export function validate(k, { code, file = null } = {}) {
   if (typeof code !== 'string' || !code.trim()) return invalidInput('Send the code you are about to save (and ideally its file path).');
   if (file != null && typeof file !== 'string') return invalidInput('file is optional, but when sent it must be a repo-relative path as a string.');
-  const { findings } = validateContent({ text: code, file }, k);
+  const { findings, exempt } = validateContent({ text: code, file }, k);
+  if (exempt) return `Not judged: ${file} is exempt because ${exempt}. Nothing here was checked.`;
   if (!findings.length) return cleanResultText();
   const L = [`${findings.length} finding${findings.length === 1 ? '' : 's'}:`];
   for (const f of findings.slice(0, 12)) {
@@ -238,16 +239,21 @@ export function reviewData(k) {
   if (!changed.length) return { text: 'No changed UI or style files in the working tree. Nothing to review.', total: 0 };
 
   const perFile = [];
-  let total = 0;
+  let total = 0, exemptCount = 0;
   for (const f of changed.slice(0, 40)) {
     let text;
     try { text = readFileSync(join(gitRoot, f), 'utf8'); } catch { continue; }
     // knowledge paths are scanned-root-relative; git paths are toplevel-relative
-    const { findings } = validateContent({ text, file: relative(realRoot, join(gitRoot, f)) }, k);
+    const { findings, exempt } = validateContent({ text, file: relative(realRoot, join(gitRoot, f)) }, k);
+    if (exempt) { exemptCount++; continue; }
     if (findings.length) { perFile.push({ f, findings }); total += findings.length; }
   }
+  // Skipped is not the same as clean, and the reader is owed the difference.
+  const exemptNote = exemptCount
+    ? ` ${exemptCount} file${exemptCount === 1 ? ' was' : 's were'} left unjudged: email, print, artwork or pictures drawn with code.`
+    : '';
   if (!total) {
-    return { text: `Reviewed ${changed.length} changed file${changed.length === 1 ? '' : 's'}. ${cleanResultText()}`, total: 0 };
+    return { text: `Reviewed ${changed.length} changed file${changed.length === 1 ? '' : 's'}. ${cleanResultText()}${exemptNote}`, total: 0 };
   }
   const L = [`DESIGN SYSTEM REVIEW · ${changed.length} changed file${changed.length === 1 ? '' : 's'}, ${total} finding${total === 1 ? '' : 's'}:`];
   for (const { f, findings } of perFile.slice(0, 10)) {
@@ -256,7 +262,7 @@ export function reviewData(k) {
     if (findings.length > 6) L.push(`  (+${findings.length - 6} more in this file)`);
   }
   if (perFile.length > 10) L.push(`(+${perFile.length - 10} more files with findings)`);
-  L.push(`Checked: ${CHECKS.join(', ')}. Fix the findings before finishing; rerun roast_review to confirm.`);
+  L.push(`Checked: ${CHECKS.join(', ')}.${exemptNote} Fix the findings before finishing; rerun roast_review to confirm.`);
   return { text: L.join('\n'), total };
 }
 

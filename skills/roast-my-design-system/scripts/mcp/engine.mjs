@@ -13,12 +13,17 @@
 import { extractStyling } from '../harvest/tokens.mjs';
 import { definedComponents } from '../harvest/components.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
+import { exemptReason } from '../lib/exempt.mjs';
+import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
+import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
 export const CHECKS = [
   'hardcoded colours vs the token set',
   'near-identical colour twins',
   'off-scale spacing',
+  'off-scale radii, font sizes and shadows',
+  'typefaces outside the system',
   'arbitrary bracket values',
   'static inline style blocks',
   '!important',
@@ -60,10 +65,16 @@ function nearestToken(value, k) {
  * Validate one piece of content against the repo's knowledge.
  * @param content { text, file? } — file name decides css-vs-code mode and
  *   lets the duplicate check excuse a component's own existing file
- * @returns { findings: [{ rule, severity, line, message, fix? }], checked }
+ * @returns { findings: [{ rule, severity, line, message, fix? }], checked,
+ *   exempt? } — exempt is a sentence saying why the file was not judged
  */
 export function validateContent(content, k) {
   const { text, file = null } = content;
+  // Some files cannot be on-system by their nature. Judging them is how a
+  // checker earns its reputation for crying wolf, and a checker people
+  // distrust gets switched off. Say nothing, and say why nothing was said.
+  const exempt = exemptReason(file, text);
+  if (exempt) return { findings: [], checked: CHECKS, exempt };
   const css = file ? CSS_FILE_RE.test(file) : looksLikeCss(text);
   const got = extractStyling(text, { css });
   const findings = [];
@@ -135,6 +146,57 @@ export function validateContent(content, k) {
       'If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.');
   }
 
+  // ---------- the other declared scales, and the typeface ----------
+  // Stylesheets only. In code these live inside class strings, where the scale
+  // is Tailwind's and the arbitrary-bracket check already covers straying off
+  // it. The rule is the guard's rule: a value the repo already declares is
+  // consistency, not a sin, and only a genuinely new one is worth saying.
+  if (css) {
+    const localExtras = new Map(), localFaces = new Map();
+    for (const d of extraDeclarations(text)) {
+      const key = `${d.kind}|${d.value}`;
+      localExtras.set(key, (localExtras.get(key) ?? 0) + 1);
+    }
+    for (const f of fontDeclarations(text)) {
+      const face = typefaceOf(f.raw);
+      if (face) localFaces.set(face, (localFaces.get(face) ?? 0) + 1);
+    }
+    const SEEN = { radii: k.radiiSeen, fontSizes: k.fontSizesSeen, shadows: k.shadowsSeen };
+
+    for (const d of extraDeclarations(text)) {
+      const seen = SEEN[d.learned] ?? new Map();
+      if (discount(seen.get(d.value), localExtras, `${d.kind}|${d.value}`) > 0) continue;
+      const near = nearestDeclared(d.value, seen);
+      const others = seen.size - (seen.has(d.value) ? 1 : 0);
+      if (others) {
+        add(`off-scale-${d.kind}`, 'violation', d.index,
+          `New one-off ${d.noun} ${d.value}. The repo already declares ${others} other ${others === 1 ? d.noun : d.plural}.`,
+          near ? `Closest value this repo already uses: ${near.value} (${near.count}x).`
+            : `It matches none of them. If it is a real decision it is a token, not a one-off.`);
+      } else {
+        add(`off-scale-${d.kind}`, 'warning', d.index,
+          `${d.value} is the first ${d.noun} this repo declares.`,
+          `Nothing to compare it against yet. Put it in the token layer so the next ${d.noun} has a scale to join.`);
+      }
+    }
+
+    for (const f of fontDeclarations(text)) {
+      const face = typefaceOf(f.raw);
+      if (!face || GENERIC_FONTS.has(face.toLowerCase())) continue;
+      if (discount(k.faceCounts?.get(face), localFaces, face) > 0) continue;
+      const declared = [...(k.faceCounts?.keys() ?? [])].filter((x) => x !== face);
+      if (declared.length) {
+        add('off-system-typeface', 'violation', f.index,
+          `New typeface ${face}. The system already declares ${declared.join(', ')}.`,
+          `Use a family the system declares, or add ${face} to the token layer before anything uses it.`);
+      } else {
+        add('off-system-typeface', 'warning', f.index,
+          `${face} is the first typeface this repo declares.`,
+          'Declare it once, in the token layer, so everything else can inherit it.');
+      }
+    }
+  }
+
   // ---------- discipline ----------
   for (const b of got.inlineBlocks) {
     add('inline-style', 'violation', b.index,
@@ -172,6 +234,23 @@ export function validateContent(content, k) {
 function looksLikeCss(text) {
   // no JSX tags, has selector-brace patterns → treat as stylesheet
   return !/<[A-Za-z][\w.]*[\s/>]/.test(text) && /[.#:\w[\]-]+\s*\{[^}]*:/.test(text);
+}
+
+/** Nearest value the repo already declares, for a scale that has lengths in it. */
+function nearestDeclared(value, seen) {
+  const px = toPx(value);
+  if (px === null || !seen.size) return null;
+  let best = null;
+  for (const [v, count] of seen) {
+    // the file under review is inside the scan, so the value being judged is
+    // in this map too. Pointing at itself is not advice.
+    if (v === value) continue;
+    const p = toPx(v);
+    if (p === null) continue;
+    const d = Math.abs(p - px);
+    if (!best || d < best.d) best = { value: v, count, d };
+  }
+  return best;
 }
 
 function nearestRepoSpacing(value, k) {

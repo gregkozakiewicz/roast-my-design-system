@@ -7,6 +7,9 @@
  * New in 2.0 — 1.0 only ever read a clean globals.css; this reads the mess.
  */
 import { readFileSync } from 'node:fs';
+import {
+  EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, svgHeavy,
+} from '../lib/exempt.mjs';
 import { join } from 'node:path';
 
 // ---------- counters ----------
@@ -130,8 +133,9 @@ function isStaticInline(block) {
 }
 
 // Render-to-image surfaces (satori OG cards, react-pdf invoices) have inline
-// styles as their ONLY styling mechanism — same honesty rule as email.
-const RENDER_TO_IMAGE_RE = /ImageResponse|from ['"]satori['"]|from ['"]@react-pdf|next\/og/;
+// styles as their ONLY styling mechanism, the same honesty rule as email. The
+// patterns live in lib/exempt.mjs so the report, roast --check and the guard
+// all skip the same files.
 
 /** Extract inline style objects: style={{ ... }} */
 function inlineStyleBlocks(src) {
@@ -296,15 +300,9 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // Email templates (and print styles) MUST inline their styling — that's
   // correct practice, not mess. Counting them would hand a sharp dev an easy
   // reason to discredit the whole report.
-  const EXEMPT_RE = /email|(^|[/.])print([/.]|$)/i;
-  // SVG artwork components (logos, badges, illustrated icons) carry hex that
-  // is drawing, not styling — same honesty rule as email templates.
-  const ARTWORK_RE = /(^|\/)[\w.-]*(icon|logo|badge|illustration|shield|artwork|graphic|background)[\w.-]*\.(tsx|jsx)$/i;
-  // A component that is mostly SVG markup (theme-preview mocks, decorative
-  // scenes) is drawing, not styling — regardless of its filename.
-  const svgHeavy = (src) => (src.match(/<(?:svg|path|rect|circle|ellipse|polygon|mask|defs)\b/g) ?? []).length >= 15;
-  // Canvas/scene renderers draw pixels; their colour literals are not UI styling.
-  const RENDERER_PATH_RE = /(^|\/)(renderers?|scene|canvas)\/|renderElement|DebugCanvas/i;
+  // Email, artwork, mostly-SVG files and pixel renderers: all imported from
+  // lib/exempt.mjs, the one list every checker reads.
+  const EXEMPT_RE = EMAIL_PRINT_RE, ARTWORK_RE = ARTWORK_NAME_RE;
   // Colour-picker palettes and design-field option lists are user-facing data.
   const PALETTE_FILE_RE = /(color-picker|colour-picker|palette|design-fields|swatch)/i;
 
@@ -366,7 +364,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     // code: its colours are the picture's, not the product's palette. Until
     // 5.10.0 they were the only "strays" a clean shadcn repo had, and they
     // triggered the "every single one is hardcoded" banner on it.
-    const renderToImage = RENDER_TO_IMAGE_RE.test(src) || /(^|\/)api\/og\//.test(f);
+    const renderToImage = RENDER_TO_IMAGE_RE.test(src) || OG_ROUTE_RE.test(f);
     if (renderToImage) continue;
 
     // Tailwind classes

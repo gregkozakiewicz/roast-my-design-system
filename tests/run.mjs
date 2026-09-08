@@ -372,6 +372,112 @@ const cleanReview = mcpTools.reviewData(loadKnowledge(join(FIXTURES, 'messy')));
 cleanReview.total === 0 ? ok('review outside git degrades honestly')
   : bad('review outside git', `expected 0 findings, got ${cleanReview.total}`);
 
+// ---------- the scales the engine used to ignore ----------
+// The other half of the drift (2026-09-08): guard flagged a new radius, font
+// size, shadow or typeface and the engine did not, so a change could come up
+// clean locally and be stopped in CI by the same product.
+console.log('declared scales:');
+{
+  const dk = loadKnowledge(join(FIXTURES, 'messy'));
+  const strayCss = '.hero { border-radius: 12px; font-size: 13px; box-shadow: 0 4px 8px #000000; font-family: Roboto, sans-serif; }';
+  const out = mcpTools.validate(dk, { code: strayCss });
+  for (const [needle, label] of [
+    ['border radius 12px', 'a new radius is flagged'],
+    ['first font size', 'the first font size says there is nothing to compare it to'],
+    ['shadow', 'a new shadow is flagged'],
+    ['typeface Roboto', 'a new typeface is flagged'],
+  ]) {
+    out.includes(needle) ? ok(label) : bad(label, `missing "${needle}" in: ${out}`);
+  }
+  out.includes('7px') ? ok('the new radius names the nearest one the repo uses')
+    : bad('radius advice', 'no nearest value named');
+  out.includes('Georgia') && out.includes('Inter')
+    ? ok('the typeface finding names what the system does declare') : bad('typeface advice', out);
+
+  // values the repo already declares are consistency, not a sin
+  const clean = mcpTools.validate(dk, { code: '.ok { border-radius: 7px; font-family: Inter; }' });
+  clean.startsWith('No measured violations found')
+    ? ok('a radius and a typeface the system already has stay silent') : bad('known values', clean);
+
+  // and token use, resets and inheritance are never sins
+  const disciplined = mcpTools.validate(dk, { code: '.ok { border-radius: var(--r); font-size: inherit; box-shadow: none; font-family: var(--font); }' });
+  disciplined.startsWith('No measured violations found')
+    ? ok('var(), inherit and none are disciplined, not mess') : bad('benign values', disciplined);
+
+  // in code these live in class strings, where the arbitrary check already looks
+  const inCode = mcpTools.validate(dk, { code: 'export const A = () => <div className="rounded-lg text-sm shadow-md" />;' });
+  !inCode.includes('border radius') ? ok('utility classes are not read as raw declarations')
+    : bad('code-mode scales', inCode);
+}
+
+// ---------- files no checker should judge ----------
+// Found by comparing against guard-my-design-system (2026-09-08): guard
+// exempted email, print and SVG artwork; the engine judged them anyway, so
+// the same change got two different answers. A checker that cries wolf on
+// email templates is a checker people switch off.
+console.log('exemptions:');
+{
+  const ek = loadKnowledge(join(FIXTURES, 'messy'));
+  const EMAIL = `export function Welcome() {
+  return <table style={{ background: '#3b81f5', padding: '27px' }}><tr><td>hi</td></tr></table>;
+}`;
+  const ICON = `export function Icon() {
+  return <svg viewBox="0 0 16 16"><path fill="#3b81f5" d="M0 0h16v16H0z" /></svg>;
+}`;
+  const judged = mcpTools.validate(ek, { code: EMAIL, file: 'src/components/Welcome.tsx' });
+  judged.includes('finding') ? ok('the same markup outside email is still judged')
+    : bad('control case', `expected findings, got: ${judged.split('\n')[0]}`);
+
+  for (const [file, code, label] of [
+    ['src/email/Welcome.tsx', EMAIL, 'email templates'],
+    ['src/print/Invoice.tsx', EMAIL, 'print stylesheets'],
+    ['src/components/Icon.tsx', ICON, 'SVG artwork'],
+  ]) {
+    const out = mcpTools.validate(ek, { code, file });
+    out.startsWith('Not judged:') ? ok(`${label} are exempt, and say why`)
+      : bad(`${label} exempt`, `got: ${out.split('\n')[0]}`);
+  }
+
+  // the name alone must not buy the exemption
+  const fakeBadge = mcpTools.validate(ek, { code: EMAIL, file: 'src/components/Badge.tsx' });
+  !fakeBadge.startsWith('Not judged:') ? ok('an artwork name that draws no artwork earns nothing')
+    : bad('badge exemption', 'plain styled UI walked free');
+
+  // pictures drawn with code (2026-09-08): the report had exempted these
+  // since 5.10, roast --check and the guard had not, so the same OG card was
+  // clean in one door and full of strays in another
+  const OG = `import { ImageResponse } from 'next/og';
+export function GET() { return new ImageResponse(<div style={{ background: '#c0ffee', padding: '27px' }} />); }`;
+  const SCENE = 'export const Board = () => <div style={{ background: "#c0ffee" }} />;';
+  const DRAWING = `export function Scene() {
+  return <svg>${'<path fill="#c0ffee" />'.repeat(15)}</svg>;
+}`;
+  for (const [file, code, label] of [
+    ['app/api/og/route.tsx', SCENE, 'an OG route is exempt by its path'],
+    ['src/cards/Share.tsx', OG, 'a satori or next/og surface is exempt by what it imports'],
+    ['src/renderers/Board.tsx', SCENE, 'a pixel renderer is exempt'],
+    ['src/components/Anything.tsx', DRAWING, 'a file that is mostly drawing is exempt whatever it is called'],
+  ]) {
+    const out = mcpTools.validate(ek, { code, file });
+    out.startsWith('Not judged:') ? ok(label) : bad(label, `got: ${out.split('\n')[0]}`);
+  }
+  // a component with a little SVG in it is still a component
+  const someSvg = mcpTools.validate(ek, {
+    code: 'export const Row = () => <div style={{ color: "#c0ffee" }}><svg><path /></svg></div>;',
+    file: 'src/components/Row.tsx',
+  });
+  !someSvg.startsWith('Not judged:') ? ok('a little SVG does not make a component into artwork')
+    : bad('svg-heavy threshold', 'a two-tag component walked free');
+
+  // and the review must skip them without calling the result clean
+  mkdirSync(join(gitFix, 'components/email'), { recursive: true });
+  writeFileSync(join(gitFix, 'components/email/Receipt.tsx'), EMAIL);
+  const exemptReview = mcpTools.reviewData(loadKnowledge(gitFix));
+  !exemptReview.text.includes('Receipt.tsx') && exemptReview.text.includes('left unjudged')
+    ? ok('review skips exempt files and admits it')
+    : bad('review exemption', exemptReview.text.split('\n').pop());
+}
+
 // the server end to end: initialize → tools/list → one call, over real stdio
 console.log('mcp server:');
 {

@@ -265,6 +265,43 @@ console.log('shadcn tokens:');
     : bad('rules token source', 'extension.css named or theme.ts missing');
 }
 
+// ---------- a vendored catalogue is stock, not debt ----------
+// Sahaj Jain (who maintains tweakcn), 2026-09-09: "unused shadcn components
+// shouldn't penalize your score but can be a neutral warning". People bring
+// the whole catalogue in one go because adding it piecemeal is tedious, and an
+// unused component is protective — the agent reaches for it instead of writing
+// its own. A factory-fresh install scored 75 and was told to delete its own
+// catalogue. Duplicates stay penalised: two of a thing is the real harm.
+console.log('vendored catalogue:');
+{
+  const sh = JSON.parse(readFileSync(join(tmp, 'shadcnv3.json'), 'utf8'));
+  const shS = JSON.parse(readFileSync(join(tmp, 'shadcnv3-s.json'), 'utf8'));
+  sh.profile.vendoredUi === true ? ok('a shadcn ui folder is recognised as vendored') : bad('vendoredUi', 'not detected');
+  const tile = (shS.tiles ?? []).find((t) => /never imported/.test(t.label));
+  Number(tile?.value) >= 3 && tile?.health === 'info'
+    ? ok(`catalogue stock counted (${tile.value}) but unscored`) : bad('catalogue tile', `${tile?.value} / ${tile?.health}`);
+  !(shS.moves ?? []).some((m) => /nobody imports/.test(m.title))
+    ? ok('no fix-it move for catalogue stock') : bad('catalogue move', 'still telling people to delete the catalogue');
+  const shHtml = readFileSync(join(tmp, 'shadcnv3.html'), 'utf8');
+  shHtml.includes('catalogue components not used yet') && shHtml.includes('takes nothing off the score')
+    ? ok('the report explains stock instead of accusing') : bad('catalogue copy', 'missing');
+  const shRules = rulesMarkdown(sh).text;
+  shRules.includes('Reach for one of these before building your own') && !shRules.includes('flag it for deletion')
+    ? ok('the rules point the agent at the catalogue, not at deleting it') : bad('catalogue rules', 'still says delete');
+  // The rule catalogue always declares every rule id; what matters is results.
+  const shSarif = JSON.parse(readFileSync(join(tmp, 'shadcnv3.sarif'), 'utf8'));
+  !(shSarif.runs?.[0]?.results ?? []).some((r) => r.ruleId === 'never-imported-component')
+    ? ok('code scanning raises nothing for catalogue stock') : bad('catalogue sarif', 'findings raised');
+
+  // The other side of the line: a components/ui folder full of hand-written
+  // components is NOT a catalogue, and abandoned code there is still a finding.
+  const mz = JSON.parse(readFileSync(join(tmp, 'messy.json'), 'utf8'));
+  const mzS = JSON.parse(readFileSync(join(tmp, 'messy-s.json'), 'utf8'));
+  mz.profile.vendoredUi === false ? ok('a hand-written ui folder is not a catalogue') : bad('false catalogue', 'messy waved through');
+  const mzTile = (mzS.tiles ?? []).find((t) => /never imported/.test(t.label));
+  mzTile && mzTile.health !== 'info' ? ok('abandoned components are still scored') : bad('messy tile', `${mzTile?.health}`);
+}
+
 // ---------- false positives the review must never raise ----------
 // An order id read as a colour (2026-09-07): roast_validate told a demo repo
 // that "#11004422 is new to this repo" — it had expanded the order id #1042

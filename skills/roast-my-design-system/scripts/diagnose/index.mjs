@@ -234,6 +234,12 @@ const neverImported = neverImportedComponents(h.components, h.profile?.uiDir);
 const componentsMeasured = h.profile?.componentDetection?.measured !== false;
 const notMeasuredReason = h.profile?.componentDetection?.reason ?? 'an unrecognised component pattern';
 const isLibrary = h.profile?.role === 'library';
+// A shadcn ui folder is a vendored catalogue: `shadcn add` copies the source
+// in, people take the whole set at once, and an unused component there is
+// stock on a shelf rather than something a team built and abandoned. It is
+// also protective — the agent reaches for it instead of writing its own worse
+// version. So it is counted and shown, never scored and never a fix to make.
+const vendoredUi = h.profile?.vendoredUi === true;
 
 // Benchmark helpers: for a metric value, where does this repo sit among the
 // scanned fleet? ("more colours than 90% of scanned repos")
@@ -401,10 +407,15 @@ if (!componentsMeasured) {
     bigStats[i] = { num: '—', label: bigStats[i].label, health: 'na', metric: m, healthValue: null,
       rows: [{ label: `not measured: ${notMeasuredReason}`, val: '', dir: '' }] };
   }
-} else if (isLibrary) {
+// A vendored catalogue is never judged for what it has left on the shelf —
+// but a repo that used everything it installed keeps the credit it earned, so
+// the tile only drops out of the score when it would otherwise accuse.
+} else if (isLibrary || (vendoredUi && neverImported.length > 0)) {
   const t = bigStats.find((st) => st.metric === 'neverImported');
   t.health = 'info';
-  t.rows.push({ label: 'library: internal use only, downstream consumers invisible', val: '', dir: '' });
+  t.rows.push({ label: isLibrary
+    ? 'library: internal use only, downstream consumers invisible'
+    : 'catalogue stock: installed by the shadcn CLI, not used yet', val: '', dir: '' });
 }
 
 // Health score for the hero: the scored tiles averaged (good 100 / warn 55 / bad 10).
@@ -861,10 +872,10 @@ function componentsSection() {
     ${onceUsed.length ? `<p class="sub">${n(onceUsed.length)} component${onceUsed.length === 1 ? ' is' : 's are'} imported exactly once: ${onceUsed.slice(0, 6).map((c) => `&lt;${esc(c.name)}&gt;`).join(', ')}${onceUsed.length > 6 ? ` and ${onceUsed.length - 6} more` : ''}. Quiet corners, not yet a system.</p>` : ''}
     ${top.length ? `<div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div>` : ''}
     ${neverImported.length >= 2 ? `
-    <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : `${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
+    <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : vendoredUi ? `${n(neverImported.length)} catalogue components not used yet · installed by the shadcn CLI and waiting to be used, not written by this team` : `${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
     ${orphanRows()}
-    <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>
-    ${isLibrary ? '' : whyToggle('neverImported')}` : ''}</section>`;
+    <p class="sub" style="margin-top:8px">${vendoredUi ? 'Reach for one before building anything new. This list is counted and shown, and takes nothing off the score.' : 'Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.'}</p>
+    ${isLibrary || vendoredUi ? '' : whyToggle('neverImported')}` : ''}</section>`;
 }
 
 // "Where to start" — at most three moves, every one derived from this repo's
@@ -1041,7 +1052,7 @@ function whereToStartSection() {
       title: `Unwind the ${n(important.count)} !important declarations`,
       sub: `Each one is a selector losing an argument with another selector${worst ? `; ${esc(basename(worst.file))} alone carries ${worst.count}` : ''}. Fix the specificity at the source and they stop being necessary.` });
   }
-  if (componentsMeasured && !isLibrary && neverImported.length >= 3) {
+  if (componentsMeasured && !isLibrary && !vendoredUi && neverImported.length >= 3) {
     c.push({ score: 15 + neverImported.length, metric: 'neverImported', after: 0,
       title: `Decide about the ${n(neverImported.length)} components nobody imports`,
       sub: `${neverImported.slice(0, 3).map((x) => `&lt;${esc(x.name)}&gt;`).join(', ')}${neverImported.length > 3 ? ' and others' : ''} sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.` });

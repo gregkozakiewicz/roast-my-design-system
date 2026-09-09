@@ -8,13 +8,11 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
+> **New in 5.12: a vendored catalogue is stock, not debt.** shadcn copies component source into your repo, and most people bring the whole set at once. Those unused components were being scored as dead weight: a factory-fresh `create-next-app` + `shadcn add --all` scored 75 and was told to delete its own catalogue. It now scores 83, and the count is shown without being judged. The correction runs through every door that repeated the old advice, including the generated rules file and the MCP server, which used to tell agents to delete the very components that stop them hand-rolling a worse version. A folder named `components/ui` is not enough to earn the pass, so hand-written components abandoned there are still found.
+
 > **New in 5.11: the checker and the CI guard stop contradicting each other.** `roast --check` and [guard-my-design-system](https://github.com/gregkozakiewicz/guard-my-design-system) both answer "does this change fit the system", and they disagreed in seven places. A second hand-rolled `<Button>` passed the guard. A new radius, font size, shadow or typeface passed `--check` and was then stopped in CI. Both now measure the same things. And both leave alone the files that cannot be on-system: email, print, OG cards, PDF invoices, pixel renderers and SVG artwork. A skipped file is never called clean; the result says what was left unjudged and why.
 
-> **New in 5.10: it reads Tailwind v3 shadcn, and every colour space.** shadcn on Tailwind v3 stores colour tokens as bare HSL channels, for the opacity trick. So a textbook shadcn repo used to scan as "2 colours, none defined as CSS variables". It now reads those tokens. It finds the greys (an oklch palette used to report 0). And it spots twins across notations: a token written as hsl and a hardcoded copy written as rgb are the same colour, and now count as a near-identical pair. Checked before and after on 6 real shadcn repos.
-
 > **New in 5.9: the agent card knows which doors your rules actually reach.** The report now states, as plain fact, which tools can read the rules files you have. Claude Code reads CLAUDE.md. Codex reads AGENTS.md. Cursor reads AGENTS.md and `.cursor/rules`. Where a door is missing, the card shows the one-line fix: Claude Code skips AGENTS.md, and a CLAUDE.md containing the single line `@AGENTS.md` closes the gap. The scan also finds rules files nested in subfolders, which is how monorepos really do it (twenty carries 35 AGENTS.md files; a root-only look reported 1). It recognises GEMINI.md, `.windsurf/rules` and `.github/instructions` too.
-
-> **New in 5.8: every finding can explain itself.** A "why this matters" toggle sits under each finding. It unfolds the calm story behind the brutal number. How the mess arrives innocently, what it costs later, how an agent multiplies it, and why the ideal sits where it sits, benchmark medians included. Written to a plain-language standard and reviewed word by word.
 
 > **New in 5.0: it runs as a local MCP server.** One command, and your agent asks the design system before writing UI, then gets the work checked after. Which Button is canonical? Which token holds that colour? Review my changes. Local, deterministic, nothing leaves your machine. See [Live answers over MCP](#live-answers-over-mcp).
 
@@ -64,11 +62,11 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.10.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.12.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.10.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.12.0)
 
 ## What makes the numbers trustworthy
 

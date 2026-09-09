@@ -124,7 +124,9 @@ function resourceBody(uri, k) {
       for (const d of dupes.slice(0, 15)) L.push(`  <${d.name}> in ${d.files.map((f) => (typeof f === 'string' ? f : f.file)).join(' + ')}`);
     }
     if (k.neverImported.length) {
-      L.push(`Defined but never imported (adopt or delete, never duplicate): ${k.neverImported.slice(0, 10).map((c) => `<${c.name}>`).join(' ')}`);
+      L.push(k.vendoredUi
+        ? `Installed and unused, reach for these before writing your own: ${k.neverImported.slice(0, 10).map((c) => `<${c.name}>`).join(' ')}`
+        : `Defined but never imported (adopt or delete, never duplicate): ${k.neverImported.slice(0, 10).map((c) => `<${c.name}>`).join(' ')}`);
     }
     return L.join('\n');
   }

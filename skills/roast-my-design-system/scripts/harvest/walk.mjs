@@ -185,6 +185,26 @@ export function profileRepo(root, files) {
   const uiDir = ['src/components/ui', 'components/ui', 'app/components/ui'].find((d) => existsSync(join(root, d)));
   const isShadcn = Boolean(componentsJson) || Boolean(uiDir);
 
+  // Catalogue filenames as shipped by `shadcn add --all` (61 as of 2026-09).
+  // Only used to recognise a vendored folder, never to judge one.
+  const SHADCN_CATALOGUE = new Set(['accordion', 'alert-dialog', 'alert', 'aspect-ratio', 'attachment',
+    'avatar', 'badge', 'breadcrumb', 'bubble', 'button-group', 'button', 'calendar', 'card', 'carousel',
+    'chart', 'checkbox', 'collapsible', 'combobox', 'command', 'context-menu', 'dialog', 'direction',
+    'drawer', 'dropdown-menu', 'empty', 'field', 'hover-card', 'input-group', 'input-otp', 'input',
+    'item', 'kbd', 'label', 'marker', 'menubar', 'message-scroller', 'message', 'native-select',
+    'navigation-menu', 'pagination', 'popover', 'progress', 'questionnaire', 'radio-group', 'resizable',
+    'scroll-area', 'select', 'separator', 'sheet', 'sidebar', 'skeleton', 'slider', 'spinner', 'switch',
+    'table', 'tabs', 'textarea', 'toast', 'toggle-group', 'toggle', 'tooltip']);
+  let catalogueNames = 0;
+  if (uiDir) {
+    try {
+      for (const f of readdirSync(join(root, uiDir))) {
+        if (SHADCN_CATALOGUE.has(f.replace(/\.[cm]?[jt]sx?$/, ''))) catalogueNames += 1;
+      }
+    } catch { /* unreadable */ }
+  }
+  const vendoredUi = Boolean(uiDir) && (Boolean(componentsJson) || catalogueNames >= 8);
+
   const knownLib = KNOWN_LIBRARIES.find((d) => deps[d.pkg]);
   const homegrown = files.code.filter((f) => /(^|\/)components\//.test(f) && !/\/components\/ui\//.test(f) && /\.(tsx|jsx)$/.test(f));
 
@@ -241,6 +261,22 @@ export function profileRepo(root, files) {
     stylingDeps: styling,
     importAlias: componentsJson?.aliases?.components?.split('/')[0] || alias || null,
     uiDir: uiDir || null,
+    // A vendored catalogue is not components this team wrote: `shadcn add`
+    // copies the source in, and people bring the whole set at once because
+    // adding them one at a time gets tedious. So an unused one is stock on a
+    // shelf, not dead weight — and it is arguably protective, because an agent
+    // reaches for it instead of hand-rolling a worse version. (Sahaj Jain, who
+    // maintains tweakcn, 2026-09-09; a factory-fresh install scored 75 and was
+    // told to delete its own catalogue.) Consumers read this flag rather than
+    // re-deriving it.
+    //
+    // A folder named components/ui is NOT enough on its own: plenty of teams
+    // write their own components there, and calling that a catalogue would
+    // wave through genuinely abandoned code. Two independent signals, either
+    // sufficient: components.json (the CLI's own marker, written by every
+    // modern install) or a folder that is demonstrably the catalogue by name
+    // (shadcn-ui/taxonomy predates components.json and has 111 of them).
+    vendoredUi,
     libraryPkg,
     // markers the component detector cannot read (yet): used by the harvest
     // to declare component metrics "not measured" instead of scoring zeros

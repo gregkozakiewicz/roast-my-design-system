@@ -1,6 +1,6 @@
 {
   "repo": "fixture-shadcnv3",
-  "score": 95,
+  "score": 94,
   "noSystemLikely": false,
   "verdict": "no agent rules, so your AI is guessing.",
   "role": "product",
@@ -43,8 +43,8 @@
     },
     {
       "label": "components never imported",
-      "value": "0",
-      "health": "good"
+      "value": "6",
+      "health": "info"
     },
     {
       "label": "arbitrary bracket values",

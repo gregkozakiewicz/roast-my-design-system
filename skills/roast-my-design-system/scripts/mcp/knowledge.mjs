@@ -120,6 +120,8 @@ export function loadKnowledge(root) {
     canonical,
     dupeByName,
     neverImported,
+    // stock, not debt: see harvest profile.vendoredUi
+    vendoredUi: profile.vendoredUi === true,
     agentFiles: (context ?? []).filter((c) => c.kind === 'agent-rules'),
   };
 }

@@ -130,8 +130,16 @@ const repoName = h.profile?.name ?? 'this repo';
   // ---------- never-imported components ----------
 const neverImported = neverImportedComponents(h.components, h.profile?.uiDir);
 if (neverImported.length >= 3) {
-  section('Components nobody imports');
-  rule(`${neverImported.length} components are defined but never imported (${neverImported.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…). Before writing any new component, check this list first; adopt one or flag it for deletion instead of adding another.`);
+  // A vendored catalogue is stock, not debt: the rule points the agent AT it
+  // rather than telling it to prune. An unused Calendar beats a hand-rolled
+  // date picker written under time pressure.
+  if (h.profile?.vendoredUi) {
+    section('Catalogue components already installed');
+    rule(`${neverImported.length} components sit installed and unused in \`${h.profile.uiDir}\` (${neverImported.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…). Reach for one of these before building your own version of the same thing. Do not delete them to tidy up.`);
+  } else {
+    section('Components nobody imports');
+    rule(`${neverImported.length} components are defined but never imported (${neverImported.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…). Before writing any new component, check this list first; adopt one or flag it for deletion instead of adding another.`);
+  }
 }
 
 // ---------- spacing ----------

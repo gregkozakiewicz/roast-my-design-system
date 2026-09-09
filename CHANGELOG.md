@@ -2,6 +2,15 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.12.0 — 2026-09-09
+
+- **A vendored catalogue is stock, not debt.** shadcn copies component source into your repo, and people bring the whole set at once because adding it piece by piece gets tedious. Unused components in that folder were being scored as dead weight, costing about 10 points and earning the top recommendation "decide about the 138 components nobody imports". A factory-fresh install (`create-next-app` + `shadcn add --all`) scored **75 and was told to delete its own catalogue**. It now scores 83, and that advice is gone. The count is still shown, still counted, simply not judged: "catalogue stock: installed by the shadcn CLI, not used yet".
+- The same correction runs through every door that repeated the old advice: the report tile and its fix-it move, the generated rules file (which now says *reach for one of these before building your own*, the opposite of what it said), the SARIF output for code scanning (no findings), and the MCP server's answer to an agent (which used to say "adopt or delete"). One flag decided in the harvest, read by all of them.
+- **A folder named `components/ui` is not enough to earn the pass.** Plenty of teams write their own components there, and waving those through would hide genuinely abandoned code. Two independent signals, either sufficient: `components.json`, which the CLI writes; or a folder that is demonstrably the catalogue by filename, since shadcn-ui/taxonomy predates `components.json` and carries 111 of them. A fixture full of hand-written dead components in `components/ui` is still, correctly, accused.
+- A repo that used everything it installed keeps the credit: the tile only leaves the score when it would otherwise accuse.
+- Scores on real repos: taxonomy 80 → 89, chatbot-ui 60 → 66, a popular dashboard starter 60 → 66, papermark 30 → 33. Repos with a fully used catalogue (vercel/ai-chatbot, shadcn-admin) do not move at all. Duplicates stay penalised exactly as before: two of a thing with no way to tell which is right is the real harm.
+- Thanks to Sahaj Jain, who maintains tweakcn, for the argument that settled it: an unused component is not just harmless, it is protective, because an agent reaches for it instead of writing its own worse version.
+
 ## 5.11.0 — 2026-09-08
 
 - **`roast --check` and `guard-my-design-system` now give the same answer.** Two checkers, one question, seven places where they disagreed. A pull request that hand-rolled a second `<Button>` or added `style={{ display: 'flex' }}` walked past the guard. A new `border-radius: 7px`, font size, shadow or `font-family` came up clean under `--check` and was then stopped by the guard in CI. Same product, contradictory answers, and no way for the author to know which one to believe. Found by reading both sources side by side, not by a bug report.

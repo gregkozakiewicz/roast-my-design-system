@@ -44,8 +44,12 @@ for (const d of (h.duplicates?.exactDuplicates ?? [])) {
     push('duplicate-component', 'warning', `<${d.name}> is implemented in ${d.files.length} places. This is one of them; an agent has to guess which is canonical.`, file);
   }
 }
-for (const c of neverImportedComponents(h.components ?? [], h.profile?.uiDir ?? null)) {
-  push('never-imported-component', 'note', `<${c.name}> is defined here and imported by nothing.`, c.file);
+// A vendored shadcn catalogue is stock, not a defect: nothing to annotate in
+// code scanning, and a finding per component would bury the real ones.
+if (!h.profile?.vendoredUi) {
+  for (const c of neverImportedComponents(h.components ?? [], h.profile?.uiDir ?? null)) {
+    push('never-imported-component', 'note', `<${c.name}> is defined here and imported by nothing.`, c.file);
+  }
 }
 for (const f of (t.inlineStyles?.files ?? [])) {
   push('inline-styles', 'warning', `${f.count} static inline style block${f.count === 1 ? '' : 's'} in this file. Dynamic positioning is already excluded, so these could be classes or tokens today.`, f.file);

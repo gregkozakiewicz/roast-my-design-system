@@ -15,6 +15,10 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
   - `<Button>` from `components/ui/button.tsx` (used 2x)
   - `<Card>` from `components/ui/card.tsx` (used 2x)
 
+### Catalogue components already installed
+
+- 6 components sit installed and unused in `components/ui` (`<Accordion>`, `<Calendar>`, `<Dialog>`…). Reach for one of these before building your own version of the same thing. Do not delete them to tidy up.
+
 ### Spacing and sizing
 
 - Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.

@@ -67,6 +67,7 @@ Usage: npx roast-my-design-system@latest [path] [options]
   --theme <t>     dark | light (default: dark)
   --out <file>    report path (default: design-system-roast.html in the repo)
   --no-open       write the report without opening it
+  --open          open it even when the output is piped or an agent is running
   --rules         also write design-system-rules.md: agent rules (for
                   CLAUDE.md / .cursor/rules) generated from the scan
   --apply         inject the rules straight into your agent files (CLAUDE.md,
@@ -133,7 +134,17 @@ const wantApply = flag('apply') === true;
 const wantCard = flag('card') === true;
 const wantSarif = flag('sarif') === true;
 const asJson = flag('json') === true;
-const noOpen = flag('no-open') === true || asJson;
+// Opening a browser tab is a courtesy to a person watching a terminal. When
+// an agent runs the scan (Claude Code, Cursor, Codex) it captures stdout, so
+// there is no terminal and no one to look — and an agent verifying a fix runs
+// this repeatedly, throwing a tab in the user's face each time (Greg, working
+// through the fix loop, 2026-09-10). No TTY, no tab. `--open` forces it back
+// for anyone piping output who still wants the report.
+const interactive = process.stdout.isTTY === true && !process.env.CI;
+const forceOpen = flag('open') === true;
+// flag() consumes the argument, so ask once and keep the answer.
+const askedNoOpen = flag('no-open') === true;
+const noOpen = askedNoOpen || asJson;
 const theme = opt('theme', 'dark');
 const commissionedBy = opt('by', null);
 const notesFile = opt('notes', null);
@@ -162,6 +173,16 @@ function run(script, args, env) {
 const say = (s) => { if (!asJson) console.log(s); };
 
 say(`roast-my-design-system ${VERSION} · read-only scan, nothing leaves your machine`);
+// The score this repo had last time, read from the report about to be
+// overwritten. It decides whether a browser tab is worth throwing at anyone:
+// an agent working a fix runs the scan repeatedly, and only the run that
+// actually moves the number is worth looking at.
+let previousScore = null;
+try {
+  const prev = readFileSync(outPath, 'utf8').match(/<!-- rmds-score: (\d+|na) -->/);
+  if (prev) previousScore = prev[1];
+} catch { /* no previous report: this is the first look, so it is worth opening */ }
+
 // the harvest goes to a temp dir this wrapper deletes right after; tell the
 // script so it does not print a path that will be gone seconds later
 run('harvest/index.mjs', [target, '--out', harvestPath,
@@ -239,7 +260,20 @@ if (!asJson) {
   say(`\n${FEEDBACK_ASK} ${FEEDBACK_CTA}:\n${feedbackUrl(VERSION)}\n${STAR_ASK} ${STAR_CTA}:\n${STAR_URL}`);
 }
 
-if (!noOpen) {
+// A person at a terminal asked for this, so they get the report. An agent
+// did not: it gets the tab only when the number moved, which is the moment
+// worth seeing (Greg, working a fix loop through Claude Code, 2026-09-10 —
+// several windows opened while the agent was still working).
+// `summary` was parsed before the temp dir was removed; reading the file
+// here would find nothing.
+const currentScore = summary?.score === undefined || summary?.score === null ? null : String(summary.score);
+const scoreMoved = previousScore === null || (currentScore !== null && currentScore !== previousScore);
+const quietRun = !interactive && !forceOpen && !scoreMoved;
+if (quietRun && !asJson && !askedNoOpen) {
+  console.log(`\n  (score unchanged at ${currentScore ?? '?'}, so no browser tab. Add --open if you want one.)`);
+}
+
+if (!noOpen && !quietRun) {
   // Windows: `start` treats a first quoted arg as the window TITLE, and Node
   // quotes paths containing spaces — pass an empty title so the path lands
   // in the file slot. Linux: xdg-open may be absent (headless, WSL); the

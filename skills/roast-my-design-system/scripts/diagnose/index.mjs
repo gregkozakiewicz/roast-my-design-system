@@ -1649,6 +1649,7 @@ const html = `<!doctype html>
   .author:hover { text-decoration:underline; }
 </style>
 <!-- rmds-schema: ${NS_TAG} -->
+<!-- rmds-score: ${healthScore ?? 'na'} -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <span class="tt-lab tt-day">Day</span>

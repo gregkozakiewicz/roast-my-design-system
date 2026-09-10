@@ -597,6 +597,43 @@ if (existsSync(bin)) {
     const want = JSON.parse(readFileSync(join(EXPECTED, 'messy.summary.json'), 'utf8'));
     j.score === want.score ? ok(`--json e2e score ${j.score}`) : bad('--json e2e score', `want ${want.score}, got ${j.score}`);
   } catch (e) { bad('--json e2e', `stdout was not clean JSON: ${e.message}`); }
+
+  // The browser tab is for the moment the number moves, not for every run.
+  // An agent working a fix re-runs the scan repeatedly, and each run used to
+  // throw a window in the user's face (Greg, fix loop through Claude Code,
+  // 2026-09-10). A stub on PATH stands in for `open`, so the suite itself
+  // never opens anything and can still count how often it would have.
+  const stubDir = join(tmp, 'stub');
+  mkdirSync(stubDir, { recursive: true });
+  const opened = join(tmp, 'opened.log');
+  for (const name of ['open', 'xdg-open']) {
+    writeFileSync(join(stubDir, name), `#!/bin/sh\necho "$*" >> ${opened}\n`);
+    spawnSync('chmod', ['+x', join(stubDir, name)]);
+  }
+  const withStub = { ...process.env, PATH: `${stubDir}:${process.env.PATH}` };
+  const opens = () => { try { return readFileSync(opened, 'utf8').trim().split('\n').filter(Boolean).length; } catch { return 0; } };
+  const reportDir = join(tmp, 'openflow');
+  mkdirSync(reportDir, { recursive: true });
+  const report = join(reportDir, 'r.html');
+  const scan = () => spawnSync(process.execPath, [bin, join(FIXTURES, 'clean'), '--out', report], { encoding: 'utf8', env: withStub });
+
+  scan();
+  opens() === 1 ? ok('the first scan opens the report') : bad('first scan', `opened ${opens()} times`);
+  readFileSync(report, 'utf8').includes('<!-- rmds-score:')
+    ? ok('the report carries its score for the next run to compare') : bad('score marker', 'missing from the report');
+
+  const again = scan();
+  opens() === 1 && again.stdout.includes('score unchanged')
+    ? ok('an unchanged score opens nothing') : bad('unchanged run', `opened ${opens()} times`);
+
+  // Move the number: the same report path, a repo with a different score.
+  const moved = spawnSync(process.execPath, [bin, join(FIXTURES, 'messy'), '--out', report], { encoding: 'utf8', env: withStub });
+  opens() === 2 && !moved.stdout.includes('score unchanged')
+    ? ok('a score that moved opens the report') : bad('changed run', `opened ${opens()} times, stdout said ${moved.stdout.includes('unchanged') ? 'unchanged' : 'moved'}`);
+
+  const q = spawnSync(process.execPath, [bin, join(FIXTURES, 'clean'), '--no-open', '--out', join(tmp, 'q.html')], { encoding: 'utf8', env: withStub });
+  !q.stdout.includes('score unchanged') && opens() === 2
+    ? ok('--no-open stays silent and opens nothing') : bad('--no-open', `opened ${opens()} times`);
 }
 
 rmSync(tmp, { recursive: true, force: true });

@@ -2,6 +2,12 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.12.1 — 2026-09-10
+
+- **The report opens when the score moves, not on every run.** An agent working through a fix re-runs the scan to check its work, and every run threw a browser window at you. Now the first scan of a repo opens the report, an unchanged score opens nothing and says so once, and the moment the number actually moves the report appears by itself. Nothing to open by hand. A person running the scan in a terminal always gets the report, as before.
+- The report carries its own score in a comment, so each scan can compare against the one it is replacing. No state file, no configuration.
+- New `--open` forces the report open where output is piped or captured; `--no-open` is unchanged.
+
 ## 5.12.0 — 2026-09-09
 
 - **A vendored catalogue is stock, not debt.** shadcn copies component source into your repo, and people bring the whole set at once because adding it piece by piece gets tedious. Unused components in that folder were being scored as dead weight, costing about 10 points and earning the top recommendation "decide about the 138 components nobody imports". A factory-fresh install (`create-next-app` + `shadcn add --all`) scored **75 and was told to delete its own catalogue**. It now scores 83, and that advice is gone. The count is still shown, still counted, simply not judged: "catalogue stock: installed by the shadcn CLI, not used yet".

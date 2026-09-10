@@ -63,6 +63,8 @@ if (flag('help') || flag('h')) {
 
 Usage: npx roast-my-design-system@latest [path] [options]
 
+Run it yourself
+
   path            repo to scan (default: current directory)
   --theme <t>     dark | light (default: dark)
   --out <file>    report path (default: design-system-roast.html in the repo)
@@ -79,16 +81,8 @@ Usage: npx roast-my-design-system@latest [path] [options]
                   the score and worst findings (pure SVG, embeds in READMEs)
   --sarif         also write design-system-roast.sarif for GitHub code
                   scanning: findings annotated on files in the Security tab
-  --by <name>     put a requester credit in the report header, next to the
-                  scan date ("commissioned by <name>")
-  --notes <file>  embed an agent-written analysis (markdown-lite) in the
-                  report as "What the numbers mean", labelled as written by
-                  AI and kept apart from the measured numbers. The Claude
-                  Code skill writes and passes this automatically
-  --section "Title" <file>
-                  append an agent-written chapter after the notes, same
-                  markdown-lite plus "## " sub-headings, same written-by-AI
-                  label. Repeatable, one chapter per --section
+  --by <name>     put a name in the report header, for when you ran it for
+                  someone else ("commissioned by <name>")
   --exclude <p>   leave a folder out of the scan (repo-relative, e.g.
                   --exclude lab/ --exclude piglet/ or --exclude lab/,piglet/;
                   same as listing it in a .roastignore file at the repo root).
@@ -98,6 +92,17 @@ Usage: npx roast-my-design-system@latest [path] [options]
   --check         check the working tree's changed files (git diff + untracked)
                   against the design system and print the findings; exits 1
                   when something is over the line, so it composes with scripts
+
+For your agent (a plain terminal has no agent to write these)
+
+  --notes <file>  the agent's read of this scan, embedded in the report as
+                  "What the numbers mean", labelled as written by AI and kept
+                  apart from the measured numbers. The Claude Code skill
+                  writes and passes this automatically
+  --section "Title" <file>
+                  a further agent-written chapter after the notes, same
+                  markdown-lite plus "## " sub-headings, same label.
+                  Repeatable, one chapter per --section
   --mcp           run as a local MCP server (stdio) so your agent can query
                   the design system live: context, canonical components,
                   tokens, validation. Add to your client, e.g. Claude Code:
@@ -150,6 +155,22 @@ const commissionedBy = opt('by', null);
 const notesFile = opt('notes', null);
 const sections = optPairs('section');
 const excludes = optAll('exclude');
+// Reject an unreadable --notes / --section before scanning, not after: the
+// scan is the expensive part, and dying on a flag once the work is done is
+// the rudest possible order (Greg watched it happen, 2026-09-10). diagnose
+// checks these too; this is the early door with the same words.
+for (const [flagName, file] of [
+  ...(notesFile ? [['--notes', notesFile]] : []),
+  ...sections.map(([, f]) => ['--section', f]),
+]) {
+  if (existsSync(resolve(file))) continue;
+  console.error(`${flagName}: cannot read ${file}
+  ${flagName} is for an agent to pass: the file holds its writing about this
+  scan, which the report embeds. Running by hand? Leave the flag off, or use
+  the Claude Code skill, which writes it for you.`);
+  process.exit(1);
+}
+
 const target = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
 if (!existsSync(target) || !statSync(target).isDirectory()) {
   console.error(`Not a directory: ${target}`);

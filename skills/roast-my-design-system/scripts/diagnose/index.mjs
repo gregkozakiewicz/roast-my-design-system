@@ -138,7 +138,16 @@ const notesPath = arg('notes', null);
 let notesText = null;
 if (notesPath) {
   try { notesText = readFileSync(resolve(notesPath), 'utf8').trim() || null; }
-  catch { console.error(`--notes: cannot read ${notesPath}`); process.exit(1); }
+  catch {
+    // Typed by hand more often than not: the flag reads like "add a note",
+    // but the file holds an agent's analysis of this scan, and a plain
+    // terminal has no agent to write one (Greg, 2026-09-10).
+    console.error(`--notes: cannot read ${notesPath}
+  --notes is for an agent to pass: the file holds its read of this scan,
+  which the report embeds as "What the numbers mean". Running by hand?
+  Leave the flag off, or use the Claude Code skill, which writes it for you.`);
+    process.exit(1);
+  }
 }
 
 // --section "Title" file.md, repeatable; unreadable files are hard errors for
@@ -152,7 +161,12 @@ for (let i = 3; i < process.argv.length; i++) {
   }
   let text;
   try { text = readFileSync(resolve(file), 'utf8').trim(); }
-  catch { console.error(`--section: cannot read ${file}`); process.exit(1); }
+  catch {
+    console.error(`--section: cannot read ${file}
+  --section is for an agent to pass: the file holds a chapter it wrote,
+  rendered inside the report. Running by hand? Leave the flag off.`);
+    process.exit(1);
+  }
   if (text) extraSections.push({ title, text });
   i += 2;
 }

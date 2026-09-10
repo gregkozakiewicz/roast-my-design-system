@@ -33,23 +33,32 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in
 
 One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
-| Command&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | What you get |
+**Run it yourself.** Type these in a terminal and you get a result.
+
+| Command | What you get |
 |---|---|
-| <code>npx&nbsp;roast-my-design-system@latest</code> | The scan and `design-system-roast.html`, opened in your browser |
-| <code>npx&nbsp;roast-my-design-system@latest&nbsp;&lt;path&gt;</code> | Scan a different repo than the current directory |
+| `npx roast-my-design-system@latest` | The scan and `design-system-roast.html`, opened in your browser |
+| `... <path>` | Scan a different repo than the current directory |
 | `... --apply` | The generated agent rules injected straight into every agent file you have: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules` and `.github/copilot-instructions.md`, inside a marked block. Re-running replaces only that block, never your own text. Windsurf and Copilot get a compact variant sized for their limits |
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
-| `... --mcp` | The scan as a local MCP server: 5 tools your agent calls while writing UI, from "is there a Button already?" to "review my changes", plus the `roast-fix` prompt that serves the top fix from a fresh scan. See [Live answers over MCP](#live-answers-over-mcp) |
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
-| <code>...&nbsp;--by&nbsp;"Dwayne&nbsp;Hicks"</code> | A requester credit in the report header, next to the scan date |
-| <code>...&nbsp;--notes&nbsp;&lt;file.md&gt;</code> | An agent-written analysis embedded in the report as **"What the numbers mean"**: labelled as written by AI, kept apart from the measured numbers. The Claude Code skill writes and passes this automatically; the flag is here so any agent can |
-| <code>...&nbsp;--section&nbsp;"Title"&nbsp;&lt;file.md&gt;</code> | An agent-written chapter appended after the notes, same styling, same written-by-AI label, with sub-headings allowed. Repeatable, so analysis that outgrows the notes still lives inside the report instead of a hand-built page |
-| <code>...&nbsp;--exclude&nbsp;lab/</code> | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
+| `... --exclude lab/` | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
-| <code>...&nbsp;--theme&nbsp;light</code>&nbsp;/ <code>--out&nbsp;&lt;file&gt;</code>&nbsp;/ <code>--no-open</code> | Light report, custom report path, don't open the browser |
-| <code>/roast-my-design-system</code> (in&nbsp;Claude&nbsp;Code) | The full experience: the roast in chat *and* embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers |
+| `... --by "Dwayne Hicks"` | Puts a name in the report header, for when you ran it for someone else |
+| `... --theme light` / `--out <file>` / `--no-open` / `--open` | Light report, custom report path, never open the browser, always open it |
+
+**For your agent.** These need an agent: two of them carry writing only an agent can produce, and two are doors it works through rather than output you read.
+
+| Command | What you get |
+|---|---|
+| `... --notes <file.md>` | The agent's read of this scan, embedded in the report as **"What the numbers mean"**: which findings matter, which good numbers are accidents, what to fix first. Labelled as written by AI and kept apart from the measured numbers. The Claude Code skill writes and passes it automatically; the flag is here so any agent can |
+| `... --section "Title" <file.md>` | A further agent-written chapter after the notes, same styling, same label, sub-headings allowed. Repeatable, so analysis that outgrows the notes still lives inside the report instead of a hand-built page |
+| `... --mcp` | The scan as a local MCP server: 5 tools your agent calls while writing UI, from "is there a Button already?" to "review my changes", plus the `roast-fix` prompt that serves the top fix from a fresh scan. See [Live answers over MCP](#live-answers-over-mcp) |
+| `/roast-my-design-system` (in Claude Code) | The full experience: the roast in chat *and* embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers |
+
+Not to be confused with each other: **"Why this matters"** is generic, ships with the tool and reads the same in every report. **"What the numbers mean"** is your agent's read of your repo, and only appears when an agent passed it.
 
 **One scan writes rules for every agent: Claude, Cursor, GitHub Copilot, and Windsurf.** Every scan also checks the agent rules you already have and flags stale references, no flag needed.
 
@@ -62,11 +71,11 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.12.1)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.12.2)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.12.1)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.12.2)
 
 ## What makes the numbers trustworthy
 

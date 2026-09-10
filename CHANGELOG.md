@@ -2,6 +2,13 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.12.2 — 2026-09-10
+
+- **The commands say who they are for.** The command list is now two blocks, in the README and in `--help` alike: "Run it yourself", which is everything you can type in a terminal and get a result from, and "For your agent", which is `--notes`, `--section`, `--mcp` and the Claude Code skill. A plain terminal has no agent to write an analysis of the scan, so those flags were never really yours to type.
+- The two prose sections in the report that look alike are now told apart in the docs: "Why this matters" is generic and ships with the tool; "What the numbers mean" is your agent's read of your repo.
+- `--notes` and `--section` explain themselves when the file is missing, instead of only saying they could not read it. And they are checked before the scan runs, not after, so a mistyped path costs a millisecond rather than a full scan.
+- `--by` described in plain words: it puts a name in the report header, for when you ran it for someone else. `--open` documented.
+
 ## 5.12.1 — 2026-09-10
 
 - **The report opens when the score moves, not on every run.** An agent working through a fix re-runs the scan to check its work, and every run threw a browser window at you. Now the first scan of a repo opens the report, an unchanged score opens nothing and says so once, and the moment the number actually moves the report appears by itself. Nothing to open by hand. A person running the scan in a terminal always gets the report, as before.

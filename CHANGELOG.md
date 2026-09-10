@@ -2,6 +2,10 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 5.12.3 — 2026-09-10
+
+- Docs only: the two command groups are headings rather than bold lines, so the break between "Run it yourself" and "For your agent" is unmissable, and the command column keeps the width it needs. Published so npm's copy of the README matches what is on GitHub.
+
 ## 5.12.2 — 2026-09-10
 
 - **The commands say who they are for.** The command list is now two blocks, in the README and in `--help` alike: "Run it yourself", which is everything you can type in a terminal and get a result from, and "For your agent", which is `--notes`, `--section`, `--mcp` and the Claude Code skill. A plain terminal has no agent to write an analysis of the scan, so those flags were never really yours to type.

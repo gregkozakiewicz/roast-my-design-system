@@ -35,28 +35,28 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 **Run it yourself.** Type these in a terminal and you get a result.
 
-| Command | What you get |
+| Command&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | What you get |
 |---|---|
-| `npx roast-my-design-system@latest` | The scan and `design-system-roast.html`, opened in your browser |
-| `... <path>` | Scan a different repo than the current directory |
+| <code>npx&nbsp;roast-my-design-system@latest</code> | The scan and `design-system-roast.html`, opened in your browser |
+| <code>...&nbsp;&lt;path&gt;</code> | Scan a different repo than the current directory |
 | `... --apply` | The generated agent rules injected straight into every agent file you have: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules` and `.github/copilot-instructions.md`, inside a marked block. Re-running replaces only that block, never your own text. Windsurf and Copilot get a compact variant sized for their limits |
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
-| `... --exclude lab/` | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
+| <code>...&nbsp;--exclude&nbsp;lab/</code> | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
-| `... --by "Dwayne Hicks"` | Puts a name in the report header, for when you ran it for someone else |
-| `... --theme light` / `--out <file>` / `--no-open` / `--open` | Light report, custom report path, never open the browser, always open it |
+| <code>...&nbsp;--by&nbsp;"Dwayne&nbsp;Hicks"</code> | Puts a name in the report header, for when you ran it for someone else |
+| <code>...&nbsp;--theme&nbsp;light</code>&nbsp;/ <code>--out&nbsp;&lt;file&gt;</code>&nbsp;/ <code>--no-open</code>&nbsp;/ <code>--open</code> | Light report, custom report path, never open the browser, always open it |
 
 **For your agent.** These need an agent: two of them carry writing only an agent can produce, and two are doors it works through rather than output you read.
 
-| Command | What you get |
+| Command&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | What you get |
 |---|---|
-| `... --notes <file.md>` | The agent's read of this scan, embedded in the report as **"What the numbers mean"**: which findings matter, which good numbers are accidents, what to fix first. Labelled as written by AI and kept apart from the measured numbers. The Claude Code skill writes and passes it automatically; the flag is here so any agent can |
-| `... --section "Title" <file.md>` | A further agent-written chapter after the notes, same styling, same label, sub-headings allowed. Repeatable, so analysis that outgrows the notes still lives inside the report instead of a hand-built page |
+| <code>...&nbsp;--notes&nbsp;&lt;file.md&gt;</code> | The agent's read of this scan, embedded in the report as **"What the numbers mean"**: which findings matter, which good numbers are accidents, what to fix first. Labelled as written by AI and kept apart from the measured numbers. The Claude Code skill writes and passes it automatically; the flag is here so any agent can |
+| <code>...&nbsp;--section&nbsp;"Title"&nbsp;&lt;file.md&gt;</code> | A further agent-written chapter after the notes, same styling, same label, sub-headings allowed. Repeatable, so analysis that outgrows the notes still lives inside the report instead of a hand-built page |
 | `... --mcp` | The scan as a local MCP server: 5 tools your agent calls while writing UI, from "is there a Button already?" to "review my changes", plus the `roast-fix` prompt that serves the top fix from a fresh scan. See [Live answers over MCP](#live-answers-over-mcp) |
-| `/roast-my-design-system` (in Claude Code) | The full experience: the roast in chat *and* embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers |
+| <code>/roast-my-design-system</code> (in&nbsp;Claude&nbsp;Code) | The full experience: the roast in chat *and* embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers |
 
 Not to be confused with each other: **"Why this matters"** is generic, ships with the tool and reads the same in every report. **"What the numbers mean"** is your agent's read of your repo, and only appears when an agent passed it.
 

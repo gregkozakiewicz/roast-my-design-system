@@ -114,7 +114,7 @@
     },
     {
       "metric": "doorOverrides",
-      "label": "repainted kit components per 100 files",
+      "label": "components restyled from outside per 100 files",
       "value": 50,
       "display": "50",
       "health": "bad"
@@ -123,9 +123,9 @@
   "moves": [
     {
       "title": "Repaint the 23 colours from outside the theme",
-      "sub": "text-red-600 appears 2 times, Panel.tsx alone carries 9. Each has a row on the theme sheet already (a grey is text-muted-foreground, a status colour is a Badge variant or a row you add for it). Swap the class, never the value.",
+      "sub": "text-red-600 appears 2 times, Panel.tsx alone carries 9. The theme file already has a variable for each (a grey is text-muted-foreground, a status colour is a Badge variant or a variable you add). Swap the class, not the value.",
       "delta": 9,
-      "prompt": "You are fixing one design-system finding in the shadcncustom repository, measured by roast-my-design-system.\n\nThe finding: Repaint the 23 colours from outside the theme\n\nThe detail: text-red-600 appears 2 times, Panel.tsx alone carries 9. Each has a row on the theme sheet already (a grey is text-muted-foreground, a status colour is a Badge variant or a row you add for it). Swap the class, never the value.\n\nExpected payoff: about +9 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+      "prompt": "You are fixing one design-system finding in the shadcncustom repository, measured by roast-my-design-system.\n\nThe finding: Repaint the 23 colours from outside the theme\n\nThe detail: text-red-600 appears 2 times, Panel.tsx alone carries 9. The theme file already has a variable for each (a grey is text-muted-foreground, a status colour is a Badge variant or a variable you add). Swap the class, not the value.\n\nExpected payoff: about +9 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
     },
     {
       "title": "Write the agent rules file",

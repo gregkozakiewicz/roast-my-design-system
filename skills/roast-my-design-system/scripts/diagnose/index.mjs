@@ -338,7 +338,7 @@ const FALLBACK_TARGET = {
   colors: 'a system needs ~24', greys: 'a scale has up to 13', spacing: 'a dozen deliberate exceptions',
   exactDuplicates: 'should be 0', inlineStyles: 'invisible to any system', nearPairs: 'copy-paste, not decisions',
   important: 'the cascade admitting defeat', neverImported: 'the system nobody found', arbitrary: 'a handful of deliberate exceptions',
-  paintTin: 'the theme already has a row for it', doorOverrides: 'pick a variant instead',
+  paintTin: 'the theme file already has a variable for it', doorOverrides: 'use a variant instead',
 };
 // Dress one judged tile for the page: formatted number, comparison rows.
 // Accepts a judged tile from score.mjs, or the positional form the
@@ -588,29 +588,30 @@ function sheetSection() {
   const sheet = sc.sheet, paint = sc.paint;
   const parts = [];
   if (sheet?.found) {
-    const bits = [`${n(sheet.lightRows)} rows for light, ${n(sheet.darkRows)} for dark in ${esc(sheet.file)}`];
+    const bits = [`${n(sheet.lightRows)} variables for light, ${n(sheet.darkRows)} for dark in ${esc(sheet.file)}`];
     if (sheet.hslEra) bits.push('written in the Tailwind 3 form (hsl triplets)');
-    if (sheet.shadcnMissing?.length) bits.push(`${sheet.shadcnMissing.length} of the ${SHADCN_ROW_COUNT} current rows not defined (${sheet.shadcnMissing.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${sheet.shadcnMissing.length > 4 ? '…' : ''})${sheet.hslEra ? ', normal for an install from before the chart and sidebar rows existed' : ''}`);
-    if (sheet.missingDark?.length) bits.push(`${sheet.missingDark.length} row${sheet.missingDark.length === 1 ? '' : 's'} with no dark value (${sheet.missingDark.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')})`);
-    if (sheet.custom?.length) bits.push(`${sheet.custom.length} custom row${sheet.custom.length === 1 ? '' : 's'} of your own (${sheet.custom.slice(0, 5).map((r) => `--${esc(r)}`).join(', ')}${sheet.custom.length > 5 ? '…' : ''})${sheet.customMissingDark?.length ? `, ${sheet.customMissingDark.length} of them light only` : ''}${sheet.customUnregistered?.length ? `, ${sheet.customUnregistered.length} never mapped in @theme inline` : ''}`);
-    if (sheet.tweakcnPresent >= 10) bits.push('tweakcn rows present: shadows and letter-spacing are themed');
-    if (sheet.spacingChanged) bits.push(`<b>--spacing is ${esc(sheet.spacing)}</b>, not the factory 0.25rem: every gap in the app is resized at once, which shadcn\'s own changelog says never to do`);
-    parts.push(`<div class="receipts">${eyebrow('the theme, row by row')}<p class="sub">${bits.join(' · ')}.</p></div>`);
+    if (sheet.shadcnMissing?.length) bits.push(`${sheet.shadcnMissing.length} of the ${SHADCN_ROW_COUNT} current shadcn variables not defined (${sheet.shadcnMissing.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${sheet.shadcnMissing.length > 4 ? '…' : ''})${sheet.hslEra ? ', normal for an install from before the chart and sidebar rows existed' : ''}`);
+    if (sheet.missingDark?.length) bits.push(`${sheet.missingDark.length} variable${sheet.missingDark.length === 1 ? '' : 's'} with no dark value (${sheet.missingDark.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')})`);
+    if (sheet.custom?.length) bits.push(`${sheet.custom.length} custom variable${sheet.custom.length === 1 ? '' : 's'} of your own (${sheet.custom.slice(0, 5).map((r) => `--${esc(r)}`).join(', ')}${sheet.custom.length > 5 ? '…' : ''})${sheet.customMissingDark?.length ? `, ${sheet.customMissingDark.length} of them light only` : ''}${sheet.customUnregistered?.length ? `, ${sheet.customUnregistered.length} never mapped in @theme inline` : ''}`);
+    if (sheet.tweakcnPresent >= 10) bits.push('tweakcn variables present: shadows and letter-spacing are themed');
+    if (sheet.spacingChanged) bits.push(`<b>--spacing is ${esc(sheet.spacing)}</b>, not the default 0.25rem: this resizes every gap in the app at once, which shadcn\'s own changelog says never to do`);
+    parts.push(`<div class="receipts">${eyebrow('the theme file, variable by variable')}<p class="sub">${bits.join(' · ')}.</p></div>`);
   } else if (sheet) {
     parts.push(`<div class="receipts">${eyebrow('the theme')}<p class="sub">components.json names ${esc(sheet.file)} as the theme file, and it was not found.</p></div>`);
   }
   if (paint) {
     const tinChips = (paint.tin.samples ?? []).slice(0, 8).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
     const tinFiles = (paint.tin.top ?? []).slice(0, 5).map((f) => `<span class="vchip" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('');
-    parts.push(`<div class="receipts">${eyebrow(`${n(paint.tin.uses)} colours from outside the theme in ${n(paint.tin.files)} of ${n(paint.ownFiles)} own files · ${n(paint.tin.per100)} per 100 files`)}${paint.tin.uses ? `<div class="chips-row">${tinChips}</div><div class="chips-row">${tinFiles}</div>` : '<p class="sub">Own code paints from the theme only. This is what the kit was built for.</p>'}</div>`);
+    parts.push(`<div class="receipts">${eyebrow(`${n(paint.tin.uses)} colours from outside the theme in ${n(paint.tin.files)} of ${n(paint.ownFiles)} own files · ${n(paint.tin.per100)} per 100 files`)}${paint.tin.uses ? `<div class="chips-row">${tinChips}</div><div class="chips-row">${tinFiles}</div>` : '<p class="sub">Your own code takes every colour from the theme file. This is what shadcn is designed for.</p>'}</div>`);
+    parts.push(whyToggle('paintTin'));
     const doorChips = (paint.doors.samples ?? []).slice(0, 6).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
-    parts.push(`<div class="receipts">${eyebrow(`${n(paint.doors.uses)} kit components repainted through className · ${n(paint.doors.per100)} per 100 files`)}${paint.doors.uses ? `<div class="chips-row">${doorChips}</div>` : '<p class="sub">No kit component is given a colour or a font through className. Variants are doing their job.</p>'}</div>`);
+    parts.push(`<div class="receipts">${eyebrow(`${n(paint.doors.uses)} shadcn components restyled through className · ${n(paint.doors.per100)} per 100 files`)}${paint.doors.uses ? `<div class="chips-row">${doorChips}</div>` : '<p class="sub">No shadcn component is given a colour or a font through className. Variants are doing their job.</p>'}</div>`);
+    parts.push(whyToggle('doorOverrides'));
   }
   if (!parts.length) return '';
   return `<section class="glass pad" style="margin-top:16px">
-    ${sectionHead('The shadcn theme and the 2 paint checks', 'the kit hands you a theme of named rows and a set of components with variants. These receipts show where own code went around both.')}
+    ${sectionHead('The shadcn theme and the 2 shadcn checks', 'shadcn gives you a theme file of named variables and a set of components with variants. These receipts show where your own code went around both.')}
     ${parts.join('')}
-    ${whyToggle('paintTin')}
   </section>`;
 }
 const SHADCN_ROW_COUNT = 33;
@@ -1067,13 +1068,13 @@ function whereToStartSection() {
       const s0 = pt.tin.samples[0], f0 = pt.tin.top[0];
       c.push({ score: 20 + pt.tin.per100 / 4, metric: 'paintTin', after: 0,
         title: `Repaint the ${n(pt.tin.uses)} colours from outside the theme`,
-        sub: `${esc(s0.value)} appears ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. Each has a row on the theme sheet already (a grey is <code>text-muted-foreground</code>, a status colour is a Badge variant or a row you add for it). Swap the class, never the value.` });
+        sub: `${esc(s0.value)} appears ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. The theme file already has a variable for each (a grey is <code>text-muted-foreground</code>, a status colour is a Badge variant or a variable you add). Swap the class, not the value.` });
     }
     if (pt.doors.uses >= 5) {
       const s0 = pt.doors.samples[0];
       c.push({ score: 15 + pt.doors.per100 / 4, metric: 'doorOverrides', after: 0,
-        title: `Stop repainting kit components through className`,
-        sub: `${n(pt.doors.uses)} kit components receive a colour or a font from outside, like ${esc(s0.value)}. Pick the variant that does it, or add one to the component you own. className on a kit component is for layout only.` });
+        title: `Stop restyling shadcn components through className`,
+        sub: `${n(pt.doors.uses)} shadcn components receive a colour or a font through className, like ${esc(s0.value)}. Use the variant that does it, or add one to the component you own. className on a shadcn component is for layout only.` });
     }
   }
 

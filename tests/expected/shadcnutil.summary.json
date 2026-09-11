@@ -114,7 +114,7 @@
     },
     {
       "metric": "doorOverrides",
-      "label": "repainted kit components per 100 files",
+      "label": "components restyled from outside per 100 files",
       "value": 0,
       "display": "0",
       "health": "good"

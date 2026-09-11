@@ -25,18 +25,18 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
 
 - Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
 
-### shadcn: the kit and its theme
+### shadcn: the components and the theme
 
-- This is a shadcn install (style `new-york`, base colour slate). The theme is a set of named rows in `src/styles/globals.css`: background, foreground, primary, muted, border and the rest, each for light and dark. Change a colour there, never in a component.
-- Use the semantic utilities the rows give you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The rows already carry both modes.
+- This is a shadcn install (style `new-york`, base colour slate). The theme is a set of CSS variables in `src/styles/globals.css`: background, foreground, primary, muted, border and the rest, each with a light and a dark value. Change a colour there, never in a component.
+- Use the semantic classes the theme gives you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The variables already carry both modes.
   (23 palette colours already sit in own code, `text-red-600` ×2, `text-gray-500` ×2, `text-green-500` ×1; do not add to them.)
-- Before adding classes to a kit component, pick one of its variants (`variant="outline"`, `size="sm"`). `className` on a kit component is for layout only: width, margin, position. Never colour, never typography.
-  (3 kit components already repainted through className, like `<Card className="bg-blue-100 text-blue-900 font-bold">` and `<Badge className="bg-gray-200 text-gray-700">`; do not add to them.)
-- Edit the component you own in `src/components/ui`. Never build a second one next door under another name. A wrapper that composes kit components is fine; a sibling re-implementation is not.
+- Before adding classes to a shadcn component, use one of its variants (`variant="outline"`, `size="sm"`). `className` on a shadcn component is for layout only: width, margin, position. Never colour, never typography.
+  (3 shadcn components already restyled through className, like `<Card className="bg-blue-100 text-blue-900 font-bold">` and `<Badge className="bg-gray-200 text-gray-700">`; do not add to them.)
+- Edit the component you own in `src/components/ui`. Never build a second one beside it under another name. A wrapper that composes shadcn components is fine; a second implementation is not.
 - Merge classes with `cn()`. Never concatenate strings and never write a ternary inside a className string.
 - Add a component with `npx shadcn@latest add <name>`, then edit it. To see what changed upstream, run `npx shadcn@latest add <name> --diff`.
-- Radius comes from the `--radius` row and its derived scale; never a bracket value. Never change `--spacing`: it silently resizes every gap in the app.
-- Small habits the kit expects: `gap-*` not `space-x/y-*`; `size-4` not `w-4 h-4`; `truncate` for one-line clipping; no `z-index` on Dialog, Sheet, Popover or Tooltip, they stack themselves; icons from the project's own icon library only.
+- Radius comes from the `--radius` variable and the scale derived from it; never a bracket value. Never change `--spacing`: it resizes every gap in the app.
+- Small habits shadcn expects: `gap-*` not `space-x/y-*`; `size-4` not `w-4 h-4`; `truncate` for one-line clipping; no `z-index` on Dialog, Sheet, Popover or Tooltip, they stack themselves; icons from the project's own icon library only.
 
 ### Styling discipline
 

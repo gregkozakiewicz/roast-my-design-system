@@ -152,6 +152,8 @@ function harvestShape(k) {
 }
 
 // ---------- server loop ----------
+const MAX_LINE = 4_000_000; // one JSON-RPC request; validate caps its own payload well below this
+
 export function serve(root) {
   let k = loadKnowledge(root);
   const send = (msg) => process.stdout.write(`${JSON.stringify(msg)}\n`);
@@ -161,6 +163,7 @@ export function serve(root) {
   const rl = createInterface({ input: process.stdin, terminal: false });
   rl.on('line', (line) => {
     if (!line.trim()) return;
+    if (line.length > MAX_LINE) { fail(null, -32600, `Request too large (${Math.round(line.length / 1e6)} MB).`); return; }
     let msg;
     try { msg = JSON.parse(line); } catch { return; }
     const { id, method, params } = msg;

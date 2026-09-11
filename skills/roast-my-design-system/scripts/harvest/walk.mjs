@@ -3,11 +3,23 @@
  * widened: the harvester must see EVERYTHING that styles the app — code,
  * stylesheets of any flavor, and config — not just a happy-path shadcn layout.
  */
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 
 export function readJSON(p) { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } }
 export function read(p) { try { return readFileSync(p, 'utf8'); } catch { return null; } }
+
+// The harvest reads whole files into memory. One committed minified chart
+// bundle or a generated sprite sheet is not design-system evidence, and a
+// hostile repo could plant a very large file on purpose; either way the
+// scan should shrug. Two megabytes is far above any hand-written source.
+export const MAX_SOURCE_BYTES = 2_000_000;
+export function readSource(p) {
+  try {
+    if (statSync(p).size > MAX_SOURCE_BYTES) return null;
+    return readFileSync(p, 'utf8');
+  } catch { return null; }
+}
 
 const SKIP_DIRS = new Set([
   'node_modules', '.next', '.git', 'dist', 'build', 'out', 'coverage',
@@ -68,7 +80,7 @@ export function walkRepo(root, maxDepth = 14, exclusions = null) {
     try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
     for (const e of entries) {
       if (e.name.startsWith('.') && e.name !== '.cursorrules') continue;
-      if (SKIP_DIRS.has(e.name)) continue;
+      if (SKIP_DIRS.has(e.name) || e.isSymbolicLink()) continue;
       if (e.isDirectory()) { countExcluded(join(dir, e.name), depth + 1, hit); continue; }
       if (TEST_FILE_RE.test(e.name)) continue;
       hit.files += 1;
@@ -81,6 +93,11 @@ export function walkRepo(root, maxDepth = 14, exclusions = null) {
     for (const e of entries) {
       if (e.name.startsWith('.') && e.name !== '.cursorrules') continue;
       if (SKIP_DIRS.has(e.name)) continue;
+      // A symlink is followed nowhere: a linked directory was already skipped
+      // (isDirectory is false for it), and a linked FILE could point anywhere
+      // on the machine, `leak.css -> ~/.ssh/id_rsa` included. The repo's own
+      // files are the evidence; what they point at outside it is not.
+      if (e.isSymbolicLink()) continue;
       const p = join(dir, e.name);
       if (e.name === 'public' && e.isDirectory() && !hasComponentSource(p)) continue;
       const rel = relative(root, p).replaceAll('\\', '/');

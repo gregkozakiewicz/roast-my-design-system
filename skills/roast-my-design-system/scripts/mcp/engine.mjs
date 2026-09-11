@@ -232,8 +232,11 @@ export function validateContent(content, k) {
 }
 
 function looksLikeCss(text) {
-  // no JSX tags, has selector-brace patterns → treat as stylesheet
-  return !/<[A-Za-z][\w.]*[\s/>]/.test(text) && /[.#:\w[\]-]+\s*\{[^}]*:/.test(text);
+  // no JSX tags, has a `{ ...: ` declaration shape → treat as stylesheet.
+  // Sniffed on the head of the text with bounded patterns: the old version
+  // backtracked for seconds on a long run of word characters.
+  const head = text.slice(0, 20_000);
+  return !/<[A-Za-z][\w.]*[\s/>]/.test(head) && /\{[^}]{0,2000}:/.test(head);
 }
 
 /** Nearest value the repo already declares, for a scale that has lengths in it. */

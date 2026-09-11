@@ -4,7 +4,7 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
 
 ### Colours and tokens
 
-- There is no token file yet. Until one exists, reuse the colours already in the codebase instead of introducing new ones (4 distinct colours are already in play).
+- There is no token file yet. Until one exists, reuse the colours already in the codebase instead of introducing new ones (5 distinct colours are already in play).
 
 ### Canonical components
 

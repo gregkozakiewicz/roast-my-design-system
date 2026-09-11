@@ -21,15 +21,18 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      # Actions pinned to commits: this job holds the token that publishes to
+      # npm, so a moved tag upstream must not be able to change what runs here.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
-      # Trusted publishing needs a recent npm
-      - run: npm install -g npm@latest
+      # Trusted publishing needs a recent npm; pinned, so the publish step
+      # runs the npm that was tested, not whatever shipped last night
+      - run: npm install -g npm@12.0.2
 
       # The tag must match every file that carries the version — catches a
       # forgotten bump before anything reaches the public
@@ -83,9 +86,13 @@ jobs:
           echo "npm never served ${GITHUB_REF_NAME#v}; the registry would reject the listing" >&2
           exit 1
 
+      # Pinned version and checksum: a download that runs in the publish job
+      # is part of the supply chain. Bump both lines together.
       - name: Install mcp-publisher
         run: |
-          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+          curl -sSL -o mcp-publisher.tgz "https://github.com/modelcontextprotocol/registry/releases/download/v1.8.1/mcp-publisher_linux_amd64.tar.gz"
+          echo "a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc  mcp-publisher.tgz" | sha256sum -c -
+          tar xzf mcp-publisher.tgz mcp-publisher
 
       - name: Authenticate to the MCP registry (GitHub OIDC, no secrets)
         run: ./mcp-publisher login github-oidc

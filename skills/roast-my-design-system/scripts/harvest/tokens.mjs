@@ -6,12 +6,13 @@
  *
  * New in 2.0 — 1.0 only ever read a clean globals.css; this reads the mess.
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import {
   EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, svgHeavy,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
-import { canonical } from '../lib/color.mjs';
+import { canonical, parseColor } from '../lib/color.mjs';
+import { readSource } from './walk.mjs';
 import { TOKEN_REF_SRC } from '../lib/declarations.mjs';
 import { tokenCollisions, workspaceMatcher } from './collisions.mjs';
 
@@ -66,6 +67,15 @@ const isIdentifierHex = (raw) => /^#[0-9a-f]{4}$/i.test(raw);
 // oklch(0.35 0.08 ${hue}) is a template with a hole in it: neither may sit in
 // the palette as its own value.
 const isVarRef = (v) => /var\(|\$\{/.test(v);
+
+// A functional colour is stored only if it parses as one. FUNC_COLOR_RE is a
+// net, not a parser: `rgb(0,0,0;position:fixed;inset:0;background:#000)` fits
+// the net, and a value like that rendered into the report's swatches would
+// cover the page (confirmed 2026-09-11). Parsed or dropped.
+const funcColour = (raw) => {
+  const v = raw.replace(/\s+/g, ' ').toLowerCase();
+  return parseColor(v) ? v : null;
+};
 
 export const isTransparent = (v) => /^(?:rgba|hsla)\(\s*[\d.,%\s]+,\s*0(?:\.0+)?\s*\)$/.test(v) || /\/\s*0(?:\.0+)?%?\s*\)$/.test(v);
 
@@ -353,7 +363,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       let colourDef = false;
       for (const c of m[2].matchAll(HEX_RE)) { tokenDefined.add(normalizeHex(c[0])); colourDef = true; }
       for (const c of m[2].matchAll(FUNC_COLOR_RE)) {
-        if (!isVarRef(c[0])) { tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase()); colourDef = true; }
+        const v = isVarRef(c[0]) ? null : funcColour(c[0]);
+        if (v) { tokenDefined.add(v); colourDef = true; }
       }
       const trip = tripletToHsl(m[2]);
       if (trip) { tokenDefined.add(trip); if (!variant) colors.add(trip, file); colourDef = true; }
@@ -368,8 +379,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     }
     for (const m of text.matchAll(HEX_RE)) { if (!inVariant(m.index) && inDeclaration(text, m.index)) colors.add(normalizeHex(m[0]), file); }
     for (const m of text.matchAll(FUNC_COLOR_RE)) {
-      const v = m[0].replace(/\s+/g, ' ').toLowerCase();
-      if (!isTransparent(v) && !isVarRef(v) && !inVariant(m.index)) colors.add(v, file);
+      const v = isVarRef(m[0]) ? null : funcColour(m[0]);
+      if (v && !isTransparent(v) && !inVariant(m.index)) colors.add(v, file);
     }
     for (const m of text.matchAll(SPACING_PROPS)) {
       for (const len of (m[2].match(LENGTH_RE) ?? [])) spacing.add(len, file);
@@ -390,7 +401,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
 
   for (const f of styleFiles) {
     if (/email|(^|[/.])print([/.]|$)/i.test(f)) continue;
-    let text; try { text = readFileSync(join(root, f), 'utf8'); } catch { continue; }
+    const text = readSource(join(root, f));
+    if (text === null) continue;
     scanCssText(text, f);
   }
 
@@ -406,7 +418,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx|ts|js)$/.test(f)) continue;
     if (EXEMPT_RE.test(f)) continue;
-    let src; try { src = readFileSync(join(root, f), 'utf8'); } catch { continue; }
+    let src = readSource(join(root, f));
+    if (src === null) continue;
 
     // CSS-in-tagged-templates (Lit css``, styled-components css``) IS the
     // stylesheet in those worlds: Shoelace keeps its entire component styling
@@ -471,7 +484,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
           // bg-[#f2f6fa] is a hardcoded colour wearing a utility class: it
           // belongs in the palette as a stray (and can be a token's twin),
           // not only in the Tailwind bucket where it hid until 5.10.0.
-          const lit = m[1].startsWith('#') ? normalizeHex(m[1]) : m[1].replace(/\s+/g, ' ').toLowerCase();
+          const lit = m[1].startsWith('#') ? normalizeHex(m[1]) : funcColour(m[1]);
+          if (!lit) continue;
           twColors.add(lit, f);
           if (!isVarRef(lit) && !isTransparent(lit)) colors.add(lit, f);
         } else twColors.add(m[2], f);
@@ -494,7 +508,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     }
     for (const b of allBlocks) {
       for (const m of b.matchAll(HEX_RE)) colors.add(normalizeHex(m[0]), f);
-      for (const m of b.matchAll(FUNC_COLOR_RE)) { const v = m[0].replace(/\s+/g, ' ').toLowerCase(); if (!isVarRef(v)) colors.add(v, f); }
+      for (const m of b.matchAll(FUNC_COLOR_RE)) { const v = isVarRef(m[0]) ? null : funcColour(m[0]); if (v) colors.add(v, f); }
       for (const m of b.matchAll(LENGTH_RE)) spacing.add(m[0], f);
     }
 

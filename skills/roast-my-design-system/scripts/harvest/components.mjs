@@ -4,8 +4,8 @@
  * compile-skill.mjs — brace/string-aware regex parsing,
  * no AST dependency — then extended to scan the whole repo, not one ui/ dir.
  */
-import { readFileSync } from 'node:fs';
 import { join, basename } from 'node:path';
+import { readSource } from './walk.mjs';
 
 const QUOTES = new Set(['"', "'", '`']);
 
@@ -164,10 +164,8 @@ export function harvestComponents(root, codeFiles) {
   const jsxFiles = codeFiles.filter((f) => /\.(tsx|jsx|js)$/.test(f));
   const sources = new Map();
   for (const f of jsxFiles) {
-    try {
-      const src = readFileSync(join(root, f), 'utf8');
-      if (looksLikeJSXFile(src)) sources.set(f, src);
-    } catch { /* skip */ }
+    const src = readSource(join(root, f));
+    if (src !== null && looksLikeJSXFile(src)) sources.set(f, src);
   }
 
   // Pass 1: definitions
@@ -217,7 +215,7 @@ export function harvestComponents(root, codeFiles) {
   const wcSources = new Map();
   for (const f of codeFiles.filter((x) => /\.(tsx|jsx|ts|js|mjs)$/.test(x))) {
     let src = sources.get(f);
-    if (src === undefined) { try { src = readFileSync(join(root, f), 'utf8'); } catch { continue; } }
+    if (src === undefined) { src = readSource(join(root, f)); if (src === null) continue; }
     if (GENERATED_RE.test(src.slice(0, 2000))) continue;
     wcSources.set(f, src);
   }
@@ -284,8 +282,12 @@ export function harvestComponents(root, codeFiles) {
     // The shortest real tag with the dominant signature is the cleanest quote.
     const best = [...top].sort((a, b) => a.tag.length - b.tag.length)[0];
     const selfClosed = /\/>\s*$/.test(best.tag);
+    // The quote is evidence of SHAPE (which props, in what order), so a long
+    // string value adds nothing and, written into an agent's rules file,
+    // would let a scanned repo put a sentence in front of the agent. Clipped.
+    const clipped = best.tag.replace(/=(["'])([^"']{32,})\1/g, '=$1…$1');
     c.usageExample = {
-      snippet: `${best.tag.replace(/\s+/g, ' ').trim()}${selfClosed ? '' : `…</${c.name}>`}`,
+      snippet: `${clipped.replace(/\s+/g, ' ').trim()}${selfClosed ? '' : `…</${c.name}>`}`,
       file: best.file,
       matches: top.length,
       total: found.length,

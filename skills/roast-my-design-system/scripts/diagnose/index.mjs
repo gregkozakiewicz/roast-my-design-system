@@ -522,12 +522,12 @@ function paletteSection() {
   const rest = sorted.slice(60);
   const cells = shown.map((c) => {
     const src = c.files?.[0] ? ` in ${c.files[0].file}` : '';
-    return `<div class="uc${c.isToken ? '' : ' stray'}" style="background:${esc(c.value)};flex-grow:${Math.max(c.count, 1)}" title="${esc(c.value)} ×${c.count}${esc(src)}">${c.isToken ? '' : '<i></i>'}</div>`;
+    return `<div class="uc${c.isToken ? '' : ' stray'}" style="background:${swatch(c.value)};flex-grow:${Math.max(c.count, 1)}" title="${esc(c.value)} ×${c.count}${esc(src)}">${c.isToken ? '' : '<i></i>'}</div>`;
   }).join('');
   const restCell = rest.length ? `<div class="uc uc-rest" style="flex-grow:${Math.max(rest.reduce((s, c) => s + c.count, 0), 1)}" title="${rest.length} more colours">+${rest.length}</div>` : '';
 
   const rampFor = (list) => `
-    <div class="grey-strip">${list.map((c) => `<div class="grey-cell" style="background:${esc(c.value)}" title="${esc(c.value)} ×${c.count}"></div>`).join('')}</div>
+    <div class="grey-strip">${list.map((c) => `<div class="grey-cell" style="background:${swatch(c.value)}" title="${esc(c.value)} ×${c.count}"></div>`).join('')}</div>
     ${list.length <= 8 ? `<div class="ramp-labels">${list.map((c) => `<span>${esc(c.value)}</span>`).join('')}</div>` : ''}`;
   const ramp = greys.length >= 4 ? `
     <div class="ramp-head">${eyebrow('Grey ramp · sorted dark → light · how many can you tell apart?')}</div>
@@ -557,7 +557,7 @@ function paletteSection() {
     ${ramp}
     ${nearPairs.length ? `
     <div class="receipts">${eyebrow(`${nearPairs.length} nearly identical pair${nearPairs.length === 1 ? '' : 's'} · copy-paste, not decisions`)}
-    <div class="chips-row">${nearPairs.slice(0, 8).map((pr) => `<span class="vchip" title="every channel within ${pr.d} of its twin"><i class="ndot" style="background:${esc(pr.a.value)}"></i>${esc(pr.a.value)} ×${pr.a.count} <b class="nsim">≈</b> <i class="ndot" style="background:${esc(pr.b.value)}"></i>${esc(pr.b.value)} ×${pr.b.count}</span>`).join('')}${nearPairs.length > 8 ? `<span class="vchip dim">+${nearPairs.length - 8} more</span>` : ''}</div>
+    <div class="chips-row">${nearPairs.slice(0, 8).map((pr) => `<span class="vchip" title="every channel within ${pr.d} of its twin"><i class="ndot" style="background:${swatch(pr.a.value)}"></i>${esc(pr.a.value)} ×${pr.a.count} <b class="nsim">≈</b> <i class="ndot" style="background:${swatch(pr.b.value)}"></i>${esc(pr.b.value)} ×${pr.b.count}</span>`).join('')}${nearPairs.length > 8 ? `<span class="vchip dim">+${nearPairs.length - 8} more</span>` : ''}</div>
     ${whyToggle('nearPairs')}</div>` : ''}
   </div>
 </section>`;
@@ -676,6 +676,9 @@ function duplicatesSection() {
 // a font size from someone else's repo). Allow only a conservative CSS charset
 // so a malformed or hostile value cannot break out of the attribute.
 const cssSafe = (v) => (typeof v === 'string' && /^[-#0-9a-z%.,()\s\/]+$/i.test(v) && !/[;{}<>"']/.test(v) ? v.trim() : null);
+// A colour swatch is painted with the value itself, so the value must look
+// like a colour and nothing else; anything odd paints grey rather than the page.
+const swatch = (v) => cssSafe(v) ?? '#888';
 // px equivalent of a length, for sorting and for rendering type at real size.
 function toPx(v) {
   const m = /^(-?\d*\.?\d+)\s*(px|rem|em|pt)?$/i.exec(String(v).trim());

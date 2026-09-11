@@ -131,7 +131,7 @@
           "ruleId": "stray-colors",
           "level": "note",
           "message": {
-            "text": "3 hardcoded colour values no token names."
+            "text": "4 hardcoded colour values no token names."
           },
           "locations": [
             {

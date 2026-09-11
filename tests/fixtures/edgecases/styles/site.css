@@ -3,3 +3,4 @@
 #add, .x { margin: 0 3px; }
 .card { border-radius: 7px; padding: 5px 11px; color: #ff8800; }
 .card:hover { color: #ff9900; } /* #bad000 in a trailing comment */
+.evil { color: rgb(0,0,0;position:fixed;inset:0;z-index:99999;background:#000); }

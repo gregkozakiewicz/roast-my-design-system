@@ -10,8 +10,7 @@
  * text for styling, and say which on-system value a stray most resembles.
  */
 import { extname, join } from 'node:path';
-import { readFileSync } from 'node:fs';
-import { walkRepo } from '../harvest/walk.mjs';
+import { walkRepo, readSource } from '../harvest/walk.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { harvestComponents, definedComponents } from '../harvest/components.mjs';
 import { loadExclusions } from './exclusions.mjs';
@@ -71,7 +70,8 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   const tokenNames = {};
   const HEX = /#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/;
   for (const f of files.styles) {
-    let text; try { text = readFileSync(join(repoRoot, f), 'utf8'); } catch { continue; }
+    const text = readSource(join(repoRoot, f));
+    if (text === null) continue;
     for (const m of text.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+)[;}]/g)) {
       const hex = HEX.exec(m[2]);
       const value = hex ? normalizeHex(hex[0]) : m[2].trim().replace(/\s+/g, ' ').toLowerCase();

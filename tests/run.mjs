@@ -450,6 +450,32 @@ console.log('confirmed bugs (2026-09-11):');
     ? ok('a package never has more grey strays than greys') : bad('package greys', JSON.stringify(pkgs.map((p) => [p.dir, p.metrics.greys, p.metrics.greyStrays])));
 }
 
+// ---------- hardening from the 2026-09-11 security review ----------
+// A scanned repo is not trusted: it can be a clone of anything.
+console.log('hostile repo:');
+{
+  const h = JSON.parse(readFileSync(join(tmp, 'edgecases.json'), 'utf8'));
+  const html = readFileSync(join(tmp, 'edgecases.html'), 'utf8');
+  !h.tokens.colors.some((c) => c.value.includes('position'))
+    ? ok('a colour that does not parse as a colour is not stored') : bad('unparsed colour stored', h.tokens.colors.map((c) => c.value).join(', '));
+  !html.includes('position:fixed;inset:0')
+    ? ok('the report paints no CSS a scanned stylesheet wrote') : bad('css injection', 'the hostile rgb() reached a style attribute');
+  !h.files?.styles?.includes?.('styles/leak.css') && !JSON.stringify(h.tokens.fontFamilies ?? []).includes('leak.css')
+    ? ok('a symlinked file is not read') : bad('symlink read', 'styles/leak.css (a link to package.json) was harvested');
+  // One committed minified bundle is not design-system evidence, and reading
+  // it whole is the cheapest way to make the scan fall over.
+  const big = join(tmp, 'big-fixture');
+  rmSync(big, { recursive: true, force: true });
+  mkdirSync(join(big, 'src'), { recursive: true });
+  writeFileSync(join(big, 'package.json'), JSON.stringify({ name: 'big', dependencies: { react: '18.0.0' } }));
+  writeFileSync(join(big, 'src/App.tsx'), 'export function App() { return <div className="p-2">hi</div>; }\n');
+  writeFileSync(join(big, 'src/bundle.css'), `.x{color:#0badf0}\n${'.y{margin:1px}\n'.repeat(160_000)}`);
+  runEngine('harvest/index.mjs', [big, '--out', join(tmp, 'big.json')]);
+  const bigH = JSON.parse(readFileSync(join(tmp, 'big.json'), 'utf8'));
+  !bigH.tokens.colors.some((c) => c.value === '#0badf0')
+    ? ok('a file over 2 MB is skipped, not swallowed') : bad('size cap', 'the 2 MB stylesheet was harvested');
+}
+
 // ---------- component stacks: web components read, unreadable declared ----------
 // Born on telekom/scale (2026-09-01): 93 Stencil components scanned as one,
 // and the report presented the blindness as discipline. Never again, twice
@@ -515,6 +541,14 @@ for (const fixture of readdirSync(FIXTURES).sort()) {
 }
 
 // monorepo routing: a path inside a package must narrow the slice
+{
+  // A whole bundle pasted into roast_validate stalled the server for seconds
+  // in the CSS sniff; now it is refused with a number and a suggestion.
+  const k = loadKnowledge(join(FIXTURES, 'clean'));
+  const r = mcpTools.validate(k, { code: 'a'.repeat(250_000) });
+  r?.invalidInput && /250k characters/.test(r.text)
+    ? ok('validate refuses a 250k-character payload with a number') : bad('validate cap', JSON.stringify(r).slice(0, 120));
+}
 const mk = loadKnowledge(join(FIXTURES, 'monorepo'));
 compare('monorepo routed context', stripDates(mcpTools.getContext(mk, { path: 'packages/ui' })), 'monorepo.mcp-routed.txt');
 

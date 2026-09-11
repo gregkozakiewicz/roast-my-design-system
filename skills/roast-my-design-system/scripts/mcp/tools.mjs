@@ -15,6 +15,7 @@ import { hexRgb } from '../lib/nearpairs.mjs';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
 
 const CONTEXT_BUDGET = 1600; // chars ≈ 400 tokens
+const MAX_VALIDATE_CHARS = 200_000; // a whole file, not a whole bundle
 const approxTokens = (s) => Math.ceil(s.length / 4);
 
 // Invalid input keeps its guidance text but must reach the client as an MCP
@@ -201,6 +202,7 @@ function toPxLocal(len) {
 export function validate(k, { code, file = null } = {}) {
   if (typeof code !== 'string' || !code.trim()) return invalidInput('Send the code you are about to save (and ideally its file path).');
   if (file != null && typeof file !== 'string') return invalidInput('file is optional, but when sent it must be a repo-relative path as a string.');
+  if (code.length > MAX_VALIDATE_CHARS) return invalidInput(`That is ${Math.round(code.length / 1000)}k characters; send the part you changed (up to ${MAX_VALIDATE_CHARS / 1000}k).`);
   const { findings, exempt } = validateContent({ text: code, file }, k);
   if (exempt) return `Not judged: ${file} is exempt because ${exempt}. Nothing here was checked.`;
   if (!findings.length) return cleanResultText();

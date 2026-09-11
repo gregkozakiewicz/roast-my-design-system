@@ -1,0 +1,47 @@
+# Public React repos for the benchmark — a deliberate spread:
+# starters/templates, mid-size products, large products, big monorepos.
+# One per line: github org/repo. Lines starting with # are skipped.
+
+# already-cloned test set
+calcom/cal.com
+excalidraw/excalidraw
+AykutSarac/jsoncrack.com
+outline/outline
+nodejs/nodejs.org
+gothinkster/react-redux-realworld-example-app
+
+# starters / small
+shadcn-ui/taxonomy
+ixartz/Next-js-Boilerplate
+steven-tey/novel
+vercel/ai-chatbot
+mckaywrigley/chatbot-ui
+
+# mid-size products
+documenso/documenso
+dubinc/dub
+formbricks/formbricks
+openstatusHQ/openstatus
+lukevella/rallly
+mfts/papermark
+elie222/inbox-zero
+linkwarden/linkwarden
+umami-software/umami
+
+# larger products / monorepos
+twentyhq/twenty
+langfuse/langfuse
+teableio/teable
+makeplane/plane
+FlowiseAI/Flowise
+lobehub/lobe-chat
+danny-avila/LibreChat
+midday-ai/midday
+triggerdotdev/trigger.dev
+vercel/commerce
+
+# large products joined 2026-08-13 (v3.12.0 fleet growth)
+supabase/supabase
+getsentry/sentry
+appsmithorg/appsmith
+grafana/grafana

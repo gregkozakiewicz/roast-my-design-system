@@ -2,6 +2,58 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.2.0 — 2026-09-12
+
+The scanner now recognises a repo built on shadcn/ui and reads it as one:
+the installed catalogue, the theme file, and 2 checks from shadcn's own
+rules for agents. Scores on repos that are not shadcn do not move. Scores on
+shadcn repos can move both ways.
+
+- **A shadcn install is found where it actually is.** The catalogue folder
+  is resolved through the `ui` alias in `components.json` (tsconfig paths and
+  `package.json#imports`), in any workspace of a monorepo, and failing that
+  by a sweep for 8 or more catalogue file names. Of the 15 shadcn repos in
+  the benchmark fleet, the old check found 5. The report prints the receipt
+  under the header: "Read as a shadcn install (high confidence):
+  components.json in apps/web, 41 catalogue components in
+  packages/ui/src/components". A wrong guess is visible before any number.
+- **The kit is read the way `shadcn preset resolve` reads it.** Style and
+  base library, base colour, accent and chart colour matched against
+  shadcn's theme table, radius, icon library, Tailwind 3 or 4, utility-class
+  mode. Anything it could not read is said so.
+- **The theme file is the one `components.json` names.** Not the file with
+  the most colour literals. shadcn's own source repo used to get a
+  2,126-line colour lookup table as its token file.
+- **2 new tiles, only on shadcn repos, from shadcn's own agent rules.**
+  *Off-theme colours per 100 files*: palette utilities in own code where a
+  theme row exists (`text-gray-500`, `bg-blue-100`, `dark:bg-gray-900`).
+  *Repainted kit components per 100 files*: colour or typography passed into
+  a kit component through `className`. Both are counted over the team's own
+  code only, never inside the catalogue, never in email, print, artwork or
+  demo files. The ideals (25 and 15 per 100 files) and the fleet medians (62
+  and 22) come from the 15 shadcn repos in the benchmark, measured on
+  2026-09-11; the tidiest third sit under the ideal. A tidy shadcn repo
+  gains a little from 2 more green tiles in its average (the shadcnv3
+  fixture: 94 to 96). Utility-class installs (`cssVariables: false`) are not
+  judged on off-theme colours: the palette is the theme there.
+- **The theme, row by row.** A receipts section lists rows present for light
+  and dark, rows shadcn defines that are missing, custom rows and whether
+  they have a dark value and a Tailwind mapping, tweakcn's extra rows when
+  present, and a changed `--spacing`, which shadcn's own changelog says never
+  to touch. Receipts only; nothing here moves the score.
+- **Kit blocks in own code are kit doors.** `login-form.tsx` and friends,
+  installed by `shadcn add` outside the catalogue folder, are not counted as
+  the team's own building.
+- **The rules file gains a shadcn section** with the kit's own rules: theme
+  rows over palette colours, variants over `className` colours, edit the
+  component you own, `cn()`, `--radius` and `--spacing`, and the small habits
+  the kit expects. Each carries this repo's receipts.
+- **`summary.json`** gains `kind` (product, library, shadcn) next to `role`,
+  and a `shadcn` block with the confidence, evidence, style, base colour and
+  catalogue folders. New fields only; `schemaVersion` stays 1.
+- **2 new fixtures** (a fresh create-era kit scoring 100, a customised legacy
+  kit scoring 82) and 10 unit checks.
+
 ## 7.1.0 — 2026-09-11
 
 No score moves. This release changes where the scanner decides what kind of

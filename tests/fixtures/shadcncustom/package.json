@@ -1,0 +1,1 @@
+{ "name": "custom-kit", "private": true, "dependencies": { "next": "15.5.0", "react": "19.0.0", "clsx": "2.1.1", "tailwind-merge": "2.6.0", "class-variance-authority": "0.7.1", "tailwindcss": "3.4.17", "radix-ui": "1.4.0", "lucide-react": "0.460.0" } }

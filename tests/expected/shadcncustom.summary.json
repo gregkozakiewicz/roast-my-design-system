@@ -1,0 +1,138 @@
+{
+  "repo": "custom-kit",
+  "schemaVersion": 1,
+  "benchmark": {
+    "builtAt": "2026-09-10T23:51:05.104Z",
+    "repoCount": 34,
+    "referenceSystems": 10
+  },
+  "score": 82,
+  "noSystemLikely": false,
+  "verdict": "no agent rules, so your AI is guessing.",
+  "role": "product",
+  "kind": "shadcn",
+  "shadcn": {
+    "confidence": "high",
+    "evidence": [
+      "components.json in the root, 11 catalogue components in src/components/ui",
+      "style new-york, base colour slate, Tailwind 3"
+    ],
+    "style": "new-york",
+    "baseColor": "slate",
+    "tailwind": "3",
+    "catalogues": [
+      "src/components/ui"
+    ],
+    "ownFiles": 6
+  },
+  "componentsMeasured": true,
+  "metrics": {
+    "colors": 12,
+    "colorTokens": 12,
+    "colorStrays": 0,
+    "greys": 3,
+    "greyStrays": 0,
+    "spacing": 0,
+    "exactDuplicates": 0,
+    "inlineStyles": 0,
+    "nearPairs": 0,
+    "important": 0,
+    "neverImported": 5,
+    "arbitrary": 0,
+    "tokenLed": true
+  },
+  "tiles": [
+    {
+      "metric": "colors",
+      "label": "distinct colours",
+      "value": 12,
+      "display": "12",
+      "health": "good"
+    },
+    {
+      "metric": "greys",
+      "label": "shades of grey",
+      "value": 3,
+      "display": "3",
+      "health": "good"
+    },
+    {
+      "metric": "spacing",
+      "label": "off-scale spacing values",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "exactDuplicates",
+      "label": "duplicated components",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "inlineStyles",
+      "label": "inline style blocks",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "nearPairs",
+      "label": "near-identical colour pairs",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "important",
+      "label": "!important declarations",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "neverImported",
+      "label": "components never imported",
+      "value": 5,
+      "display": "5",
+      "health": "info"
+    },
+    {
+      "metric": "arbitrary",
+      "label": "arbitrary bracket values",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "paintTin",
+      "label": "off-theme colours per 100 files",
+      "value": 383,
+      "display": "383",
+      "health": "bad"
+    },
+    {
+      "metric": "doorOverrides",
+      "label": "repainted kit components per 100 files",
+      "value": 50,
+      "display": "50",
+      "health": "bad"
+    }
+  ],
+  "moves": [
+    {
+      "title": "Repaint the 23 colours from outside the theme",
+      "sub": "text-red-600 appears 2 times, Panel.tsx alone carries 9. Each has a row on the theme sheet already (a grey is text-muted-foreground, a status colour is a Badge variant or a row you add for it). Swap the class, never the value.",
+      "delta": 9,
+      "prompt": "You are fixing one design-system finding in the shadcncustom repository, measured by roast-my-design-system.\n\nThe finding: Repaint the 23 colours from outside the theme\n\nThe detail: text-red-600 appears 2 times, Panel.tsx alone carries 9. Each has a row on the theme sheet already (a grey is text-muted-foreground, a status colour is a Badge variant or a row you add for it). Swap the class, never the value.\n\nExpected payoff: about +9 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    },
+    {
+      "title": "Write the agent rules file",
+      "sub": "No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.",
+      "delta": 0,
+      "prompt": "You are fixing one design-system finding in the shadcncustom repository, measured by roast-my-design-system.\n\nThe finding: Write the agent rules file\n\nThe detail: No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    }
+  ],
+  "packages": []
+}

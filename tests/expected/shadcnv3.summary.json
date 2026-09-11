@@ -6,10 +6,25 @@
     "repoCount": 34,
     "referenceSystems": 10
   },
-  "score": 94,
+  "score": 96,
   "noSystemLikely": false,
   "verdict": "no agent rules, so your AI is guessing.",
   "role": "product",
+  "kind": "shadcn",
+  "shadcn": {
+    "confidence": "high",
+    "evidence": [
+      "components.json in the root, 8 catalogue components in components/ui",
+      "style default, base colour slate, Tailwind 3"
+    ],
+    "style": "default",
+    "baseColor": "slate",
+    "tailwind": "3",
+    "catalogues": [
+      "components/ui"
+    ],
+    "ownFiles": 2
+  },
   "componentsMeasured": true,
   "metrics": {
     "colors": 9,
@@ -86,6 +101,20 @@
     {
       "metric": "arbitrary",
       "label": "arbitrary bracket values",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "paintTin",
+      "label": "off-theme colours per 100 files",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "doorOverrides",
+      "label": "repainted kit components per 100 files",
       "value": 0,
       "display": "0",
       "health": "good"

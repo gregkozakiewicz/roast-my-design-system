@@ -1,0 +1,37 @@
+=== get_context ===
+Design system context for custom-kit (scanned DATE). Rules derived from this repo's real code.
+TOKENS: 12 colour tokens in src/styles/globals.css. Use them; never hardcode a colour.
+USE THESE, DO NOT REBUILD THEM:
+  <Card> from src/components/ui/card.tsx (3x)
+  <Button> from src/components/ui/button.tsx (2x)
+  <Badge> from src/components/ui/badge.tsx (1x)
+  <Input> from src/components/ui/input.tsx (1x)
+  <Label> from src/components/ui/label.tsx (1x)
+SPACING: nothing on record yet. Whatever you pick becomes a precedent; pick something divisible by 4.
+DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
+NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.
+Before finishing: call roast_validate on what you wrote, then roast_review.
+CREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz.
+=== find_component button ===
+Canonical: <Button> from src/components/ui/button.tsx (used 2x)
+=== find_component date picker ===
+No component matching "date picker" is defined in this repo.
+=== find_token #3b81f5 ===
+#3b81f5 is not close to any token in this repo (nearest is hsl(262 83% 58%), 69.99300000000002 channel steps away). If this colour is a real decision, add it to src/styles/globals.css first; do not hardcode it.
+=== find_token 13px ===
+This repo has no spacing values on record to compare 13px against. Whatever you pick becomes a precedent; pick something divisible by 4.
+=== validate bad snippet ===
+6 findings:
+✕ L2 Hardcoded colour #3b81f5 is new to this repo.
+   Fix: Nearest token: hsl(262 83% 58%) (69.99300000000002 channel steps away). If that is not the intent, add a token first.
+✕ L2 New one-off spacing value 11px. The repo already carries 0 distinct spacing values.
+✕ L2 New one-off spacing value 27px. The repo already carries 0 distinct spacing values.
+✕ L2 Arbitrary bracket [13px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
+   Fix: Move the values to classes or tokens.
+✕ L1 Defines <Button>, but src/components/ui/button.tsx already defines it (used 2x).
+   Fix: Import src/components/ui/button.tsx instead of creating a copy.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.
+=== validate clean snippet ===
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.

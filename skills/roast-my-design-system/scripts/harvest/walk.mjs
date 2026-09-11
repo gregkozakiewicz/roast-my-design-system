@@ -3,6 +3,7 @@
  * widened: the harvester must see EVERYTHING that styles the app — code,
  * stylesheets of any flavor, and config — not just a happy-path shadcn layout.
  */
+import { CATALOGUE } from '../profiles/shadcn-data.mjs';
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 
@@ -204,14 +205,7 @@ export function profileRepo(root, files) {
 
   // Catalogue filenames as shipped by `shadcn add --all` (61 as of 2026-09).
   // Only used to recognise a vendored folder, never to judge one.
-  const SHADCN_CATALOGUE = new Set(['accordion', 'alert-dialog', 'alert', 'aspect-ratio', 'attachment',
-    'avatar', 'badge', 'breadcrumb', 'bubble', 'button-group', 'button', 'calendar', 'card', 'carousel',
-    'chart', 'checkbox', 'collapsible', 'combobox', 'command', 'context-menu', 'dialog', 'direction',
-    'drawer', 'dropdown-menu', 'empty', 'field', 'hover-card', 'input-group', 'input-otp', 'input',
-    'item', 'kbd', 'label', 'marker', 'menubar', 'message-scroller', 'message', 'native-select',
-    'navigation-menu', 'pagination', 'popover', 'progress', 'questionnaire', 'radio-group', 'resizable',
-    'scroll-area', 'select', 'separator', 'sheet', 'sidebar', 'skeleton', 'slider', 'spinner', 'switch',
-    'table', 'tabs', 'textarea', 'toast', 'toggle-group', 'toggle', 'tooltip']);
+  const SHADCN_CATALOGUE = CATALOGUE;
   let catalogueNames = 0;
   if (uiDir) {
     try {

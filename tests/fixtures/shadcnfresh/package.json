@@ -1,0 +1,1 @@
+{ "name": "fresh-kit", "private": true, "dependencies": { "next": "16.0.0", "react": "19.2.0", "cn": "1.0.0", "class-variance-authority": "0.7.1", "tailwindcss": "4.2.2", "@base-ui/react": "1.6.0", "lucide-react": "0.560.0" } }

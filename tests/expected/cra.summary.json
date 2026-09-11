@@ -10,6 +10,7 @@
   "noSystemLikely": false,
   "verdict": "no agent rules, so your AI is guessing.",
   "role": "product",
+  "kind": "product",
   "componentsMeasured": true,
   "metrics": {
     "colors": 2,

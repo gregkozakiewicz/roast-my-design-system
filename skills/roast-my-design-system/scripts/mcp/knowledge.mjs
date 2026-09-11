@@ -48,7 +48,7 @@ export function loadKnowledge(root) {
   const { components } = harvestComponents(root, files.code);
   // The MCP path used to skip the kind decision the CLI harvest makes, so a
   // library read as a product here. Same call, same answer, both doors.
-  decideProfile(profile, components, files);
+  decideProfile(profile, components, files, root);
   const tokens = harvestTokens(root, files.styles, files.code);
   const duplicates = findDuplicates(components, profile.uiDir, root);
   const context = harvestContext(root);

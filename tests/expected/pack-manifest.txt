@@ -12,6 +12,7 @@ skills/roast-my-design-system/scripts/harvest/components.mjs
 skills/roast-my-design-system/scripts/harvest/context.mjs
 skills/roast-my-design-system/scripts/harvest/duplicates.mjs
 skills/roast-my-design-system/scripts/harvest/index.mjs
+skills/roast-my-design-system/scripts/harvest/paint.mjs
 skills/roast-my-design-system/scripts/harvest/summary.mjs
 skills/roast-my-design-system/scripts/harvest/tokens.mjs
 skills/roast-my-design-system/scripts/harvest/walk.mjs
@@ -36,6 +37,8 @@ skills/roast-my-design-system/scripts/mcp/tools.mjs
 skills/roast-my-design-system/scripts/profiles/index.mjs
 skills/roast-my-design-system/scripts/profiles/library.mjs
 skills/roast-my-design-system/scripts/profiles/product.mjs
+skills/roast-my-design-system/scripts/profiles/shadcn-data.mjs
+skills/roast-my-design-system/scripts/profiles/shadcn.mjs
 skills/roast-my-design-system/scripts/rules/apply.mjs
 skills/roast-my-design-system/scripts/rules/build.mjs
 skills/roast-my-design-system/scripts/rules/index.mjs

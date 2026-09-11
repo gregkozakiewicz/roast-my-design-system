@@ -10,6 +10,21 @@
   "noSystemLikely": false,
   "verdict": "no agent rules, so your AI is guessing.",
   "role": "product",
+  "kind": "shadcn",
+  "shadcn": {
+    "confidence": "medium",
+    "evidence": [
+      "components.json in the root, 1 catalogue component in components/ui",
+      "style new-york, base colour zinc, Tailwind 3"
+    ],
+    "style": "new-york",
+    "baseColor": "zinc",
+    "tailwind": "3",
+    "catalogues": [
+      "components/ui"
+    ],
+    "ownFiles": 1
+  },
   "componentsMeasured": true,
   "metrics": {
     "colors": 1,
@@ -86,6 +101,20 @@
     {
       "metric": "arbitrary",
       "label": "arbitrary bracket values",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "paintTin",
+      "label": "off-theme colours per 100 files",
+      "value": 200,
+      "display": "200",
+      "health": "info"
+    },
+    {
+      "metric": "doorOverrides",
+      "label": "repainted kit components per 100 files",
       "value": 0,
       "display": "0",
       "health": "good"

@@ -10,6 +10,7 @@
   "noSystemLikely": false,
   "verdict": "This repo is in good shape, and your agent has rules to read. Keep them in step with the code.",
   "role": "product",
+  "kind": "product",
   "componentsMeasured": true,
   "metrics": {
     "colors": 12,

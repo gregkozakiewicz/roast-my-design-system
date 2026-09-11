@@ -19,11 +19,15 @@
  * Step 2 of the shadcn-profile plan: this move changes no number. Every
  * fixture's expected output is byte-identical before and after.
  */
+import shadcn from './shadcn.mjs';
 import library from './library.mjs';
 import product from './product.mjs';
 
-// Specific kinds first; product is the fallback and must stay last.
-export const PROFILES = [library, product];
+// Specific kinds first; product is the fallback and must stay last. The kind
+// says how to READ the repo (shadcn: a kit over a sheet); the role says what
+// usage MEANS (library: composition, not adoption). A shadcn library keeps
+// both: kind shadcn, role library.
+export const PROFILES = [shadcn, library, product];
 
 /**
  * Decide the repo's kind from the profiler's facts and what the scan found.
@@ -32,7 +36,7 @@ export const PROFILES = [library, product];
  * `componentDetection` (measurability), and the new `kind`, `kindConfidence`
  * and `kindEvidence` (the receipt: why this kind, in words).
  */
-export function decideProfile(profile, components, files) {
+export function decideProfile(profile, components, files, root = null) {
   const reusable = components.filter((c) => !c.isPage);
   const counts = {
     reusable: reusable.length,
@@ -43,12 +47,14 @@ export function decideProfile(profile, components, files) {
   // riding in a library's monorepo (Siemens iX ships two), not a product.
   counts.fewPages = counts.pages <= counts.reusable * 0.05;
 
+  const ctx = { root, files };
   let picked = product, decision = null;
   for (const p of PROFILES) {
-    const d = p.recognise(profile, counts);
+    const d = p.recognise(profile, counts, ctx);
     if (d) { picked = p; decision = d; break; }
   }
-  profile.role = picked.kind;
+  // role is usage semantics, decided by the library rule whatever the kind
+  profile.role = library.recognise(profile, counts, ctx) ? 'library' : 'product';
   profile.kind = picked.kind;
   profile.kindConfidence = decision.confidence;
   profile.kindEvidence = decision.evidence;
@@ -75,11 +81,16 @@ export function decideProfile(profile, components, files) {
 export function profileOf(h) {
   const p = h?.profile ?? h ?? {};
   const kind = p.kind ?? p.role ?? 'product';
+  const role = p.role ?? (kind === 'library' ? 'library' : 'product');
   return {
     kind,
+    role,
     confidence: p.kindConfidence ?? null,
     evidence: p.kindEvidence ?? [],
-    isLibrary: kind === 'library',
+    isLibrary: role === 'library',
+    isShadcn: kind === 'shadcn',
+    shadcn: p.shadcn ?? null,
+    uiDirs: p.uiDirs ?? (p.uiDir ? [p.uiDir] : []),
     // A vendored shadcn catalogue is stock on a shelf, not abandonment.
     vendoredUi: p.vendoredUi === true,
     uiDir: p.uiDir ?? null,
@@ -87,4 +98,15 @@ export function profileOf(h) {
     notMeasuredReason: p.componentDetection?.reason ?? 'an unrecognised component pattern',
     designSystem: p.designSystem ?? { kind: 'none' },
   };
+}
+
+/**
+ * Question 6, per kind: ideals and fleet stats a profile owns until the
+ * benchmark slice for that kind exists. Overlaid on the general benchmark by
+ * score.mjs; the general profile owns none, so nothing moves for it.
+ */
+export function profileYardstick(h) {
+  const kind = profileOf(h).kind;
+  const p = PROFILES.find((x) => x.kind === kind);
+  return { ideals: p?.ideals ?? {}, stats: p?.stats ?? {} };
 }

@@ -10,6 +10,7 @@
   "noSystemLikely": false,
   "verdict": "no agent rules, so your AI is guessing. 1 component implemented more than once, so an agent asked for a Button has several random options.",
   "role": "product",
+  "kind": "product",
   "componentsMeasured": true,
   "metrics": {
     "colors": 5,

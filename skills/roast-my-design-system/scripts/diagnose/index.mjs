@@ -32,14 +32,11 @@ import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
-import { profileOf } from '../profiles/index.mjs';
+import { profileOf, profileYardstick } from '../profiles/index.mjs';
 
 // The benchmark and every judgement made against it live in score.mjs; this
 // file only draws. The same numbers reach summary.json through scoreHarvest.
 const bench = loadBenchmark();
-const B = benchHelpers(bench);
-const { percentile, cleanerPct, ideal, median, displayAvg, refMedian } = B;
-const healthOf = makeHealthOf(B);
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -50,6 +47,11 @@ if (!inPath) { console.error('Usage: node src/diagnose/index.mjs <harvest.json> 
 const outPath = resolve(arg('out', 'diagnosis.html'));
 
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
+// The yardstick: the general benchmark, plus whatever the repo's kind brings
+// for the tiles only it measures (the shadcn card owns 2).
+const B = benchHelpers(bench, profileYardstick(h));
+const { percentile, cleanerPct, ideal, median, displayAvg, refMedian } = B;
+const healthOf = makeHealthOf(B);
 const M = coreMetrics(h);
 
 // The GK mark (32px favicon, also gregkozakiewicz.com). Reused in the footer
@@ -336,6 +338,7 @@ const FALLBACK_TARGET = {
   colors: 'a system needs ~24', greys: 'a scale has up to 13', spacing: 'a dozen deliberate exceptions',
   exactDuplicates: 'should be 0', inlineStyles: 'invisible to any system', nearPairs: 'copy-paste, not decisions',
   important: 'the cascade admitting defeat', neverImported: 'the system nobody found', arbitrary: 'a handful of deliberate exceptions',
+  paintTin: 'the theme already has a row for it', doorOverrides: 'pick a variant instead',
 };
 // Dress one judged tile for the page: formatted number, comparison rows.
 // Accepts a judged tile from score.mjs, or the positional form the
@@ -366,6 +369,9 @@ function tile(t, pLabel, pMetric, pFallback) {
     rows.push({ label: isLibrary
       ? 'library: internal use only, downstream consumers invisible'
       : 'catalogue stock: installed by the shadcn CLI, not used yet', val: '', dir: '' });
+  }
+  if (health === 'info' && metric === 'paintTin') {
+    rows.push({ label: 'utility-class mode: the palette is the theme by design, not counted', val: '', dir: '' });
   }
   return { num: n(value), label, health, rows, metric, healthValue };
 }
@@ -573,6 +579,41 @@ function spacingBars() {
     <div class="bars">${rows}</div>
     ${whyToggle('spacing')}${arb}</section>`;
 }
+
+// The shadcn sheet and the 2 paint checks: receipts, with the files and the
+// exact classes. Only a shadcn kitchen renders this.
+function sheetSection() {
+  if (!P.isShadcn) return '';
+  const sc = P.shadcn ?? {};
+  const sheet = sc.sheet, paint = sc.paint;
+  const parts = [];
+  if (sheet?.found) {
+    const bits = [`${n(sheet.lightRows)} rows for light, ${n(sheet.darkRows)} for dark in ${esc(sheet.file)}`];
+    if (sheet.hslEra) bits.push('written in the Tailwind 3 form (hsl triplets)');
+    if (sheet.shadcnMissing?.length) bits.push(`${sheet.shadcnMissing.length} of the ${SHADCN_ROW_COUNT} current rows not defined (${sheet.shadcnMissing.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${sheet.shadcnMissing.length > 4 ? '…' : ''})${sheet.hslEra ? ', normal for an install from before the chart and sidebar rows existed' : ''}`);
+    if (sheet.missingDark?.length) bits.push(`${sheet.missingDark.length} row${sheet.missingDark.length === 1 ? '' : 's'} with no dark value (${sheet.missingDark.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')})`);
+    if (sheet.custom?.length) bits.push(`${sheet.custom.length} custom row${sheet.custom.length === 1 ? '' : 's'} of your own (${sheet.custom.slice(0, 5).map((r) => `--${esc(r)}`).join(', ')}${sheet.custom.length > 5 ? '…' : ''})${sheet.customMissingDark?.length ? `, ${sheet.customMissingDark.length} of them light only` : ''}${sheet.customUnregistered?.length ? `, ${sheet.customUnregistered.length} never mapped in @theme inline` : ''}`);
+    if (sheet.tweakcnPresent >= 10) bits.push('tweakcn rows present: shadows and letter-spacing are themed');
+    if (sheet.spacingChanged) bits.push(`<b>--spacing is ${esc(sheet.spacing)}</b>, not the factory 0.25rem: every gap in the app is resized at once, which shadcn\'s own changelog says never to do`);
+    parts.push(`<div class="receipts">${eyebrow('the theme, row by row')}<p class="sub">${bits.join(' · ')}.</p></div>`);
+  } else if (sheet) {
+    parts.push(`<div class="receipts">${eyebrow('the theme')}<p class="sub">components.json names ${esc(sheet.file)} as the theme file, and it was not found.</p></div>`);
+  }
+  if (paint) {
+    const tinChips = (paint.tin.samples ?? []).slice(0, 8).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
+    const tinFiles = (paint.tin.top ?? []).slice(0, 5).map((f) => `<span class="vchip" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('');
+    parts.push(`<div class="receipts">${eyebrow(`${n(paint.tin.uses)} colours from outside the theme in ${n(paint.tin.files)} of ${n(paint.ownFiles)} own files · ${n(paint.tin.per100)} per 100 files`)}${paint.tin.uses ? `<div class="chips-row">${tinChips}</div><div class="chips-row">${tinFiles}</div>` : '<p class="sub">Own code paints from the theme only. This is what the kit was built for.</p>'}</div>`);
+    const doorChips = (paint.doors.samples ?? []).slice(0, 6).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
+    parts.push(`<div class="receipts">${eyebrow(`${n(paint.doors.uses)} kit components repainted through className · ${n(paint.doors.per100)} per 100 files`)}${paint.doors.uses ? `<div class="chips-row">${doorChips}</div>` : '<p class="sub">No kit component is given a colour or a font through className. Variants are doing their job.</p>'}</div>`);
+  }
+  if (!parts.length) return '';
+  return `<section class="glass pad" style="margin-top:16px">
+    ${sectionHead('The shadcn theme and the 2 paint checks', 'the kit hands you a theme of named rows and a set of components with variants. These receipts show where own code went around both.')}
+    ${parts.join('')}
+    ${whyToggle('paintTin')}
+  </section>`;
+}
+const SHADCN_ROW_COUNT = 33;
 
 function duplicatesSection() {
   if (!exactDupes.length && !families.length && !iconCollisions.length) return '';
@@ -1020,6 +1061,22 @@ function whereToStartSection() {
       sub: `${neverImported.slice(0, 3).map((x) => `&lt;${esc(x.name)}&gt;`).join(', ')}${neverImported.length > 3 ? ' and others' : ''} sit in the system with no callers. Adopt them or delete them: either answer is better than a system with rooms nobody enters.` });
   }
 
+  if (P.isShadcn && P.shadcn?.paint) {
+    const pt = P.shadcn.paint;
+    if (pt.tin.uses >= 10) {
+      const s0 = pt.tin.samples[0], f0 = pt.tin.top[0];
+      c.push({ score: 20 + pt.tin.per100 / 4, metric: 'paintTin', after: 0,
+        title: `Repaint the ${n(pt.tin.uses)} colours from outside the theme`,
+        sub: `${esc(s0.value)} appears ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. Each has a row on the theme sheet already (a grey is <code>text-muted-foreground</code>, a status colour is a Badge variant or a row you add for it). Swap the class, never the value.` });
+    }
+    if (pt.doors.uses >= 5) {
+      const s0 = pt.doors.samples[0];
+      c.push({ score: 15 + pt.doors.per100 / 4, metric: 'doorOverrides', after: 0,
+        title: `Stop repainting kit components through className`,
+        sub: `${n(pt.doors.uses)} kit components receive a colour or a font from outside, like ${esc(s0.value)}. Pick the variant that does it, or add one to the component you own. className on a kit component is for layout only.` });
+    }
+  }
+
   // What each move is actually worth, then rank by payoff for real.
   for (const item of c) {
     item.delta = 0; item.target = null;
@@ -1171,7 +1228,7 @@ function agentSection() {
 // quiet unrecognised chip, because not knowing IS a finding here.
 const ns = h.tokens.namespaces ?? null;
 const dsChip =
-  ds.kind === 'shadcn' ? (ds.cssVariables === false ? 'shadcn/ui (utility classes, no CSS variables)' : 'shadcn/ui')
+  ds.kind === 'shadcn' ? `shadcn/ui${ds.cssVariables === false ? ' (utility classes, no CSS variables)' : ''}${P.shadcn?.kit?.style ? ` · ${P.shadcn.kit.style}` : ''}`
   : ds.kind === 'library' ? ds.name
   : ns ? `custom design system (--${ns.primary}-*${ns.partner ? ` + --${ns.partner}-*` : ''})`
   // A tokenFile alone is a technicality (Lion's is one drawer style file);
@@ -1189,6 +1246,24 @@ const stack = [
 ].filter(Boolean);
 const dsUnrecognised = !dsChip && !noSystemLikely;
 const legacyChip = ns?.others?.length ? `also present: ${ns.others.map((l) => `--${l}-*`).join(', ')}` : null;
+
+// The recognition receipt: how the scanner decided this is a shadcn kitchen
+// and what kit it read. Printed under the chips, never hidden, so a wrong
+// guess is visible before any number is.
+function shadcnReceipt() {
+  if (!P.isShadcn) return '';
+  const k = P.shadcn?.kit ?? null;
+  const facts = [
+    k?.theme ? `accent ${k.theme}` : null,
+    k?.chartColor ? `charts ${k.chartColor}` : null,
+    k?.radius ? `radius ${k.radius}` : null,
+    k?.iconLibrary ? `icons ${k.iconLibrary}` : null,
+    k && k.cssVariables === false ? 'utility-class mode: the palette is the theme' : null,
+  ].filter(Boolean);
+  const unmatched = (k?.fellBack ?? []).filter((f) => f === 'theme' || f === 'chartColor');
+  const fell = unmatched.length ? ` · ${unmatched.length === 2 ? 'accent and chart colour' : unmatched[0] === 'theme' ? 'accent' : 'chart colour'} not matched to a named shadcn theme` : '';
+  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${esc(P.evidence.join(' · '))}${facts.length ? ` · ${esc(facts.join(', '))}` : ''}${esc(fell)}</div>`;
+}
 
 // User exclusions are printed in the header, never hidden: a scoped scan must
 // say it is scoped, or the score could be quietly gamed. Grouped by source
@@ -1612,6 +1687,7 @@ const html = `<!doctype html>
     ${healthScore !== null ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note below</div>' : ''}</div>` : ''}
   </div>
   <div class="chips">${stack.map((s) => `<span class="chip">${esc(s)}</span>`).join('')}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>
+  ${shadcnReceipt()}
   ${exclusionsLine()}
   ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output).</span></div>` : ''}
   <div class="glass verdict-card">
@@ -1638,6 +1714,7 @@ ${trapsBlock()}
 ${packagesSection()}
 
 <section style="margin-top:16px">${paletteSection()}</section>
+${sheetSection()}
 
 ${spacingBars()}
 ${typographySection()}
@@ -1769,7 +1846,9 @@ if (summaryPath) {
     score: healthScore,
     noSystemLikely,
     verdict,
-    role: P.kind,
+    role: P.role,
+    kind: P.kind,
+    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, ownFiles: P.shadcn.paint?.ownFiles ?? null } } : {}),
     componentsMeasured,
     metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>
       ({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }))(M),

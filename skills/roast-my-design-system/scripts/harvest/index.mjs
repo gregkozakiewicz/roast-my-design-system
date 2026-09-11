@@ -27,7 +27,8 @@ import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { lastTouchedDates } from '../lib/lasttouched.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { decideProfile } from '../profiles/index.mjs';
+import { decideProfile, profileOf } from '../profiles/index.mjs';
+import { countPaint } from './paint.mjs';
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -57,18 +58,28 @@ const exclusions = loadExclusions(target, argAll('exclude'));
 const files = walkRepo(target, 14, exclusions);
 const profile = profileRepo(target, files);
 const { components } = harvestComponents(target, files.code);
+// Repo kind and measurability, decided once in profiles/ and read everywhere
+// (a published components package with no app pages is a LIBRARY; a stack the
+// detector cannot read is NOT MEASURED, never scored as zeros). The decision
+// lands on the profile with its evidence, so the JSON says why.
+decideProfile(profile, components, files, target);
+// A shadcn kitchen gets the 2 paint checks from shadcn's own agent rules,
+// counted over own code only (never the kit's doors, never exempt files).
+{
+  const P = profileOf(profile);
+  if (P.isShadcn) {
+    const doorFiles = new Set([...P.uiDirs.flatMap((d) => files.code.filter((f) => f.startsWith(`${d}/`))), ...(profile.shadcn.blockFiles ?? [])]);
+    const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
+    profile.shadcn.paint = countPaint(target, files.code, { uiDirs: [...P.uiDirs, ...(profile.shadcn.blockFiles ?? [])], kitNames });
+  }
+}
+
 const tokens = harvestTokens(target, files.styles, files.code);
 const duplicates = findDuplicates(components, profile.uiDir, target);
 const context = harvestContext(target);
 const staleRules = ruleStaleness(target, components,
   new Set(neverImportedComponents(components, profile.uiDir).map((c) => c.name)),
   [...files.code, ...files.styles, ...files.other]);
-
-// Repo kind and measurability, decided once in profiles/ and read everywhere
-// (a published components package with no app pages is a LIBRARY; a stack the
-// detector cannot read is NOT MEASURED, never scored as zeros). The decision
-// lands on the profile with its evidence, so the JSON says why.
-decideProfile(profile, components, files);
 
 // Orphans carry a receipt: the last time git saw anyone touch the file.
 // Only never-imported components are dated (the adoption map's evidence);

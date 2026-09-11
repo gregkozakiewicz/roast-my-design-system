@@ -9,6 +9,17 @@
 // and must move together with benchmark.json if the norms are ever re-tuned.
 
 export const WHY = {
+  // DRAFT, not yet Greg-approved (2026-09-12): the 2 shadcn paint tiles.
+  paintTin: [
+    'shadcn hands you a theme sheet: a row for the background, one for muted text, one for the border, each with a light and a dark value. Every component reads those rows by name. Nobody decides to bypass that. A grey looks right, text-gray-500 is quicker to type than text-muted-foreground, and it ships.',
+    'The cost arrives with the first theme change. The rows move, the tin colour stays, and the page is half old kitchen, half new. Dark mode is where it shows first: a row carries both values, a tin colour carries one, so someone writes dark:bg-gray-900 by hand next to it and now there are 2 places to keep in step. An agent reading the file copies the pair, because to an agent the tin looks as intentional as the row.',
+    'The ideal of 25 per 100 files is where the tidiest third of 15 shadcn repos sit; the median is 62. shadcn\'s own agent rules put it in one line: semantic colours, never bg-blue-500.',
+  ],
+  doorOverrides: [
+    'A kit component comes with variants: outline, ghost, destructive, small, large. They exist so that the look of a button is decided once, in the file you own. Passing bg-blue-100 or font-bold through className decides it again, at the call site, invisibly to the component.',
+    'Do it in 5 places and the button has 6 looks, and the next person can not tell which one is the design. The intended route is 1 of 3: a variant that exists, a variant you add to the component, or a row on the theme sheet. className stays for layout: width, margin, position.',
+    'The ideal of 15 per 100 files is the tidiest third of the same 15 repos; the median is 22.',
+  ],
   colors: [
     'Look, nobody consciously chooses 100 colours to start with. They were added with each change, and the change after that. No one was checking for the drift, because no one expected it. Then come the multipliers: a rebrand, a dark-mode pass, ad hoc files, each one multiplying the values again.',
     'When an agent looks for Brand Blue it scans the repo, sees dozens of blues and logically picks the one used most often, which is how the most-used stray outvotes the actual token.',

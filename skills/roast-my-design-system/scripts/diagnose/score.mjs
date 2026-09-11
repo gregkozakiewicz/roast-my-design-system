@@ -26,7 +26,7 @@ import { isGrey } from '../lib/color.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { profileOf } from '../profiles/index.mjs';
+import { profileOf, profileYardstick } from '../profiles/index.mjs';
 
 export { SCHEMA_VERSION };
 
@@ -37,8 +37,20 @@ export function loadBenchmark() {
   return existsSync(BENCH_PATH) ? JSON.parse(readFileSync(BENCH_PATH, 'utf8')) : null;
 }
 
-/** The yardstick readers for one benchmark object (null-safe). */
-export function benchHelpers(bench) {
+/**
+ * The yardstick readers for one benchmark object (null-safe). A profile may
+ * bring its own ideals and fleet stats for the metrics only it measures
+ * (question 6 of the profile plan); they overlay the general benchmark and
+ * never replace an entry the benchmark already has.
+ */
+export function benchHelpers(bench, yardstick = null) {
+  if (yardstick && (Object.keys(yardstick.ideals ?? {}).length || Object.keys(yardstick.stats ?? {}).length)) {
+    bench = {
+      ...(bench ?? {}),
+      ideal2026: { ...(yardstick.ideals ?? {}), ...(bench?.ideal2026 ?? {}) },
+      stats: { ...(yardstick.stats ?? {}), ...(bench?.stats ?? {}) },
+    };
+  }
   // where does this value sit among the scanned fleet? ("more colours than 90%")
   const percentile = (metric, value) => {
     const vals = bench?.stats?.[metric]?.values;
@@ -88,6 +100,15 @@ export function makeHealthOf(b) {
     return 'bad';
   };
 }
+
+/** Tiles a kind of repo adds to the nine. Only the shadcn card has any today. */
+export const PROFILE_TILES = {
+  shadcn: [
+    ['paintTin', 'off-theme colours per 100 files'],
+    ['doorOverrides', 'repainted kit components per 100 files'],
+  ],
+};
+export const tilesFor = (kind) => [...TILES, ...(PROFILE_TILES[kind] ?? [])];
 
 /** The tiles, in report order: metric key, the label the report prints. */
 export const TILES = [
@@ -140,6 +161,13 @@ export function coreMetrics(h) {
     componentsMeasured: profileOf(h).componentsMeasured,
     isLibrary: profileOf(h).isLibrary,
     vendoredUi: profileOf(h).vendoredUi,
+    // the kind, and the tiles only that kind measures (per 100 own-code files)
+    kind: profileOf(h).kind,
+    // utility-class mode (components.json cssVariables: false): the palette IS
+    // the theme by design, so a palette class is not paint from a tin
+    utilityPalette: profileOf(h).designSystem?.cssVariables === false,
+    paintTin: profileOf(h).shadcn?.paint?.tin?.per100 ?? 0,
+    doorOverrides: profileOf(h).shadcn?.paint?.doors?.per100 ?? 0,
   };
 }
 
@@ -152,14 +180,17 @@ export function tileHealths(m, healthOf) {
     colors: m.colors, greys: m.greys, spacing: m.spacing, exactDuplicates: m.exactDuplicates,
     inlineStyles: m.inlineStyles, nearPairs: m.nearPairs, important: m.important,
     neverImported: m.neverImported, arbitrary: m.arbitrary,
+    paintTin: m.paintTin ?? 0, doorOverrides: m.doorOverrides ?? 0,
   };
   const judged = { ...shown, colors: m.tokenLed ? m.colorStrays : m.colors, greys: m.tokenLed ? m.greyStrays : m.greys };
-  return TILES.map(([metric, label]) => {
+  return tilesFor(m.kind ?? 'product').map(([metric, label]) => {
     let health = healthOf(metric, judged[metric]);
     let value = shown[metric], healthValue = judged[metric];
     if (!m.componentsMeasured && (metric === 'exactDuplicates' || metric === 'neverImported')) {
       health = 'na'; value = null; healthValue = null;
     } else if (metric === 'neverImported' && (m.isLibrary || (m.vendoredUi && m.neverImported > 0))) {
+      health = 'info';
+    } else if (metric === 'paintTin' && m.utilityPalette) {
       health = 'info';
     }
     return { metric, label, value, healthValue, health };
@@ -199,7 +230,7 @@ export function scorePackage(m, healthOf, b) {
 
 /** The whole judgement of one harvest, as data. */
 export function scoreHarvest(h, bench = loadBenchmark()) {
-  const b = benchHelpers(bench);
+  const b = benchHelpers(bench, profileYardstick(h));
   const healthOf = makeHealthOf(b);
   const metrics = coreMetrics(h);
   const tiles = tileHealths(metrics, healthOf);

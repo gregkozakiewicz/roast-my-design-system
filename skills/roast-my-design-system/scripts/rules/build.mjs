@@ -163,6 +163,28 @@ if (neverImported.length >= 3) {
     rule(`The repo uses ${faces.length} typeface${faces.length === 1 ? '' : 's'}: ${faces.slice(0, 4).join(', ')}. Do not introduce another, and do not re-declare font stacks by hand; use the existing setup.`);
   }
   
+  // ---------- shadcn: the kit's own rules ----------
+  // Written from shadcn's docs and the agent skill it ships (skills/shadcn in
+  // shadcn-ui/ui), with this repo's receipts where the scan has them.
+  const P = profileOf(h);
+  if (P.isShadcn) {
+    const sc = P.shadcn ?? {};
+    const sheetFile = sc.sheet?.found ? sc.sheet.file : null;
+    const paint = sc.paint ?? null;
+    section('shadcn: the kit and its theme');
+    rule(`This is a shadcn install${sc.kit?.style ? ` (style \`${sc.kit.style}\`${sc.kit.baseColor ? `, base colour ${sc.kit.baseColor}` : ''})` : ''}. The theme is a set of named rows${sheetFile ? ` in \`${sheetFile}\`` : ''}: background, foreground, primary, muted, border and the rest, each for light and dark. Change a colour there, never in a component.`);
+    rule('Use the semantic utilities the rows give you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The rows already carry both modes.');
+    if (paint?.tin?.uses) lines.push(`  (${paint.tin.uses} palette colour${paint.tin.uses === 1 ? '' : 's'} already sit in own code, ${paint.tin.samples.slice(0, 3).map((s) => `\`${s.value}\` ×${s.count}`).join(', ')}; do not add to them.)`);
+    rule('Before adding classes to a kit component, pick one of its variants (`variant="outline"`, `size="sm"`). `className` on a kit component is for layout only: width, margin, position. Never colour, never typography.');
+    if (paint?.doors?.uses) lines.push(`  (${paint.doors.uses} kit component${paint.doors.uses === 1 ? '' : 's'} already repainted through className, like ${paint.doors.samples.slice(0, 2).map((s) => `\`${s.value}\``).join(' and ')}; do not add to them.)`);
+    rule(`Edit the component you own in \`${P.uiDir ?? 'components/ui'}\`. Never build a second one next door under another name. A wrapper that composes kit components is fine; a sibling re-implementation is not.`);
+    rule('Merge classes with `cn()`. Never concatenate strings and never write a ternary inside a className string.');
+    rule('Add a component with `npx shadcn@latest add <name>`, then edit it. To see what changed upstream, run `npx shadcn@latest add <name> --diff`.');
+    rule('Radius comes from the `--radius` row and its derived scale; never a bracket value. Never change `--spacing`: it silently resizes every gap in the app.');
+    if (sc.sheet?.customUnregistered?.length) rule(`Custom rows must be registered where Tailwind can see them: ${sc.sheet.customUnregistered.slice(0, 3).map((r) => `\`--${r}\``).join(', ')} ${sc.sheet.customUnregistered.length === 1 ? 'is' : 'are'} defined but never mapped in \`@theme inline\`, so \`bg-${sc.sheet.customUnregistered[0]}\` does nothing.`);
+    rule('Small habits the kit expects: `gap-*` not `space-x/y-*`; `size-4` not `w-4 h-4`; `truncate` for one-line clipping; no `z-index` on Dialog, Sheet, Popover or Tooltip, they stack themselves; icons from the project\'s own icon library only.');
+  }
+
   // ---------- styling discipline ----------
   section('Styling discipline');
   rule(`Never write ${reusable.length ? '`style={{ ... }}`' : 'inline `style="..."` attributes'} for static values; styling belongs to classes and tokens where the system can see it.`);

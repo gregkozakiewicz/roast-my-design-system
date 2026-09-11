@@ -1,0 +1,255 @@
+/**
+ * shadcn — a kitchen built from the shadcn kit.
+ *
+ * The team ordered a catalogue of components they are meant to edit, over a
+ * sheet of named finishes they are meant to change. The kit is recognised by
+ * its own marker file (components.json, at the root or in any workspace) and
+ * by the catalogue's door names; the kit's flavour is read the way shadcn's
+ * own `preset resolve` reads it; the sheet is read by row name. Everything
+ * this profile decides lands on `profile.shadcn` with its evidence.
+ *
+ * What it changes, and only this:
+ *   - the catalogue folder(s) are found through the config's alias, not only
+ *     at the three usual paths; installed blocks in own code are kit doors too
+ *   - the sheet is the CSS file the config names, never a file chosen by
+ *     counting colour literals
+ *   - 2 checks from shadcn's own agent rules become tiles: paint from a tin,
+ *     and kit doors repainted from outside (harvest/paint.mjs)
+ *   - the sheet check is receipts: rows present for daylight and evening,
+ *     custom rows, the gap multiplier
+ *
+ * What it does NOT do: compare doors to upstream drawings (editing is the
+ * intended use, and the drawings for the create-era fronts are generated,
+ * not stored), or add any "unless shadcn" clause to a counter.
+ *
+ * Kitchen words used in comments: kit, front (style), hinge system (base),
+ * door (component file), sheet (theme CSS), row (one --name: value).
+ */
+import { existsSync, readFileSync } from 'node:fs';
+import { join, dirname, basename } from 'node:path';
+import { CATALOGUE, BLOCK_COMPONENTS, KNOWN_ROWS, TWEAKCN_ROWS, LIGHT_ONLY_ROWS, FACTORY_SPACING,
+  FRONTS, LEGACY_FRONTS, BASES, BASE_COLORS, ICON_LIBRARIES, RADIUS_MAP, THEMES, SHADCN_ROWS } from './shadcn-data.mjs';
+
+const readJSON = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
+const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return ''; } };
+const stripExt = (f) => f.replace(/\.[cm]?[jt]sx?$/, '');
+
+/** Every folder in the walk holding 8+ catalogue door names. */
+function catalogueSweep(files) {
+  const byDir = new Map();
+  for (const f of files.code) {
+    if (!/\.[jt]sx$/.test(f)) continue;
+    const d = dirname(f);
+    if (CATALOGUE.has(stripExt(basename(f)))) byDir.set(d, (byDir.get(d) ?? 0) + 1);
+  }
+  return [...byDir.entries()].filter(([, n]) => n >= 8).map(([dir, n]) => ({ dir, catalogueNames: n }));
+}
+
+/** Resolve an alias like "@/components/ui" or "@acme/ui/components" to a folder under wsRoot, if it exists. */
+function resolveAlias(root, wsRoot, alias) {
+  if (!alias) return null;
+  const rel = (p) => p.replace(/\\/g, '/').replace(/^\.\//, '');
+  // tsconfig paths in the workspace, then the root
+  for (const dir of [wsRoot, root]) {
+    const ts = readJSON(join(dir, 'tsconfig.json'));
+    const paths = ts?.compilerOptions?.paths ?? {};
+    const baseUrl = ts?.compilerOptions?.baseUrl ?? '.';
+    for (const [key, targets] of Object.entries(paths)) {
+      const stem = key.replace(/\/?\*$/, '');
+      if (alias !== stem && !alias.startsWith(`${stem}/`)) continue;
+      const tail = alias.slice(stem.length).replace(/^\//, '');
+      for (const t of targets) {
+        const cand = join(dir, baseUrl, rel(t).replace(/\/?\*$/, ''), tail);
+        if (existsSync(cand)) return cand;
+      }
+    }
+  }
+  // package.json#imports ("#components/*": "./src/components/*.tsx")
+  const pkg = readJSON(join(wsRoot, 'package.json'));
+  for (const [key, target] of Object.entries(pkg?.imports ?? {})) {
+    const stem = key.replace(/\/?\*$/, '');
+    if (typeof target !== 'string' || (alias !== stem && !alias.startsWith(`${stem}/`))) continue;
+    const tail = alias.slice(stem.length).replace(/^\//, '');
+    const cand = join(wsRoot, rel(target).replace(/\/?\*(\.\w+)?$/, ''), tail);
+    if (existsSync(cand)) return cand;
+  }
+  // the common shapes when no alias map resolves
+  const tail = alias.replace(/^[@~#]\/?/, '').replace(/^[^/]+\/ui\//, '');
+  for (const cand of [join(wsRoot, 'src', tail), join(wsRoot, tail), join(wsRoot, 'app', tail)]) {
+    if (existsSync(cand)) return cand;
+  }
+  return null;
+}
+
+/** Rows declared under a selector in a CSS text: name -> value. */
+function rowsUnder(css, selector) {
+  const out = new Map();
+  const re = new RegExp(`(^|[\\s,}])${selector}\\s*\\{([^}]*)\\}`, 'g');
+  for (const m of css.matchAll(re)) {
+    for (const d of m[2].matchAll(/--([a-z0-9-]+)\s*:\s*([^;]+);/gi)) out.set(d[1], d[2].trim());
+  }
+  return out;
+}
+
+const norm = (v) => (v ?? '').replace(/\s+/g, ' ').trim();
+
+/** Read the sheet: the CSS file the config names. */
+function readSheet(root, wsRoot, cssPath) {
+  if (!cssPath) return null;
+  const file = [join(wsRoot, cssPath), join(wsRoot, 'src', cssPath)].find((p) => existsSync(p));
+  if (!file) return { file: cssPath, found: false };
+  const css = read(file);
+  const light = rowsUnder(css, ':root'), dark = rowsUnder(css, '\\.dark');
+  const themeInline = rowsUnder(css, '@theme\\s+inline');
+  const rows = [...light.keys()];
+  const known = rows.filter((r) => KNOWN_ROWS.has(r));
+  const custom = rows.filter((r) => !KNOWN_ROWS.has(r));
+  const missingDark = rows.filter((r) => KNOWN_ROWS.has(r) && !LIGHT_ONLY_ROWS.has(r) && !dark.has(r));
+  const customMissingDark = custom.filter((r) => !dark.has(r) && !/^(font|shadow|tracking|spacing|radius|ease|breakpoint)/.test(r));
+  const shadcnPresent = SHADCN_ROWS.filter((r) => light.has(r)).length;
+  const tweakcnPresent = TWEAKCN_ROWS.filter((r) => light.has(r) && !/^font-(sans|mono)$/.test(r)).length;
+  const hslEra = /--background:\s*\d+(\.\d+)?\s+\d+(\.\d+)?%\s+\d+(\.\d+)?%/.test(css);
+  const spacing = light.get('spacing') ?? null;
+  const themeVars = new Set(themeInline.keys());
+  // a custom colour row must be registered for Tailwind 4 to see it
+  const customUnregistered = themeVars.size
+    ? custom.filter((r) => !/^(font|shadow|tracking|spacing|radius|ease|breakpoint|typeset)/.test(r) && !themeVars.has(`color-${r}`))
+    : [];
+  return {
+    file: file.slice(root.length + 1), found: true, hslEra,
+    lightRows: rows.length, darkRows: dark.size, shadcnPresent, shadcnMissing: SHADCN_ROWS.filter((r) => !light.has(r)),
+    known: known.length, custom, missingDark, customMissingDark, customUnregistered, tweakcnPresent,
+    spacing, spacingChanged: spacing !== null && norm(spacing) !== FACTORY_SPACING,
+    radius: light.get('radius') ?? null,
+    primary: norm(light.get('primary')), chart2: norm(light.get('chart-2')), fontSans: light.get('font-sans') ?? null,
+  };
+}
+
+/** The kit's flavour, the way `shadcn preset resolve` reads it. */
+function readKit(cfg, sheet, deps) {
+  const style = cfg.style ?? null;
+  let base = null, front = null;
+  if (style) {
+    const m = style.match(/^(base|radix|aria)-(.+)$/);
+    if (m) { base = m[1]; front = m[2]; }
+    else { front = style; base = LEGACY_FRONTS.includes(style) ? 'radix' : null; }
+  }
+  const fellBack = [];
+  const theme = THEMES.find((t) => t.primary === sheet?.primary)?.name ?? null;
+  const chartColor = THEMES.find((t) => t.chart2 === sheet?.chart2)?.name ?? null;
+  if (!theme) fellBack.push('theme');
+  if (!chartColor) fellBack.push('chartColor');
+  const radius = sheet?.radius ? (RADIUS_MAP[norm(sheet.radius)] ?? `custom (${norm(sheet.radius)})`) : null;
+  if (!radius) fellBack.push('radius');
+  const twRaw = deps?.tailwindcss ?? null;
+  const twClean = twRaw ? String(twRaw).replace(/^[\^~>=<\s]*/, '') : '';
+  const tailwind = /^\d/.test(twClean) ? twClean.split('.')[0] : null;
+  return {
+    style, front: front && (FRONTS.includes(front) || LEGACY_FRONTS.includes(front)) ? front : front,
+    frontKnown: front ? FRONTS.includes(front) || LEGACY_FRONTS.includes(front) : false,
+    base, baseKnown: base ? BASES.includes(base) : false,
+    baseColor: cfg.tailwind?.baseColor ?? null, baseColorKnown: BASE_COLORS.includes(cfg.tailwind?.baseColor),
+    cssVariables: cfg.tailwind?.cssVariables !== false,
+    iconLibrary: cfg.iconLibrary ?? null, iconLibraryKnown: ICON_LIBRARIES.includes(cfg.iconLibrary),
+    rtl: cfg.rtl === true, menuAccent: cfg.menuAccent ?? null, menuColor: cfg.menuColor ?? null,
+    theme, chartColor, radius, tailwind, fellBack,
+  };
+}
+
+export default {
+  kind: 'shadcn',
+
+  /**
+   * @param profile the profiler's facts (mutated: uiDir, uiDirs, vendoredUi, designSystem, shadcn)
+   * @param counts reusable/pages/codeFiles
+   * @param ctx { root, files } the walk
+   */
+  recognise(profile, counts, ctx) {
+    if (!ctx?.root || !ctx?.files) return null;
+    const { root, files } = ctx;
+    const evidence = [];
+
+    // 1. marker files, root or any workspace
+    const configs = (files.other ?? []).filter((f) => basename(f) === 'components.json')
+      .map((f) => ({ file: f, cfg: readJSON(join(root, f)) }))
+      .filter((c) => c.cfg && (c.cfg.aliases || c.cfg.style !== undefined || c.cfg.tailwind));
+
+    // 2. catalogues: through each config's alias, then a sweep for door names
+    const installs = [];
+    for (const { file, cfg } of configs) {
+      const wsRoot = join(root, dirname(file));
+      const uiAlias = cfg.aliases?.ui ?? (cfg.aliases?.components ? `${cfg.aliases.components}/ui` : '@/components/ui');
+      let uiAbs = resolveAlias(root, wsRoot, uiAlias);
+      let catalogueNames = 0;
+      if (uiAbs) {
+        const rel = uiAbs.slice(root.length + 1).replace(/\\/g, '/');
+        catalogueNames = files.code.filter((f) => f.startsWith(`${rel}/`) && CATALOGUE.has(stripExt(basename(f)))).length;
+        uiAbs = rel;
+      }
+      const pkg = readJSON(join(wsRoot, 'package.json')) ?? readJSON(join(root, 'package.json')) ?? {};
+      const deps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
+      const sheet = readSheet(root, wsRoot, cfg.tailwind?.css);
+      installs.push({ config: file, uiDir: uiAbs, catalogueNames, kit: readKit(cfg, sheet, deps), sheet });
+    }
+    const swept = catalogueSweep(files);
+    for (const s of swept) {
+      if (!installs.some((i) => i.uiDir === s.dir)) installs.push({ config: null, uiDir: s.dir, catalogueNames: s.catalogueNames, kit: null, sheet: null });
+      else { const i = installs.find((x) => x.uiDir === s.dir); i.catalogueNames = Math.max(i.catalogueNames, s.catalogueNames); }
+    }
+
+    // 3. the decision: a marker plus a folder, or a folder that is plainly the
+    // catalogue by name (8+). Same bar the profiler used for vendoredUi.
+    const withConfigAndDir = installs.filter((i) => i.config && i.uiDir);
+    const byName = installs.filter((i) => i.catalogueNames >= 8);
+    if (!withConfigAndDir.length && !byName.length) return null;
+
+    installs.sort((a, b) => b.catalogueNames - a.catalogueNames || (b.config ? 1 : 0) - (a.config ? 1 : 0));
+    const primary = installs[0];
+    // the kit is read from a config; when the biggest catalogue has none
+    // (a shared package found by sweep), the nearest configured install speaks
+    const configured = installs.find((i) => i.kit) ?? null;
+    const kit = primary.kit ?? configured?.kit ?? null;
+    const sheet = primary.sheet ?? configured?.sheet ?? null;
+    const confidence = primary.config && primary.catalogueNames >= 8 ? 'high'
+      : primary.catalogueNames >= 8 || (primary.config && primary.uiDir) ? 'medium' : 'low';
+
+    for (const i of installs) {
+      if (i.config) evidence.push(`components.json in ${dirname(i.config) === '.' ? 'the root' : dirname(i.config)}${i.uiDir ? `, ${i.catalogueNames} catalogue component${i.catalogueNames === 1 ? '' : 's'} in ${i.uiDir}` : ', no catalogue folder found through its alias'}`);
+      else evidence.push(`${i.catalogueNames} catalogue components in ${i.uiDir}, no components.json`);
+    }
+    if (kit?.style) evidence.push(`style ${kit.style}${kit.baseColor ? `, base colour ${kit.baseColor}` : ''}${kit.tailwind ? `, Tailwind ${kit.tailwind}` : ''}`);
+
+    // 4. write the facts every consumer reads
+    profile.uiDirs = installs.map((i) => i.uiDir).filter(Boolean);
+    profile.uiDir = primary.uiDir ?? profile.uiDir ?? null;
+    profile.vendoredUi = true;
+    const cssVars = kit ? kit.cssVariables : true;
+    profile.designSystem = { kind: 'shadcn', name: 'shadcn/ui', confidence: 'high', cssVariables: cssVars };
+    // kit doors installed as blocks into own code
+    const blockFiles = files.code.filter((f) => /\.[jt]sx$/.test(f) && !profile.uiDirs.some((d) => f.startsWith(`${d}/`)) && BLOCK_COMPONENTS.has(stripExt(basename(f))));
+    profile.shadcn = {
+      installs: installs.map((i) => ({ config: i.config, uiDir: i.uiDir, catalogueNames: i.catalogueNames })),
+      kit,
+      sheet,
+      blockFiles,
+    };
+    return { confidence, evidence };
+  },
+
+  /**
+   * Question 6: the ideal for this kind. Per 100 own-code files. The numbers
+   * come from the 2026-09-11 fleet probe over the 15 shadcn kitchens in the
+   * benchmark (docs: shadcn-step1-fleet-probe): the ideal is the tidiest third,
+   * the stats are the whole set so the "cleaner than" line is honest. The
+   * step 4 slice replaces these with a rebuilt ruler.
+   */
+  ideals: {
+    paintTin: { value: 25, note: 'palette colours per 100 own-code files; the tidiest third of 15 shadcn repos sit under this' },
+    doorOverrides: { value: 15, note: 'kit components repainted through className, per 100 own-code files; the tidiest third sit under this' },
+  },
+  // the 15 shadcn kitchens in the benchmark fleet, 2026-09-11, per 100 own-code files
+  stats: {
+    paintTin: { values: [5, 8, 20, 21, 22, 32, 33, 58, 62, 66, 100, 179, 296, 488, 658], median: 62 },
+    doorOverrides: { values: [0, 3, 5, 14, 16, 16, 16, 17, 22, 26, 28, 31, 40, 44, 55], median: 22 },
+  },
+};

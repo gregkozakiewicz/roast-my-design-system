@@ -1,54 +1,93 @@
 {
   "repo": "fixture-shadcnv3",
+  "schemaVersion": 1,
+  "benchmark": {
+    "builtAt": "2026-09-10T23:51:05.104Z",
+    "repoCount": 34,
+    "referenceSystems": 10
+  },
   "score": 94,
   "noSystemLikely": false,
   "verdict": "no agent rules, so your AI is guessing.",
   "role": "product",
   "componentsMeasured": true,
+  "metrics": {
+    "colors": 9,
+    "colorTokens": 7,
+    "colorStrays": 2,
+    "greys": 4,
+    "greyStrays": 1,
+    "spacing": 0,
+    "exactDuplicates": 0,
+    "inlineStyles": 0,
+    "nearPairs": 1,
+    "important": 0,
+    "neverImported": 6,
+    "arbitrary": 0,
+    "tokenLed": true
+  },
   "tiles": [
     {
+      "metric": "colors",
       "label": "distinct colours",
-      "value": "9",
+      "value": 9,
+      "display": "9",
       "health": "good"
     },
     {
+      "metric": "greys",
       "label": "shades of grey",
-      "value": "4",
+      "value": 4,
+      "display": "4",
       "health": "good"
     },
     {
+      "metric": "spacing",
       "label": "off-scale spacing values",
-      "value": "0",
+      "value": 0,
+      "display": "0",
       "health": "good"
     },
     {
+      "metric": "exactDuplicates",
       "label": "duplicated components",
-      "value": "0",
+      "value": 0,
+      "display": "0",
       "health": "good"
     },
     {
+      "metric": "inlineStyles",
       "label": "inline style blocks",
-      "value": "0",
+      "value": 0,
+      "display": "0",
       "health": "good"
     },
     {
+      "metric": "nearPairs",
       "label": "near-identical colour pairs",
-      "value": "1",
+      "value": 1,
+      "display": "1",
       "health": "warn"
     },
     {
+      "metric": "important",
       "label": "!important declarations",
-      "value": "0",
+      "value": 0,
+      "display": "0",
       "health": "good"
     },
     {
+      "metric": "neverImported",
       "label": "components never imported",
-      "value": "6",
+      "value": 6,
+      "display": "6",
       "health": "info"
     },
     {
+      "metric": "arbitrary",
       "label": "arbitrary bracket values",
-      "value": "0",
+      "value": 0,
+      "display": "0",
       "health": "good"
     }
   ],

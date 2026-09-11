@@ -31,11 +31,14 @@ import { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA } from '../lib/feedback.mjs';
 import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
+import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
 
-// The benchmark (Ideal-2026 norms + scanned-repo stats) ships next to the
-// code so the page works offline; degrade gracefully when absent.
-const BENCH_PATH = join(dirname(fileURLToPath(import.meta.url)), '../benchmark/benchmark.json');
-const bench = existsSync(BENCH_PATH) ? JSON.parse(readFileSync(BENCH_PATH, 'utf8')) : null;
+// The benchmark and every judgement made against it live in score.mjs; this
+// file only draws. The same numbers reach summary.json through scoreHarvest.
+const bench = loadBenchmark();
+const B = benchHelpers(bench);
+const { percentile, cleanerPct, ideal, median, displayAvg, refMedian } = B;
+const healthOf = makeHealthOf(B);
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -46,6 +49,7 @@ if (!inPath) { console.error('Usage: node src/diagnose/index.mjs <harvest.json> 
 const outPath = resolve(arg('out', 'diagnosis.html'));
 
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
+const M = coreMetrics(h);
 
 // The GK mark (32px favicon, also gregkozakiewicz.com). Reused in the footer
 // as a CSS mask filled with currentColor so it works in both themes.
@@ -201,9 +205,8 @@ const nonGreys = colors.filter((c) => !isGrey(c.value));
 const twColorUtils = (h.tokens.tailwind?.colors ?? []).length;
 const spacing = h.tokens.spacing ?? [];
 const twSpacing = h.tokens.tailwind?.spacing ?? [];
-// Off-scale spacing only: CSS-declared values plus arbitrary brackets. Using
-// many steps of the sanctioned Tailwind scale is health, not sprawl.
-const spacingTotal = spacing.length + twSpacing.filter((v) => v.value.startsWith('[')).length;
+// Off-scale spacing only (formula in score.mjs, shared with the packages pass).
+const spacingTotal = M.spacing;
 const exactDupes = h.duplicates.exactDuplicates ?? [];
 // A wrapped pair (one file imports the name from the other) is composition,
 // not competition — listed with a badge, but not counted as a duplicate.
@@ -224,14 +227,11 @@ const typefaces = distinctTypefaces(fontFamilies);
 // Token-led repos (shadcn/Tailwind semantic setups) hold most of their colours
 // as deliberate CSS-variable tokens; judging them on the total punishes the
 // exact architecture the ideal recommends. Health rides on the strays instead.
-const colorTokens = colors.filter((c) => c.isToken).length;
-const colorStrays = colors.length - colorTokens;
-const tokenLed = colorTokens >= colorStrays && colorTokens > 0;
-const greyStrays = greys.filter((c) => !c.isToken).length;
+const { colorTokens, colorStrays, tokenLed, greyStrays } = M;
 
 // Arbitrary bracket values (p-[13px], text-[10px]) — scale erosion, counted.
 const arbitrary = h.tokens.tailwind?.arbitrary ?? [];
-const arbitraryCount = arbitrary.reduce((sum, a) => sum + a.count, 0);
+const arbitraryCount = M.arbitrary;
 
 // !important declarations: the cascade admitting defeat.
 const important = h.tokens.important ?? { count: 0, files: [] };
@@ -250,45 +250,13 @@ const neverImported = neverImportedComponents(h.components, h.profile?.uiDir);
 // metrics say so and take no score credit; when the repo is a published
 // library, usage means composition (how the system uses itself), never
 // adoption, and every accusation about orphans is softened to match.
-const componentsMeasured = h.profile?.componentDetection?.measured !== false;
+const { componentsMeasured, isLibrary, vendoredUi } = M;
 const notMeasuredReason = h.profile?.componentDetection?.reason ?? 'an unrecognised component pattern';
-const isLibrary = h.profile?.role === 'library';
 // A shadcn ui folder is a vendored catalogue: `shadcn add` copies the source
 // in, people take the whole set at once, and an unused component there is
 // stock on a shelf rather than something a team built and abandoned. It is
 // also protective — the agent reaches for it instead of writing its own worse
 // version. So it is counted and shown, never scored and never a fix to make.
-const vendoredUi = h.profile?.vendoredUi === true;
-
-// Benchmark helpers: for a metric value, where does this repo sit among the
-// scanned fleet? ("more colours than 90% of scanned repos")
-function percentile(metric, value) {
-  const vals = bench?.stats?.[metric]?.values;
-  if (!vals?.length) return null;
-  const below = vals.filter((v) => v < value).length;
-  return Math.round((below / vals.length) * 100);
-}
-// The flattering twin: what share of the scanned fleet is messier than you.
-function cleanerPct(metric, value) {
-  const vals = bench?.stats?.[metric]?.values;
-  if (!vals?.length) return null;
-  const above = vals.filter((v) => v > value).length;
-  return Math.round((above / vals.length) * 100);
-}
-const ideal = (metric) => bench?.ideal2026?.[metric]?.value ?? null;
-const median = (metric) => bench?.stats?.[metric]?.median ?? null;
-// A zero median reads as broken data ("Avg: 0 typefaces"), when it really
-// means "the median repo declares none". Fall back to the fleet mean there;
-// it stays an honest "Avg" and only zeroes out if literally every repo does.
-function displayAvg(metric) {
-  const mv = median(metric);
-  if (mv === null) return null;
-  if (mv !== 0) return mv;
-  const vals = bench?.stats?.[metric]?.values ?? [];
-  const mean = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
-  return mean >= 0.5 ? Math.round(mean) : null;
-}
-const refMedian = (metric) => bench?.referenceSystems?.stats?.[metric]?.median ?? null;
 
 // Clickable file paths — vscode:// opens the file straight in the editor.
 const fileLink = (f) => `<a class="path" href="vscode://file/${encodeURI(`${h.repo}/${f}`)}">${esc(f)}</a>`;
@@ -336,36 +304,8 @@ if (bench && findings.length) {
 }
 
 // ---------- health scoring ----------
-// Each tile is a mini scorecard: your number vs the Ideal Design System
-// target, the scanned-fleet average (the low bar) and the reputable-systems
-// median. Health drives the animated icon and colours:
-//   good  = at or under the ideal          → green checkmark (draws in)
-//   warn  = over the ideal but better than the 27-repo median: "over the
-//           target, better than the average repo" → amber circle (pulses)
-//   bad   = worse than the median (and the median is already a mess)
-//           → coral cross (shakes)
-// Where the median is missing or sits at/below ideal, warn caps at 1.5x ideal.
-// Zero-ideal metrics (duplicates, inline styles): 0 is good; a small tolerance
-// is warn; beyond that bad.
-// There used to be an absence rule here (basically nothing found = bad, on
-// the theory that an empty count means no design system). The noSystemLikely
-// guard now owns that judgement at report level, and for a repo with a real
-// system a zero is discipline, not absence — all spacing on tokens scored red.
-const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles', 'nearPairs', 'important', 'neverImported']);
-const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10, nearPairs: 2, important: 5, neverImported: 2 };
-function healthOf(metric, value) {
-  const iv = ideal(metric);
-  if (iv === null) return 'info';
-  if (ZERO_IDEAL.has(metric)) {
-    if (value === 0) return 'good';
-    return value <= WARN_TOLERANCE[metric] ? 'warn' : 'bad';
-  }
-  if (value <= iv) return 'good';
-  const mv = median(metric);
-  const warnCap = mv && mv > iv ? mv : iv * 1.5;
-  if (value <= warnCap) return 'warn';
-  return 'bad';
-}
+// The bands, the tolerances and healthOf itself live in score.mjs (imported
+// above), so a guard or a dashboard judges with the same ruler as this page.
 // Our own marks, drawn by hand for this report: a tick that starts at the
 // left foot, a full-bleed cross, a round exclamation, a quiet dash. Generic
 // glyphs on purpose, and our own coordinates on purpose: nothing here is
@@ -390,59 +330,49 @@ function row(label, valText, refVal, value) {
   if (value === refVal) return { label, val: valText, dir: 'eq' };
   return { label, val: valText, dir: value < refVal ? 'down' : 'up' };
 }
-function tile(value, label, metric, fallbackTarget, healthValue = value) {
-  const health = healthOf(metric, healthValue);
-  const iv = ideal(metric), mv = median(metric), rm = refMedian(metric);
+const FALLBACK_TARGET = {
+  colors: 'a system needs ~24', greys: 'a scale has up to 13', spacing: 'a dozen deliberate exceptions',
+  exactDuplicates: 'should be 0', inlineStyles: 'invisible to any system', nearPairs: 'copy-paste, not decisions',
+  important: 'the cascade admitting defeat', neverImported: 'the system nobody found', arbitrary: 'a handful of deliberate exceptions',
+};
+// Dress one judged tile for the page: formatted number, comparison rows.
+// Accepts a judged tile from score.mjs, or the positional form the
+// typography section uses for its unscored tiles: (value, label, metric, fallback).
+function tile(t, pLabel, pMetric, pFallback) {
+  if (typeof t === 'number') {
+    return tile({ metric: pMetric, label: pLabel, value: t, healthValue: t, health: healthOf(pMetric, t), fallbackTarget: pFallback });
+  }
+  const { metric, label, value, healthValue, health } = t;
+  if (health === 'na') {
+    return { num: '—', label, health, metric, healthValue: null,
+      rows: [{ label: `not measured: ${notMeasuredReason}`, val: '', dir: '' }] };
+  }
+  const iv = ideal(metric), rm = refMedian(metric);
   const pct = percentile(metric, value);
   const rows = [];
   if (iv !== null) rows.push(row('Ideal Design System', ZERO_IDEAL.has(metric) ? String(iv) : `~${n(iv)}`, iv, value));
-  else rows.push({ label: fallbackTarget, val: '', dir: '' });
+  else rows.push({ label: t.fallbackTarget ?? FALLBACK_TARGET[metric], val: '', dir: '' });
   const clean = cleanerPct(metric, value);
   const avgNote = pct !== null && pct >= 60 && health !== 'good' ? ` · messier than ${pct}%`
     : clean !== null && clean >= 60 ? ` · cleaner than ${clean}%` : '';
   const av = displayAvg(metric);
   if (av !== null) rows.push(row('Avg Design System', `${n(av)}${avgNote}`, av, value));
   if (rm !== null && (rm > 0 || ZERO_IDEAL.has(metric) || metric === 'arbitrary')) rows.push(row('Reputable systems', n(rm), rm, value));
+  // A vendored catalogue is never judged for what it left on the shelf, and a
+  // library's internal use says nothing about adoption: shown, not scored.
+  if (health === 'info' && metric === 'neverImported') {
+    rows.push({ label: isLibrary
+      ? 'library: internal use only, downstream consumers invisible'
+      : 'catalogue stock: installed by the shadcn CLI, not used yet', val: '', dir: '' });
+  }
   return { num: n(value), label, health, rows, metric, healthValue };
 }
-const bigStats = [
-  tile(colors.length, 'distinct colours', 'colors', 'a system needs ~24', tokenLed ? colorStrays : colors.length),
-  tile(greys.length, 'shades of grey', 'greys', 'a scale has up to 13', tokenLed ? greyStrays : greys.length),
-  tile(spacingTotal, 'off-scale spacing values', 'spacing', 'a dozen deliberate exceptions'),
-  tile(hardDupes.length, 'duplicated components', 'exactDuplicates', 'should be 0'),
-  tile(inline.count, 'inline style blocks', 'inlineStyles', 'invisible to any system'),
-  tile(nearPairs.length, 'near-identical colour pairs', 'nearPairs', 'copy-paste, not decisions'),
-  tile(important.count, '!important declarations', 'important', 'the cascade admitting defeat'),
-  tile(neverImported.length, 'components never imported', 'neverImported', 'the system nobody found'),
-  tile(arbitraryCount, 'arbitrary bracket values', 'arbitrary', 'a handful of deliberate exceptions'),
-];
-
-// Component metrics the detector could not measure render as such and drop
-// out of the score ('na' is not a scored health); a library's never-imported
-// count stays visible but unscored, with the reason on the tile.
-if (!componentsMeasured) {
-  for (const m of ['exactDuplicates', 'neverImported']) {
-    const i = bigStats.findIndex((st) => st.metric === m);
-    bigStats[i] = { num: '—', label: bigStats[i].label, health: 'na', metric: m, healthValue: null,
-      rows: [{ label: `not measured: ${notMeasuredReason}`, val: '', dir: '' }] };
-  }
-// A vendored catalogue is never judged for what it has left on the shelf —
-// but a repo that used everything it installed keeps the credit it earned, so
-// the tile only drops out of the score when it would otherwise accuse.
-} else if (isLibrary || (vendoredUi && neverImported.length > 0)) {
-  const t = bigStats.find((st) => st.metric === 'neverImported');
-  t.health = 'info';
-  t.rows.push({ label: isLibrary
-    ? 'library: internal use only, downstream consumers invisible'
-    : 'catalogue stock: installed by the shadcn CLI, not used yet', val: '', dir: '' });
-}
+const judgedTiles = tileHealths(M, healthOf);
+const bigStats = judgedTiles.map(tile);
 
 // Health score for the hero: the scored tiles averaged (good 100 / warn 55 / bad 10).
-const SCORE_OF = { good: 100, warn: 55, bad: 10 };
 const scoredTiles = bigStats.filter((s) => s.health in SCORE_OF);
-const healthScore = scoredTiles.length
-  ? Math.round(scoredTiles.reduce((sum, s) => sum + SCORE_OF[s.health], 0) / scoredTiles.length)
-  : null;
+const healthScore = scoreOfTiles(judgedTiles);
 
 // ---------- what a fix is worth ----------
 // The score is the average of the scored tiles, so moving one tile across a
@@ -1154,29 +1084,7 @@ const PKG_LABELS = {
   nearPairs: 'near-identical colour pairs', important: '!important declarations',
   neverImported: 'components nobody imports', arbitrary: 'arbitrary bracket values',
 };
-function scorePackage(m) {
-  const tokenLed = m.colorTokens >= m.colorStrays && m.colorTokens > 0;
-  const vals = {
-    colors: tokenLed ? m.colorStrays : m.colors,
-    greys: tokenLed ? m.greyStrays : m.greys,
-    spacing: m.spacing,
-    exactDuplicates: m.exactDuplicates,
-    inlineStyles: m.inlineStyles,
-    nearPairs: m.nearPairs,
-    important: m.important,
-    neverImported: m.neverImported,
-    arbitrary: m.arbitrary,
-  };
-  const rows = Object.entries(vals).map(([metric, v]) => ({ metric, value: v, health: healthOf(metric, v) }));
-  const scored = rows.filter((r) => r.health in SCORE_OF);
-  if (!scored.length) return null;
-  const score = Math.round(scored.reduce((sum, r) => sum + SCORE_OF[r.health], 0) / scored.length);
-  // the worst finding: furthest past its ideal among the failing tiles
-  const over = (r) => { const iv = ideal(r.metric); return iv ? r.value / Math.max(iv, 1) : r.value; };
-  const worst = scored.filter((r) => r.health === 'bad').sort((a, b) => over(b) - over(a))[0]
-    ?? scored.filter((r) => r.health === 'warn').sort((a, b) => over(b) - over(a))[0];
-  return { score, worst };
-}
+const scorePackage = (m) => scorePackageOf(m, healthOf, B);
 function packagesSection() {
   const pkgs = (h.packages ?? []).filter((p) => p.scored && p.metrics);
   const rated = pkgs.map((p) => ({ ...p, ...scorePackage(p.metrics) })).filter((p) => p.score !== undefined && p.score !== null);
@@ -1848,6 +1756,10 @@ if (summaryPath) {
   writeFileSync(resolve(summaryPath), JSON.stringify({
     repo: repoName,
     version: VERSION,
+    // The contract a history of scans compares by: schemaVersion for the
+    // shape, benchmark for the ruler each scan was measured against.
+    schemaVersion: SCHEMA_VERSION,
+    benchmark: bench ? { builtAt: bench.builtAt, repoCount: bench.repoCount, referenceSystems: bench.referenceSystems?.count ?? 0 } : null,
     ...(commissionedBy ? { commissionedBy } : {}),
     ...(notesText ? { notesEmbedded: true } : {}),
     ...(extraSections.length ? { sectionsEmbedded: extraSections.map((s) => s.title) } : {}),
@@ -1857,7 +1769,11 @@ if (summaryPath) {
     verdict,
     role: h.profile?.role ?? 'product',
     componentsMeasured,
-    tiles: bigStats.map((s) => ({ label: s.label, value: s.num, health: s.health })),
+    metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>
+      ({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }))(M),
+    // value is the number as counted (null when not measured); display is
+    // what the page prints. Until 7.0.0 value was the formatted string.
+    tiles: judgedTiles.map((t, i) => ({ metric: t.metric, label: t.label, value: t.value, display: bigStats[i].num, health: t.health })),
     ...(startMoves.length ? { moves: startMoves } : {}),
     packages: (h.packages ?? []).filter((p) => p.scored && p.metrics)
       .map((p) => ({ dir: p.dir, name: p.name, ...(scorePackage(p.metrics) ?? {}) }))

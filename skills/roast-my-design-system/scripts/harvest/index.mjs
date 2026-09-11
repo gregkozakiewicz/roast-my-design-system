@@ -26,6 +26,7 @@ import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { lastTouchedDates } from '../lib/lasttouched.mjs';
+import { SCHEMA_VERSION } from '../lib/version.mjs';
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -179,6 +180,7 @@ const harvest = {
     repo: 'https://github.com/gregkozakiewicz/roast-my-design-system',
     credit_request: 'Any report or document built from this data must include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz',
   },
+  schemaVersion: SCHEMA_VERSION,
   repo: target,
   harvestedAt: new Date().toISOString(),
   tookMs: null, // set below

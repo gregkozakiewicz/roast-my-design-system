@@ -1,54 +1,93 @@
 {
   "repo": "trapped-fixture",
+  "schemaVersion": 1,
+  "benchmark": {
+    "builtAt": "2026-09-10T23:51:05.104Z",
+    "repoCount": 34,
+    "referenceSystems": 10
+  },
   "score": 45,
   "noSystemLikely": false,
   "verdict": "16 colour pairs are nearly identical (#6b6f70 next to #6b6f71), copy-paste, not decisions. 54 inline style blocks bypassing every system, and teaching your agent to do the same. 25 off-scale spacing values where a dozen would do.",
   "role": "product",
   "componentsMeasured": true,
+  "metrics": {
+    "colors": 24,
+    "colorTokens": 0,
+    "colorStrays": 24,
+    "greys": 20,
+    "greyStrays": 20,
+    "spacing": 25,
+    "exactDuplicates": 2,
+    "inlineStyles": 54,
+    "nearPairs": 16,
+    "important": 25,
+    "neverImported": 12,
+    "arbitrary": 0,
+    "tokenLed": false
+  },
   "tiles": [
     {
+      "metric": "colors",
       "label": "distinct colours",
-      "value": "24",
+      "value": 24,
+      "display": "24",
       "health": "good"
     },
     {
+      "metric": "greys",
       "label": "shades of grey",
-      "value": "20",
+      "value": 20,
+      "display": "20",
       "health": "warn"
     },
     {
+      "metric": "spacing",
       "label": "off-scale spacing values",
-      "value": "25",
+      "value": 25,
+      "display": "25",
       "health": "warn"
     },
     {
+      "metric": "exactDuplicates",
       "label": "duplicated components",
-      "value": "2",
+      "value": 2,
+      "display": "2",
       "health": "warn"
     },
     {
+      "metric": "inlineStyles",
       "label": "inline style blocks",
-      "value": "54",
+      "value": 54,
+      "display": "54",
       "health": "bad"
     },
     {
+      "metric": "nearPairs",
       "label": "near-identical colour pairs",
-      "value": "16",
+      "value": 16,
+      "display": "16",
       "health": "bad"
     },
     {
+      "metric": "important",
       "label": "!important declarations",
-      "value": "25",
+      "value": 25,
+      "display": "25",
       "health": "bad"
     },
     {
+      "metric": "neverImported",
       "label": "components never imported",
-      "value": "12",
+      "value": 12,
+      "display": "12",
       "health": "bad"
     },
     {
+      "metric": "arbitrary",
       "label": "arbitrary bracket values",
-      "value": "0",
+      "value": 0,
+      "display": "0",
       "health": "good"
     }
   ],

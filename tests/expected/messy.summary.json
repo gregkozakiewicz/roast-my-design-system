@@ -1,54 +1,93 @@
 {
   "repo": "fixture-messy",
+  "schemaVersion": 1,
+  "benchmark": {
+    "builtAt": "2026-09-10T23:51:05.104Z",
+    "repoCount": 34,
+    "referenceSystems": 10
+  },
   "score": 70,
   "noSystemLikely": false,
   "verdict": "1 component implemented more than once, so an agent asked for a Button has several random options.",
   "role": "product",
   "componentsMeasured": true,
+  "metrics": {
+    "colors": 7,
+    "colorTokens": 2,
+    "colorStrays": 5,
+    "greys": 3,
+    "greyStrays": 2,
+    "spacing": 5,
+    "exactDuplicates": 1,
+    "inlineStyles": 2,
+    "nearPairs": 2,
+    "important": 3,
+    "neverImported": 3,
+    "arbitrary": 1,
+    "tokenLed": false
+  },
   "tiles": [
     {
+      "metric": "colors",
       "label": "distinct colours",
-      "value": "7",
+      "value": 7,
+      "display": "7",
       "health": "good"
     },
     {
+      "metric": "greys",
       "label": "shades of grey",
-      "value": "3",
+      "value": 3,
+      "display": "3",
       "health": "good"
     },
     {
+      "metric": "spacing",
       "label": "off-scale spacing values",
-      "value": "5",
+      "value": 5,
+      "display": "5",
       "health": "good"
     },
     {
+      "metric": "exactDuplicates",
       "label": "duplicated components",
-      "value": "1",
+      "value": 1,
+      "display": "1",
       "health": "warn"
     },
     {
+      "metric": "inlineStyles",
       "label": "inline style blocks",
-      "value": "2",
+      "value": 2,
+      "display": "2",
       "health": "warn"
     },
     {
+      "metric": "nearPairs",
       "label": "near-identical colour pairs",
-      "value": "2",
+      "value": 2,
+      "display": "2",
       "health": "warn"
     },
     {
+      "metric": "important",
       "label": "!important declarations",
-      "value": "3",
+      "value": 3,
+      "display": "3",
       "health": "warn"
     },
     {
+      "metric": "neverImported",
       "label": "components never imported",
-      "value": "3",
+      "value": 3,
+      "display": "3",
       "health": "bad"
     },
     {
+      "metric": "arbitrary",
       "label": "arbitrary bracket values",
-      "value": "1",
+      "value": 1,
+      "display": "1",
       "health": "good"
     }
   ],

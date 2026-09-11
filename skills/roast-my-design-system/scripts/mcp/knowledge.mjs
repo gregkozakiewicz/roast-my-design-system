@@ -22,6 +22,7 @@ import { resolveWorkspaces } from '../lib/workspaces.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { typefaceOf } from '../lib/typefaces.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
+import { decideProfile, profileOf } from '../profiles/index.mjs';
 
 const MAX_DEPTH = 14; // same ruler as the harvest CLI
 
@@ -45,6 +46,9 @@ export function loadKnowledge(root) {
   const files = walkRepo(root, MAX_DEPTH, exclusions);
   const profile = profileRepo(root, files);
   const { components } = harvestComponents(root, files.code);
+  // The MCP path used to skip the kind decision the CLI harvest makes, so a
+  // library read as a product here. Same call, same answer, both doors.
+  decideProfile(profile, components, files);
   const tokens = harvestTokens(root, files.styles, files.code);
   const duplicates = findDuplicates(components, profile.uiDir, root);
   const context = harvestContext(root);
@@ -120,8 +124,8 @@ export function loadKnowledge(root) {
     canonical,
     dupeByName,
     neverImported,
-    // stock, not debt: see harvest profile.vendoredUi
-    vendoredUi: profile.vendoredUi === true,
+    // stock, not debt: see profiles/index.mjs
+    vendoredUi: profileOf(profile).vendoredUi,
     agentFiles: (context ?? []).filter((c) => c.kind === 'agent-rules'),
   };
 }

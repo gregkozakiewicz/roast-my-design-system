@@ -12,6 +12,7 @@ import { resolve } from 'node:path';
 import { VERSION } from '../lib/version.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
+import { profileOf } from '../profiles/index.mjs';
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -46,8 +47,8 @@ for (const d of (h.duplicates?.exactDuplicates ?? [])) {
 }
 // A vendored shadcn catalogue is stock, not a defect: nothing to annotate in
 // code scanning, and a finding per component would bury the real ones.
-if (!h.profile?.vendoredUi) {
-  for (const c of neverImportedComponents(h.components ?? [], h.profile?.uiDir ?? null)) {
+if (!profileOf(h).vendoredUi) {
+  for (const c of neverImportedComponents(h.components ?? [], profileOf(h).uiDir)) {
     push('never-imported-component', 'note', `<${c.name}> is defined here and imported by nothing.`, c.file);
   }
 }

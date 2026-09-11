@@ -33,6 +33,9 @@ skills/roast-my-design-system/scripts/mcp/engine.mjs
 skills/roast-my-design-system/scripts/mcp/knowledge.mjs
 skills/roast-my-design-system/scripts/mcp/server.mjs
 skills/roast-my-design-system/scripts/mcp/tools.mjs
+skills/roast-my-design-system/scripts/profiles/index.mjs
+skills/roast-my-design-system/scripts/profiles/library.mjs
+skills/roast-my-design-system/scripts/profiles/product.mjs
 skills/roast-my-design-system/scripts/rules/apply.mjs
 skills/roast-my-design-system/scripts/rules/build.mjs
 skills/roast-my-design-system/scripts/rules/index.mjs

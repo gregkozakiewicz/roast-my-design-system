@@ -2,6 +2,28 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.1.0 — 2026-09-11
+
+No score moves. This release changes where the scanner decides what kind of
+repo it is looking at, so that the next kind (a shadcn install) can be added
+without touching any counter.
+
+- **One place decides the kind of repo.** The scanner used to answer "is
+  this a library?" and "can I measure components here?" in three places: the
+  profiler, a block inside the harvest, and each consumer re-reading raw
+  flags. They now live in `profiles/`, one file per kind (`product`,
+  `library`), picked once at the start of a scan. Reports, rules, SARIF and
+  the score read the decision through one accessor. Every fixture's expected
+  output is byte-identical to 7.0.0.
+- **The decision carries its evidence.** `harvest.json` gains `kind`,
+  `kindConfidence` and `kindEvidence` on the profile: "publishable package
+  @acme/ui with 20 reusable components and 0 pages". Nothing prints it yet.
+  `role` stays as it was. New fields only, so `schemaVersion` stays 1.
+- **The MCP server now makes the same decision.** It used to skip the kind
+  step the CLI harvest makes, so a library read as a product through that
+  door. Both doors now give one answer.
+- **6 unit checks** for the profile layer in `tests/unit/profiles.test.mjs`.
+
 ## 7.0.0 — 2026-09-11
 
 Major, for two reasons. Five counting bugs are fixed, so most repos lose a few

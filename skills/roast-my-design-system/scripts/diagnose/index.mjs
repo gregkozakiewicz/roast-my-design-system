@@ -32,6 +32,7 @@ import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
+import { profileOf } from '../profiles/index.mjs';
 
 // The benchmark and every judgement made against it live in score.mjs; this
 // file only draws. The same numbers reach summary.json through scoreHarvest.
@@ -243,15 +244,16 @@ const nearPairs = nearColorPairs(colors);
 // rather than wallpaper. Theme variants are not in here; those are the system.
 const collisions = h.tokens.tokenCollisions ?? [];
 
-const neverImported = neverImportedComponents(h.components, h.profile?.uiDir);
+const P = profileOf(h);
+const neverImported = neverImportedComponents(h.components, P.uiDir);
 
-// Measurability and role, decided by the harvest (telekom/scale, 2026-09-01):
+// Measurability and kind, decided once in profiles/ (telekom/scale, 2026-09-01):
 // when the component detector could not read this repo's stack, the component
 // metrics say so and take no score credit; when the repo is a published
 // library, usage means composition (how the system uses itself), never
 // adoption, and every accusation about orphans is softened to match.
 const { componentsMeasured, isLibrary, vendoredUi } = M;
-const notMeasuredReason = h.profile?.componentDetection?.reason ?? 'an unrecognised component pattern';
+const notMeasuredReason = P.notMeasuredReason;
 // A shadcn ui folder is a vendored catalogue: `shadcn add` copies the source
 // in, people take the whole set at once, and an unused component there is
 // stock on a shelf rather than something a team built and abandoned. It is
@@ -1767,7 +1769,7 @@ if (summaryPath) {
     score: healthScore,
     noSystemLikely,
     verdict,
-    role: h.profile?.role ?? 'product',
+    role: P.kind,
     componentsMeasured,
     metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>
       ({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }))(M),

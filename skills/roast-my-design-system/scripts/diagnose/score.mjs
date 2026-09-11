@@ -26,6 +26,7 @@ import { isGrey } from '../lib/color.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
+import { profileOf } from '../profiles/index.mjs';
 
 export { SCHEMA_VERSION };
 
@@ -131,14 +132,14 @@ export function coreMetrics(h) {
     inlineStyles: h.tokens?.inlineStyles?.count ?? 0,
     nearPairs: nearColorPairs(colors).length,
     important: h.tokens?.important?.count ?? 0,
-    neverImported: neverImportedComponents(h.components, h.profile?.uiDir).length,
+    neverImported: neverImportedComponents(h.components, profileOf(h).uiDir).length,
     arbitrary: (h.tokens?.tailwind?.arbitrary ?? []).reduce((sum, a) => sum + a.count, 0),
-    // Measurability and role, decided by the harvest: an unreadable stack
+    // Measurability and kind, decided once in profiles/: an unreadable stack
     // takes no score credit; a library's orphans are shown, not judged; a
     // vendored shadcn catalogue is stock on a shelf, not abandonment.
-    componentsMeasured: h.profile?.componentDetection?.measured !== false,
-    isLibrary: h.profile?.role === 'library',
-    vendoredUi: h.profile?.vendoredUi === true,
+    componentsMeasured: profileOf(h).componentsMeasured,
+    isLibrary: profileOf(h).isLibrary,
+    vendoredUi: profileOf(h).vendoredUi,
   };
 }
 

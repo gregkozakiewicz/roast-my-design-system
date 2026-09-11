@@ -609,7 +609,7 @@ function sheetSection() {
     parts.push(whyToggle('doorOverrides'));
   }
   if (!parts.length) return '';
-  return `<section class="glass pad" style="margin-top:16px">
+  return `<section class="glass pad" id="shadcn" style="margin-top:16px">
     ${sectionHead('The shadcn theme and the 2 shadcn checks', 'shadcn gives you a theme file of named variables and a set of components with variants. These receipts show where your own code went around both.')}
     ${parts.join('')}
   </section>`;

@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=6.0.1" width="72" alt="roast-my-design-system">
+<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.0.0" width="72" alt="roast-my-design-system">
 
 # roast-my-design-system
 
@@ -11,6 +11,8 @@
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
 > **New in 7.0: the score is a module, and every report names its ruler.** The arithmetic behind the number now lives in one importable file, so a CI guard or a dashboard keeping history judges with the same bands as the report. Every `summary.json` says which schema and which benchmark it was measured against, so a repo that changed can be told apart from a ruler that changed. Five counting faults were fixed on the way: a bracket spacing class was penalised twice, a hex inside a CSS comment counted as a colour, and three smaller ones. Counts fall a little on most repos; on shadcn/ui 325 colours become 323 and the score stays 65. Big monorepos scan about ten times faster. If you gate CI on a threshold, take a fresh score before you compare, and if you read the JSON, a tile's `value` is now a number with the printed string beside it as `display`.
+
+> **New in 6.0: a dark mode is not sprawl, and the ruler has been rebuilt.** A system with a dark theme states most of its colours twice. One with a density switch states its spacing twice again. Every restatement was counted, so the systems doing the most work scored the worst. Now only a token's first statement counts. A factory-fresh shadcn install goes from 20 colours to 16, and Shoelace from 420 to 219. Two related faults went with it. `border-radius: var(--radius)` was counted as a radius value, so Polaris showed 49 radii of which 36 were references to its own tokens, and Telekom showed 52 font sizes of which 48 were. A new finding names one token holding two different colours in two packages of a monorepo, which fires 8 times across 19 real repos. The benchmark was rebuilt with all of it, so every score is measured against a ruler that counts the same way: cal.com 15 to 20, Cloudscape 35 to 40, MUI 50 to 55. If you have a score from 5.x, take a fresh one before you compare.
 
 Run it on your codebase and get, in about a second:
 
@@ -43,7 +45,7 @@ Type these in a terminal and you get a result.
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
 | <code>...&nbsp;--exclude&nbsp;lab/</code> | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
-| `... --json` | The scan summary as JSON on stdout, for scripts and pipelines |
+| `... --json` | The scan summary as JSON on stdout, for scripts and pipelines. Versioned: `schemaVersion`, the benchmark it was measured against, and every metric as a number, so two scans can be compared like with like |
 | <code>...&nbsp;--by&nbsp;"Dwayne&nbsp;Hicks"</code> | Puts a name in the report header, for when you ran it for someone else |
 | <code>...&nbsp;--theme&nbsp;light</code>&nbsp;/ <code>--out&nbsp;&lt;file&gt;</code>&nbsp;/ <code>--no-open</code>&nbsp;/ <code>--open</code> | Light report, custom report path, never open the browser, always open it |
 
@@ -71,11 +73,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=6.0.1)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.0.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=6.0.1)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.0.0)
 
 ## What makes the numbers trustworthy
 
@@ -86,6 +88,7 @@ The same report in light mode (one file, built-in toggle):
 - **Honest gaps.** When a repo's components register in a pattern the scan can not read, the component tiles say "not measured" and drop out of the score. A zero the scanner never earned is presented as blindness, not discipline.
 - **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality. Your own exclusions (`.roastignore`, `--exclude`) are printed in the report header with file counts, so a scoped scan can never pass itself off as the whole repo.
 - **Intent-aware counting (v3).** Runtime-computed inline styles, compound-component APIs and wrapper components are not crimes and are not counted as ones. Token-led repos are judged on their hardcoded strays, not their token architecture. Repeated arbitrary values are read as decisions without names, not drift.
+- **The score is arithmetic you can import.** The bands, the tolerances and the average live in one small module, `scoreHarvest(harvest)`, and the report only draws what it returns. A CI guard or a dashboard keeping history judges with the same ruler as the page, and every `summary.json` names the schema and the benchmark it was measured against.
 - **A real benchmark.** The "Avg Design System" yardstick comes from scanning 34 public React repos (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…). Median: 130 colours, 17 greys, 20 duplicated components, 49 inline style blocks, 70 arbitrary Tailwind values. The builder and the repo list are in `tools/benchmark/`, so the ruler can be checked, not just quoted.
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
 

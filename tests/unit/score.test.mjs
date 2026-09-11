@@ -1,5 +1,5 @@
 // The score as a function: bands, tolerances, the average, and the contract
-// summary.json promises to anyone keeping history.
+// summary.json promises to anyone comparing two scans.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { benchHelpers, makeHealthOf, tileHealths, scoreOfTiles, scorePackage, scoreHarvest, coreMetrics, SCHEMA_VERSION, TILES } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
@@ -69,7 +69,7 @@ test('scorePackage names the worst tile', () => {
   assert.equal(p.score, Math.round((10 + 10 + 7 * 100) / 9));
 });
 
-test('scoreHarvest: the contract for a history of scans', () => {
+test('scoreHarvest: the contract for comparing two scans', () => {
   const h = {
     tokens: { colors: [{ value: '#111111', isToken: true, count: 3 }, { value: '#121212', isToken: false, count: 1 }], spacing: [{ value: '13px' }], tailwind: { spacing: [{ value: '[7px]' }, { value: '4' }], arbitrary: [{ value: '[10px]', count: 2 }] }, inlineStyles: { count: 1 }, important: { count: 0 } },
     duplicates: { exactDuplicates: [{ name: 'A', files: ['a', 'b'] }, { name: 'B', files: ['c', 'd'], wrapped: true }] },

@@ -1,6 +1,6 @@
 /**
  * Score — the arithmetic behind the number in the hero, on its own so it can
- * be imported (a guard, a CI step, a dashboard keeping history) without
+ * be imported (a guard, a CI step, any tool comparing two scans) without
  * rendering a page. The report imports this; nothing here knows about HTML.
  *
  * One harvest.json in, one plain object out:

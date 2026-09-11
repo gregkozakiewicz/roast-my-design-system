@@ -305,7 +305,7 @@ if (bench && findings.length) {
 
 // ---------- health scoring ----------
 // The bands, the tolerances and healthOf itself live in score.mjs (imported
-// above), so a guard or a dashboard judges with the same ruler as this page.
+// above), so a guard or a CI check judges with the same ruler as this page.
 // Our own marks, drawn by hand for this report: a tick that starts at the
 // left foot, a full-bleed cross, a round exclamation, a quiet dash. Generic
 // glyphs on purpose, and our own coordinates on purpose: nothing here is
@@ -1756,7 +1756,7 @@ if (summaryPath) {
   writeFileSync(resolve(summaryPath), JSON.stringify({
     repo: repoName,
     version: VERSION,
-    // The contract a history of scans compares by: schemaVersion for the
+    // The contract two scans are compared by: schemaVersion for the
     // shape, benchmark for the ruler each scan was measured against.
     schemaVersion: SCHEMA_VERSION,
     benchmark: bench ? { builtAt: bench.builtAt, repoCount: bench.repoCount, referenceSystems: bench.referenceSystems?.count ?? 0 } : null,

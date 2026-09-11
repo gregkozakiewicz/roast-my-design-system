@@ -17,13 +17,13 @@ a tile's `value` is now a number, and the printed text moved to `display`.
 - **The scoring code is a separate file.** `diagnose/score.mjs` holds the
   score bands, the tolerances, the nine tile results, the average and the
   per-package score. `scoreHarvest(harvest)` returns all of it as plain data,
-  so a CI check or a dashboard can use it without rendering a page. The report
+  so a CI check can use it without rendering a page. The report
   uses the same function.
 - **Outputs record their schema and benchmark.** `harvest.json` and
   `summary.json` carry `schemaVersion` (1). `summary.json` also records the
   benchmark used (build date, repo count), a `metrics` object with every
-  metric as a number, and tiles that name their metric. A tool keeping a
-  history of scans can tell a change in the repo from a change in the
+  metric as a number, and tiles that name their metric. Two scans can be
+  compared, and a change in the repo can be told from a change in the
   benchmark.
 - **Five counting bugs fixed, each with a test.** A bracket on a spacing
   utility such as `p-[13px]` was counted as off-scale spacing and again as an

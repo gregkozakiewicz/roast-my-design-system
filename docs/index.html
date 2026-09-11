@@ -90,6 +90,7 @@
 <li><b>The first fixes ranked by payoff, each with its prompt.</b> A Where to start list derived from your own numbers, with what each move is worth and where the score lands if you do them all: three tweaks, 55 becomes 85. Every move carries a copy button with a ready-made fix prompt for your agent, viewable right in the report before you trust it.</li>
 <li><b>The analysis travels with the report.</b> Run as the Claude Code skill, the shareable HTML carries What the numbers mean — Claude's read of your scan: which findings matter, which good numbers are accidents, what to fix first. Forwarded reports keep the interpretation, not just the score. Labelled as written by AI, never mixed into the measurement.</li>
 <li><b>Rules that stop the mess coming back.</b> A generated design-system-rules.md with your canonical components and their most common real usage, quoted from your own code with a receipt. One flag injects it into every agent file you have: Claude, Cursor, GitHub Copilot, and Windsurf. And every scan checks the rules you already have for stale references, because a rule your agent obeys is worse than no rule when the repo has moved on.</li>
+<li><b>Numbers a script can use.</b> --json prints the summary with a schema version, the benchmark it was scored against and every metric as a number, so a CI check can compare two scans and tell a change in your repo from a change in the benchmark. The scoring code is one small importable file, and the report uses the same one.</li>
 <li><b>Live answers while the agent works.</b> --mcp runs the scan as a local MCP server: your agent asks which Button is canonical, which token holds the colour it was about to hardcode, and gets its changed files reviewed before finishing. Five tools plus the roast-fix prompt, which serves the top fix from a fresh scan; ask again and the next move has risen to the top. Nothing leaves your machine.</li>
 </ul>
 <p class="lead-close">Read only, no network, no telemetry, one shareable HTML report. Every release is provenance signed on npm and passes a 55-check snapshot suite before it ships.</p>
@@ -100,7 +101,7 @@
 <div class="install"><b>npx</b> roast-my-design-system@latest</div>
 <p class="sub">One command in any repo. No install, no Claude needed.</p>
 <div class="kicker" style="margin-top:26px">Add the MCP server to Claude Code</div>
-<div class="install"><b>claude mcp add</b> roast -- npx roast-my-design-system --mcp</div>
+<div class="install"><b>claude mcp add</b> roast -- npx roast-my-design-system@latest --mcp</div>
 <p class="sub">Your agent asks the design system before writing UI, and gets the work checked after. Local, read only, nothing leaves your machine. Verified in Claude Code, Cursor, and Windsurf (now Devin Desktop); any MCP client can register the same command.</p>
 <div class="kicker" style="margin-top:26px">Manual install (Claude Code, any version)</div>
 <div class="install"><b>git clone</b> https://github.com/gregkozakiewicz/roast-my-design-system.git<br><b>cp -r</b> roast-my-design-system/skills/roast-my-design-system ~/.claude/skills/</div>

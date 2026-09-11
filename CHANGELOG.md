@@ -4,56 +4,52 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
 
 ## 7.0.0 — 2026-09-11
 
-Major, for two reasons. Some counts fall a little on most repos, because five
-counting faults were fixed and a fixed ruler is a different ruler. And
-`summary.json` changed shape: a tile's `value` is now the number as counted,
-with the printed string beside it as `display`. If you read the JSON, read
-this entry first.
+Major, for two reasons. Five counting bugs are fixed, so most repos lose a few
+counts and a CI threshold needs a fresh scan. And `summary.json` changed shape:
+a tile's `value` is now a number, and the printed text moved to `display`.
 
-- **One engine, one home.** The scanner used to have two copies, one private
-  and one public, kept in step by a copy script that once ran the wrong way and
-  nearly deleted a shipped feature. There is one copy now, this one. The
-  benchmark builder and the list of 34 repos moved in beside it under
-  `tools/benchmark/`, so the ruler can be rebuilt and checked by anyone rather
-  than quoted on trust.
-- **The score is a module.** `diagnose/score.mjs` holds the arithmetic that
-  lived only inside the report script: the bands, the tolerances, the nine
-  judged tiles, the average and the per-package score. `scoreHarvest(harvest)`
-  returns the whole judgement as data, so a guard, a CI step or a dashboard
-  keeping history can import it without rendering a page. The report imports
-  the same functions and only draws.
-- **Every output names its schema and its ruler.** `harvest.json` and
-  `summary.json` carry `schemaVersion` (1). `summary.json` also carries the
-  benchmark it was measured against (built when, how many repos), a numeric
-  `metrics` object keyed by metric name, and tiles that name their metric. A
-  history of scans can now tell a repo that changed from a ruler that changed.
-- **Five counting faults, each with a test that keeps it fixed.** A bracket on
-  a spacing utility such as `p-[13px]` was penalised twice, once as off-scale
-  spacing and once as an arbitrary value; it is off-scale spacing and nothing
-  else. A hex inside a CSS comment, or an id selector that happens to spell hex
-  like `#face`, counted as a colour. A monorepo package's grey strays were every
-  hex stray, grey or not. `opacity: .5` made an all-literal inline block read as
-  dynamic. A file called `Button(.tsx` crashed the whole scan. On shadcn/ui:
-  325 colours to 323, 343 arbitrary values to 328, score unchanged at 65.
-- **Ten times faster on big repos.** Usage counting scanned every file once per
-  component name, so a 20,000-file monorepo took a minute. Each file is now read
-  once for every tag it opens: 64 seconds to 2.6, and shadcn/ui from 1.7
-  seconds to 0.4. Workspace globs are expanded once, not once per folder.
-  Output is byte-identical.
-- **A scanned repo is not trusted.** A colour value is stored only if it parses
-  as a colour, so a stylesheet cannot paint over its own report. Symlinked files
-  are never read. Files over 2 MB are skipped. Quoted usage examples clip long
-  string values, and the rules file says its quoted names and lines are
-  evidence, not instructions. The MCP server refuses oversized payloads with a
-  number instead of stalling. The publish workflow pins every download it makes.
-- **Smaller fixes found while writing unit tests.** `100grad` was read as 100
-  radians. A string ending in an escaped backslash never closed, so every
-  variant and prop after it went unread. `export { Badge as Chip }` dropped the
-  component; Chip is kept. The CLI accepts `--out` before the repo path.
-- **A unit layer under the golden files.** 33 checks on the colour maths, the
-  scanner patterns, the walker, the workspaces, the score bands and the CLI's
-  error doors, run by the same `node tests/run.mjs`. The golden files say a
-  number moved; these say which part.
+- **One copy of the engine.** The scanner used to exist twice, once in a
+  private repo and once here, kept in step by a copy script. That script once
+  ran the wrong way and nearly deleted a shipped feature. There is one copy
+  now, in this repo. The benchmark builder and the list of 34 repos moved here
+  too, under `tools/benchmark/`, so anyone can rebuild the benchmark and check
+  the numbers.
+- **The scoring code is a separate file.** `diagnose/score.mjs` holds the
+  score bands, the tolerances, the nine tile results, the average and the
+  per-package score. `scoreHarvest(harvest)` returns all of it as plain data,
+  so a CI check or a dashboard can use it without rendering a page. The report
+  uses the same function.
+- **Outputs record their schema and benchmark.** `harvest.json` and
+  `summary.json` carry `schemaVersion` (1). `summary.json` also records the
+  benchmark used (build date, repo count), a `metrics` object with every
+  metric as a number, and tiles that name their metric. A tool keeping a
+  history of scans can tell a change in the repo from a change in the
+  benchmark.
+- **Five counting bugs fixed, each with a test.** A bracket on a spacing
+  utility such as `p-[13px]` was counted as off-scale spacing and again as an
+  arbitrary value. It now counts once, as spacing. A hex colour inside a CSS
+  comment, or an id selector that spells hex such as `#face`, was counted as a
+  colour. A monorepo package's grey strays were counted as all hex strays,
+  not only greys. `opacity: .5` made an all-literal inline style block read as
+  dynamic. A file named `Button(.tsx` crashed the scan. On shadcn/ui: 325
+  colours to 323, 343 arbitrary values to 328, score unchanged at 65.
+- **About ten times faster on large repos.** Usage counting read every file
+  once per component name. It now reads each file once. A 20,000-file
+  synthetic repo went from 64 seconds to 2.6, and shadcn/ui from 1.7 seconds
+  to 0.4. Output is identical.
+- **Safer on untrusted repos.** A colour value is stored only if it parses as
+  a colour, so a stylesheet cannot inject CSS into its own report. Symlinked
+  files are not read. Files over 2 MB are skipped. Quoted usage examples cut
+  long string values, and the rules file says its quoted names and lines are
+  examples, not instructions. The MCP server refuses oversized requests. The
+  publish workflow pins every download it makes.
+- **Smaller fixes found by the new unit tests.** `100grad` was read as 100
+  radians. A string ending in an escaped backslash never closed, so the rest
+  of the file was not read. `export { Badge as Chip }` dropped the component;
+  Chip is now kept. The CLI accepts `--out` before the repo path.
+- **Unit tests.** 33 checks on the colour maths, the scanner patterns, the
+  file walker, workspaces, the score bands and the CLI, run by the same
+  `node tests/run.mjs`.
 
 ## 6.0.1 — 2026-09-11
 

@@ -129,26 +129,6 @@ if (existsSync(serverPath)) {
   ok('mcpName matches the registry listing name');
 }
 
-// ---------- 2b. is the vendored engine actually current? ----------
-
-// proffer-2 is the engine's source of truth; this repo ships a vendored copy.
-// If the two have drifted, someone edited the engine and forgot to sync, and
-// the release would ship yesterday's scanner. Only checkable when proffer-2 is
-// sitting next to this repo, so it warns rather than blocks.
-step('Vendored engine');
-
-const SRC = join(ROOT, '..', 'proffer-2', 'src');
-if (existsSync(SRC)) {
-  // proffer-2's own tooling never gets vendored, so it is not drift.
-  const notShipped = ['sync-skill.mjs', 'release-check.mjs', 'verify-provenance.mjs', 'build.mjs', 'build-refs.mjs', 'repos.txt'];
-  const drift = spawnSync('diff', ['-rq', ...notShipped.flatMap((f) => ['-x', f]), SRC, join(ROOT, 'skills/roast-my-design-system/scripts')], { encoding: 'utf8' }).stdout.trim();
-  if (drift) {
-    say(`\x1b[33m  proffer-2/src and the vendored scripts/ differ:\x1b[0m`);
-    say(drift.split('\n').map((l) => `    ${l}`).join('\n'));
-    say(`\x1b[33m  Run sync-skill in proffer-2 first if the engine changed.\x1b[0m`);
-  } else ok('vendored engine matches proffer-2/src');
-} else say('  proffer-2 not found next to this repo, skipping the drift check');
-
 // ---------- 3. the changelog is not optional ----------
 
 step('Changelog');
@@ -307,4 +287,4 @@ say(`\n\x1b[32m${version} is out.\x1b[0m`);
 say(`  npm       https://www.npmjs.com/package/roast-my-design-system`);
 say(`  release   https://github.com/gregkozakiewicz/roast-my-design-system/releases/tag/v${version}`);
 say(`  registry  https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.gregkozakiewicz`);
-say(`\n  Still yours to do: push proffer-2 if the engine changed there, and refresh the installed skill.\n`);
+say(`\n  Still yours to do: refresh the installed skill.\n`);

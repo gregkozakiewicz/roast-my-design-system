@@ -9,9 +9,9 @@
  *                                diff before committing: expected files are
  *                                the contract)
  *
- * Runs against whichever engine sits next to it: proffer-2's src/ (the source
- * of truth) or the roaster repo's vendored scripts/ (what actually ships).
- * The same suite must pass in both places.
+ * Runs against the engine in skills/roast-my-design-system/scripts/, the one
+ * copy that ships. (It still finds a sibling src/ if one exists, a leftover
+ * from the days of two repos.)
  */
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, mkdirSync, rmSync, readdirSync } from 'node:fs';
@@ -660,7 +660,7 @@ const same = JSON.stringify(normalizeHarvest(JSON.parse(readFileSync(d1, 'utf8')
 same ? ok('two harvests of messy are identical') : bad('two harvests of messy are identical', 'outputs differ');
 
 // End-to-end through the npx wrapper, when it exists next to this engine
-// (roaster repo layout only; proffer-2 has no bin).
+// (guarded so the suite also runs from a bare engine checkout).
 const bin = resolve(ENGINE, '../../../bin/roast.mjs');
 if (existsSync(bin)) {
   console.log('npx wrapper:');

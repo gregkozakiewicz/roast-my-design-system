@@ -213,6 +213,9 @@ function inlineStyleBlocks(src) {
  *   each an array of { value, index } (important/inlineBlocks: index only)
  */
 export function extractStyling(src, { css = false } = {}) {
+  // Same rule as the harvest: a comment is not a stylesheet. Blanked to
+  // spaces so every index below still points at the right line.
+  if (css) src = src.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length));
   const out = { colors: [], spacing: [], arbitrary: [], inlineBlocks: [], important: [], tokenDefs: [] };
   if (css) {
     for (const m of src.matchAll(/!\s*important/gi)) out.important.push({ index: m.index });
@@ -227,11 +230,12 @@ export function extractStyling(src, { css = false } = {}) {
     const defIndexes = new Set(out.tokenDefs.map((d) => d.value));
     for (const m of src.matchAll(HEX_RE)) {
       const v = normalizeHex(m[0]);
+      if (!inDeclaration(src, m.index)) continue; // #face { } is a selector, same rule as the harvest
       if (!defIndexes.has(v)) out.colors.push({ value: v, index: m.index });
     }
     for (const m of src.matchAll(FUNC_COLOR_RE)) {
-      const v = m[0].replace(/\s+/g, ' ').toLowerCase();
-      if (!isVarRef(v) && !defIndexes.has(v)) out.colors.push({ value: v, index: m.index });
+      const v = isVarRef(m[0]) ? null : funcColour(m[0]);
+      if (v && !defIndexes.has(v)) out.colors.push({ value: v, index: m.index });
     }
     for (const m of src.matchAll(SPACING_PROPS)) {
       for (const len of (m[2].match(LENGTH_RE) ?? [])) out.spacing.push({ value: len, index: m.index });
@@ -268,7 +272,8 @@ export function extractStyling(src, { css = false } = {}) {
   const seen = new Set(out.colors.map((c) => c.index));
   for (const m of src.matchAll(HEX_RE)) {
     if (isIdentifierHex(m[0])) continue;
-    if (![...seen].some((i) => Math.abs(i - m.index) < 4)) out.colors.push({ value: normalizeHex(m[0]), index: m.index });
+    if (css && !inDeclaration(src, m.index)) continue; // #face { } is a selector, same rule as the harvest
+    if (!seen.has(m.index) && ![...seen].some((i) => Math.abs(i - m.index) < 4)) out.colors.push({ value: normalizeHex(m[0]), index: m.index });
   }
   for (const m of src.matchAll(/!\s*important/gi)) out.important.push({ index: m.index });
   return out;

@@ -20,8 +20,8 @@ const pct = (s, max = 1) => (s.endsWith('%') ? (num(s) / 100) * max : num(s));
 function hueToDeg(s) {
   const v = num(s);
   if (/turn$/.test(s)) return v * 360;
+  if (/grad$/.test(s)) return v * 0.9;   // before rad: "grad" ends in "rad"
   if (/rad$/.test(s)) return (v * 180) / Math.PI;
-  if (/grad$/.test(s)) return v * 0.9;
   return v;
 }
 

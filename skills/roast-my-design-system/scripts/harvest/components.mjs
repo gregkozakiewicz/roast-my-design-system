@@ -10,13 +10,17 @@ import { readSource } from './walk.mjs';
 const QUOTES = new Set(['"', "'", '`']);
 
 // ---- brace/string-aware helpers (verbatim from 1.0) ----
+// "it\\" ends a string: the quote is preceded by a backslash that is itself
+// escaped. Checking only text[i - 1] read that string as never closing, and
+// every variant and prop after it in the file went unread.
+const escaped = (text, i) => { let k = 0; while (i - 1 - k >= 0 && text[i - 1 - k] === '\\') k++; return k % 2 === 1; };
 export function sliceObject(text, from) {
   const open = text.indexOf('{', from);
   if (open === -1) return null;
   let depth = 0, str = null;
   for (let i = open; i < text.length; i++) {
     const c = text[i];
-    if (str) { if (c === str && text[i - 1] !== '\\') str = null; continue; }
+    if (str) { if (c === str && !escaped(text, i)) str = null; continue; }
     if (QUOTES.has(c)) { str = c; continue; }
     if (c === '{') depth++;
     else if (c === '}') { depth--; if (depth === 0) return { inner: text.slice(open + 1, i), end: i }; }
@@ -28,7 +32,7 @@ function topLevelKeys(inner) {
   let depth = 0, str = null, i = 0;
   while (i < inner.length) {
     const c = inner[i];
-    if (str) { if (c === str && inner[i - 1] !== '\\') str = null; i++; continue; }
+    if (str) { if (c === str && !escaped(inner, i)) str = null; i++; continue; }
     if (QUOTES.has(c)) { str = c; i++; continue; }
     if (c === '{' || c === '(' || c === '[') depth++;
     else if (c === '}' || c === ')' || c === ']') depth--;
@@ -44,7 +48,7 @@ function topLevelColon(s) {
   let depth = 0, str = null;
   for (let i = 0; i < s.length; i++) {
     const c = s[i];
-    if (str) { if (c === str && s[i - 1] !== '\\') str = null; continue; }
+    if (str) { if (c === str && !escaped(s, i)) str = null; continue; }
     if (QUOTES.has(c)) { str = c; continue; }
     if ('{<(['.includes(c)) depth++;
     else if ('}>)]'.includes(c)) depth--;
@@ -107,14 +111,17 @@ export function definedComponents(src) {
   }
   // `function Foo(...)` declared then exported via `export { Foo }`
   const exported = new Set();
+  // `export { Badge as Chip }` publishes Chip; the declaration is Badge. The
+  // component is known outside the file by its exported name, so that is the
+  // name kept, provided the local one is really declared here.
   for (const m of src.matchAll(/export\s*\{([^}]*)\}/g)) {
     for (const part of m[1].split(',')) {
-      const n = part.trim().split(/\s+as\s+/).pop().trim().replace(/^type\s+/, '');
-      if (/^[A-Z]\w*$/.test(n)) exported.add(n);
+      const [local, alias] = part.trim().replace(/^type\s+/, '').split(/\s+as\s+/).map((x) => x.trim());
+      if (/^[A-Z]\w*$/.test(local)) exported.add([local, alias && /^[A-Z]\w*$/.test(alias) ? alias : local]);
     }
   }
-  for (const n of exported) {
-    if (new RegExp(`(?:function|const)\\s+${n}\\b`).test(src)) names.add(n);
+  for (const [local, publicName] of exported) {
+    if (new RegExp(`(?:function|const)\\s+${local}\\b`).test(src)) names.add(publicName);
   }
   // Only keep names that render JSX or wrap a primitive (heuristic: file has JSX at all)
   return [...names];

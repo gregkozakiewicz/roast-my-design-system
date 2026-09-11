@@ -74,6 +74,21 @@ function compare(name, actual, expectedFile) {
 const tmp = mkdtempSync(join(tmpdir(), 'roast-test-'));
 console.log(`engine: ${ENGINE}\n`);
 
+// ---------- unit layer ----------
+// The golden files catch a moved number; they cannot say which colour matrix
+// or which regex moved it. tests/unit/*.test.mjs checks the parts one value
+// at a time with node:test, and its pass/fail lands here as one line so the
+// publish gate stays a single command.
+console.log('unit:');
+{
+  const unitFiles = readdirSync(join(HERE, 'unit')).filter((f) => f.endsWith('.test.mjs')).sort().map((f) => join(HERE, 'unit', f));
+  const r = spawnSync(process.execPath, ['--test', '--test-reporter=tap', ...unitFiles], { encoding: 'utf8' });
+  const count = (label) => parseInt(r.stdout.match(new RegExp(`^# ${label} (\\d+)`, 'm'))?.[1] ?? '0', 10);
+  const passed = count('pass'), failed = count('fail');
+  if (r.status === 0 && failed === 0 && passed > 0) ok(`${passed} unit checks (tests/unit)`);
+  else bad(`unit checks: ${failed} failed of ${passed + failed}`, (r.stdout.split('\n').filter((l) => /^\s*not ok|^\s+(message|error|expected|actual):|^\s+at /.test(l)).slice(0, 40).join('\n    ') || r.stderr.trim().slice(0, 2000)));
+}
+
 for (const fixture of readdirSync(FIXTURES).sort()) {
   console.log(`${fixture}:`);
   const root = join(FIXTURES, fixture);

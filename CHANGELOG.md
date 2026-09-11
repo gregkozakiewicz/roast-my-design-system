@@ -2,6 +2,44 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 6.0.0 — 2026-09-11
+
+Major, because the score is the promise. Counts fall on nearly every repo and
+three of 18 scores moved. If you gate CI on a threshold, take a fresh score
+before you compare.
+
+- **A dark mode is not sprawl.** A system with a dark theme states most of its
+  colours twice, and one with a density switch states its spacing twice again.
+  Every restatement was counted, so the systems doing the most work scored the
+  worst. Only a token's first statement now counts towards the palette.
+  Everything the repo never named still counts in full. A factory-fresh shadcn
+  install goes from 20 colours to 16, Shoelace from 420 to 219,
+  next-shadcn-dashboard-starter from 277 to 47. Systems that keep tokens in
+  TypeScript rather than CSS, such as Cloudscape and MUI, are untouched.
+- Scoped per package, so in a monorepo two packages each owning a `--brand`
+  are two colours, not one.
+- **Token references stopped being counted as values.** `border-radius:
+  var(--radius)` was read as a radius and `font-size: var(--size)` as a font
+  size. Polaris showed 49 radii of which 36 were references to its own tokens.
+  Telekom Scale showed 52 font sizes of which 48 were. The most disciplined
+  systems in the fleet were marked down for using their own tokens. One guard
+  now covers both, along with `inherit`, Sass tokens and `map.get`. This
+  matches what the CI guard already did, so the two agree again.
+- **New finding: one token name, two colours.** When two packages that share a
+  vocabulary disagree on what a name means, the report names it as an agent
+  trap. Whichever package an agent opens first becomes the brand. Deliberately
+  rare: 8 hits across 19 real repos and 9,229 definitions.
+- **The benchmark was rebuilt**, both halves, on freshly cloned repos: the
+  34-repo fleet and the 10 reputable systems. The medians in the README are
+  restated. Reference medians: colours 24 to 20, font sizes 6 to 5.
+- A checker still sees every colour the system names, dark theme included, so
+  nobody working in a dark block is told to use the light twin.
+
+The counting model was chosen by measurement, not opinion. Three models went to
+19 real repos before any code changed, and the probe falsified the one that had
+been recommended: counting token names took a factory-fresh shadcn install from
+20 to 34, because 31 semantic roles share 20 colours. It punished good naming.
+
 ## 5.12.3 — 2026-09-10
 
 - Docs only: the two command groups are headings rather than bold lines, so the break between "Run it yourself" and "For your agent" is unmissable, and the command column keeps the width it needs. Published so npm's copy of the README matches what is on GitHub.

@@ -171,3 +171,23 @@ export function isGrey(value) {
   const c = parseColor(value);
   return !!c && c.a >= 0.99 && Math.max(c.r, c.g, c.b) - Math.min(c.r, c.g, c.b) <= 10;
 }
+
+/**
+ * A colour's identity, independent of how it was written. #111, #111111 and
+ * hsla(0, 0%, 6.7%, 1) are one colour; comparing them as strings said three.
+ * Also accepts Tailwind v3's bare HSL triplet (`222.2 47.4% 11.2%`), which is
+ * how every shadcn v3 theme states its colours.
+ * Returns null when the value is not a literal colour (a var(), a template
+ * hole, a calc()), which is the caller's signal to leave it alone.
+ */
+export function canonical(raw) {
+  const v = String(raw).trim();
+  if (!v || /var\(|\$\{|calc\(/.test(v)) return null;
+  const t = HSL_TRIPLET.exec(v);
+  const c = parseColor(t ? `hsl(${t[1]} ${t[2]}% ${t[3]}%)` : v.replace(/\s+/g, ' ').toLowerCase());
+  if (!c) return null;
+  return [c.r, c.g, c.b].map((x) => Math.round(x)).join(',') + ',' + Math.round(c.a * 100);
+}
+
+const HSL_TRIPLET =
+  /^\s*(-?\d+(?:\.\d+)?)(?:deg)?\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*$/;

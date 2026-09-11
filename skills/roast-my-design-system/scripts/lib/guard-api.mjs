@@ -82,7 +82,11 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   return {
     tokenFile: t.tokenFile,
     colors: t.colors,
-    tokens: t.colors.filter((c) => c.isToken).map((c) => c.value),
+    // Every named colour, variants included — not the counted palette. The
+    // report counts a token's base statement only, because a dark theme is
+    // the system working rather than sprawl; a guard needs the opposite, the
+    // full set, or it cannot recognise a dark-theme value as on-system.
+    tokens: t.tokenColors ?? t.colors.filter((c) => c.isToken).map((c) => c.value),
     tokenNames,
     spacing: t.spacing,
     radii: t.radii,

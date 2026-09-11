@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=6.0.0" width="72" alt="roast-my-design-system">
+
 # roast-my-design-system
 
 [![npm](https://img.shields.io/npm/v/roast-my-design-system?color=2dd4bf&label=npm)](https://www.npmjs.com/package/roast-my-design-system) [![downloads](https://img.shields.io/npm/dm/roast-my-design-system?color=2dd4bf&label=downloads)](https://www.npmjs.com/package/roast-my-design-system) [![Socket](https://badge.socket.dev/npm/package/roast-my-design-system)](https://socket.dev/npm/package/roast-my-design-system) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![zero dependencies](https://img.shields.io/badge/dependencies-0-2dd4bf)](https://www.npmjs.com/package/roast-my-design-system?activeTab=dependencies) [![no telemetry](https://img.shields.io/badge/no-telemetry-2dd4bf)](https://github.com/gregkozakiewicz/roast-my-design-system#what-makes-the-numbers-trustworthy)
@@ -8,13 +10,7 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
-> **New in 5.12: a vendored catalogue is stock, not debt.** shadcn copies component source into your repo, and most people bring the whole set at once. Those unused components were being scored as dead weight: a factory-fresh `create-next-app` + `shadcn add --all` scored 75 and was told to delete its own catalogue. It now scores 83, and the count is shown without being judged. The correction runs through every door that repeated the old advice, including the generated rules file and the MCP server, which used to tell agents to delete the very components that stop them hand-rolling a worse version. A folder named `components/ui` is not enough to earn the pass, so hand-written components abandoned there are still found.
-
-> **New in 5.11: the checker and the CI guard stop contradicting each other.** `roast --check` and [guard-my-design-system](https://github.com/gregkozakiewicz/guard-my-design-system) both answer "does this change fit the system", and they disagreed in seven places. A second hand-rolled `<Button>` passed the guard. A new radius, font size, shadow or typeface passed `--check` and was then stopped in CI. Both now measure the same things. And both leave alone the files that cannot be on-system: email, print, OG cards, PDF invoices, pixel renderers and SVG artwork. A skipped file is never called clean; the result says what was left unjudged and why.
-
-> **New in 5.9: the agent card knows which doors your rules actually reach.** The report now states, as plain fact, which tools can read the rules files you have. Claude Code reads CLAUDE.md. Codex reads AGENTS.md. Cursor reads AGENTS.md and `.cursor/rules`. Where a door is missing, the card shows the one-line fix: Claude Code skips AGENTS.md, and a CLAUDE.md containing the single line `@AGENTS.md` closes the gap. The scan also finds rules files nested in subfolders, which is how monorepos really do it (twenty carries 35 AGENTS.md files; a root-only look reported 1). It recognises GEMINI.md, `.windsurf/rules` and `.github/instructions` too.
-
-> **New in 5.0: it runs as a local MCP server.** One command, and your agent asks the design system before writing UI, then gets the work checked after. Which Button is canonical? Which token holds that colour? Review my changes. Local, deterministic, nothing leaves your machine. See [Live answers over MCP](#live-answers-over-mcp).
+> **New in 6.0: a dark mode is not sprawl, and the ruler has been rebuilt.** A system with a dark theme states most of its colours twice. One with a density switch states its spacing twice again. Every restatement was counted, so the systems doing the most work scored the worst. Now only a token's first statement counts. A factory-fresh shadcn install goes from 20 colours to 16, and Shoelace from 420 to 219. Two related faults went with it. `border-radius: var(--radius)` was counted as a radius value, so Polaris showed 49 radii of which 36 were references to its own tokens, and Telekom showed 52 font sizes of which 48 were. A new finding names one token holding two different colours in two packages of a monorepo, which fires 8 times across 19 real repos. The benchmark was rebuilt with all of it, so every score is measured against a ruler that counts the same way: cal.com 15 to 20, Cloudscape 35 to 40, MUI 50 to 55. If you have a score from 5.x, take a fresh one before you compare.
 
 Run it on your codebase and get, in about a second:
 
@@ -75,11 +71,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=5.12.3)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles, the adoption map treemap, palette forensics, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=6.0.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=5.12.3)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=6.0.0)
 
 ## What makes the numbers trustworthy
 
@@ -240,16 +236,16 @@ After the roast, the skill also offers to write `design-system-rules.md` to disk
 
 | Metric | Ideal Design System | Median of 34 scanned repos | Median of 10 reputable systems |
 |---|---|---|---|
-| Distinct colours | ~24 | 130 | 24 |
-| Shades of grey | up to 13 | 17 | 5 |
-| Off-scale spacing values | ~12 | 34 | 6 |
+| Distinct colours | ~24 | 127 | 20 |
+| Shades of grey | up to 13 | 26 | 5 |
+| Off-scale spacing values | ~12 | 33 | 6 |
 | Typefaces | 2 to 3 | 3 | 1 |
-| Border radii | up to 10 | 13 | 2 |
-| Duplicated components | 0 | 20 | 12 |
-| Inline style blocks | 0 | 49 | 12 |
-| Arbitrary Tailwind values | ~20 | 70 | 0 |
-| Near-identical colour pairs | 0 | 13 | 1 |
-| !important declarations | 0 | 7 | 3 |
+| Off-scale border radii | up to 10 | 14 | 0 |
+| Duplicated components | 0 | 21 | 12 |
+| Inline style blocks | 0 | 51 | 12 |
+| Arbitrary Tailwind values | ~20 | 82 | 0 |
+| Near-identical colour pairs | 0 | 11 | 1 |
+| !important declarations | 0 | 10 | 3 |
 | Components never imported | 0 | 0 | 0 |
 
 Yes, the median repo is already a mess. That's the point.

@@ -238,6 +238,11 @@ const important = h.tokens.important ?? { count: 0, files: [] };
 
 const nearPairs = nearColorPairs(colors);
 
+// One token name holding two different colours in two packages of the repo.
+// Deliberately rare: 8 hits across 19 real repos, so it reads as a warning
+// rather than wallpaper. Theme variants are not in here; those are the system.
+const collisions = h.tokens.tokenCollisions ?? [];
+
 const neverImported = neverImportedComponents(h.components, h.profile?.uiDir);
 
 // Measurability and role, decided by the harvest (telekom/scale, 2026-09-01):
@@ -596,6 +601,14 @@ function importantTrap() {
   if (important.count < 20) return '';
   return trapBox(`${n(important.count)} !important declarations, and each one is a shouting match a previous developer decided to win by force. An agent whose style will not apply does what the repo taught it and shouts louder. The volume in this codebase only goes up.`);
 }
+function collisionsTrap() {
+  if (!collisions.length) return '';
+  const top = collisions[0];
+  const [a, b] = top.groups;
+  const where = (g) => `${esc(g.value)} in ${esc(g.pkgs[0])}${g.pkgs.length > 1 ? ` and ${g.pkgs.length - 1} more` : ''}`;
+  const rest = collisions.length > 1 ? ` ${collisions.length - 1} other token${collisions.length > 2 ? 's are' : ' is'} split the same way.` : '';
+  return trapBox(`--${esc(top.name)} is ${where(a)}, and ${where(b)}. One name, two colours, and nothing in the code says which is the real one. An agent reads whichever package it opened, so the brand depends on where it started.${rest}`);
+}
 function orphansTrap() {
   if (!componentsMeasured || isLibrary) return '';
   if (neverImported.length < 10) return '';
@@ -604,7 +617,7 @@ function orphansTrap() {
 // At most three traps per report, in severity order: scarcity is what makes
 // the marker readable as a warning rather than wallpaper.
 function trapsBlock() {
-  return [dupesTrap(), spacingTrap(), coloursTrap(), inlineTrap(), importantTrap(), orphansTrap()]
+  return [collisionsTrap(), dupesTrap(), spacingTrap(), coloursTrap(), inlineTrap(), importantTrap(), orphansTrap()]
     .filter(Boolean).slice(0, 3).join('');
 }
 

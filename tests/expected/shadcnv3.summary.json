@@ -8,12 +8,12 @@
   "tiles": [
     {
       "label": "distinct colours",
-      "value": "16",
+      "value": "9",
       "health": "good"
     },
     {
       "label": "shades of grey",
-      "value": "5",
+      "value": "4",
       "health": "good"
     },
     {

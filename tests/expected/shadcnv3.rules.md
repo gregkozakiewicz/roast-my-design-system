@@ -11,7 +11,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Colours and tokens
 
 - Design tokens live in `styles/globals.css`. Reach for an existing token before inventing any value.
-- Never hardcode colour values in components. The palette already has 14 tokens; the scan still found 2 hardcoded colours sitting next to them. Do not add more.
+- Never hardcode colour values in components. The palette already has 7 tokens; the scan still found 2 hardcoded colours sitting next to them. Do not add more.
 - Never eyeball a colour from memory: the scan found 1 nearly identical pair (like hsl(210 40% 96.1%) next to #f2f6fa). Look the exact value up, or better, use its token.
 - This repo uses shadcn/ui; its components live in `components/ui`. Prefer extending it over building parallel pieces.
 

@@ -217,6 +217,100 @@ console.log('fix prompts:');
 }
 
 // ---------- shadcn tokens: bare HSL triplets are colours ----------
+// ---------- both variant axes at once ----------
+// A system with a theme switch AND a density switch states every token three
+// times. Before 2026-09-11 that read as sprawl, so the systems doing the most
+// work scored the worst. The fixture holds 4 real colours stated 10 times and
+// a 2-step radius scale stated 6 times.
+console.log('theme and density variants:');
+{
+  const th = JSON.parse(readFileSync(join(tmp, 'themed.json'), 'utf8'));
+  const cols = th.tokens.colors.map((c) => c.value).sort();
+  JSON.stringify(cols) === JSON.stringify(['#101010', '#2563eb', '#ff0055', '#ffffff'])
+    ? ok('a dark theme restating every colour adds none of them')
+    : bad('theme variants', `got ${cols.join(', ')}`);
+
+  const radii = th.tokens.radii.map((r) => r.value).sort();
+  JSON.stringify(radii) === JSON.stringify(['3px'])
+    ? ok('two density variants of a radius scale add no radii; the stray still counts')
+    : bad('density variants', `got ${radii.join(', ')}`);
+
+  th.tokens.fontSizes.length === 0
+    ? ok('font-size: var(--x) and inherit are discipline, not values')
+    : bad('token refs', `got ${th.tokens.fontSizes.map((f) => f.value).join(', ')}`);
+
+  // Counting and checking need opposite answers about a dark theme. The
+  // report counts the base statement only; a guard must see every named
+  // colour or it tells someone in a dark block to use the light twin.
+  const named = [...(th.tokens.tokenColors ?? [])].sort();
+  JSON.stringify(named) === JSON.stringify(['#101010', '#2563eb', '#60a5fa', '#f5f5f5', '#ffffff'])
+    ? ok('a checker still sees every named colour, dark theme included')
+    : bad('guard palette', `got ${named.join(', ')}`);
+
+  (th.tokens.tokenCollisions ?? []).length === 0
+    ? ok('a single-package repo is never accused of a collision')
+    : bad('collision false positive', 'variants read as disagreement');
+}
+
+// ---------- token collisions: one name, two colours, two packages ----------
+// Every guard here was bought with a false positive from the 19-repo probe
+// (2026-09-11). The check is meant to be rare: it fires 8 times in 9,229
+// definitions, so anything that makes it chatty is a regression.
+console.log('token collisions:');
+{
+  const { tokenCollisions } = await import(pathToFileURL(join(ENGINE, 'harvest/collisions.mjs')).href);
+  const { canonical } = await import(pathToFileURL(join(ENGINE, 'lib/color.mjs')).href);
+  const ws = (dir) => dir.startsWith('packages/') || dir.startsWith('apps/');
+  const D = (pkg, name, value) => ({ pkg, name, value, canon: canonical(value) });
+  // A shared vocabulary the pair mostly agrees on, so a disagreement means something.
+  const agree = (pkg) => ['a', 'b', 'c', 'd', 'e'].map((k, i) => D(pkg, `t${k}`, `#00000${i}`));
+  const run = (defs, matcher = ws) => tokenCollisions(defs, matcher);
+  const names = (r) => r.map((x) => x.name).sort().join(',');
+
+  const base = [...agree('packages/x'), ...agree('apps/y')];
+  names(run([...base, D('packages/x', 'brand', '#ff0000'), D('apps/y', 'brand', '#00ff00')])) === 'brand'
+    ? ok('two aligned packages disagreeing on one name is a collision')
+    : bad('collision missed', 'aligned pair, clear disagreement');
+
+  run([...base, D('packages/x', 'brand', '#111'), D('apps/y', 'brand', '#111111')]).length === 0
+    ? ok('#111 and #111111 are one colour, not a collision')
+    : bad('notation false positive', 'shorthand hex compared as a string');
+
+  run([...base, D('packages/x', 'brand', 'hsla(0, 0%, 100%, 1)'), D('apps/y', 'brand', '#fff')]).length === 0
+    ? ok('hsla(0,0%,100%,1) and #fff are one colour')
+    : bad('notation false positive', 'hsla vs hex compared as a string');
+
+  run([...base, D('packages/x', 'brand', '#ff0000'), D('templates/z', 'brand', '#00ff00')]).length === 0
+    ? ok('a package outside the declared workspaces is not the system')
+    : bad('workspace guard', "shadcn's templates/ counted as the system");
+
+  run([D('packages/x', 'brand', '#ff0000'), D('packages/x', 'brand', '#00ff00')]).length === 0
+    ? ok('one package restating a name is a theme variant, not a collision')
+    : bad('variant guard', 'dark mode read as disagreement');
+
+  // supabase carries two unrelated shadcn palettes in two apps; they overlap
+  // on names and agree on almost none of them. That is two products.
+  const themeA = ['bg', 'fg', 'muted', 'accent', 'border', 'ring'].map((k, i) => D('apps/one', k, `#1000${i}${i}`));
+  const themeB = ['bg', 'fg', 'muted', 'accent', 'border', 'ring'].map((k, i) => D('apps/two', k, `#9000${i}${i}`));
+  run([...themeA, ...themeB]).length === 0
+    ? ok('two packages that agree on nothing are two themes, not a collision')
+    : bad('alignment guard', 'independent palettes reported as collisions');
+
+  run([...base, D('packages/x', 'brand', 'var(--other)'), D('apps/y', 'brand', '#00ff00')]).length === 0
+    ? ok('a var() reference is never one side of a collision')
+    : bad('var guard', 'reference compared as a literal');
+
+  run([...base, D('packages/x', 'brand', '#ff0000'), D('apps/y', 'brand', '#00ff00')], null).length === 0
+    ? ok('a repo with no declared workspaces is never accused')
+    : bad('single package', 'collision reported without workspaces');
+
+  const three = run([...base, ...agree('apps/z'),
+    D('packages/x', 'brand', '#ff0000'), D('apps/y', 'brand', '#ff0000'), D('apps/z', 'brand', '#00ff00')]);
+  three.length === 1 && three[0].groups[0].pkgs.length === 2
+    ? ok('three packages, one dissenter: the majority is named first')
+    : bad('grouping', JSON.stringify(three));
+}
+
 // Born on shadcn/taxonomy (2026-09-06): a textbook shadcn repo on Tailwind v3
 // scanned as "2 colours, none defined as CSS variables" because its tokens are
 // bare HSL channels. The fixture holds the whole convention: triplets in two
@@ -228,7 +322,9 @@ console.log('shadcn tokens:');
   const sh = JSON.parse(readFileSync(join(tmp, 'shadcnv3.json'), 'utf8'));
   const cols = sh.tokens.colors;
   const tokens = cols.filter((c) => c.isToken);
-  tokens.length >= 12 && tokens.every((c) => c.value.startsWith('hsl(')) ? ok(`bare HSL triplets read as ${tokens.length} hsl() tokens`)
+  // 7, not 14: the .dark block restates the same nine names, and since
+  // 2026-09-11 only a token's first statement counts towards the palette.
+  tokens.length === 7 && tokens.every((c) => c.value.startsWith('hsl(')) ? ok(`bare HSL triplets read as ${tokens.length} hsl() tokens`)
     : bad('triplet tokens', `${tokens.length} tokens, values: ${tokens.slice(0, 3).map((c) => c.value).join(', ')}`);
   !cols.some((c) => /var\(/.test(c.value)) ? ok('hsl(var(--x)) never becomes a colour') : bad('var ref leak', cols.filter((c) => /var\(/.test(c.value)).map((c) => c.value).join(', '));
   const strays = cols.filter((c) => !c.isToken).map((c) => c.value).sort();

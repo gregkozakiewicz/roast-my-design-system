@@ -6,11 +6,13 @@
  *
  * New in 2.0 — 1.0 only ever read a clean globals.css; this reads the mess.
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import {
   EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, svgHeavy,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
+import { canonical } from '../lib/color.mjs';
+import { tokenCollisions, workspaceMatcher } from './collisions.mjs';
 
 // ---------- counters ----------
 class Tally {
@@ -86,8 +88,23 @@ export function isGrey(hex) {
 
 // ---------- spacing / radius / font-size from CSS declarations ----------
 const SPACING_PROPS = /(?:^|[^-\w])(margin(?:-(?:top|right|bottom|left))?|padding(?:-(?:top|right|bottom|left))?|gap|row-gap|column-gap|top|right|bottom|left|inset)\s*:\s*([^;{}]+)[;}]/g;
-const RADIUS_PROPS = /border(?:-(?:top|bottom)-(?:left|right))?-radius\s*:\s*([^;{}]+)[;}]/g;
-const FONTSIZE_PROPS = /font-size\s*:\s*([^;{}]+)[;}]/g;
+// The (?:^|[^-\w]) guard keeps a DEFINITION out of the declaration tally:
+// `--border-radius: 8px` states a token, it does not round a corner, and a
+// density variant states it a second time. Vendor prefixes still count.
+const RADIUS_PROPS = /(?:^|[^-\w])(?:-(?:webkit|moz|ms|o)-)?border(?:-(?:top|bottom)-(?:left|right))?-radius\s*:\s*([^;{}]+)[;}]/g;
+const FONTSIZE_PROPS = /(?:^|[^-\w])font-size\s*:\s*([^;{}]+)[;}]/g;
+
+/**
+ * A value that hands the decision back to the design system: var(--x),
+ * inherit, a Sass token, a map lookup. It is discipline, not a new value, and
+ * counting it inflates exactly the repos that earned the best scores.
+ * Polaris showed 49 radii of which 36 were var(); telekom/scale showed 52 font
+ * sizes of which 48 were var(). Same fault that once made one Roboto look like
+ * 59 typefaces (found 2026-09-11 while checking the density axis).
+ */
+const isTokenRef = (v) =>
+  /^(var\(\s*--[\w-]+[^)]*\)|inherit|initial|unset|revert)$/i.test(v)
+  || v.startsWith('$') || /\bmap[.-]get\b/.test(v);
 const FONTFAMILY_PROPS = /font-family\s*:\s*([^;{}]+)[;}]/g;
 const SHADOW_PROPS = /box-shadow\s*:\s*([^;{}]+)[;}]/g;
 const LENGTH_RE = /-?\d*\.?\d+(?:px|rem|em|%|vh|vw|ch)\b/g;
@@ -244,6 +261,33 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // only stylesheet with a --var was the Chrome extension's (2 definitions,
   // 33 strays) while the real palette sat in constants/theme.ts with 57.
   const tokenColorDefsPerFile = new Map();
+  // A design system with a dark mode states most of its colours twice, and one
+  // with a density switch states its spacing twice again. Those redefinitions
+  // are the system working, not sprawl, so only the FIRST definition of a token
+  // name counts towards the palette. Everything a repo never named still counts
+  // in full. Measured across 19 repos: it never inflates a count, and it takes
+  // a factory-fresh shadcn install from 20 colours to 16 (2026-09-11).
+  // Keyed by package, not by repo: in a monorepo two packages may each own a
+  // token of the same name, and those are two colours, not a variant of one.
+  // Counting them as one hid cal.com's real spread (385 became 263 instead of
+  // 314). Where they genuinely disagree, the collision check names it.
+  const baseByName = new Map();
+  const baseDefs = [];              // one colour per package per token name
+  const pkgCache = new Map();
+  const pkgOf = (file) => {
+    let dir = file.includes('/') ? file.slice(0, file.lastIndexOf('/')) : '';
+    const seen = [];
+    for (;;) {
+      if (pkgCache.has(dir)) break;
+      seen.push(dir);
+      if (existsSync(join(root, dir, 'package.json'))) { pkgCache.set(dir, dir); break; }
+      if (!dir) { pkgCache.set('', ''); break; }
+      dir = dir.includes('/') ? dir.slice(0, dir.lastIndexOf('/')) : '';
+    }
+    const owner = pkgCache.get(dir);
+    for (const d of seen) pkgCache.set(d, owner);
+    return owner;
+  };
   const paletteFiles = new Set();
   const nsDefs = new Map();  // --telekom-x: value  → 'telekom' (definitions)
   const nsRefs = new Map();  // var(--telekom-x)    → 'telekom' (references)
@@ -251,17 +295,35 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   const scanCssText = (text, file) => {
     const imp = (text.match(/!\s*important/gi) ?? []).length;
     if (imp) importantFiles.set(file, (importantFiles.get(file) ?? 0) + imp);
+    // Character ranges holding a re-statement of an already-named token. The
+    // blanket colour sweep below reads the whole file, so it needs to be told
+    // which stretches of it are variants rather than new colours.
+    const variantSpans = [];
+    const inVariant = (i) => variantSpans.some(([a, b]) => i >= a && i < b);
     for (const m of text.matchAll(/--([\w-]+)\s*:\s*([^;{}]+)[;}]/g)) {
       tokenDefsPerFile.set(file, (tokenDefsPerFile.get(file) ?? 0) + 1);
       const stem = m[1].split('-')[0].toLowerCase();
       if (stem) nsDefs.set(stem, (nsDefs.get(stem) ?? 0) + 1);
+      // First statement of this name wins; a later one is a theme or density
+      // variant. Compared as parsed colours, so #111 and #111111 are one.
+      const canon = canonical(m[2]);
+      const name = `${pkgOf(file)}\u0000${m[1]}`;
+      const variant = baseByName.has(name);
+      if (!variant) {
+        baseByName.set(name, canon);
+        if (canon) baseDefs.push({ name: m[1], pkg: pkgOf(file), canon, value: m[2].trim() });
+      }
+      if (variant && canon !== null) {
+        const at = m.index + m[0].lastIndexOf(m[2]);
+        variantSpans.push([at, at + m[2].length]);
+      }
       let colourDef = false;
       for (const c of m[2].matchAll(HEX_RE)) { tokenDefined.add(normalizeHex(c[0])); colourDef = true; }
       for (const c of m[2].matchAll(FUNC_COLOR_RE)) {
         if (!isVarRef(c[0])) { tokenDefined.add(c[0].replace(/\s+/g, ' ').toLowerCase()); colourDef = true; }
       }
       const trip = tripletToHsl(m[2]);
-      if (trip) { tokenDefined.add(trip); colors.add(trip, file); colourDef = true; }
+      if (trip) { tokenDefined.add(trip); if (!variant) colors.add(trip, file); colourDef = true; }
       if (colourDef) tokenColorDefsPerFile.set(file, (tokenColorDefsPerFile.get(file) ?? 0) + 1);
     }
     // References count too: a system whose tokens are defined in a package
@@ -271,21 +333,23 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       const stem = m[1].split('-')[0].toLowerCase();
       if (stem) nsRefs.set(stem, (nsRefs.get(stem) ?? 0) + 1);
     }
-    for (const m of text.matchAll(HEX_RE)) colors.add(normalizeHex(m[0]), file);
-    for (const m of text.matchAll(FUNC_COLOR_RE)) { const v = m[0].replace(/\s+/g, ' ').toLowerCase(); if (!isTransparent(v) && !isVarRef(v)) colors.add(v, file); }
+    for (const m of text.matchAll(HEX_RE)) { if (!inVariant(m.index)) colors.add(normalizeHex(m[0]), file); }
+    for (const m of text.matchAll(FUNC_COLOR_RE)) {
+      const v = m[0].replace(/\s+/g, ' ').toLowerCase();
+      if (!isTransparent(v) && !isVarRef(v) && !inVariant(m.index)) colors.add(v, file);
+    }
     for (const m of text.matchAll(SPACING_PROPS)) {
       for (const len of (m[2].match(LENGTH_RE) ?? [])) spacing.add(len, file);
     }
-    for (const m of text.matchAll(RADIUS_PROPS)) radii.add(m[1].trim(), file);
-    for (const m of text.matchAll(FONTSIZE_PROPS)) fontSizes.add(m[1].trim(), file);
+    for (const m of text.matchAll(RADIUS_PROPS)) { const v = m[1].trim(); if (!isTokenRef(v)) radii.add(v, file); }
+    for (const m of text.matchAll(FONTSIZE_PROPS)) { const v = m[1].trim(); if (!isTokenRef(v)) fontSizes.add(v, file); }
     for (const m of text.matchAll(FONTFAMILY_PROPS)) {
       const v = m[1].trim().replace(/\s+/g, ' ');
       // var(--x) and inherit are disciplined token usage, not declarations —
       // and so are Sass token references ($label-text-font, map.get($tokens,
       // ...)), Material Web's whole idiom: 59 fake "typefaces" once counted
       // where one Roboto lived behind tokens (caught 2026-09-02).
-      if (/^(var\(--[\w-]+\)|inherit)$/i.test(v)) continue;
-      if (v.startsWith('$') || /\bmap[.-]get\b/.test(v)) continue;
+      if (isTokenRef(v)) continue;
       fontFamilies.add(v, file);
     }
     for (const m of text.matchAll(SHADOW_PROPS)) shadows.add(m[1].trim().replace(/\s+/g, ' '), file);
@@ -514,6 +578,13 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     tokenFile,
     namespaces,
     colors: colorList,
+    // Every colour the system names ANYWHERE, theme and density variants
+    // included. Counting deliberately ignores those variants, but a checker
+    // asking "is this value on-system, and which token holds it" must see
+    // them: without this a guard told someone working in a dark block to use
+    // the light twin of the colour they had correctly reached for.
+    tokenColors: [...tokenDefined],
+    tokenCollisions: tokenCollisions(baseDefs, workspaceMatcher(root)),
     offenders: offenderList,
     greyCount: colorList.filter((c) => c.value.startsWith('#') && isGrey(c.value)).length,
     spacing: spacing.toJSON(),

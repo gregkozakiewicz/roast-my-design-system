@@ -1,0 +1,15 @@
+/* Disciplined usage: every value comes back through a token. None of these
+   references is a value, and counting them as values is what once made
+   Polaris look like it had 49 radii. */
+.card {
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-body);
+}
+.chip {
+  border-radius: var(--radius-sm);
+  font-size: inherit;
+}
+/* one genuine stray, so the fixture is not all virtue */
+.badge { background: #ff0055; border-radius: 3px; }

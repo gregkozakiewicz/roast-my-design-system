@@ -34,15 +34,27 @@ const readJSON = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } ca
 const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return ''; } };
 const stripExt = (f) => f.replace(/\.[cm]?[jt]sx?$/, '');
 
-/** Every folder in the walk holding 8+ catalogue door names. */
-function catalogueSweep(files) {
+/**
+ * Every folder in the walk holding 8+ catalogue door names AND the marks of
+ * shadcn-generated code in at least 3 of them: a headless base import
+ * (radix-ui, @radix-ui/react-*, @base-ui/react, react-aria-components), a
+ * `data-slot` attribute, or the cva + cn pair. Names alone are not enough:
+ * button, card, input and label are what anyone calls their components, and
+ * a hand-written library must never be handed the shadcn card.
+ */
+const SHADCN_CODE_RE = /from ['"](?:radix-ui|@radix-ui\/react-[\w-]+|@base-ui\/react(?:\/[\w-]+)?|react-aria-components)['"]|data-slot=|cva\(/;
+function catalogueSweep(root, files) {
   const byDir = new Map();
   for (const f of files.code) {
     if (!/\.[jt]sx$/.test(f)) continue;
     const d = dirname(f);
-    if (CATALOGUE.has(stripExt(basename(f)))) byDir.set(d, (byDir.get(d) ?? 0) + 1);
+    if (!CATALOGUE.has(stripExt(basename(f)))) continue;
+    const e = byDir.get(d) ?? { names: 0, marked: 0 };
+    e.names += 1;
+    if (e.marked < 3 && SHADCN_CODE_RE.test(read(join(root, f)))) e.marked += 1;
+    byDir.set(d, e);
   }
-  return [...byDir.entries()].filter(([, n]) => n >= 8).map(([dir, n]) => ({ dir, catalogueNames: n }));
+  return [...byDir.entries()].filter(([, e]) => e.names >= 8 && e.marked >= 3).map(([dir, e]) => ({ dir, catalogueNames: e.names }));
 }
 
 /** Resolve an alias like "@/components/ui" or "@acme/ui/components" to a folder under wsRoot, if it exists. */
@@ -191,7 +203,7 @@ export default {
       const sheet = readSheet(root, wsRoot, cfg.tailwind?.css);
       installs.push({ config: file, uiDir: uiAbs, catalogueNames, kit: readKit(cfg, sheet, deps), sheet });
     }
-    const swept = catalogueSweep(files);
+    const swept = catalogueSweep(root, files);
     for (const s of swept) {
       if (!installs.some((i) => i.uiDir === s.dir)) installs.push({ config: null, uiDir: s.dir, catalogueNames: s.catalogueNames, kit: null, sheet: null });
       else { const i = installs.find((x) => x.uiDir === s.dir); i.catalogueNames = Math.max(i.catalogueNames, s.catalogueNames); }

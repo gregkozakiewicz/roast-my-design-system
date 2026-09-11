@@ -19,7 +19,10 @@ const write = (root, files) => {
     writeFileSync(join(root, p), body);
   }
 };
-const door = (name) => `import * as React from "react"\nexport function ${name}({ className, ...props }) { return <div className={className} {...props} /> }\n`;
+const door = (name) => `import * as React from "react"\nimport { Slot } from "radix-ui"\nexport function ${name}({ className, ...props }) { return <div data-slot="${name.toLowerCase()}" className={className} {...props} /> }\n`;
+// the same folder written by hand: same names, no shadcn marks in the code
+const plainDoor = (name) => `export function ${name}({ className, ...props }) { return <div className={className} {...props} /> }\n`;
+const plainCatalogue = (dir, names) => Object.fromEntries(names.map((n) => [`${dir}/${n}.tsx`, plainDoor(n[0].toUpperCase() + n.slice(1))]));
 const catalogue = (dir, names) => Object.fromEntries(names.map((n) => [`${dir}/${n}.tsx`, door(n[0].toUpperCase() + n.slice(1))]));
 const NINE = ['button', 'card', 'input', 'label', 'badge', 'dialog', 'select', 'tabs', 'checkbox'];
 
@@ -79,6 +82,15 @@ test('a hand-written ui folder with 3 files and no config is not a shadcn kitche
   const root = mkdtempSync(join(tmpdir(), 'rmds-shadcn-'));
   try {
     write(root, { 'package.json': '{"name":"own","private":true}', ...catalogue('components/ui', ['button', 'card', 'modal']), 'app/page.tsx': 'export default function Page() { return <div /> }' });
+    const { profile } = scan(root);
+    assert.equal(profileOf(profile).kind, 'product');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('9 generic names written by hand, with no shadcn marks in the code and no config, stay a product', () => {
+  const root = mkdtempSync(join(tmpdir(), 'rmds-shadcn-'));
+  try {
+    write(root, { 'package.json': '{"name":"own","private":true}', ...plainCatalogue('src/ui', NINE), 'src/app/page.tsx': 'export default function Page() { return <div /> }' });
     const { profile } = scan(root);
     assert.equal(profileOf(profile).kind, 'product');
   } finally { rmSync(root, { recursive: true, force: true }); }

@@ -49,7 +49,23 @@ function expand(root, pattern) {
  * Returns [{ name, dir }] with dir relative to the repo root, or [] when the
  * repo is not a workspace monorepo.
  */
+// Resolving means walking the package folders, and three stages of one
+// harvest ask for it (the walk, the token collisions, the per-package pass).
+// Remember the answer per root, keyed by the declaration files' mtimes so a
+// long-lived MCP server still notices when someone edits the workspace list.
+const memo = new Map();
+const mtime = (p) => { try { return statSync(p).mtimeMs; } catch { return 0; } };
+
 export function resolveWorkspaces(root) {
+  const key = `${mtime(join(root, 'package.json'))}:${mtime(join(root, 'pnpm-workspace.yaml'))}`;
+  const hit = memo.get(root);
+  if (hit && hit.key === key) return hit.value.map((w) => ({ ...w }));
+  const value = resolveWorkspacesUncached(root);
+  memo.set(root, { key, value });
+  return value.map((w) => ({ ...w }));
+}
+
+function resolveWorkspacesUncached(root) {
   const patterns = [];
   const pkg = readJSON(join(root, 'package.json'));
   const ws = pkg?.workspaces;
@@ -75,8 +91,12 @@ export function resolveWorkspaces(root) {
   if (!patterns.length) return [];
 
   const negations = patterns.filter((p) => p.startsWith('!')).map((p) => p.slice(1).replace(/\/+$/, ''));
+  // expand each glob negation once, not once per candidate directory: on
+  // shadcn/ui the re-expansion was six tenths of the whole scan
+  const negSets = new Map();
+  const negSet = (neg) => { let set = negSets.get(neg); if (!set) { set = new Set(expand(root, neg)); negSets.set(neg, set); } return set; };
   const isNegated = (dir) => negations.some((neg) => {
-    if (neg.includes('*')) return expand(root, neg).includes(dir);
+    if (neg.includes('*')) return negSet(neg).has(dir);
     return dir === neg || dir.startsWith(`${neg}/`);
   });
 

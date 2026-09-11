@@ -147,15 +147,11 @@ export function webComponentDefs(src) {
   return defs.filter((d) => !seen.has(d.tag) && seen.add(d.tag));
 }
 
-/** Count real `<Name` tag usages of `name` in `src` (tag boundary checked). */
-function countUsages(src, name) {
-  let count = 0, from = 0, open;
-  while ((open = src.indexOf(`<${name}`, from)) !== -1) {
-    const after = src[open + name.length + 1];
-    if (!after || /[\s/>]/.test(after)) count++;
-    from = open + name.length + 1;
-  }
-  return count;
+/** Count every `<Tag` opened in `src`, keyed by tag, in one pass over the text. */
+function tagCounts(src, re) {
+  const counts = new Map();
+  for (const m of src.matchAll(re)) counts.set(m[1], (counts.get(m[1]) ?? 0) + 1);
+  return counts;
 }
 
 /**
@@ -199,10 +195,14 @@ export function harvestComponents(root, codeFiles) {
     if (!byName.has(c.name)) byName.set(c.name, []);
     byName.get(c.name).push(c);
   }
+  // One sweep per file collecting every `<Tag` it opens, then a map lookup.
+  // The old shape scanned every file once per component name (files × names),
+  // which is what made a 20k-file monorepo take a minute. Same boundary rule
+  // as before: the name ends at whitespace, `/`, `>` or the end of the file.
   for (const [file, src] of sources) {
-    for (const [name, defs] of byName) {
-      const n = countUsages(src, name);
-      if (n === 0) continue;
+    for (const [name, n] of tagCounts(src, /<([A-Z]\w*)(?=[\s/>]|$)/g)) {
+      const defs = byName.get(name);
+      if (!defs) continue;
       for (const def of defs) {
         if (def.file === file) continue; // internal render/recursion, not adoption
         def.usageCount += n;
@@ -228,13 +228,20 @@ export function harvestComponents(root, codeFiles) {
         variants: extractVariants(src), propsHint: null, usageCount: 0, usedIn: [] });
     }
   }
+  const byTag = new Map();
+  for (const def of wcComponents) {
+    if (!byTag.has(def.tag)) byTag.set(def.tag, []);
+    byTag.get(def.tag).push(def);
+  }
   for (const [file, src] of wcSources) {
-    for (const def of wcComponents) {
-      if (def.file === file) continue;
-      const u = countUsages(src, def.tag);
-      if (!u) continue;
-      def.usageCount += u;
-      if (def.usedIn.length < 8) def.usedIn.push(file);
+    for (const [tag, u] of tagCounts(src, /<([a-z][\w-]*)(?=[\s/>]|$)/g)) {
+      const defs = byTag.get(tag);
+      if (!defs) continue;
+      for (const def of defs) {
+        if (def.file === file) continue;
+        def.usageCount += u;
+        if (def.usedIn.length < 8) def.usedIn.push(file);
+      }
     }
   }
   components.push(...wcComponents);

@@ -14,12 +14,10 @@ No component matching "date picker" is defined in this repo.
 === find_token 13px ===
 13px is already in use 1x in this repo. Consistent, so use it, but know it lives off any scale.
 === validate bad snippet ===
-5 findings:
+4 findings:
 ✕ L2 Hardcoded colour #3b81f5 is new to this repo.
    Fix: Nearest token: #2f6f4f (166 channel steps away). If that is not the intent, add a token first.
 ✕ L2 New one-off spacing value 27px. The repo already carries 10 distinct spacing values.
-✕ L2 Arbitrary bracket [11px].
-   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
 ✕ L2 Arbitrary bracket [13px].
    Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
 ✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.

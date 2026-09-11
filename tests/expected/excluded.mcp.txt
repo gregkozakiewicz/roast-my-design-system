@@ -18,9 +18,8 @@ This repo has no spacing values on record to compare 13px against. Whatever you 
 5 findings:
 ✕ L2 Hardcoded colour #3b81f5 is new to this repo.
    Fix: Nearest token: #3355ff (44 channel steps away). If that is not the intent, add a token first.
+✕ L2 New one-off spacing value 11px. The repo already carries 0 distinct spacing values.
 ✕ L2 New one-off spacing value 27px. The repo already carries 0 distinct spacing values.
-✕ L2 Arbitrary bracket [11px].
-   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
 ✕ L2 Arbitrary bracket [13px].
    Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
 ✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.

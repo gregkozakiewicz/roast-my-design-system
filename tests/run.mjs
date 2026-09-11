@@ -418,6 +418,38 @@ console.log('false positives:');
     ? ok('4-digit hex in CSS is still a colour') : bad('css 4-digit', 'dropped');
 }
 
+// ---------- the five confirmed bugs of the 2026-09-11 review ----------
+// Each reproduced before it was fixed; each has a line in the edgecases
+// fixture so it cannot come back quietly.
+console.log('confirmed bugs (2026-09-11):');
+{
+  const h = JSON.parse(readFileSync(join(tmp, 'edgecases.json'), 'utf8'));
+  const colours = h.tokens.colors.map((c) => c.value);
+  !colours.includes('#123456') && !colours.includes('#bad000')
+    ? ok('a hex inside a CSS comment is not a colour') : bad('comment hex', `palette: ${colours.join(', ')}`);
+  !colours.some((c) => c.startsWith('#ffaacc') || c === '#aadddd')
+    ? ok('an id selector spelling hex is not a colour') : bad('selector hex', `palette: ${colours.join(', ')}`);
+  colours.includes('#abcdef') && colours.includes('#ff8800') && colours.includes('#ff9900')
+    ? ok('real declared colours still count, after a comment too') : bad('declared hex', `palette: ${colours.join(', ')}`);
+  const arb = h.tokens.tailwind.arbitrary.map((a) => a.value).sort();
+  const twSpacing = h.tokens.tailwind.spacing.map((v) => v.value);
+  JSON.stringify(arb) === JSON.stringify(['[10px]', '[257px]', '[9px]'])
+    ? ok('bracket spacing is not also an arbitrary value') : bad('arbitrary once', `arbitrary: ${arb.join(', ')}`);
+  ['[13px]', '[17px]', '[4px]'].every((v) => twSpacing.includes(v))
+    ? ok('bracket spacing still counts as off-scale spacing') : bad('bracket spacing', `spacing: ${twSpacing.join(', ')}`);
+  h.tokens.inlineStyles.count === 1
+    ? ok('opacity: .5 is a literal, so the block is a static inline style') : bad('inline .5', `count ${h.tokens.inlineStyles.count}`);
+  const dupe = h.duplicates.exactDuplicates.find((d) => d.name === 'Button');
+  dupe && dupe.files.some((f) => f.includes('Button('))
+    ? ok('a bracket in a filename does not crash the duplicate check') : bad('filename regex', JSON.stringify(h.duplicates.exactDuplicates));
+  // packages/app carried 0 greys and 9 grey strays at once: the stray count
+  // was every hex stray, grey or not.
+  const mono = JSON.parse(readFileSync(join(tmp, 'monorepo.json'), 'utf8'));
+  const pkgs = (mono.packages ?? []).filter((p) => p.scored);
+  pkgs.length && pkgs.every((p) => p.metrics.greyStrays <= p.metrics.greys)
+    ? ok('a package never has more grey strays than greys') : bad('package greys', JSON.stringify(pkgs.map((p) => [p.dir, p.metrics.greys, p.metrics.greyStrays])));
+}
+
 // ---------- component stacks: web components read, unreadable declared ----------
 // Born on telekom/scale (2026-09-01): 93 Stencil components scanned as one,
 // and the report presented the blindness as discipline. Never again, twice
@@ -687,6 +719,11 @@ if (existsSync(bin)) {
   } catch (e) { bad('tarball manifest snapshot', `npm pack --dry-run failed: ${e.message}`); }
   const { version, ...pkgContract } = pkg;
   compare('package.json contract snapshot', JSON.stringify(pkgContract, null, 2), 'package-contract.json');
+  // Flags before the path: `--out x.html <repo>` used to read x.html as the
+  // repo and die with "Not a directory" (6.0.1 and every version before it).
+  const flagFirst = spawnSync(process.execPath, [bin, '--out', join(tmp, 'flag-first.html'), join(FIXTURES, 'clean'), '--no-open'], { encoding: 'utf8' });
+  flagFirst.status === 0 && existsSync(join(tmp, 'flag-first.html'))
+    ? ok('--out before the path still finds the repo') : bad('--out before the path', flagFirst.stderr.trim().split('\n')[0]);
   const r = spawnSync(process.execPath, [bin, join(FIXTURES, 'messy'), '--json', '--out', join(tmp, 'e2e.html')], { encoding: 'utf8' });
   try {
     const j = JSON.parse(r.stdout);

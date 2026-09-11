@@ -1,0 +1,5 @@
+/* the old brand was #123456, kept here for the record */
+#face { color: #abcdef; }
+#add, .x { margin: 0 3px; }
+.card { border-radius: 7px; padding: 5px 11px; color: #ff8800; }
+.card:hover { color: #ff9900; } /* #bad000 in a trailing comment */

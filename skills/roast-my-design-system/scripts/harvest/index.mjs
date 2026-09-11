@@ -17,7 +17,7 @@ import { resolve } from 'node:path';
 import { walkRepo, profileRepo } from './walk.mjs';
 import { headerLines, detailLines } from './summary.mjs';
 import { harvestComponents } from './components.mjs';
-import { harvestTokens } from './tokens.mjs';
+import { harvestTokens, isGrey } from './tokens.mjs';
 import { findDuplicates } from './duplicates.mjs';
 import { harvestContext } from './context.mjs';
 import { resolveWorkspaces } from '../lib/workspaces.mjs';
@@ -156,7 +156,7 @@ if (workspaces.length > 1) {
       colorTokens,
       colorStrays: t.colors.length - colorTokens,
       greys: t.greyCount,
-      greyStrays: t.colors.filter((c) => !c.isToken && c.value.startsWith('#')).length,
+      greyStrays: t.colors.filter((c) => !c.isToken && c.value.startsWith('#') && isGrey(c.value)).length,
       spacing: t.spacing.length + t.tailwind.spacing.filter((v) => v.value.startsWith('[')).length,
       exactDuplicates: dupes.length,
       inlineStyles: t.inlineStyles.count,

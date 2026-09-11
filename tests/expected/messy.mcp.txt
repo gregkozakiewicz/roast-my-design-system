@@ -25,10 +25,9 @@ Nearest token: #3b82f6, 1 channel step from #3b81f5. Unless the difference is a 
 6 findings:
 ✕ L2 #3b81f5 is visually identical to the token #3b82f6.
    Fix: Use #3b82f6 from styles/main.css.
+✕ L2 New one-off spacing value 11px. The repo already carries 4 distinct spacing values.
 ✕ L2 New one-off spacing value 27px. The repo already carries 4 distinct spacing values.
-✕ L2 Arbitrary bracket [11px].
-   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
-✕ L2 Arbitrary bracket [13px], already punched through the scale 1x in this repo.
+✕ L2 Arbitrary bracket [13px].
    Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
 ✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
    Fix: Move the values to classes or tokens.

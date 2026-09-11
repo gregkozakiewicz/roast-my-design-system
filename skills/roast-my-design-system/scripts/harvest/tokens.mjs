@@ -78,6 +78,14 @@ export function normalizeHex(hex) {
   return h;
 }
 
+/** A hex in a stylesheet is a colour only inside a declaration value. `#face {`
+ * and `#add, .x {` are id selectors that happen to spell hex; skip a match
+ * when nothing between the last `{`, `}` or `;` and it is a `:`. */
+const inDeclaration = (text, i) => {
+  const from = Math.max(text.lastIndexOf('{', i), text.lastIndexOf('}', i), text.lastIndexOf(';', i));
+  return text.slice(from + 1, i).includes(':');
+};
+
 /** Is this hex a grey (R≈G≈B within a small tolerance)? Diagnosis loves this. */
 export function isGrey(hex) {
   const h = normalizeHex(hex);
@@ -118,6 +126,20 @@ const TW_COLOR_RE = /\b(?:bg|text|border|ring|fill|stroke|from|via|to|divide|out
 const TW_SPACING_RE = /\b-?(?:[mp][trblxy]?|gap(?:-[xy])?|space-[xy]|inset(?:-[xy])?|top|right|bottom|left)-(\[(?:[^\]]+)\]|\d+(?:\.\d+)?|px)(?=[\s"'`}:]|$)/g;
 const TW_RADIUS_RE = /\brounded(?:-(?:t|b|l|r|tl|tr|bl|br))?(?:-(none|sm|md|lg|xl|2xl|3xl|full|\[[^\]]+\]))?(?=[\s"'`}:]|$)/g;
 const TW_TEXTSIZE_RE = /\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|\[[^\]]+\])(?=[\s"'`}:]|$)/g;
+// Bracket lengths (text-[10px], w-[257px], rounded-[9px]): the Tailwind-era
+// way a scale erodes, one escape hatch at a time. A bracket on a SPACING
+// utility (p-[13px], mt-[17px]) is already an off-scale spacing value through
+// TW_SPACING_RE, so it is left out here: one class, one tile. Until 6.0.1 it
+// was penalised on both.
+const TW_SPACING_BRACKET_RE = /^-?(?:[mp][trblxy]?|gap(?:-[xy])?|space-[xy]|inset(?:-[xy])?|top|right|bottom|left)-\[/;
+export function arbitraryLengths(cls) {
+  const out = [];
+  for (const m of cls.matchAll(/([a-z][\w-]*-\[(-?\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|pt))\])/g)) {
+    if (TW_SPACING_BRACKET_RE.test(m[1])) continue;
+    out.push({ value: `[${m[2]}]`, index: m.index });
+  }
+  return out;
+}
 
 /** Extract string contents of className=/class= attributes + template classes. */
 function classStrings(src) {
@@ -143,10 +165,10 @@ const TRIVIAL_INLINE_RE = /^\{?\s*(?:(?:\.\.\.[\w.]+|(?:color|fill|stroke)\s*:\s
 function isStaticInline(block) {
   const inner = block.trim().replace(/^\{/, '').replace(/\}$/, '');
   if (inner.includes('${')) return false;
-  // every value must start like a literal: quote, number, negative, hex
+  // every value must start like a literal: quote, number (.5 included), negative, hex
   for (const m of inner.matchAll(/[\w-]+\s*:\s*([^,{}]+)/g)) {
     const v = m[1].trim();
-    if (!/^["'0-9#-]/.test(v)) return false;
+    if (!/^["'0-9#.-]/.test(v)) return false;
   }
   return true;
 }
@@ -215,8 +237,13 @@ export function extractStyling(src, { css = false } = {}) {
       // every bracket colour used to be reported twice.
       if (c[1]) out.colors.push({ value: c[1].startsWith('#') ? normalizeHex(c[1]) : c[1], index: m.index + m[0].indexOf(c[1]) });
     }
-    for (const c of cls.matchAll(/[a-z][\w-]*-\[(-?\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|pt))\]/g)) {
-      out.arbitrary.push({ value: `[${c[1]}]`, index: m.index });
+    for (const a of arbitraryLengths(cls)) out.arbitrary.push({ value: a.value, index: m.index });
+    // A bracket on a spacing utility (p-[13px]) is an off-scale spacing value
+    // and is judged by the spacing rule, not as an arbitrary bracket as well:
+    // one class, one finding, the same split the harvest makes.
+    for (const c of cls.matchAll(TW_SPACING_RE)) {
+      const inner = c[1].startsWith('[') ? c[1].slice(1, -1) : null;
+      if (inner && /^-?\d*\.?\d+(?:px|rem|em|%|vh|vw|ch)$/.test(inner)) out.spacing.push({ value: inner, index: m.index });
     }
   }
   const blocks = inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()));
@@ -294,7 +321,11 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   const nsDefs = new Map();  // --telekom-x: value  → 'telekom' (definitions)
   const nsRefs = new Map();  // var(--telekom-x)    → 'telekom' (references)
 
-  const scanCssText = (text, file) => {
+  const scanCssText = (raw, file) => {
+    // A comment is not a stylesheet: `/* the old brand was #123456 */` kept a
+    // retired colour in the palette until 6.0.1. Blanked to spaces, so every
+    // character offset below still points at the same place in the file.
+    const text = raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length));
     const imp = (text.match(/!\s*important/gi) ?? []).length;
     if (imp) importantFiles.set(file, (importantFiles.get(file) ?? 0) + imp);
     // Character ranges holding a re-statement of an already-named token. The
@@ -335,7 +366,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       const stem = m[1].split('-')[0].toLowerCase();
       if (stem) nsRefs.set(stem, (nsRefs.get(stem) ?? 0) + 1);
     }
-    for (const m of text.matchAll(HEX_RE)) { if (!inVariant(m.index)) colors.add(normalizeHex(m[0]), file); }
+    for (const m of text.matchAll(HEX_RE)) { if (!inVariant(m.index) && inDeclaration(text, m.index)) colors.add(normalizeHex(m[0]), file); }
     for (const m of text.matchAll(FUNC_COLOR_RE)) {
       const v = m[0].replace(/\s+/g, ' ').toLowerCase();
       if (!isTransparent(v) && !isVarRef(v) && !inVariant(m.index)) colors.add(v, file);
@@ -448,9 +479,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       for (const m of cls.matchAll(TW_SPACING_RE)) twSpacing.add(m[1], f);
       for (const m of cls.matchAll(TW_RADIUS_RE)) twRadii.add(m[1] ?? 'default', f);
       for (const m of cls.matchAll(TW_TEXTSIZE_RE)) twTextSizes.add(m[1], f);
-      // Arbitrary length values (p-[13px], text-[10px], w-[257px]) — the
-      // Tailwind-era way a scale erodes, one bracket at a time.
-      for (const m of cls.matchAll(/[a-z][\w-]*-\[(-?\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|pt))\]/g)) twArbitrary.add(`[${m[1]}]`, f);
+      for (const a of arbitraryLengths(cls)) twArbitrary.add(a.value, f);
     }
 
     // Inline styles: dynamic blocks and render-to-image surfaces are

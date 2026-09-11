@@ -171,12 +171,16 @@ for (const [flagName, file] of [
   process.exit(1);
 }
 
+// Every value-taking flag is consumed before the path is looked for, so
+// `--out report.html .` no longer reads report.html as the repo (it did,
+// until 6.0.1: flags in the "wrong" order died with "Not a directory").
+const outOpt = opt('out', null);
 const target = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());
 if (!existsSync(target) || !statSync(target).isDirectory()) {
   console.error(`Not a directory: ${target}`);
   process.exit(1);
 }
-const outPath = resolve(opt('out', join(target, 'design-system-roast.html')));
+const outPath = resolve(outOpt ?? join(target, 'design-system-roast.html'));
 
 const tmp = mkdtempSync(join(tmpdir(), 'roast-'));
 const harvestPath = join(tmp, 'harvest.json');

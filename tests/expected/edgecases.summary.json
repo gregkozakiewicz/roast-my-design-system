@@ -1,0 +1,70 @@
+{
+  "repo": "fixture-edgecases",
+  "score": 90,
+  "noSystemLikely": false,
+  "verdict": "no agent rules, so your AI is guessing. 1 component implemented more than once, so an agent asked for a Button has several random options.",
+  "role": "product",
+  "componentsMeasured": true,
+  "tiles": [
+    {
+      "label": "distinct colours",
+      "value": "4",
+      "health": "good"
+    },
+    {
+      "label": "shades of grey",
+      "value": "1",
+      "health": "good"
+    },
+    {
+      "label": "off-scale spacing values",
+      "value": "6",
+      "health": "good"
+    },
+    {
+      "label": "duplicated components",
+      "value": "1",
+      "health": "warn"
+    },
+    {
+      "label": "inline style blocks",
+      "value": "1",
+      "health": "warn"
+    },
+    {
+      "label": "near-identical colour pairs",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "!important declarations",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "components never imported",
+      "value": "0",
+      "health": "good"
+    },
+    {
+      "label": "arbitrary bracket values",
+      "value": "3",
+      "health": "good"
+    }
+  ],
+  "moves": [
+    {
+      "title": "Crown the canonical <Button>",
+      "sub": "1 component name has competing implementations. Start with <Button>: components/Button.tsx vs widgets/Button(.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.",
+      "delta": 5,
+      "prompt": "You are fixing one design-system finding in the edgecases repository, measured by roast-my-design-system.\n\nThe finding: Crown the canonical <Button>\n\nThe detail: 1 component name has competing implementations. Start with <Button>: components/Button.tsx vs widgets/Button(.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.\n\nExpected payoff: about +5 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    },
+    {
+      "title": "Write the agent rules file",
+      "sub": "No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.",
+      "delta": 0,
+      "prompt": "You are fixing one design-system finding in the edgecases repository, measured by roast-my-design-system.\n\nThe finding: Write the agent rules file\n\nThe detail: No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    }
+  ],
+  "packages": []
+}

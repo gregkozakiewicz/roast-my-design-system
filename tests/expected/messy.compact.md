@@ -25,7 +25,7 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
 ### Spacing and sizing
 
 - Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
-- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 2 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
+- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 1 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
 - Avoid new one-off CSS spacing values; 4 off-scale values are already in play.
 
 ### Typography

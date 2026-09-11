@@ -19,12 +19,10 @@ There is no token scale in this repo to snap #3b81f5 to. The most used colours a
 === find_token 13px ===
 13px would be a new one-off. Closest value this repo already uses: 11px (1x).
 === validate bad snippet ===
-5 findings:
+4 findings:
 ⚠ L2 Colour #3b81f5 is new to this repo. No token set exists here to point you at; 2 distinct colours are already in play.
    Fix: Reuse a colour the repo already has rather than adding to the count.
 ✕ L2 New one-off spacing value 27px. The repo already carries 3 distinct spacing values.
-✕ L2 Arbitrary bracket [11px].
-   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
 ✕ L2 Arbitrary bracket [13px].
    Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
 ✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.

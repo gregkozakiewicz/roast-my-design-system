@@ -12,6 +12,7 @@ import {
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
 import { canonical } from '../lib/color.mjs';
+import { TOKEN_REF_SRC } from '../lib/declarations.mjs';
 import { tokenCollisions, workspaceMatcher } from './collisions.mjs';
 
 // ---------- counters ----------
@@ -102,8 +103,9 @@ const FONTSIZE_PROPS = /(?:^|[^-\w])font-size\s*:\s*([^;{}]+)[;}]/g;
  * sizes of which 48 were var(). Same fault that once made one Roboto look like
  * 59 typefaces (found 2026-09-11 while checking the density axis).
  */
+const TOKEN_REF_RE = new RegExp(`^(${TOKEN_REF_SRC})$`, 'i');
 const isTokenRef = (v) =>
-  /^(var\(\s*--[\w-]+[^)]*\)|inherit|initial|unset|revert)$/i.test(v)
+  TOKEN_REF_RE.test(v)
   || v.startsWith('$') || /\bmap[.-]get\b/.test(v);
 const FONTFAMILY_PROPS = /font-family\s*:\s*([^;{}]+)[;}]/g;
 const SHADOW_PROPS = /box-shadow\s*:\s*([^;{}]+)[;}]/g;

@@ -2,6 +2,17 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 6.0.1 — 2026-09-11
+
+- **One definition of a token reference, shared by counter and checker.**
+  `BENIGN_VALUE_RE` (what a checker never flags) and `isTokenRef` (what the
+  counter never counts) are now built from the same source: `var()` with a
+  fallback is accepted by both, `revert` joins the benign set, and the
+  deliberate differences are commented as design, not left as drift. This is
+  the gap the 5.11 contradiction grew from, closed at the root
+  (docs/variant-counting-findings.md, section 10). No score moves; all 191
+  checks stay green.
+
 ## 6.0.0 — 2026-09-11
 
 Major, because the score is the promise. Counts fall on nearly every repo and

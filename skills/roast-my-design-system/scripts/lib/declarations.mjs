@@ -20,9 +20,19 @@ export const EXTRA_KINDS = [
 
 export const FONT_LINE_RE = /font-family\s*:\s*([^;{}]+)/i;
 
+// One definition of "this value is a reference into the system", shared with
+// the harvest's isTokenRef so the counter and the checker can never disagree
+// about what a token reference looks like again (the 5.11 contradiction, and
+// docs/variant-counting-findings.md §10). Fallbacks are allowed: var(--x, 4px)
+// is still the system deciding.
+export const TOKEN_REF_SRC = String.raw`var\(\s*--[\w-]+[^)]*\)|inherit|initial|unset|revert`;
+
 // Disciplined values that are never sins: token use, resets, inheritance.
-export const BENIGN_VALUE_RE = /^(var\(--[\w-]+\)|inherit|initial|unset|none|normal|0)$/i;
-const FONT_BENIGN_RE = /^(var\(--[\w-]+\)|inherit)$/i;
+// Deliberately wider than a token reference: none, normal and 0 are resets a
+// checker must not flag, but they reference nothing, so the counter ignores
+// them. The difference is design, not drift.
+export const BENIGN_VALUE_RE = new RegExp(`^(${TOKEN_REF_SRC}|none|normal|0)$`, 'i');
+const FONT_BENIGN_RE = new RegExp(String.raw`^(var\(\s*--[\w-]+[^)]*\)|inherit)$`, 'i');
 
 /** The first declaration of one kind on one line, or null. The guard's door. */
 export function extraValue(re, text) {

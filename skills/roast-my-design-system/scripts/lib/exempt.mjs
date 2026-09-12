@@ -24,6 +24,10 @@
  * lines), so both give the same answer about the same file.
  */
 export const EMAIL_PRINT_RE = /email|(^|[/.])print([/.]|$)/i;
+// Next.js's crash page replaces the root layout, so the app's stylesheet
+// never loads there: Next.js tells developers to build it self-contained,
+// styling written on the elements. The medium, not a lapse (2026-09-13).
+export const CRASH_PAGE_RE = /(^|\/)global-error\.(tsx|jsx)$/;
 export const ARTWORK_NAME_RE = /(^|\/)[\w.-]*(icon|logo|badge|illustration|shield|artwork|graphic|background)[\w.-]*\.(tsx|jsx)$/i;
 export const SVG_MARKUP_RE = /<(svg|path|rect|circle|ellipse|polygon|defs|mask)\b/i;
 export const RENDER_TO_IMAGE_RE = /ImageResponse|from ['"]satori['"]|from ['"]@react-pdf|next\/og/;
@@ -42,6 +46,7 @@ export const svgHeavy = (text) =>
 export function exemptReason(file, text = '') {
   if (!file) return null;
   if (EMAIL_PRINT_RE.test(file)) return 'email and print styling has to be inline, because there is no cascade to inherit';
+  if (CRASH_PAGE_RE.test(file)) return 'the crash page replaces the root layout, so the stylesheet never loads there and its styling has to be inline';
   if (RENDERER_PATH_RE.test(file)) return 'a renderer draws pixels, so its colours are the picture rather than the interface';
   if (OG_ROUTE_RE.test(file) || RENDER_TO_IMAGE_RE.test(text)) return 'a render-to-image surface accepts nothing but inline styling, so there is no on-system way to write one';
   if (svgHeavy(text)) return 'the file is mostly drawing rather than styling';

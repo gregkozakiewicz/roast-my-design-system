@@ -1375,6 +1375,18 @@ function exceptionsBlock() {
   } else if (isLibrary) {
     lines.push('A library: unused components are internal-only, and downstream consumers are invisible from here.');
   }
+  // Files no checker judges (email, print, artwork, render-to-image, the
+  // crash page): named here with the reason, because the agent reads them
+  // like everything else and can copy what is in them.
+  const ex = h.tokens?.exemptFiles ?? [];
+  if (ex.length) {
+    const byReason = new Map();
+    for (const e of ex) { if (!byReason.has(e.reason)) byReason.set(e.reason, []); byReason.get(e.reason).push(e.file); }
+    for (const [reason, files] of byReason) {
+      const names = files.slice(0, 3).map((f) => esc(basename(f))).join(', ') + (files.length > 3 ? ` and ${files.length - 3} more` : '');
+      lines.push(`${n(files.length)} file${files.length === 1 ? '' : 's'} not judged (${names}): ${esc(reason)}. Not counted, but your agent reads ${files.length === 1 ? 'it' : 'them'} like everything else, so what is in there is still an example it can copy.`);
+    }
+  }
   if (!lines.length) return '';
   return `<div class="excs"><b>Not yours, and not counted</b>${lines.map((l) => `<p>${l}</p>`).join('')}</div>`;
 }

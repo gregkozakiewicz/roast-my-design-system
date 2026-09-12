@@ -8,7 +8,7 @@
  */
 import { existsSync } from 'node:fs';
 import {
-  EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, svgHeavy,
+  EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
 import { canonical, parseColor } from '../lib/color.mjs';
@@ -417,12 +417,15 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // Email, artwork, mostly-SVG files and pixel renderers: all imported from
   // lib/exempt.mjs, the one list every checker reads.
   const EXEMPT_RE = EMAIL_PRINT_RE, ARTWORK_RE = ARTWORK_NAME_RE;
+  // every file a check skipped, with the reason, so the report can name them
+  const exemptFiles = [];
+  const skip = (f, src) => { const r = exemptReason(f, src); if (r) exemptFiles.push({ file: f, reason: r }); return true; };
   // Colour-picker palettes and design-field option lists are user-facing data.
   const PALETTE_FILE_RE = /(color-picker|colour-picker|palette|design-fields|swatch)/i;
 
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx|ts|js)$/.test(f)) continue;
-    if (EXEMPT_RE.test(f)) continue;
+    if (EXEMPT_RE.test(f) || CRASH_PAGE_RE.test(f)) { skip(f, ''); continue; }
     let src = readSource(join(root, f));
     if (src === null) continue;
 
@@ -474,13 +477,13 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       paletteFiles.add(f);
       for (const m of src.matchAll(HEX_RE)) tokenDefined.add(normalizeHex(m[0]));
     }
-    if (ARTWORK_RE.test(f) || RENDERER_PATH_RE.test(f) || svgHeavy(src)) continue;
+    if (ARTWORK_RE.test(f) || RENDERER_PATH_RE.test(f) || svgHeavy(src)) { skip(f, src); continue; }
     // A render-to-image surface (OG card, PDF invoice) is artwork drawn with
     // code: its colours are the picture's, not the product's palette. Until
     // 5.10.0 they were the only "strays" a clean shadcn repo had, and they
     // triggered the "every single one is hardcoded" banner on it.
     const renderToImage = RENDER_TO_IMAGE_RE.test(src) || OG_ROUTE_RE.test(f);
-    if (renderToImage) continue;
+    if (renderToImage) { skip(f, src); continue; }
 
     // Tailwind classes
     for (const cls of classStrings(src)) {
@@ -654,6 +657,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       files: [...importantFiles.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
         .map(([file, count]) => ({ file, count })),
     },
+    exemptFiles,
     inlineStyles: {
       count: inlineStyleCount,
       files: [...inlineStyleFiles.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10)

@@ -646,6 +646,7 @@ console.log('exemptions:');
     ['src/email/Welcome.tsx', EMAIL, 'email templates'],
     ['src/print/Invoice.tsx', EMAIL, 'print stylesheets'],
     ['src/components/Icon.tsx', ICON, 'SVG artwork'],
+    ['app/global-error.tsx', EMAIL, 'the Next.js crash page'],
   ]) {
     const out = mcpTools.validate(ek, { code, file });
     out.startsWith('Not judged:') ? ok(`${label} are exempt, and say why`)

@@ -1850,7 +1850,7 @@ if (summaryPath) {
     verdict,
     role: P.role,
     kind: P.kind,
-    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, ownFiles: P.shadcn.paint?.ownFiles ?? null } } : {}),
+    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ownFiles: P.shadcn.paint?.ownFiles ?? null } } : {}),
     componentsMeasured,
     metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>
       ({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }))(M),

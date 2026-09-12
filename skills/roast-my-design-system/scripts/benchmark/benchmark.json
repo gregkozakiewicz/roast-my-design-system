@@ -1852,7 +1852,7 @@
   },
   "slices": {
     "shadcn": {
-      "builtAt": "2026-09-11T23:57:54.856Z",
+      "builtAt": "2026-09-12T00:06:00.881Z",
       "repoCount": 17,
       "note": "every repo in the fleet the scanner reads as shadcn; the \"cleaner than\" line on a shadcn repo reads against these",
       "stats": {
@@ -2219,17 +2219,17 @@
             57,
             58,
             62,
-            66,
+            67,
             100,
-            179,
+            183,
             296,
-            488,
+            491,
             658
           ],
           "p25": 22,
           "median": 57,
           "p75": 100,
-          "p90": 373
+          "p90": 374
         },
         "doorOverrides": {
           "values": [
@@ -2238,11 +2238,11 @@
             5,
             13,
             13,
-            14,
-            16,
+            15,
             16,
             16,
             17,
+            18,
             22,
             26,
             28,
@@ -2252,7 +2252,7 @@
             55
           ],
           "p25": 13,
-          "median": 16,
+          "median": 17,
           "p75": 28,
           "p90": 42
         }
@@ -2346,7 +2346,7 @@
           "baseColor": "neutral",
           "tailwind": "4",
           "codeFiles": 146,
-          "ownFiles": 68,
+          "ownFiles": 60,
           "metrics": {
             "colors": 41,
             "greys": 0,
@@ -2362,8 +2362,8 @@
             "important": 9,
             "neverImported": 0,
             "components": 316,
-            "paintTin": 66,
-            "doorOverrides": 16
+            "paintTin": 67,
+            "doorOverrides": 18
           }
         },
         {
@@ -2535,7 +2535,7 @@
           "baseColor": "gray",
           "tailwind": "3",
           "codeFiles": 1379,
-          "ownFiles": 534,
+          "ownFiles": 531,
           "metrics": {
             "colors": 66,
             "greys": 14,
@@ -2551,7 +2551,7 @@
             "important": 42,
             "neverImported": 13,
             "components": 777,
-            "paintTin": 488,
+            "paintTin": 491,
             "doorOverrides": 55
           }
         },
@@ -2562,7 +2562,7 @@
           "baseColor": "slate",
           "tailwind": "3",
           "codeFiles": 2120,
-          "ownFiles": 350,
+          "ownFiles": 340,
           "metrics": {
             "colors": 254,
             "greys": 52,
@@ -2578,8 +2578,8 @@
             "important": 9,
             "neverImported": 0,
             "components": 911,
-            "paintTin": 179,
-            "doorOverrides": 14
+            "paintTin": 183,
+            "doorOverrides": 15
           }
         },
         {

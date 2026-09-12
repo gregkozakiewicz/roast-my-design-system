@@ -28,6 +28,15 @@ export const BLOCK_COMPONENTS = new Set(['app-sidebar', 'calendars', 'chart-area
   'search-form', 'section-cards', 'settings-dialog', 'sidebar-left', 'sidebar-opt-in-form',
   'sidebar-right', 'signup-form', 'site-header', 'team-switcher', 'version-switcher']);
 
+// Third-party registries that install through the shadcn CLI into a folder of
+// their own under the components alias (ai-elements from Vercel, kibo-ui,
+// magicui, motion-primitives...). Installed code the team did not write,
+// judged like the catalogue. Folder names as the CLI creates them; a
+// components.json `registries` key ("@kibo-ui") adds its own name at scan.
+export const REGISTRY_DIRS = new Set(['ai-elements', 'kibo-ui', 'magicui', 'magic-ui', 'aceternity',
+  'aceternity-ui', 'originui', 'origin-ui', 'cult-ui', 'motion-primitives', 'animate-ui', 'tailark',
+  'shadcn-blocks', 'skiper-ui', 'react-bits', 'eldora-ui', 'cuicui', 'spectrum-ui']);
+
 // The sheet: rows shadcn's theming docs define, each in :root and .dark.
 export const SHADCN_ROWS = ['background', 'foreground', 'card', 'card-foreground', 'popover',
   'popover-foreground', 'primary', 'primary-foreground', 'secondary', 'secondary-foreground',

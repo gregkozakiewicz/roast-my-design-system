@@ -27,7 +27,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
-import { CATALOGUE, BLOCK_COMPONENTS, KNOWN_ROWS, TWEAKCN_ROWS, LIGHT_ONLY_ROWS, FACTORY_SPACING,
+import { CATALOGUE, BLOCK_COMPONENTS, REGISTRY_DIRS, KNOWN_ROWS, TWEAKCN_ROWS, LIGHT_ONLY_ROWS, FACTORY_SPACING,
   FRONTS, LEGACY_FRONTS, BASES, BASE_COLORS, ICON_LIBRARIES, RADIUS_MAP, THEMES, SHADCN_ROWS } from './shadcn-data.mjs';
 
 const readJSON = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
@@ -239,11 +239,23 @@ export default {
     profile.designSystem = { kind: 'shadcn', name: 'shadcn/ui', confidence: 'high', cssVariables: cssVars };
     // kit doors installed as blocks into own code
     const blockFiles = files.code.filter((f) => /\.[jt]sx$/.test(f) && !profile.uiDirs.some((d) => f.startsWith(`${d}/`)) && BLOCK_COMPONENTS.has(stripExt(basename(f))));
+    // third-party registries installed beside the catalogue: a folder named
+    // as the CLI creates it, or as a `registries` key in components.json
+    // names it. Installed code, judged like the catalogue.
+    const registryNames = new Set(REGISTRY_DIRS);
+    for (const { cfg } of configs) for (const k of Object.keys(cfg.registries ?? {})) registryNames.add(k.replace(/^@/, '').toLowerCase());
+    const registryDirs = [...new Set(files.code
+      .filter((f) => /\.[jt]sx$/.test(f) && !/(^|\/)(node_modules|public|docs?|content|posts?)\//.test(f))
+      .map((f) => dirname(f))
+      .filter((d) => registryNames.has(basename(d).toLowerCase()) && !profile.uiDirs.some((u) => d === u || d.startsWith(`${u}/`))))]
+      .filter((d) => files.code.filter((f) => f.startsWith(`${d}/`) && /\.[jt]sx$/.test(f)).length >= 2);
+    if (registryDirs.length) evidence.push(`${registryDirs.length} installed registr${registryDirs.length === 1 ? 'y' : 'ies'} beside it: ${registryDirs.map((d) => basename(d)).join(', ')}`);
     profile.shadcn = {
       installs: installs.map((i) => ({ config: i.config, uiDir: i.uiDir, catalogueNames: i.catalogueNames })),
       kit,
       sheet,
       blockFiles,
+      registryDirs,
     };
     return { confidence, evidence };
   },

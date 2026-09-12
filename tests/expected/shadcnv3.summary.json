@@ -8,7 +8,7 @@
     "slice": {
       "kind": "shadcn",
       "repoCount": 17,
-      "builtAt": "2026-09-11T23:57:54.856Z"
+      "builtAt": "2026-09-12T00:06:00.881Z"
     }
   },
   "score": 96,
@@ -28,6 +28,7 @@
     "catalogues": [
       "components/ui"
     ],
+    "registries": [],
     "ownFiles": 2
   },
   "componentsMeasured": true,

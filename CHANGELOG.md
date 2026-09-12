@@ -7,10 +7,11 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
 A shadcn repo is now compared with the shadcn repos in the benchmark, not
 with the whole fleet. Scores on repos that are not shadcn do not move. On
 shadcn repos a tile's amber band now ends at the shadcn median instead of
-the fleet median, so scores can move both ways: vercel/ai-chatbot 67 to 71
-(100 bracket values sit under the shadcn median of 169), dubinc/dub 24 to
-15 (118 colours and 15 greys sit over the shadcn medians of 115 and 14).
-No fixture score moved.
+the fleet median, so scores can move both ways. dubinc/dub 24 to 15: 118
+colours and 15 greys sit over the shadcn medians of 115 and 14.
+vercel/ai-chatbot stays at 67: its 100 bracket values sit under the shadcn
+median of 169 (red to amber), and its 18 restyled components per 100 files
+sit over the shadcn median of 17 (amber to red). No fixture score moved.
 
 - **The shadcn slice.** `benchmark.json` gains `slices.shadcn`: the same
   statistics as the general table, measured over every fleet repo the
@@ -24,8 +25,16 @@ No fixture score moved.
   and the reading can not drift apart. The curated ideals moved to
   `tools/benchmark/ideal.mjs`, shared by both builders, and gained the 2
   shadcn entries (25 and 15 per 100 own-code files).
+- **Installed registries are installed code.** A folder that a third-party
+  shadcn registry installs beside the catalogue (ai-elements, kibo-ui,
+  magicui, motion-primitives, or any name declared under `registries` in
+  `components.json`) is read like the catalogue: not the team's own code,
+  and its components count as components when own code restyles them. 3 of
+  the 17 shadcn repos in the fleet carry one. The receipt under the header
+  names them.
 - **`summary.json`** records the slice a scan was measured against under
-  `benchmark.slice` (kind, repo count, build date). New field only.
+  `benchmark.slice` (kind, repo count, build date), and the `shadcn` block
+  lists installed registries. New fields only.
 - The 2 shadcn ideals and the fleet numbers 7.2.0 kept inside the shadcn
   profile now live in the benchmark file, where every other number lives.
 

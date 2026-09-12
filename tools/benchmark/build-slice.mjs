@@ -59,9 +59,10 @@ for (const full of wanted) {
     const dupes = findDuplicates(components, profile.uiDir, root);
     const reusable = components.filter((c) => !c.isPage);
     // the tiles only this kind measures, counted as the harvest counts them
-    const doorFiles = new Set([...P.uiDirs.flatMap((d) => files.code.filter((f) => f.startsWith(`${d}/`))), ...(profile.shadcn?.blockFiles ?? [])]);
+    const installed = [...P.uiDirs, ...(profile.shadcn?.registryDirs ?? [])];
+    const doorFiles = new Set([...installed.flatMap((d) => files.code.filter((f) => f.startsWith(`${d}/`))), ...(profile.shadcn?.blockFiles ?? [])]);
     const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
-    const paint = countPaint(root, files.code, { uiDirs: [...P.uiDirs, ...(profile.shadcn?.blockFiles ?? [])], kitNames });
+    const paint = countPaint(root, files.code, { uiDirs: [...installed, ...(profile.shadcn?.blockFiles ?? [])], kitNames });
     rows.push({
       repo: full,
       confidence: P.confidence,

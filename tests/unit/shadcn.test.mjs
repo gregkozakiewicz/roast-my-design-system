@@ -130,6 +130,36 @@ test('paint from a tin and repainted doors are counted over own code only, never
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
+test('an installed third-party registry folder is installed code, not own code', () => {
+  const root = mkdtempSync(join(tmpdir(), 'rmds-shadcn-'));
+  try {
+    write(root, {
+      'package.json': '{"name":"p","private":true}',
+      'components.json': JSON.stringify({ style: 'base-nova', tailwind: { css: 'app/globals.css', baseColor: 'zinc', cssVariables: true }, aliases: { components: '@/components', ui: '@/components/ui' }, registries: { '@kibo-ui': 'https://www.kibo-ui.com/r/{name}.json' } }),
+      'tsconfig.json': JSON.stringify({ compilerOptions: { paths: { '@/*': ['./*'] } } }),
+      'app/globals.css': ':root { --background: oklch(1 0 0); }\n.dark { --background: oklch(0 0 0); }',
+      ...catalogue('components/ui', NINE),
+      'components/ai-elements/tool.tsx': 'export function Tool() { return <div className="text-yellow-600 bg-yellow-50">t</div> }',
+      'components/ai-elements/message.tsx': 'export function Message() { return <div className="text-red-500">m</div> }',
+      'components/kibo-ui/kanban.tsx': 'export function Kanban() { return <div className="bg-blue-100">k</div> }',
+      'components/kibo-ui/gantt.tsx': 'export function Gantt() { return <div />}',
+      'components/chat/panel.tsx': 'import { Tool } from "@/components/ai-elements/tool"\nexport function Panel() { return <div className="text-gray-500"><Tool className="bg-blue-100" /></div> }',
+    });
+    const { files, profile, components } = scan(root);
+    const P = profileOf(profile);
+    assert.deepEqual(P.shadcn.registryDirs.sort(), ['components/ai-elements', 'components/kibo-ui']);
+    assert.match(P.evidence.join(' '), /2 installed registries beside it: ai-elements, kibo-ui/);
+    const installed = [...P.uiDirs, ...P.shadcn.registryDirs];
+    const doorFiles = new Set(installed.flatMap((d) => files.code.filter((f) => f.startsWith(`${d}/`))));
+    const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
+    assert.ok(kitNames.has('Tool'));
+    const paint = countPaint(root, files.code, { uiDirs: installed, kitNames });
+    assert.equal(paint.ownFiles, 1);
+    assert.equal(paint.tin.uses, 2); // text-gray-500 and the bg-blue-100 passed to <Tool>
+    assert.equal(paint.doors.uses, 1); // <Tool className="bg-blue-100">
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 test('the 2 shadcn tiles exist only for a shadcn kitchen, and utility-class mode leaves the tin tile unscored', () => {
   const b = benchHelpers(loadBenchmark(), 'shadcn');
   const healthOf = makeHealthOf(b);

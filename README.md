@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.2.0" width="72" alt="roast-my-design-system">
+<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.3.0" width="72" alt="roast-my-design-system">
 
 # roast-my-design-system
 
@@ -9,6 +9,8 @@
 ## Your AI can write the UI. This makes sure it writes *your* UI.
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
+
+> **New in 7.3: shadcn repos are compared with shadcn repos.** The benchmark carries a shadcn slice, 17 of the 34 fleet repos, and on a shadcn repo every fleet line reads against it: "Avg shadcn repo", "cleaner than 60% of shadcn repos". Ideals and the reputable-systems line stay the same for everyone.
 
 > **New in 7.2: shadcn repos are read as shadcn repos.** The scanner finds the installed catalogue where it actually lives, reads the theme file `components.json` names, and prints how it decided under the report header. 2 new tiles appear on shadcn repos only, both from shadcn's own rules for agents: palette colours in your own code where a theme row exists, and kit components repainted through `className`. Counted per 100 of your own files, never inside the catalogue. The rules file gains a shadcn section. Scores on other repos do not move.
 
@@ -75,11 +77,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the line saying how the repo was read as a shadcn install, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.2.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the line saying how the repo was read as a shadcn install, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.3.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.2.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.3.0)
 
 ## What makes the numbers trustworthy
 

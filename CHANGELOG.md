@@ -2,6 +2,33 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.3.0 — 2026-09-12
+
+A shadcn repo is now compared with the shadcn repos in the benchmark, not
+with the whole fleet. Scores on repos that are not shadcn do not move. On
+shadcn repos a tile's amber band now ends at the shadcn median instead of
+the fleet median, so scores can move both ways: vercel/ai-chatbot 67 to 71
+(100 bracket values sit under the shadcn median of 169), dubinc/dub 24 to
+15 (118 colours and 15 greys sit over the shadcn medians of 115 and 14).
+No fixture score moved.
+
+- **The shadcn slice.** `benchmark.json` gains `slices.shadcn`: the same
+  statistics as the general table, measured over every fleet repo the
+  scanner itself reads as shadcn (17 of 34), plus the 2 tiles only shadcn
+  repos carry. On a shadcn repo every fleet line reads against the slice:
+  the row says "Avg shadcn repo" and "cleaner than 60%" means 60% of shadcn
+  repos. The curated ideals and the reputable-systems line are unchanged.
+- **The builder.** `tools/benchmark/build-slice.mjs` writes the slice into
+  the benchmark file without touching the general statistics. Which repos
+  belong is decided by the profile layer, never by a hand list, so the ruler
+  and the reading can not drift apart. The curated ideals moved to
+  `tools/benchmark/ideal.mjs`, shared by both builders, and gained the 2
+  shadcn entries (25 and 15 per 100 own-code files).
+- **`summary.json`** records the slice a scan was measured against under
+  `benchmark.slice` (kind, repo count, build date). New field only.
+- The 2 shadcn ideals and the fleet numbers 7.2.0 kept inside the shadcn
+  profile now live in the benchmark file, where every other number lives.
+
 ## 7.2.0 — 2026-09-12
 
 The scanner now recognises a repo built on shadcn/ui and reads it as one:

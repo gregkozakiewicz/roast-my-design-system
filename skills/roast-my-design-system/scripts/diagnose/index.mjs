@@ -32,7 +32,7 @@ import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
-import { profileOf, profileYardstick } from '../profiles/index.mjs';
+import { profileOf } from '../profiles/index.mjs';
 
 // The benchmark and every judgement made against it live in score.mjs; this
 // file only draws. The same numbers reach summary.json through scoreHarvest.
@@ -47,9 +47,10 @@ if (!inPath) { console.error('Usage: node src/diagnose/index.mjs <harvest.json> 
 const outPath = resolve(arg('out', 'diagnosis.html'));
 
 const h = JSON.parse(readFileSync(inPath, 'utf8'));
-// The yardstick: the general benchmark, plus whatever the repo's kind brings
-// for the tiles only it measures (the shadcn card owns 2).
-const B = benchHelpers(bench, profileYardstick(h));
+// The yardstick: the general benchmark, read through the slice for this
+// repo's kind when the benchmark carries one (a shadcn repo is compared with
+// the shadcn repos in the fleet).
+const B = benchHelpers(bench, profileOf(h).kind);
 const { percentile, cleanerPct, ideal, median, displayAvg, refMedian } = B;
 const healthOf = makeHealthOf(B);
 const M = coreMetrics(h);
@@ -361,7 +362,7 @@ function tile(t, pLabel, pMetric, pFallback) {
   const avgNote = pct !== null && pct >= 60 && health !== 'good' ? ` · messier than ${pct}%`
     : clean !== null && clean >= 60 ? ` · cleaner than ${clean}%` : '';
   const av = displayAvg(metric);
-  if (av !== null) rows.push(row('Avg Design System', `${n(av)}${avgNote}`, av, value));
+  if (av !== null) rows.push(row(B.sliceInfo ? `Avg ${B.sliceInfo.kind} repo` : 'Avg Design System', `${n(av)}${avgNote}`, av, value));
   if (rm !== null && (rm > 0 || ZERO_IDEAL.has(metric) || metric === 'arbitrary')) rows.push(row('Reputable systems', n(rm), rm, value));
   // A vendored catalogue is never judged for what it left on the shelf, and a
   // library's internal use says nothing about adoption: shown, not scored.
@@ -1839,7 +1840,7 @@ if (summaryPath) {
     // The contract two scans are compared by: schemaVersion for the
     // shape, benchmark for the ruler each scan was measured against.
     schemaVersion: SCHEMA_VERSION,
-    benchmark: bench ? { builtAt: bench.builtAt, repoCount: bench.repoCount, referenceSystems: bench.referenceSystems?.count ?? 0 } : null,
+    benchmark: bench ? { builtAt: bench.builtAt, repoCount: bench.repoCount, referenceSystems: bench.referenceSystems?.count ?? 0, ...(B.sliceInfo ? { slice: B.sliceInfo } : {}) } : null,
     ...(commissionedBy ? { commissionedBy } : {}),
     ...(notesText ? { notesEmbedded: true } : {}),
     ...(extraSections.length ? { sectionsEmbedded: extraSections.map((s) => s.title) } : {}),

@@ -4,7 +4,12 @@
   "benchmark": {
     "builtAt": "2026-09-10T23:51:05.104Z",
     "repoCount": 34,
-    "referenceSystems": 10
+    "referenceSystems": 10,
+    "slice": {
+      "kind": "shadcn",
+      "repoCount": 17,
+      "builtAt": "2026-09-11T23:57:54.856Z"
+    }
   },
   "score": 100,
   "noSystemLikely": false,

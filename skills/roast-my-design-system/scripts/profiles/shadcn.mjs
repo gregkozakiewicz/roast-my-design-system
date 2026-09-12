@@ -248,20 +248,8 @@ export default {
     return { confidence, evidence };
   },
 
-  /**
-   * Question 6: the ideal for this kind. Per 100 own-code files. The numbers
-   * come from the 2026-09-11 fleet probe over the 15 shadcn kitchens in the
-   * benchmark (docs: shadcn-step1-fleet-probe): the ideal is the tidiest third,
-   * the stats are the whole set so the "cleaner than" line is honest. The
-   * step 4 slice replaces these with a rebuilt ruler.
-   */
-  ideals: {
-    paintTin: { value: 25, note: 'palette colours per 100 own-code files; the tidiest third of 15 shadcn repos sit under this' },
-    doorOverrides: { value: 15, note: 'kit components repainted through className, per 100 own-code files; the tidiest third sit under this' },
-  },
-  // the 15 shadcn kitchens in the benchmark fleet, 2026-09-11, per 100 own-code files
-  stats: {
-    paintTin: { values: [5, 8, 20, 21, 22, 32, 33, 58, 62, 66, 100, 179, 296, 488, 658], median: 62 },
-    doorOverrides: { values: [0, 3, 5, 14, 16, 16, 16, 17, 22, 26, 28, 31, 40, 44, 55], median: 22 },
-  },
+  // Question 6 and 9 live in benchmark.json: the curated ideals for the 2
+  // shadcn tiles sit in ideal2026, and the shadcn slice (built by
+  // tools/benchmark/build-slice.mjs from every fleet repo read as shadcn)
+  // gives the fleet lines. Nothing here owns a number.
 };

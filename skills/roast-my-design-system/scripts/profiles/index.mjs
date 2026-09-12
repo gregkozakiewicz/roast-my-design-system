@@ -100,13 +100,3 @@ export function profileOf(h) {
   };
 }
 
-/**
- * Question 6, per kind: ideals and fleet stats a profile owns until the
- * benchmark slice for that kind exists. Overlaid on the general benchmark by
- * score.mjs; the general profile owns none, so nothing moves for it.
- */
-export function profileYardstick(h) {
-  const kind = profileOf(h).kind;
-  const p = PROFILES.find((x) => x.kind === kind);
-  return { ideals: p?.ideals ?? {}, stats: p?.stats ?? {} };
-}

@@ -26,7 +26,7 @@ import { isGrey } from '../lib/color.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { profileOf, profileYardstick } from '../profiles/index.mjs';
+import { profileOf } from '../profiles/index.mjs';
 
 export { SCHEMA_VERSION };
 
@@ -38,19 +38,16 @@ export function loadBenchmark() {
 }
 
 /**
- * The yardstick readers for one benchmark object (null-safe). A profile may
- * bring its own ideals and fleet stats for the metrics only it measures
- * (question 6 of the profile plan); they overlay the general benchmark and
- * never replace an entry the benchmark already has.
+ * The yardstick readers for one benchmark object (null-safe). When the
+ * benchmark carries a slice for the repo's kind (benchmark.slices.shadcn,
+ * built by tools/benchmark/build-slice.mjs), the fleet lines read against
+ * that slice: a shadcn repo is compared with shadcn repos. The curated
+ * ideals and the reputable-systems line are the same for every kind.
  */
-export function benchHelpers(bench, yardstick = null) {
-  if (yardstick && (Object.keys(yardstick.ideals ?? {}).length || Object.keys(yardstick.stats ?? {}).length)) {
-    bench = {
-      ...(bench ?? {}),
-      ideal2026: { ...(yardstick.ideals ?? {}), ...(bench?.ideal2026 ?? {}) },
-      stats: { ...(yardstick.stats ?? {}), ...(bench?.stats ?? {}) },
-    };
-  }
+export function benchHelpers(bench, kind = 'product') {
+  const slice = bench?.slices?.[kind] ?? null;
+  if (slice?.stats) bench = { ...bench, stats: { ...(bench?.stats ?? {}), ...slice.stats } };
+  const sliceInfo = slice ? { kind, repoCount: slice.repoCount, builtAt: slice.builtAt } : null;
   // where does this value sit among the scanned fleet? ("more colours than 90%")
   const percentile = (metric, value) => {
     const vals = bench?.stats?.[metric]?.values;
@@ -77,7 +74,7 @@ export function benchHelpers(bench, yardstick = null) {
     return mean >= 0.5 ? Math.round(mean) : null;
   };
   const refMedian = (metric) => bench?.referenceSystems?.stats?.[metric]?.median ?? null;
-  return { percentile, cleanerPct, ideal, median, displayAvg, refMedian };
+  return { percentile, cleanerPct, ideal, median, displayAvg, refMedian, sliceInfo };
 }
 
 export const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles', 'nearPairs', 'important', 'neverImported']);
@@ -230,7 +227,7 @@ export function scorePackage(m, healthOf, b) {
 
 /** The whole judgement of one harvest, as data. */
 export function scoreHarvest(h, bench = loadBenchmark()) {
-  const b = benchHelpers(bench, profileYardstick(h));
+  const b = benchHelpers(bench, profileOf(h).kind);
   const healthOf = makeHealthOf(b);
   const metrics = coreMetrics(h);
   const tiles = tileHealths(metrics, healthOf);
@@ -238,7 +235,7 @@ export function scoreHarvest(h, bench = loadBenchmark()) {
     schemaVersion: SCHEMA_VERSION,
     // A rebuilt ruler moves every score with no change in the repo, so a
     // history must know which ruler each scan was measured with.
-    benchmark: bench ? { builtAt: bench.builtAt, repoCount: bench.repoCount, referenceSystems: bench.referenceSystems?.count ?? 0 } : null,
+    benchmark: bench ? { builtAt: bench.builtAt, repoCount: bench.repoCount, referenceSystems: bench.referenceSystems?.count ?? 0, ...(b.sliceInfo ? { slice: b.sliceInfo } : {}) } : null,
     metrics,
     tiles,
     score: scoreOfTiles(tiles),

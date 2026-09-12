@@ -11,7 +11,6 @@ import { harvestComponents } from '../../skills/roast-my-design-system/scripts/h
 import { decideProfile, profileOf } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
 import { countPaint } from '../../skills/roast-my-design-system/scripts/harvest/paint.mjs';
 import { coreMetrics, tileHealths, makeHealthOf, benchHelpers, loadBenchmark } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
-import { profileYardstick } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
 
 const write = (root, files) => {
   for (const [p, body] of Object.entries(files)) {
@@ -132,7 +131,7 @@ test('paint from a tin and repainted doors are counted over own code only, never
 });
 
 test('the 2 shadcn tiles exist only for a shadcn kitchen, and utility-class mode leaves the tin tile unscored', () => {
-  const b = benchHelpers(loadBenchmark(), profileYardstick({ profile: { kind: 'shadcn' } }));
+  const b = benchHelpers(loadBenchmark(), 'shadcn');
   const healthOf = makeHealthOf(b);
   const base = { colors: [], tailwind: { spacing: [], arbitrary: [] }, spacing: [], inlineStyles: { count: 0 }, important: { count: 0 } };
   const product = coreMetrics({ profile: { kind: 'product' }, tokens: base, components: [], duplicates: { exactDuplicates: [] } });
@@ -144,8 +143,14 @@ test('the 2 shadcn tiles exist only for a shadcn kitchen, and utility-class mode
   assert.equal(tiles.find((t) => t.metric === 'doorOverrides').health, 'good');
   const utility = coreMetrics({ profile: { kind: 'shadcn', designSystem: { kind: 'shadcn', cssVariables: false }, shadcn: { paint: { tin: { per100: 400 }, doors: { per100: 0 } } } }, tokens: base, components: [], duplicates: { exactDuplicates: [] } });
   assert.equal(tileHealths(utility, healthOf).find((t) => t.metric === 'paintTin').health, 'info');
-  // the yardstick the card owns never touches a general tile
+  // the slice changes the fleet lines, never the curated ideals
   assert.equal(b.ideal('colors'), 24);
   assert.equal(b.ideal('paintTin'), 25);
-  assert.equal(b.median('paintTin'), 62);
+  assert.equal(b.sliceInfo.kind, 'shadcn');
+  assert.ok(b.sliceInfo.repoCount >= 5);
+  assert.ok(b.median('paintTin') > 0);
+  const general = benchHelpers(loadBenchmark(), 'product');
+  assert.equal(general.sliceInfo, null);
+  assert.equal(general.median('paintTin'), null);
+  assert.notEqual(general.median('colors'), b.median('colors'));
 });

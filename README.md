@@ -235,6 +235,7 @@ After the roast, the skill also offers to write `design-system-rules.md` to disk
 
 - **[telekom/scale](https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html)**: Stencil, 95 components read by tag, with Claude's notes embedded
 - **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)**: Lit, the `--spectrum-*` namespace named in the header
+- **[npx shadcn create, fresh](https://gregkozakiewicz.github.io/roast-my-design-system/examples/shadcn-create-fresh.html)**: a factory install with all 61 components, scanned as is
 - **[vercel/ai-chatbot](https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)**: React, with Claude's notes embedded
 - **[excalidraw/excalidraw](https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**
 - **[dubinc/dub](https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html)**

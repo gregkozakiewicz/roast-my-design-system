@@ -2,6 +2,16 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.3.1 — 2026-09-12
+
+- **A factory install joins the examples.** A project made with
+  `npx shadcn create` (base-nova, neutral, Tailwind 4) with all 61
+  components added, scanned as is: 96. Every theme variable present for
+  light and dark, 13 colours, no off-theme colours, no restyled components,
+  303 unused components shown as stock. The 4 missing points are 24 bracket
+  values inside `components/ui`, code shadcn wrote, which the bracket tile
+  still counts repo-wide. That is the next fix.
+
 ## 7.3.0 — 2026-09-12
 
 A shadcn repo is now compared with the shadcn repos in the benchmark, not

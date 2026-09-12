@@ -1,0 +1,18 @@
+{
+ "name": "factory-kit",
+ "private": true,
+ "dependencies": {
+  "next": "16.3.4",
+  "react": "19.2.8",
+  "react-dom": "19.2.8",
+  "shadcn": "^4.21.0",
+  "class-variance-authority": "^0.7.1",
+  "@base-ui/react": "^1.8.0",
+  "lucide-react": "^1.45.0"
+ },
+ "devDependencies": {
+  "tailwindcss": "^4",
+  "@tailwindcss/postcss": "^4",
+  "typescript": "^5"
+ }
+}

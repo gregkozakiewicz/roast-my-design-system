@@ -30,7 +30,8 @@
       "components/ui"
     ],
     "registries": [],
-    "ownFiles": 2
+    "ownFiles": 2,
+    "fresh": false
   },
   "componentsMeasured": true,
   "metrics": {

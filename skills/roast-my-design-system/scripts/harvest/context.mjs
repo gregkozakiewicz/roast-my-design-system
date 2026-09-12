@@ -48,6 +48,21 @@ const SKIP_DIRS = new Set([
   '.turbo', '.cache', 'vendor', 'tmp',
 ]);
 const MAX_DEPTH = 6;
+// where the skills CLI installs a skill, per tool
+const SKILL_DIRS = ['.claude/skills', '.agents/skills', '.cursor/skills', '.codex/skills', '.github/skills', '.windsurf/skills', 'skills'];
+// framework-managed blocks: markers and who writes them
+const MANAGED = [
+  { by: 'Next.js', start: /<!--\s*(BEGIN:nextjs-agent-rules|NEXT-AGENTS-MD-START)\s*-->/, end: /<!--\s*(END:nextjs-agent-rules|NEXT-AGENTS-MD-END)\s*-->/ },
+];
+function managedBlock(raw) {
+  for (const m of MANAGED) {
+    const a = raw.search(m.start), e = raw.search(m.end);
+    if (a < 0 || e < 0) continue;
+    const rest = (raw.slice(0, a) + raw.slice(e).replace(m.end, '')).trim();
+    return { by: m.by, only: rest.length === 0 };
+  }
+  return null;
+}
 const MAX_NESTED = 60; // entries recorded; the true count keeps counting
 
 function sweepNested(root) {
@@ -98,11 +113,27 @@ export function harvestContext(root) {
       if (c.dir || st.isDirectory()) { found.push({ ...c, size: null, mentionsDesign: null }); continue; }
       size = st.size;
       if (size < 200_000) {
-        const text = readFileSync(p, 'utf8').toLowerCase();
+        const raw = readFileSync(p, 'utf8');
+        const text = raw.toLowerCase();
         mentionsDesign = /design system|component|token|color|colour|styling|tailwind|css/.test(text);
+        // A block a framework writes and re-writes (Next.js's dev server adds
+        // its agent-rules block whenever it sees an agent) is not the team's
+        // guidance. managedOnly: nothing else in the file.
+        const m = managedBlock(raw);
+        if (m) { found.push({ file: c.file, kind: c.kind, tool: c.tool ?? null, size, mentionsDesign, managedBy: m.by, managedOnly: m.only }); continue; }
       }
     } catch { /* unreadable */ }
     found.push({ file: c.file, kind: c.kind, tool: c.tool ?? null, size, mentionsDesign });
+  }
+  // shadcn's own skill, installed by the skills CLI into a tool's skills
+  // folder: the one thing that tells an agent the kit is there.
+  for (const dir of SKILL_DIRS) {
+    const p = join(root, dir);
+    if (!existsSync(p)) continue;
+    let names = [];
+    try { names = readdirSync(p); } catch { continue; }
+    const hit = names.find((nm) => /^shadcn/i.test(nm));
+    if (hit) { found.push({ file: `${dir}/${hit}`, kind: 'agent-skill', tool: 'shadcn skill', size: null, mentionsDesign: true }); break; }
   }
   const nested = sweepNested(root);
   found.push(...nested.found);

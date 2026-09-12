@@ -26,7 +26,7 @@ import { isGrey } from '../lib/color.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
+import { profileOf, installedDirs, splitArbitrary, ownSpacing } from '../profiles/index.mjs';
 
 export { SCHEMA_VERSION };
 
@@ -136,8 +136,9 @@ export function coreMetrics(h, opts = {}) {
   const greys = colors.filter((c) => isGrey(c.value));
   const colorTokens = colors.filter((c) => c.isToken).length;
   const colorStrays = colors.length - colorTokens;
-  const spacing = h.tokens?.spacing ?? [];
-  const twSpacing = h.tokens?.tailwind?.spacing ?? [];
+  // Off-scale spacing the team wrote: on a kit the values inside installed
+  // folders are shadcn's own, kept out like its bracket values and named.
+  const sp = ownSpacing(h);
   const hardDupes = (h.duplicates?.exactDuplicates ?? []).filter((d) => !d.wrapped);
   return {
     colors: colors.length,
@@ -150,7 +151,7 @@ export function coreMetrics(h, opts = {}) {
     greyStrays: greys.filter((c) => !c.isToken).length,
     // Off-scale spacing only: CSS-declared values plus bracket utilities.
     // Many steps of the sanctioned Tailwind scale is health, not sprawl.
-    spacing: spacing.length + twSpacing.filter((v) => v.value.startsWith('[')).length,
+    spacing: sp.css.length + sp.tw.length,
     // A wrapped pair (one file imports the name from the other) is
     // composition, not competition: listed with a badge, never counted.
     exactDuplicates: hardDupes.length,

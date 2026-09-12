@@ -1,0 +1,36 @@
+=== get_context ===
+Design system context for factory-kit (scanned DATE). Rules derived from this repo's real code.
+TOKENS: 13 colour tokens in app/globals.css. Use them; never hardcode a colour.
+USE THESE, DO NOT REBUILD THEM:
+  <Button> from components/ui/button.tsx (3x)
+  <ThemeProvider> from components/theme-provider.tsx (1x)
+SPACING: Tailwind scale only. No arbitrary brackets (p-[13px]); a repeating value is a token, not a bracket.
+TYPE: Geist, Geist Mono. No new typefaces, no hand-declared font stacks.
+DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
+Before finishing: call roast_validate on what you wrote, then roast_review.
+CREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz.
+=== find_component button ===
+Canonical: <Button> from components/ui/button.tsx (used 3x · props: variant, size)
+=== find_component date picker ===
+No component matching "date picker" is defined in this repo.
+=== find_token #3b81f5 ===
+#3b81f5 is not close to any token in this repo (nearest is oklch(0.708 0 0), 101.69161709002671 channel steps away). If this colour is a real decision, add it to app/globals.css first; do not hardcode it.
+=== find_token 13px ===
+13px is off-scale here. Nearest Tailwind step: 3 (12px). If the design genuinely needs 13px, that is a token, not a one-off.
+=== validate bad snippet ===
+6 findings:
+✕ L2 Hardcoded colour #3b81f5 is new to this repo.
+   Fix: Nearest token: oklch(0.708 0 0) (101.69161709002671 channel steps away). If that is not the intent, add a token first.
+✕ L2 Raw spacing value 11px in a repo that styles spacing through Tailwind.
+   Fix: Nearest scale step: 2.5 (10px). If the design genuinely needs 11px, that is a token, not a one-off.
+✕ L2 Raw spacing value 27px in a repo that styles spacing through Tailwind.
+   Fix: Nearest scale step: 7 (28px). If the design genuinely needs 27px, that is a token, not a one-off.
+✕ L2 Bracket value [13px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
+   Fix: Move the values to classes or tokens.
+✕ L1 Defines <Button>, but components/ui/button.tsx already defines it (used 3x).
+   Fix: Import components/ui/button.tsx instead of creating a copy.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.
+=== validate clean snippet ===
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions.

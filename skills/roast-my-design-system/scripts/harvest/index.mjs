@@ -27,7 +27,7 @@ import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { lastTouchedDates } from '../lib/lasttouched.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { decideProfile, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
+import { decideProfile, decideFresh, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
 import { countPaint } from './paint.mjs';
 
 function arg(name, fallback) {
@@ -90,6 +90,9 @@ decideProfile(profile, components, files, target);
     // choices: a true lesson, badly framed. Kept out of the count, named.
     const split = splitArbitrary(tokens.tailwind?.arbitrary ?? [], allInstalled);
     profile.shadcn.arbitraryInstalled = split.installed;
+    // A fresh kit (the install command's output, nothing built yet) is
+    // decided here, once, from the facts above.
+    decideFresh(profile, components, files, tokens, target);
   }
 }
 

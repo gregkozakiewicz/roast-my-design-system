@@ -32,7 +32,7 @@ import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
-import { profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
+import { ownSpacing, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
 
 // The benchmark and every judgement made against it live in score.mjs; this
 // file only draws. The same numbers reach summary.json through scoreHarvest.
@@ -207,9 +207,12 @@ const greys = greysSorted(bgLumOf(THEMES.dark.pageBgHex));
 const greysLight = greysSorted(bgLumOf(THEMES.light.pageBgHex));
 const nonGreys = colors.filter((c) => !isGrey(c.value));
 const twColorUtils = (h.tokens.tailwind?.colors ?? []).length;
-const spacing = h.tokens.spacing ?? [];
-const twSpacing = h.tokens.tailwind?.spacing ?? [];
-// Off-scale spacing only (formula in score.mjs, shared with the packages pass).
+// On a kit the off-scale values inside installed folders are shadcn's own:
+// kept out of the tile and the bars (formula in score.mjs), named at the top.
+const P_isShadcn = (x) => profileOf(x).isShadcn;
+const spacingOwn = ownSpacing(h);
+const spacing = spacingOwn.css;
+const twSpacing = P_isShadcn(h) ? [...(h.tokens.tailwind?.spacing ?? []).filter((v) => !v.value.startsWith('[')), ...spacingOwn.tw] : (h.tokens.tailwind?.spacing ?? []);
 const spacingTotal = M.spacing;
 const exactDupes = h.duplicates.exactDuplicates ?? [];
 // A wrapped pair (one file imports the name from the other) is composition,
@@ -248,6 +251,7 @@ const nearPairs = nearColorPairs(colors);
 const collisions = h.tokens.tokenCollisions ?? [];
 
 const P = profileOf(h);
+const fresh = P.isShadcn && P.shadcn?.fresh?.fresh === true;
 // On a shadcn repo the bracket list is the team's own; installed brackets are
 // named in the side panel instead (see coreMetrics for the count).
 if (P.isShadcn) arbitrary = splitArbitrary(arbitrary, installedDirs(P)).own;
@@ -300,12 +304,14 @@ if (agentFiles.length === 0) candidates.push({ ratio: 1.3, text: `No agent rules
 if ((h.staleRules ?? []).length >= 2) candidates.push({ ratio: 1.2 + h.staleRules.length / 10, text: `${h.staleRules.length} lines in your agent rules refer to files that no longer exist` });
 const findings = candidates.sort((a, b) => b.ratio - a.ratio).map((c) => c.text);
 
-let verdict = findings.length === 0
+let verdict = fresh
+  ? 'A fresh shadcn install with nothing built on it yet. Everything below describes the kit you are starting from.'
+  : findings.length === 0
   ? (agentFiles.length > 0
     ? 'This repo is in good shape, and your agent has rules to read. Keep them in step with the code.'
     : 'This repo is in good shape. The gap is documentation: your agent still can\'t see the system.')
   : findings.slice(0, 3).join('. ') + '.';
-if (bench && findings.length) {
+if (bench && findings.length && !fresh) {
   const core = [['colors', tokenLed ? colorStrays : colors.length], ['greys', tokenLed ? greyStrays : greys.length],
     ['spacing', spacingTotal], ['typefaces', typefaces.length], ['exactDuplicates', hardDupes.length], ['inlineStyles', inline.count]];
   const worse = core.filter(([m, v]) => median(m) !== null && v > median(m)).length;
@@ -742,7 +748,7 @@ function typographySection() {
     ${typeSpecimens || receipts('the font sizes, by use', sizeChips)}
     ${radiiSpecimens || receipts('the radii, by use', radiiChips)}
     ${shadowSpecimens}
-    ${fontFamilies.length > 1 ? `<div class="glass pad" style="margin-top:16px">${sectionHead(`${typefaces.length} typeface${typefaces.length === 1 ? '' : 's'}, declared ${fontFamilies.length} different ways`, 'every distinct declaration is a chance for the next one to be wrong')}<div class="fam-rows">${fams}</div></div>` : ''}
+    ${fontFamilies.length > 1 && fontFamilies.length > typefaces.length ? `<div class="glass pad" style="margin-top:16px">${sectionHead(`${typefaces.length} typeface${typefaces.length === 1 ? '' : 's'}, declared ${fontFamilies.length} different ways`, 'every distinct declaration is a chance for the next one to be wrong')}<div class="fam-rows">${fams}</div></div>` : ''}
   </section>`;
 }
 
@@ -882,7 +888,8 @@ function componentsSection() {
     ${sectionHead(isLibrary ? 'The composition map' : 'The adoption map', `${n(reusable.length)} components defined · tile area is ${isLibrary ? 'internal use: how the system builds from itself, downstream consumers invisible from here' : 'import count'} · the real system, drawn to scale`)}
     ${mapped}
     ${overflow > 0 ? `<p class="sub">${overflow} more adopted component${overflow === 1 ? '' : 's'} below the top 24, not drawn.</p>` : ''}
-    ${onceUsed.length ? `<p class="sub">${n(onceUsed.length)} component${onceUsed.length === 1 ? ' is' : 's are'} imported exactly once: ${onceUsed.slice(0, 6).map((c) => `&lt;${esc(c.name)}&gt;`).join(', ')}${onceUsed.length > 6 ? ` and ${onceUsed.length - 6} more` : ''}. Quiet corners, not yet a system.</p>` : ''}
+    ${fresh ? '<p class="sub">No code of your own uses the kit yet. The counts below are the components using each other.</p>' : ''}
+    ${onceUsed.length && !fresh ? `<p class="sub">${n(onceUsed.length)} component${onceUsed.length === 1 ? ' is' : 's are'} imported exactly once: ${onceUsed.slice(0, 6).map((c) => `&lt;${esc(c.name)}&gt;`).join(', ')}${onceUsed.length > 6 ? ` and ${onceUsed.length - 6} more` : ''}. Quiet corners, not yet a system.</p>` : ''}
     ${top.length ? `<div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div>` : ''}
     ${neverImported.length >= 2 ? `
     <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : vendoredUi ? `${n(neverImported.length)} catalogue components not used yet · installed by the shadcn CLI and waiting to be used, not written by this team` : `${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
@@ -1205,7 +1212,15 @@ function agentSection() {
   const have = rootAgent.map((c) => `<span class="chip chip-agent">${esc(c.file)} · ${esc(c.tool ?? c.kind)}</span>`).join('')
     + (nestedCount ? `<span class="chip chip-agent">+${nestedCount} nested in subfolders</span>` : '');
   const readsList = (rootAgent.length ? rootAgent : nestedAgent.slice(0, 3)).map((c) => `<span class="mono">${esc(c.file)}</span>`).join(', ');
-  const msg = agentFiles.length
+  // A file a framework wrote for itself (Next.js re-adds its block on every
+  // dev run) is not guidance about the design system, and says so.
+  const managedOnly = agentFiles.length > 0 && agentFiles.every((c) => c.managedOnly === true);
+  const managedBy = managedOnly ? agentFiles[0].managedBy : null;
+  const skill = (h.context ?? []).find((c) => c.kind === 'agent-skill');
+  const skillLine = P.isShadcn ? (skill ? ` The shadcn skill is installed (<span class="mono">${esc(skill.file)}</span>), so the agent can read the kit's configuration.` : ' shadcn offers a skill for that and it is not installed here.') : '';
+  const msg = managedOnly
+    ? `<p class="sub">Your agent reads ${readsList}. ${esc(managedBy)} wrote it, and it is only about ${esc(managedBy)}: nothing in it mentions the theme file or the component folder, so the agent does not know the ${P.isShadcn ? 'kit' : 'design system'} is there.${skillLine} Add the rules file below and the agent knows the theme, the components and the styling rules.</p>`
+    : agentFiles.length
     ? `<p class="sub">Your agent reads ${readsList}${nestedCount && rootAgent.length ? `, plus ${nestedCount} rules file${nestedCount === 1 ? '' : 's'} nested in subfolders` : ''}. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p>`
     : `<p class="sub">No <span class="mono">CLAUDE.md</span>, no <span class="mono">AGENTS.md</span>, no <span class="mono">.cursorrules</span>. Every time your AI builds UI here, it guesses, from everything below. This is why its output looks almost-but-not-quite right.</p>`;
   // Door coverage, stated as fact: which tools can read what exists. Claude
@@ -1279,7 +1294,14 @@ function shadcnReceipt() {
   ].filter(Boolean);
   const unmatched = (k?.fellBack ?? []).filter((f) => f === 'theme' || f === 'chartColor');
   const fell = unmatched.length ? ` · ${unmatched.length === 2 ? 'accent and chart colour' : unmatched[0] === 'theme' ? 'accent' : 'chart colour'} not matched to a named shadcn theme` : '';
-  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${esc(P.evidence.join(' · '))}${facts.length ? ` · ${esc(facts.join(', '))}` : ''}${esc(fell)}</div>`;
+  const receipt = `${esc(P.evidence.join(' · '))}${facts.length ? ` · ${esc(facts.join(', '))}` : ''}${esc(fell)}`;
+  if (fresh) {
+    const f = P.shadcn.fresh;
+    const doors = f.catalogueCount;
+    const pages = comps.filter((c) => c.isPage && f.ownFiles.includes(c.file)).length;
+    return `<div class="excl fresh">It is a fresh shadcn install${k?.style ? ` (style ${esc(k.style)}${k.baseColor ? `, base colour ${esc(k.baseColor)}` : ''}${k.tailwind ? `, Tailwind ${esc(k.tailwind)}` : ''})` : ''}. Nothing of your own yet: ${n(doors)} component${doors === 1 ? '' : 's'} installed, the theme file untouched, ${pages === 1 ? 'one demo page' : `${pages} pages`}. <b>The score is the kit's, not yours.</b> Run this again once you have built a few screens.</div><div class="excl">Evidence: ${receipt}</div>`;
+  }
+  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${receipt}</div>`;
 }
 
 // User exclusions are printed in the header, never hidden: a scoped scan must
@@ -1339,6 +1361,9 @@ function exceptionsBlock() {
   if (P.isShadcn) {
     const ai = P.shadcn?.arbitraryInstalled;
     if (ai?.uses) lines.push(`${n(ai.uses)} bracket value${ai.uses === 1 ? '' : 's'} inside ${esc(P.uiDirs.map((d) => basename(d)).join(', '))} are shadcn's own (${ai.values.slice(0, 3).map((v) => esc(v.value)).join(', ')}) and are not counted. shadcn's docs allow brackets for one-off values, so your agent will treat them as normal; the rules file tells it otherwise for your own code.`);
+    const si = spacingOwn.installed;
+    const sv = si.values.length;
+    if (sv) lines.push(`${n(sv)} off-scale spacing value${sv === 1 ? '' : 's'} inside ${esc(P.uiDirs.map((d) => basename(d)).join(', '))} ${sv === 1 ? 'is' : 'are'} shadcn's own (${si.values.slice(0, 3).map((v) => esc(v.value)).join(', ')}) and ${sv === 1 ? 'is' : 'are'} not counted, for the same reason as the bracket values.`);
     if (vendoredUi && neverImported.length) lines.push(`${n(neverImported.length)} catalogue component${neverImported.length === 1 ? '' : 's'} not used yet: stock on the shelf, not scored.`);
     const rp = P.shadcn?.registryPaint;
     if (rp) lines.push(`Installed registr${rp.dirs.length === 1 ? 'y' : 'ies'} ${esc(rp.dirs.map((d) => basename(d)).join(', '))}: ${n(rp.files)} file${rp.files === 1 ? '' : 's'}${rp.tinUses ? `, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}` : ''}. Kept in the score, left out of the fixes. Your agent reads them like everything else.`);
@@ -1409,6 +1434,8 @@ const html = `<!doctype html>
   .side .chips { margin:0 0 14px; gap:5px; }
   .side .facts { font:500 11.5px/1.55 var(--sans); color:var(--dim); margin-bottom:16px; }
   .side .facts .excl { margin-top:6px; font-size:11.5px; }
+  .side .facts .excl.fresh { color:var(--text); }
+  .side .facts .excl.fresh b { color:var(--text); }
   .side .facts b { color:var(--text); font-weight:600; }
   .side .idx-head { margin-bottom:4px; }
   .side .idx a { display:block; font:500 13px/1.3 var(--sans); color:var(--dim); text-decoration:none; padding:6px 0 6px 12px; border-left:2px solid var(--line); }
@@ -1961,7 +1988,7 @@ if (summaryPath) {
     verdict,
     role: P.role,
     kind: P.kind,
-    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null } } : {}),
+    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true } } : {}),
     componentsMeasured,
     metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>
       ({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }))(M),

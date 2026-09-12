@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 /**
  * Profiles — what kind of repo is this, decided once and read everywhere.
  *
@@ -137,4 +139,75 @@ export function splitArbitrary(entries, dirs) {
   own.sort((a, b) => b.count - a.count);
   const values = [...installedValues.entries()].sort((a, b) => b[1] - a[1]).map(([value, count]) => ({ value, count }));
   return { own, installed: { uses: installedUses, values } };
+}
+
+/**
+ * A fresh kit: the shadcn install command's output with nothing built on it
+ * yet (Greg, 2026-09-12). Four absence checks and one presence check, all
+ * from facts already harvested; all five must hold. Decided once here, so the
+ * report, the rules file and the summary read one flag. When it holds the
+ * copy says "the score is the kit's, not yours" instead of narrating the
+ * catalogue's internal wiring as the team's habits.
+ *
+ * "Untouched" means untouched by these measures: a door edited by hand is
+ * invisible here, so the wording says "theme file untouched", never
+ * "components untouched".
+ */
+// what the install command writes around the catalogue, by file stem
+const SCAFFOLD_STEMS = new Set([
+  'layout', 'page', 'loading', 'error', 'not-found', 'template', 'globals',
+  'utils', 'use-mobile', 'theme-provider', 'providers', 'main', 'app', 'index',
+  'root', '__root', 'routes', 'router', 'vite-env.d', 'next-env.d', 'env.d',
+  'middleware', 'proxy', 'instrumentation',
+]);
+export function decideFresh(profile, components, files, tokens, root = null) {
+  const P = profileOf(profile);
+  if (!P.isShadcn || !profile.shadcn) return;
+  const sc = profile.shadcn;
+  const dirs = installedDirs(P);
+  const own = (files.code ?? []).filter((f) => /\.[jt]sx?$/.test(f) && !underAny(f, dirs));
+  // build config at the root (next.config, vite.config, tailwind.config) is scaffold too
+  const stem = (f) => f.split('/').pop().replace(/\.[jt]sx?$/, '').replace(/^[\w-]+\.config$/, 'app');
+  const ownComponents = (components ?? []).filter((c) => !c.isPage && !underAny(c.file, dirs));
+  const ownArbitrary = splitArbitrary(tokens?.tailwind?.arbitrary ?? [], dirs).own.reduce((s, a) => s + a.count, 0);
+  const ownInline = (tokens?.inlineStyles?.files ?? []).filter((f) => !underAny(f.file ?? f, dirs)).length;
+  // the demo page the install command writes shows one Button; a page that
+  // composes several doors is a screen someone built
+  const ownPages = (components ?? []).filter((c) => c.isPage && !underAny(c.file, dirs)).map((c) => c.file);
+  const doorImports = (f) => {
+    if (!root) return 0;
+    let src = '';
+    try { src = readFileSync(join(root, f), 'utf8'); } catch { return 0; }
+    return (src.match(/from\s+["'][^"']*\/ui\/[\w-]+["']/g) ?? []).length;
+  };
+  const checks = {
+    // 1. nothing of the team's own: every non-page component lives in a scaffold file
+    noOwnComponents: ownComponents.every((c) => SCAFFOLD_STEMS.has(stem(c.file))),
+    // 2. own code carries no colour, bracket or inline style
+    ownCodeClean: (sc.paintOwn?.tin?.uses ?? 0) === 0 && (sc.paintOwn?.doors?.uses ?? 0) === 0 && ownArbitrary === 0 && ownInline === 0,
+    // 3. the theme file is stock: every shadcn row, no custom row, --spacing untouched
+    sheetStock: sc.sheet?.found === true && (sc.sheet.custom ?? []).length === 0 && (sc.sheet.shadcnMissing ?? []).length === 0 && !sc.sheet.spacingChanged,
+    // 4. nothing installed beside the catalogue: no registries, no kit blocks
+    catalogueOnly: (sc.registryDirs ?? []).length === 0 && (sc.blockFiles ?? []).length === 0,
+    // 5. the reverse check: own code IS the scaffold, by name and by size
+    scaffold: own.length > 0 && own.length <= 10 && own.every((f) => SCAFFOLD_STEMS.has(stem(f)))
+      && ownPages.length <= 1 && ownPages.every((f) => doorImports(f) <= 1),
+  };
+  sc.fresh = {
+    fresh: Object.values(checks).every(Boolean),
+    checks,
+    ownFiles: own,
+    catalogueCount: (sc.installs ?? []).reduce((s, i) => s + (i.catalogueNames ?? 0), 0),
+  };
+}
+
+/** Off-scale spacing entries the team wrote (installed folders kept out on a kit). */
+export function ownSpacing(h) {
+  const P = profileOf(h);
+  const css = h.tokens?.spacing ?? [];
+  const tw = (h.tokens?.tailwind?.spacing ?? []).filter((v) => v.value.startsWith('['));
+  if (!P.isShadcn) return { css, tw, installed: { uses: 0, values: [] } };
+  const dirs = installedDirs(P);
+  const a = splitArbitrary(css, dirs), b = splitArbitrary(tw, dirs);
+  return { css: a.own, tw: b.own, installed: { uses: a.installed.uses + b.installed.uses, values: [...a.installed.values, ...b.installed.values].sort((x, y) => y.count - x.count) } };
 }

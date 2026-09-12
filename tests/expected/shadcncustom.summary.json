@@ -37,7 +37,8 @@
     ],
     "registryFiles": 2,
     "registryPaletteColours": 3,
-    "ownFiles": 8
+    "ownFiles": 8,
+    "fresh": false
   },
   "componentsMeasured": true,
   "metrics": {

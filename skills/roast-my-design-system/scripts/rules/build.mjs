@@ -8,7 +8,7 @@ import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { nearColorPairs } from './../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { VERSION } from '../lib/version.mjs';
-import { profileOf } from '../profiles/index.mjs';
+import { profileOf, installedDirs, splitArbitrary, ownSpacing } from '../profiles/index.mjs';
 
 export function rulesMarkdown(h, opts = {}) {
   // compact: the size-aware variant for agent files with tight practical
@@ -92,16 +92,18 @@ const repoName = h.profile?.name ?? 'this repo';
     .sort((a, b) => b.usageCount - a.usageCount).slice(0, CAP.components);
   if (top.length) {
     section('Canonical components');
-    rule(compact
+    const fresh = profileOf(h).shadcn?.fresh?.fresh === true;
+    rule(compact || fresh
       ? 'Use these existing components instead of writing new ones:'
       : 'Use these existing components instead of writing new ones, the way this repo already uses them:');
+    if (fresh && !compact) lines.push('  (No code of your own uses the kit yet. The counts below are the components using each other.)');
     for (const c of top) {
       const props = !compact && c.propsHint?.named?.length ? ` · props: ${c.propsHint.named.slice(0, 4).join(', ')}` : '';
       lines.push(`  - \`<${c.name}>\` from \`${c.file}\` (used ${c.usageCount}x${props})`);
       // Golden example: the repo's own most common real usage, quoted with a
       // receipt. Full variant only; compact hosts trade examples for size.
       const ex = c.usageExample;
-      if (!compact && ex) {
+      if (!compact && !fresh && ex) {
         lines.push(`    - most common usage, as in \`${ex.file}\` (matching ${ex.matches} of ${ex.total} usages): \`${ex.snippet}\``);
       }
     }
@@ -146,9 +148,12 @@ if (neverImported.length >= 3) {
 }
 
 // ---------- spacing ----------
-  const arbitrary = t.tailwind?.arbitrary ?? [];
+  // On a kit the values inside installed folders are shadcn's own: the
+  // counts here are the team's, the shadcn section explains the rest.
+  const P0 = profileOf(h);
+  const arbitrary = P0.isShadcn ? splitArbitrary(t.tailwind?.arbitrary ?? [], installedDirs(P0)).own : (t.tailwind?.arbitrary ?? []);
   const arbCount = arbitrary.reduce((s, a) => s + a.count, 0);
-  const offScale = (t.spacing ?? []).length;
+  const offScale = ownSpacing(h).css.length;
   if (t.tailwind?.spacing?.length || offScale || arbCount) {
     section('Spacing and sizing');
     if (t.tailwind?.spacing?.length) rule('Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.');

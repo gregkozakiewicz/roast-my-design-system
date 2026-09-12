@@ -13,7 +13,7 @@
   },
   "score": 82,
   "noSystemLikely": false,
-  "verdict": "no agent rules, so your AI is guessing.",
+  "verdict": "No agent rules file, so your AI agent has nothing to follow.",
   "role": "product",
   "kind": "shadcn",
   "shadcn": {

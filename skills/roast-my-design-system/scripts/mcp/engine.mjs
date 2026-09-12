@@ -142,7 +142,7 @@ export function validateContent(content, k) {
     const repoArb = (k.tokens.tailwind?.arbitrary ?? []).find((x) => x.value === a.value);
     const priorArb = discount(repoArb?.count, localArb, a.value);
     add('arbitrary-value', 'violation', a.index,
-      `Arbitrary bracket ${a.value}${priorArb ? `, already punched through the scale ${priorArb}x in this repo` : ''}.`,
+      `Bracket value ${a.value}${priorArb ? `, already written outside the scale ${priorArb}x in this repo` : ''}.`,
       'If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.');
   }
 
@@ -205,7 +205,7 @@ export function validateContent(content, k) {
   }
   for (const imp of got.important) {
     add('important', 'violation', imp.index,
-      '!important is the cascade admitting defeat.',
+      '!important forces a style through instead of fixing the rule that blocked it.',
       'Fix the selector or the source of the conflict instead of shouting over it.');
   }
 

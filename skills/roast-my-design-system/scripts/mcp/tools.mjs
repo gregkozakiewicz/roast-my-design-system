@@ -64,7 +64,7 @@ export function getContext(k, { path = null } = {}) {
     ? 'SPACING: Tailwind scale only. No arbitrary brackets (p-[13px]); a repeating value is a token, not a bracket.'
     : k.spacingSeen.size
       ? `SPACING: this repo has no scale, just ${k.spacingSeen.size} values in circulation. Reuse one rather than inventing value number ${k.spacingSeen.size + 1}; do not treat them as a system.`
-      : 'SPACING: nothing on record yet. Whatever you pick becomes a precedent; pick something divisible by 4.');
+      : 'SPACING: nothing on record yet. Whatever you pick, the next agent will copy; pick something divisible by 4.');
 
   const faces = distinctTypefaces(t.fontFamilies ?? []);
   if (faces.length) L.push(`TYPE: ${faces.slice(0, 3).join(', ')}. No new typefaces, no hand-declared font stacks.`);
@@ -177,7 +177,7 @@ export function findToken(k, { value } = {}) {
     }
     const prior = k.spacingSeen.get(v);
     if (prior) return `${v} is already in use ${prior}x in this repo. Consistent, so use it, but know it lives off any scale.`;
-    if (!k.spacingSeen.size) return `This repo has no spacing values on record to compare ${v} against. Whatever you pick becomes a precedent; pick something divisible by 4.`;
+    if (!k.spacingSeen.size) return `This repo has no spacing values on record to compare ${v} against. Whatever you pick, the next agent will copy; pick something divisible by 4.`;
     const near = [...k.spacingSeen.entries()].map(([val, count]) => ({ val, count, px: toPxLocal(val) }))
       .filter((x) => x.px !== null).sort((a, b) => Math.abs(a.px - px) - Math.abs(b.px - px))[0];
     return near

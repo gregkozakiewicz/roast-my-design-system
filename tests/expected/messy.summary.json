@@ -8,7 +8,7 @@
   },
   "score": 70,
   "noSystemLikely": false,
-  "verdict": "1 component implemented more than once, so an agent asked for a Button has several random options.",
+  "verdict": "1 component exist in more than 1 version. An agent asked for a Button can not tell which one to use.",
   "role": "product",
   "kind": "product",
   "componentsMeasured": true,

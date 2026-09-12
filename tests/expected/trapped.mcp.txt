@@ -26,7 +26,7 @@ There is no token scale in this repo to snap #3b81f5 to. The most used colours a
 4 findings:
 ⚠ L2 Colour #3b81f5 is new to this repo. No token set exists here to point you at; 24 distinct colours are already in play.
    Fix: Reuse a colour the repo already has rather than adding to the count.
-✕ L2 Arbitrary bracket [13px].
+✕ L2 Bracket value [13px].
    Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
 ✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
    Fix: Move the values to classes or tokens.

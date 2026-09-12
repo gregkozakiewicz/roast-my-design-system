@@ -8,7 +8,7 @@
   },
   "score": 90,
   "noSystemLikely": false,
-  "verdict": "no agent rules, so your AI is guessing. 1 component implemented more than once, so an agent asked for a Button has several random options.",
+  "verdict": "No agent rules file, so your AI agent has nothing to follow. 1 component exist in more than 1 version. An agent asked for a Button can not tell which one to use.",
   "role": "product",
   "kind": "product",
   "componentsMeasured": true,

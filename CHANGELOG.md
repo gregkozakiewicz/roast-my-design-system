@@ -2,6 +2,20 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.3.2 — 2026-09-13
+
+Copy only. No score moves.
+
+- **The verdict sentences are in plain English.** The line at the top of
+  the report and the 3 receipt headings it echoes no longer use images:
+  "punched through the scale" is now "written outside the Tailwind scale",
+  "the cascade admitting defeat" is now "forces a style through instead of
+  fixing the rule that blocked it", "copy-paste, not decisions" is now "1
+  colour recorded twice", "where a dozen would do" is now "a tidy system
+  needs about 12". Every sentence names what the agent does in the second
+  half. The MCP server, the SARIF rule descriptions and the landing cards
+  say the same.
+
 ## 7.3.1 — 2026-09-12
 
 - **A factory install joins the examples.** A project made with

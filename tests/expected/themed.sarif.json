@@ -49,7 +49,7 @@
                 "text": "!important declarations"
               },
               "fullDescription": {
-                "text": "The cascade admitting defeat. Fix specificity at the source and these stop being necessary."
+                "text": "Forces a style through instead of fixing the rule that blocked it. Fix specificity at the source and these stop being necessary."
               },
               "helpUri": "https://github.com/gregkozakiewicz/roast-my-design-system"
             },

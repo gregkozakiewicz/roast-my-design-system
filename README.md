@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.3.0" width="72" alt="roast-my-design-system">
+<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.3.2" width="72" alt="roast-my-design-system">
 
 # roast-my-design-system
 
@@ -77,11 +77,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the line saying how the repo was read as a shadcn install, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.3.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the line saying how the repo was read as a shadcn install, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.3.2)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.3.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.3.2)
 
 ## What makes the numbers trustworthy
 

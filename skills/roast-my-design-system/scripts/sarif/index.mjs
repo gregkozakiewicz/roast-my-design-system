@@ -29,7 +29,7 @@ const RULES = {
   'duplicate-component': { name: 'Duplicated component', desc: 'A component implemented more than once. An agent asked for it has several plausible answers.' },
   'never-imported-component': { name: 'Component nobody imports', desc: 'Defined in the system, imported by nothing. It sits there as a wrong answer waiting to be picked.' },
   'inline-styles': { name: 'Inline style blocks', desc: 'Static values written as style attributes, bypassing the system and teaching the agent to do the same.' },
-  'important-styles': { name: '!important declarations', desc: 'The cascade admitting defeat. Fix specificity at the source and these stop being necessary.' },
+  'important-styles': { name: '!important declarations', desc: 'Forces a style through instead of fixing the rule that blocked it. Fix specificity at the source and these stop being necessary.' },
   'stray-colors': { name: 'Hardcoded colours', desc: 'Colour values no token names. Each one is a value the agent will happily copy.' },
   'stale-rule-reference': { name: 'Stale agent-rule reference', desc: 'The agent rules reference something this scan can no longer find. A rule the agent obeys is worse than no rule when the repo has moved on.' },
 };

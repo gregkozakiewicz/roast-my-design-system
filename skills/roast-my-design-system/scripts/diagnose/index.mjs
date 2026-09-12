@@ -277,7 +277,7 @@ const offenders = h.tokens.offenders ?? [];
 const candidates = [];
 const effColors = tokenLed ? colorStrays : colors.length;
 const effGreys = tokenLed ? greyStrays : greys.length;
-if (typefaces.length > 3) candidates.push({ ratio: typefaces.length / 3, text: `${typefaces.length} typefaces, brands use 2 or 3` });
+if (typefaces.length > 3) candidates.push({ ratio: typefaces.length / 3, text: `${typefaces.length} typefaces. Most products use 2 or 3` });
 else if (typefaces.length && fontFamilies.length > 6) candidates.push({ ratio: fontFamilies.length / 6, text: `${typefaces.length} typeface${typefaces.length > 1 ? 's' : ''} declared ${fontFamilies.length} different ways` });
 if (effColors > 24 * 1.25) candidates.push({ ratio: effColors / 24, text: tokenLed
   ? `${n(colorStrays)} hardcoded colours outside the token set, your agent will happily copy them at random`
@@ -285,15 +285,15 @@ if (effColors > 24 * 1.25) candidates.push({ ratio: effColors / 24, text: tokenL
 if (effGreys > 13 * 1.25) candidates.push({ ratio: effGreys / 13, text: tokenLed
   ? `${greyStrays} hardcoded greys outside the token set`
   : `${greys.length} shades of grey doing the job of 13` });
-if (spacingTotal > 15) candidates.push({ ratio: spacingTotal / 12, text: `${spacingTotal} off-scale spacing values where a dozen would do` });
-if (nearPairs.length >= 3) candidates.push({ ratio: 1 + nearPairs.length / 6, text: `${nearPairs.length} colour pairs are nearly identical (${nearPairs[0].a.value} next to ${nearPairs[0].b.value}), copy-paste, not decisions` });
-if (important.count >= 10) candidates.push({ ratio: 1 + important.count / 30, text: `${n(important.count)} !important declarations, the cascade admitting defeat` });
+if (spacingTotal > 15) candidates.push({ ratio: spacingTotal / 12, text: `${spacingTotal} spacing values sit outside the scale. A tidy system needs about 12` });
+if (nearPairs.length >= 3) candidates.push({ ratio: 1 + nearPairs.length / 6, text: `${nearPairs.length} pairs of colours are nearly the same (${nearPairs[0].a.value} next to ${nearPairs[0].b.value}). Each pair is 1 colour recorded twice` });
+if (important.count >= 10) candidates.push({ ratio: 1 + important.count / 30, text: `${n(important.count)} !important declarations. Each one forces a style through instead of fixing the rule that blocked it` });
 if (componentsMeasured && iconCollisions.length >= 5) candidates.push({ ratio: 1 + iconCollisions.length / 8, text: `two icon sets collide on ${iconCollisions.length} names` });
-if (componentsMeasured && hardDupes.length > 0) candidates.push({ ratio: 1 + hardDupes.length / 5, text: `${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} implemented more than once, so an agent asked for a Button has several random options` });
-if (inline.count > 20) candidates.push({ ratio: inline.count / 20, text: `${n(inline.count)} inline style blocks bypassing every system, and teaching your agent to do the same` });
-if (arbitraryCount >= 20) candidates.push({ ratio: arbitraryCount / 30, text: `${n(arbitraryCount)} arbitrary values like ${arbitrary[0].value} punched through the Tailwind scale, each one a precedent your agent will follow` });
-if (agentFiles.length === 0) candidates.push({ ratio: 1.3, text: `no agent rules, so your AI is guessing` });
-if ((h.staleRules ?? []).length >= 2) candidates.push({ ratio: 1.2 + h.staleRules.length / 10, text: `${h.staleRules.length} references in your agent rules point at things this scan can no longer find` });
+if (componentsMeasured && hardDupes.length > 0) candidates.push({ ratio: 1 + hardDupes.length / 5, text: `${hardDupes.length} component${hardDupes.length > 1 ? 's' : ''} exist in more than 1 version. An agent asked for a Button can not tell which one to use` });
+if (inline.count > 20) candidates.push({ ratio: inline.count / 20, text: `${n(inline.count)} inline style blocks skip the design system. An agent that reads them learns to do the same` });
+if (arbitraryCount >= 20) candidates.push({ ratio: arbitraryCount / 30, text: `${n(arbitraryCount)} values like ${arbitrary[0].value} are written outside the Tailwind scale. An agent that reads them learns to do the same` });
+if (agentFiles.length === 0) candidates.push({ ratio: 1.3, text: `No agent rules file, so your AI agent has nothing to follow` });
+if ((h.staleRules ?? []).length >= 2) candidates.push({ ratio: 1.2 + h.staleRules.length / 10, text: `${h.staleRules.length} lines in your agent rules refer to files that no longer exist` });
 const findings = candidates.sort((a, b) => b.ratio - a.ratio).map((c) => c.text);
 
 let verdict = findings.length === 0
@@ -337,8 +337,8 @@ function row(label, valText, refVal, value) {
 }
 const FALLBACK_TARGET = {
   colors: 'a system needs ~24', greys: 'a scale has up to 13', spacing: 'a dozen deliberate exceptions',
-  exactDuplicates: 'should be 0', inlineStyles: 'invisible to any system', nearPairs: 'copy-paste, not decisions',
-  important: 'the cascade admitting defeat', neverImported: 'the system nobody found', arbitrary: 'a handful of deliberate exceptions',
+  exactDuplicates: 'should be 0', inlineStyles: 'invisible to any system', nearPairs: '1 colour recorded twice',
+  important: 'forces a style through', neverImported: 'the system nobody found', arbitrary: 'a handful of deliberate exceptions',
   paintTin: 'the theme file already has a variable for it', doorOverrides: 'use a variant instead',
 };
 // Dress one judged tile for the page: formatted number, comparison rows.
@@ -495,7 +495,7 @@ function paletteSection() {
     <div class="usage-bar">${cells}${restCell}</div>
     ${ramp}
     ${nearPairs.length ? `
-    <div class="receipts">${eyebrow(`${nearPairs.length} nearly identical pair${nearPairs.length === 1 ? '' : 's'} · copy-paste, not decisions`)}
+    <div class="receipts">${eyebrow(`${nearPairs.length} nearly identical pair${nearPairs.length === 1 ? '' : 's'} · each pair is 1 colour recorded twice`)}
     <div class="chips-row">${nearPairs.slice(0, 8).map((pr) => `<span class="vchip" title="every channel within ${pr.d} of its twin"><i class="ndot" style="background:${swatch(pr.a.value)}"></i>${esc(pr.a.value)} ×${pr.a.count} <b class="nsim">≈</b> <i class="ndot" style="background:${swatch(pr.b.value)}"></i>${esc(pr.b.value)} ×${pr.b.count}</span>`).join('')}${nearPairs.length > 8 ? `<span class="vchip dim">+${nearPairs.length - 8} more</span>` : ''}</div>
     ${whyToggle('nearPairs')}</div>` : ''}
   </div>
@@ -572,7 +572,7 @@ function spacingBars() {
     <div class="bar-track"><div class="bar${s.off ? ' bar-off' : ''}" style="width:${Math.max(2, Math.round((s.count / max) * 100))}%"></div></div>
     <span class="bar-count">${n(s.count)}</span></div>`).join('');
   const arb = arbitraryCount ? `
-    <div class="receipts">${eyebrow(`${n(arbitraryCount)} arbitrary values punched through the scale, one bracket at a time`)}
+    <div class="receipts">${eyebrow(`${n(arbitraryCount)} bracket values written outside the scale`)}
     <div class="chips-row">${arbitrary.slice(0, 10).map((a) => `<span class="vchip bad" title="${esc(a.files?.[0]?.file ?? '')}">${esc(a.value)} ×${a.count}</span>`).join('')}${arbitrary.length > 10 ? `<span class="vchip dim">+${arbitrary.length - 10} more</span>` : ''}</div>
     ${whyToggle('arbitrary')}</div>` : '';
   return `<section class="glass pad">
@@ -759,7 +759,7 @@ function inlineSection() {
   if (inline.count < 5 && important.count < 5) return '';
   const max = Math.max(...inline.files.slice(0, 6).map((f) => f.count), 1);
   const importantRow = important.count ? `
-    <div class="receipts">${eyebrow(`${n(important.count)} !important declaration${important.count === 1 ? '' : 's'} · the cascade admitting defeat`)}
+    <div class="receipts">${eyebrow(`${n(important.count)} !important declaration${important.count === 1 ? '' : 's'} · each one forces a style through`)}
     <div class="chips-row">${important.files.map((f) => `<span class="vchip bad" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('')}</div>
     ${whyToggle('important')}</div>` : '';
   const blocks = inline.count >= 5 ? `<div class="fam-rows">${inline.files.slice(0, 6).map((f) => `

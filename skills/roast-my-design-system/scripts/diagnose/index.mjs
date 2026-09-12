@@ -1384,8 +1384,14 @@ function exceptionsBlock() {
     for (const e of ex) { if (!byReason.has(e.reason)) byReason.set(e.reason, []); byReason.get(e.reason).push(e.file); }
     for (const [reason, files] of byReason) {
       // two files with one name (a spare-part copy) are told apart by their folder
-      const bases = files.map((f) => basename(f));
-      const label = (f) => (bases.filter((b) => b === basename(f)).length > 1 ? f.split('/').slice(-2).join('/') : basename(f));
+      const label = (f) => {
+        const parts = f.split('/');
+        for (let k = 1; k <= parts.length; k++) {
+          const tail = parts.slice(-k).join('/');
+          if (files.filter((o) => o === tail || o.endsWith(`/${tail}`)).length === 1) return tail;
+        }
+        return f;
+      };
       const names = files.slice(0, 3).map((f) => esc(label(f))).join(', ') + (files.length > 3 ? ` and ${files.length - 3} more` : '');
       lines.push(`${n(files.length)} file${files.length === 1 ? '' : 's'} not judged (${names}): ${esc(reason)}. Not counted, but your agent reads ${files.length === 1 ? 'it' : 'them'} like everything else, so what is in there is still an example it can copy.`);
     }

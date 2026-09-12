@@ -7,8 +7,8 @@
     "referenceSystems": 10,
     "slice": {
       "kind": "shadcn",
-      "repoCount": 17,
-      "builtAt": "2026-09-12T00:06:00.881Z"
+      "repoCount": 16,
+      "builtAt": "2026-09-12T19:02:27.297Z"
     }
   },
   "score": 100,
@@ -20,6 +20,7 @@
     "confidence": "medium",
     "evidence": [
       "components.json in the root, 1 catalogue component in components/ui",
+      "no shadcn theme variables found in any stylesheet",
       "style new-york, base colour zinc, Tailwind 3"
     ],
     "style": "new-york",

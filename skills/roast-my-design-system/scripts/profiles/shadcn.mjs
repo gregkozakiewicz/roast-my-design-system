@@ -93,6 +93,25 @@ function resolveAlias(root, wsRoot, alias) {
   return null;
 }
 
+/**
+ * The theme contract is the real signature of a shadcn install: the named
+ * variables (background, foreground, primary, muted, border, ring...) defined
+ * in a stylesheet. Door names and Radix imports are not enough. dubinc/dub
+ * has 12 catalogue-named files on Radix and cva, no components.json and 0 of
+ * these variables: its own token system, a shadcn ancestry, not a shadcn
+ * install. It was read as one from 7.2.0 to 7.3.2 (2026-09-13).
+ */
+const CONTRACT_ROWS = ['background', 'foreground', 'primary', 'muted', 'border', 'ring', 'accent', 'card', 'popover', 'destructive'];
+function themeContract(root, files) {
+  const seen = new Set();
+  for (const f of (files.styles ?? []).slice(0, 60)) {
+    const css = read(join(root, f));
+    for (const r of CONTRACT_ROWS) if (!seen.has(r) && new RegExp(`--${r}\\s*:`).test(css)) seen.add(r);
+    if (seen.size === CONTRACT_ROWS.length) break;
+  }
+  return seen.size;
+}
+
 /** Rows declared under a selector in a CSS text: name -> value. */
 function rowsUnder(css, selector) {
   const out = new Map();
@@ -209,11 +228,14 @@ export default {
       else { const i = installs.find((x) => x.uiDir === s.dir); i.catalogueNames = Math.max(i.catalogueNames, s.catalogueNames); }
     }
 
-    // 3. the decision: a marker plus a folder, or a folder that is plainly the
-    // catalogue by name (8+). Same bar the profiler used for vendoredUi.
+    // 3. the decision. With components.json: the CLI's own marker plus a
+    // catalogue folder. Without it: a catalogue by name AND the theme contract
+    // in a stylesheet (5 or more of shadcn's named variables); names and
+    // Radix alone describe half the React world.
+    const contract = themeContract(root, files);
     const withConfigAndDir = installs.filter((i) => i.config && i.uiDir);
     const byName = installs.filter((i) => i.catalogueNames >= 8);
-    if (!withConfigAndDir.length && !byName.length) return null;
+    if (!withConfigAndDir.length && !(byName.length && contract >= 5)) return null;
 
     installs.sort((a, b) => b.catalogueNames - a.catalogueNames || (b.config ? 1 : 0) - (a.config ? 1 : 0));
     const primary = installs[0];
@@ -229,6 +251,7 @@ export default {
       if (i.config) evidence.push(`components.json in ${dirname(i.config) === '.' ? 'the root' : dirname(i.config)}${i.uiDir ? `, ${i.catalogueNames} catalogue component${i.catalogueNames === 1 ? '' : 's'} in ${i.uiDir}` : ', no catalogue folder found through its alias'}`);
       else evidence.push(`${i.catalogueNames} catalogue components in ${i.uiDir}, no components.json`);
     }
+    evidence.push(contract ? `${contract} of shadcn's ${CONTRACT_ROWS.length} theme variables defined` : 'no shadcn theme variables found in any stylesheet');
     if (kit?.style) evidence.push(`style ${kit.style}${kit.baseColor ? `, base colour ${kit.baseColor}` : ''}${kit.tailwind ? `, Tailwind ${kit.tailwind}` : ''}`);
 
     // 4. write the facts every consumer reads

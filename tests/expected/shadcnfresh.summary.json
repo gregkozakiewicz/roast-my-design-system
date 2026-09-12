@@ -7,8 +7,8 @@
     "referenceSystems": 10,
     "slice": {
       "kind": "shadcn",
-      "repoCount": 17,
-      "builtAt": "2026-09-12T00:06:00.881Z"
+      "repoCount": 16,
+      "builtAt": "2026-09-12T19:02:27.297Z"
     }
   },
   "score": 100,
@@ -20,6 +20,7 @@
     "confidence": "high",
     "evidence": [
       "components.json in the root, 9 catalogue components in components/ui",
+      "10 of shadcn's 10 theme variables defined",
       "style base-nova, base colour mist, Tailwind 4"
     ],
     "style": "base-nova",

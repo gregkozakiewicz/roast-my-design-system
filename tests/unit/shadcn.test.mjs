@@ -67,12 +67,14 @@ test('a catalogue behind a tsconfig alias in a workspace is found, with the rece
 test('a catalogue with no components.json is recognised by its door names, at medium confidence', () => {
   const root = mkdtempSync(join(tmpdir(), 'rmds-shadcn-'));
   try {
-    write(root, { 'package.json': '{"name":"old","private":true}', ...catalogue('components/ui', NINE), 'app/page.tsx': 'export default function Page() { return <div /> }' });
+    write(root, { 'package.json': '{"name":"old","private":true}', ...catalogue('components/ui', NINE), 'app/page.tsx': 'export default function Page() { return <div /> }',
+      'styles/globals.css': ':root { --background: 0 0% 100%; --foreground: 222 47% 11%; --primary: 222 47% 11%; --muted: 210 40% 96%; --border: 214 32% 91%; --ring: 222 84% 5%; }' });
     const { profile } = scan(root);
     const P = profileOf(profile);
     assert.equal(P.kind, 'shadcn');
     assert.equal(P.confidence, 'medium');
     assert.match(P.evidence[0], /9 catalogue components in components\/ui, no components\.json/);
+    assert.match(P.evidence.join(' '), /6 of shadcn's 10 theme variables defined/);
     assert.equal(P.shadcn.kit, null);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
@@ -83,6 +85,17 @@ test('a hand-written ui folder with 3 files and no config is not a shadcn kitche
     write(root, { 'package.json': '{"name":"own","private":true}', ...catalogue('components/ui', ['button', 'card', 'modal']), 'app/page.tsx': 'export default function Page() { return <div /> }' });
     const { profile } = scan(root);
     assert.equal(profileOf(profile).kind, 'product');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('catalogue names and Radix imports with no shadcn theme anywhere are a product with a shadcn ancestry (the dub case)', () => {
+  const root = mkdtempSync(join(tmpdir(), 'rmds-shadcn-'));
+  try {
+    write(root, { 'package.json': '{"name":"dub","private":true}', ...catalogue('packages/ui/src', NINE), 'apps/web/page.tsx': 'export default function Page() { return <div className="bg-default text-content-emphasis" /> }',
+      'packages/tailwind-config/themes.css': ':root { --bg-default: 255 255 255; --bg-emphasis: 229 229 229; --content-emphasis: 23 23 23; }' });
+    const { profile } = scan(root);
+    assert.equal(profileOf(profile).kind, 'product');
+    assert.notEqual(profile.designSystem.kind, 'shadcn');
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 

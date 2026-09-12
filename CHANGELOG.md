@@ -2,6 +2,19 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.3.3 — 2026-09-13
+
+- **A shadcn install needs the theme, not just the file names.** From 7.2.0
+  a folder with 8 or more catalogue file names on Radix or Base UI was read
+  as a shadcn install even without `components.json`. dubinc/dub has exactly
+  that and no shadcn theme variable anywhere: its own token system, a shadcn
+  ancestry, not a shadcn install. It was judged on a theme it does not have
+  and sat in the shadcn slice. Without `components.json` the scanner now also
+  requires 5 or more of shadcn's named theme variables in a stylesheet. The
+  recognition line says how many it found. dub reads as a product again and
+  is judged on its own system. The shadcn slice is rebuilt with 16 repos. No
+  other repo changes kind.
+
 ## 7.3.2 — 2026-09-13
 
 Copy only. No score moves.

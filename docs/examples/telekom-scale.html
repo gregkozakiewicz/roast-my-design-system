@@ -433,7 +433,7 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 143ms · 210 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 95ms · 210 code files</div>
       <h1>Design System Diagnosis</h1>
       <div class="meta"><span class="mono">telekom/scale</span> · scanned 2026-09-12</div>
     </div>
@@ -613,7 +613,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
   </section>
 
-<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> &lt;TelekomNavItem&gt; alone has 2 implementations. An agent asked for one cannot tell which is canonical, so it picks at random or writes another, and every wrong pick becomes the example the next agent copies. This is the finding that multiplies itself.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> -1px appears 22 times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence 23. The most copied pattern here is the one you least want copied.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> 26 !important declarations, and each one is a shouting match a previous developer decided to win by force. An agent whose style will not apply does what the repo taught it and shouts louder. The volume in this codebase only goes up.</span></div>
+<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> &lt;TelekomNavItem&gt; alone has 2 implementations. An agent asked for one can not tell which is the real one, so it picks 1 at random or writes another. Every wrong pick becomes the example the next agent copies.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> -1px appears 22 times. An agent looking for how this repo does spacing reads a repeated value as the rule, so it will write use number 23. The most copied value here is the one you least want copied.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> 26 !important declarations, and each one forces a style through instead of fixing the rule that blocked it. An agent whose style will not apply does what the repo taught it and adds another. The count only goes up.</span></div>
 
 <div class="stats"><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>

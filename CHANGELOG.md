@@ -14,7 +14,9 @@ Copy only. No score moves.
   colour recorded twice", "where a dozen would do" is now "a tidy system
   needs about 12". Every sentence names what the agent does in the second
   half. The MCP server, the SARIF rule descriptions and the landing cards
-  say the same.
+  say the same. The 7 agent-trap boxes are rewritten in the same register:
+  no coin tosses, shouting matches or breeding twins, just what the agent
+  does next.
 
 ## 7.3.1 — 2026-09-12
 

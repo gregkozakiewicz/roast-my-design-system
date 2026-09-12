@@ -514,31 +514,31 @@ function dupesTrap() {
   const hard = exactDupes.filter((d) => !d.wrapped);
   if (hard.length < 2) return '';
   const top = hard[0];
-  return trapBox(`&lt;${esc(top.name)}&gt; alone has ${top.files.length} implementations. An agent asked for one cannot tell which is canonical, so it picks at random or writes another, and every wrong pick becomes the example the next agent copies. This is the finding that multiplies itself.`);
+  return trapBox(`&lt;${esc(top.name)}&gt; alone has ${top.files.length} implementations. An agent asked for one can not tell which is the real one, so it picks 1 at random or writes another. Every wrong pick becomes the example the next agent copies.`);
 }
 function spacingTrap() {
   const candidates = [...spacing, ...(arbitrary ?? [])].filter((s) => s.count >= 15)
     .sort((a, b) => b.count - a.count);
   if (candidates.length) {
     const t = candidates[0];
-    return trapBox(`${esc(t.value)} appears ${t.count} times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence ${t.count + 1}. The most copied pattern here is the one you least want copied.`);
+    return trapBox(`${esc(t.value)} appears ${t.count} times. An agent looking for how this repo does spacing reads a repeated value as the rule, so it will write use number ${t.count + 1}. The most copied value here is the one you least want copied.`);
   }
   if (twSpacing.length > 0 && spacing.length >= 10) {
-    return trapBox(`Two spacing dialects coexist here: Tailwind steps and ${spacing.length} raw CSS values. A human knows which is legacy. An agent sees two valid options and matches whichever file it opened last, so every edit is a coin toss between systems.`);
+    return trapBox(`Two spacing dialects coexist here: Tailwind steps and ${spacing.length} raw CSS values. A person knows which one is old. An agent sees 2 valid options and follows whichever file it opened last, so each edit lands in one system or the other by chance.`);
   }
   return '';
 }
 function coloursTrap() {
   if (nearPairs.length < 6) return '';
-  return trapBox(`This palette holds ${nearPairs.length} pairs of colours a screen can barely tell apart. An agent asked for the brand grey cannot see the difference either, so it copies whichever twin is nearest, and when unsure it invents a third between them. Twins breed triplets.`);
+  return trapBox(`This palette holds ${nearPairs.length} pairs of colours a screen can barely tell apart. An agent asked for the brand grey can not see the difference either, so it copies whichever twin is nearest, and when unsure it writes a third between them. 2 becomes 3.`);
 }
 function inlineTrap() {
   if (inline.count < 50) return '';
-  return trapBox(`${n(inline.count)} inline styles live where the system should. An agent learns a codebase by example, and every inline style is an example that says the system is optional. Each exception it copies becomes the precedent for the next one.`);
+  return trapBox(`${n(inline.count)} inline styles live where the system should. An agent learns a codebase by example, and every inline style is an example that says the system is optional. Each one it copies becomes the example for the next.`);
 }
 function importantTrap() {
   if (important.count < 20) return '';
-  return trapBox(`${n(important.count)} !important declarations, and each one is a shouting match a previous developer decided to win by force. An agent whose style will not apply does what the repo taught it and shouts louder. The volume in this codebase only goes up.`);
+  return trapBox(`${n(important.count)} !important declarations, and each one forces a style through instead of fixing the rule that blocked it. An agent whose style will not apply does what the repo taught it and adds another. The count only goes up.`);
 }
 function collisionsTrap() {
   if (!collisions.length) return '';
@@ -551,7 +551,7 @@ function collisionsTrap() {
 function orphansTrap() {
   if (!componentsMeasured || isLibrary) return '';
   if (neverImported.length < 10) return '';
-  return trapBox(`${neverImported.length} components are never imported anywhere. An agent searching for a Button finds the abandoned ones alongside the canonical one with nothing to tell them apart, so yesterday's dead end becomes today's example.`);
+  return trapBox(`${neverImported.length} components are never imported anywhere. An agent searching for a Button finds the unused ones next to the real one with nothing to tell them apart, so an old dead end becomes today's example.`);
 }
 // At most three traps per report, in severity order: scarcity is what makes
 // the marker readable as a warning rather than wallpaper.

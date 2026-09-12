@@ -433,7 +433,7 @@
 <header>
   <div class="hero">
     <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 1252ms · 4,157 code files</div>
+      <div class="kicker"><span class="dot"></span>Scan complete · 894ms · 4,157 code files</div>
       <h1>Design System Diagnosis</h1>
       <div class="meta"><span class="mono">dubinc/dub</span> · scanned 2026-09-12</div>
     </div>
@@ -636,7 +636,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
   </section>
 
-<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> &lt;PayoutStats&gt; alone has 3 implementations. An agent asked for one cannot tell which is canonical, so it picks at random or writes another, and every wrong pick becomes the example the next agent copies. This is the finding that multiplies itself.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> [400px] appears 24 times. An agent looking for how this repo does spacing reads repetition as intent, so it will write occurrence 25. The most copied pattern here is the one you least want copied.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> This palette holds 15 pairs of colours a screen can barely tell apart. An agent asked for the brand grey cannot see the difference either, so it copies whichever twin is nearest, and when unsure it invents a third between them. Twins breed triplets.</span></div>
+<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> &lt;PayoutStats&gt; alone has 3 implementations. An agent asked for one can not tell which is the real one, so it picks 1 at random or writes another. Every wrong pick becomes the example the next agent copies.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> [400px] appears 24 times. An agent looking for how this repo does spacing reads a repeated value as the rule, so it will write use number 25. The most copied value here is the one you least want copied.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> This palette holds 15 pairs of colours a screen can barely tell apart. An agent asked for the brand grey can not see the difference either, so it copies whichever twin is nearest, and when unsure it writes a third between them. 2 becomes 3.</span></div>
 
 <div class="stats"><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>

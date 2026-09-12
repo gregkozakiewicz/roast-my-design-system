@@ -8,7 +8,7 @@
  */
 import { existsSync } from 'node:fs';
 import {
-  EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason,
+  EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
 import { canonical, parseColor } from '../lib/color.mjs';
@@ -303,6 +303,13 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     .filter((f) => WIDGET_CONFIG_RE.test(readSource(join(root, f)) ?? ''))
     .map((f) => f.slice(0, f.lastIndexOf('/') + 1));
   const mediumFiles = [];
+  // !important aimed at a library's own class names (a code editor, a date
+  // picker, an emoji picker ships its CSS; shouting is the only way through)
+  // is the medium too. Decided after the code walk: a class the team writes
+  // anywhere in code is the team's, so doubt counts (fleet probe 2026-09-13:
+  // 30% of all !important, the tile keeps its spread).
+  const importantBlocks = [];
+  const ownClasses = new Set();
   const WIDGET_REASON = 'an embedded widget forces its rules through the host page\'s CSS, so !important is the medium';
 
   // Colours that appear in a CSS custom-property DEFINITION (--grey-100: #f5f5f5)
@@ -355,7 +362,15 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     const imp = (text.match(/!\s*important/gi) ?? []).length;
     const widget = WIDGET_CSS_RE.test(text) || widgetDirs.some((d) => file.startsWith(d));
     if (imp && widget) mediumFiles.push({ file, reason: WIDGET_REASON, count: imp });
-    else if (imp) importantFiles.set(file, (importantFiles.get(file) ?? 0) + imp);
+    else if (imp) {
+      for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        const n = (m[2].match(/!\s*important/gi) ?? []).length;
+        if (!n) continue;
+        const sel = m[1].trim().split(/\s*\n\s*/).pop();
+        const classes = sel.startsWith('@') ? [] : [...sel.matchAll(/\.([A-Za-z_][\w-]*)/g)].map((x) => x[1]);
+        importantBlocks.push({ file, count: n, classes });
+      }
+    }
     // Character ranges holding a re-statement of an already-named token. The
     // blanket colour sweep below reads the whole file, so it needs to be told
     // which stretches of it are variants rather than new colours.
@@ -441,6 +456,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     if (EXEMPT_RE.test(f) || CRASH_PAGE_RE.test(f)) { skip(f, ''); continue; }
     let src = readSource(join(root, f));
     if (src === null) continue;
+    for (const m of src.matchAll(/[A-Za-z_][\w-]+/g)) ownClasses.add(m[0]);
 
     // CSS-in-tagged-templates (Lit css``, styled-components css``) IS the
     // stylesheet in those worlds: Shoelace keeps its entire component styling
@@ -640,6 +656,17 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     }
   }
 
+  // Resolve the !important blocks now that every class the team writes is known.
+  const libraryImportant = { count: 0, classes: new Map(), files: new Map() };
+  for (const b of importantBlocks) {
+    // a known library's class names, none of which the team writes in code:
+    // both conditions, so a team class used only from CSS still counts
+    const library = b.classes.length > 0 && !b.classes.some((c) => ownClasses.has(c)) && b.classes.some(isLibraryClass);
+    if (!library) { importantFiles.set(b.file, (importantFiles.get(b.file) ?? 0) + b.count); continue; }
+    libraryImportant.count += b.count;
+    libraryImportant.classes.set(b.classes[0], (libraryImportant.classes.get(b.classes[0]) ?? 0) + b.count);
+    libraryImportant.files.set(b.file, (libraryImportant.files.get(b.file) ?? 0) + b.count);
+  }
   return {
     tokenFile,
     namespaces,
@@ -666,6 +693,12 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       arbitrary: twArbitrary.toJSON(),
     },
     important: {
+      // aimed at a library's own class names: kept out, named at the top
+      library: {
+        count: libraryImportant.count,
+        classes: [...libraryImportant.classes.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([value, count]) => ({ value: `.${value}`, count })),
+        files: [...libraryImportant.files.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([file, count]) => ({ file, count })),
+      },
       count: [...importantFiles.values()].reduce((a, b) => a + b, 0),
       files: [...importantFiles.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
         .map(([file, count]) => ({ file, count })),

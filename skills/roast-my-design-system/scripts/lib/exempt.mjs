@@ -53,3 +53,14 @@ export function exemptReason(file, text = '') {
   if (ARTWORK_NAME_RE.test(file) && SVG_MARKUP_RE.test(text)) return 'the colours belong to the artwork, not to the interface';
   return null;
 }
+
+/**
+ * Class names a library ships and the team can only shout over: a code
+ * editor, a date picker, a grid, an emoji picker, a docs theme. An !important
+ * on a selector made only of these, none of which the team writes in its own
+ * code, is the medium rather than the mess (fleet probe 2026-09-13: 30% of
+ * all !important, the tile keeps its spread). Prefix match, by name, so the
+ * report can say which library. Extend as the fleet shows new ones.
+ */
+export const LIBRARY_CLASS_RE = /^(cm-|ͼ|ProseMirror|monaco-|sp-|react-datepicker|react-tel-input|DateInput_|DayPicker|react-grid-|react-resizable|react-flow|react-select|react-toastify|Toastify|select2|EmojiPickerReact|epr-|notion-|fc-|fc$|tippy-|hljs|language-|ps__|ace_|ng-|docsearch|DocSearch|grecaptcha|rr-|sbdocs|docs-story|mapboxgl-|leaflet-|swiper-|slick-|rc-|ant-|Mui|ck-|ql-|tox-|mce-|DraftEditor|public-Draft|w-md-editor|rdp-|recharts-|apexcharts-|intercom-|crisp-|hubspot|shiki|katex|mermaid|prism-)/;
+export const isLibraryClass = (c) => LIBRARY_CLASS_RE.test(c);

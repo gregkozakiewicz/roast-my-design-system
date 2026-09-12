@@ -1386,6 +1386,8 @@ function exceptionsBlock() {
   } else if (isLibrary) {
     lines.push('A library: unused components are internal-only, and downstream consumers are invisible from here.');
   }
+  const li = h.tokens?.important?.library;
+  if (li?.count) lines.push(`${n(li.count)} !important declaration${li.count === 1 ? '' : 's'} aimed at a library's own class names (${li.classes.slice(0, 3).map((c) => esc(c.value)).join(', ')}) ${li.count === 1 ? 'is' : 'are'} not counted: the library ships its CSS, and this is the only way through it. Your agent reads ${li.count === 1 ? 'it' : 'them'} like everything else.`);
   // Files no checker judges (email, print, artwork, render-to-image, the
   // crash page): named here with the reason, because the agent reads them
   // like everything else and can copy what is in them.

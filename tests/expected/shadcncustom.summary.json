@@ -20,7 +20,8 @@
     "confidence": "high",
     "evidence": [
       "components.json in the root, 11 catalogue components in src/components/ui",
-      "style new-york, base colour slate, Tailwind 3"
+      "style new-york, base colour slate, Tailwind 3",
+      "1 installed registry beside it: ai-elements"
     ],
     "style": "new-york",
     "baseColor": "slate",
@@ -28,7 +29,11 @@
     "catalogues": [
       "src/components/ui"
     ],
-    "registries": [],
+    "registries": [
+      "src/components/ai-elements"
+    ],
+    "registryFiles": 2,
+    "registryPaletteColours": 3,
     "ownFiles": 6
   },
   "componentsMeasured": true,

@@ -30,8 +30,11 @@ sit over the shadcn median of 17 (amber to red). No fixture score moved.
   magicui, motion-primitives, or any name declared under `registries` in
   `components.json`) is read like the catalogue: not the team's own code,
   and its components count as components when own code restyles them. 3 of
-  the 17 shadcn repos in the fleet carry one. The receipt under the header
-  names them.
+  the 17 shadcn repos in the fleet carry one. A line under the header names
+  them, with how many files and palette colours they carry, and says what
+  is true of them: kept out of the own-code counts, but an agent reads them
+  like everything else and copies what it finds there. The rules file tells
+  the agent the same.
 - **`summary.json`** records the slice a scan was measured against under
   `benchmark.slice` (kind, repo count, build date), and the `shadcn` block
   lists installed registries. New fields only.

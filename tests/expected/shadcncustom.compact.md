@@ -12,8 +12,8 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
 
 - Use these existing components instead of writing new ones:
   - `<Card>` from `src/components/ui/card.tsx` (used 3x)
+  - `<Badge>` from `src/components/ui/badge.tsx` (used 2x)
   - `<Button>` from `src/components/ui/button.tsx` (used 2x)
-  - `<Badge>` from `src/components/ui/badge.tsx` (used 1x)
   - `<Input>` from `src/components/ui/input.tsx` (used 1x)
   - `<Label>` from `src/components/ui/label.tsx` (used 1x)
 
@@ -32,6 +32,7 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
   (23 palette colours already sit in own code, `text-red-600` ×2, `text-gray-500` ×2, `text-green-500` ×1; do not add to them.)
 - Before adding classes to a shadcn component, use one of its variants (`variant="outline"`, `size="sm"`). `className` on a shadcn component is for layout only: width, margin, position. Never colour, never typography.
   (3 shadcn components already restyled through className, like `<Card className="bg-blue-100 text-blue-900 font-bold">` and `<Badge className="bg-gray-200 text-gray-700">`; do not add to them.)
+- `src/components/ai-elements` is an installed registry (added through the shadcn CLI, not written here). Treat it like `src/components/ui`: reach for what is there before building your own, and do not copy the 3 palette colours inside into own code.
 - Edit the component you own in `src/components/ui`. Never build a second one beside it under another name. A wrapper that composes shadcn components is fine; a second implementation is not.
 - Merge classes with `cn()`. Never concatenate strings and never write a ternary inside a className string.
 - Add a component with `npx shadcn@latest add <name>`, then edit it. To see what changed upstream, run `npx shadcn@latest add <name> --diff`.

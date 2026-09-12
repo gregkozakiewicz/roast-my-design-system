@@ -72,6 +72,14 @@ decideProfile(profile, components, files, target);
     const doorFiles = new Set([...installed.flatMap((d) => files.code.filter((f) => f.startsWith(`${d}/`))), ...(profile.shadcn?.blockFiles ?? [])]);
     const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
     profile.shadcn.paint = countPaint(target, files.code, { uiDirs: [...installed, ...(profile.shadcn.blockFiles ?? [])], kitNames });
+    // what the installed registries carry themselves: kept out of the own-code
+    // counts, shown in the header, because an agent reads them all the same
+    const regDirs = profile.shadcn.registryDirs ?? [];
+    if (regDirs.length) {
+      const regFiles = files.code.filter((f) => regDirs.some((d) => f.startsWith(`${d}/`)));
+      const rp = countPaint(target, regFiles, { uiDirs: [], kitNames });
+      profile.shadcn.registryPaint = { files: rp.ownFiles, tinUses: rp.tin.uses, dirs: regDirs };
+    }
   }
 }
 

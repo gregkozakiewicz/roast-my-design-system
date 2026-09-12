@@ -603,7 +603,8 @@ function sheetSection() {
   if (paint) {
     const tinChips = (paint.tin.samples ?? []).slice(0, 8).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
     const tinFiles = (paint.tin.top ?? []).slice(0, 5).map((f) => `<span class="vchip" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('');
-    parts.push(`<div class="receipts">${eyebrow(`${n(paint.tin.uses)} colours from outside the theme in ${n(paint.tin.files)} of ${n(paint.ownFiles)} own files · ${n(paint.tin.per100)} per 100 files`)}${paint.tin.uses ? `<div class="chips-row">${tinChips}</div><div class="chips-row">${tinFiles}</div>` : '<p class="sub">Your own code takes every colour from the theme file. This is what shadcn is designed for.</p>'}</div>`);
+    const rp = sc.registryPaint ?? null;
+    parts.push(`<div class="receipts">${eyebrow(`${n(paint.tin.uses)} colours from outside the theme in ${n(paint.tin.files)} of ${n(paint.ownFiles)} own files · ${n(paint.tin.per100)} per 100 files`)}${paint.tin.uses ? `<div class="chips-row">${tinChips}</div><div class="chips-row">${tinFiles}</div>` : '<p class="sub">Your own code takes every colour from the theme file. This is what shadcn is designed for.</p>'}${rp?.tinUses ? `<p class="sub">Not counted above: ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'} inside ${esc(rp.dirs.map((d) => basename(d)).join(', '))}, installed by a registry rather than written here. An agent reading those files will still copy them.</p>` : ''}</div>`);
     parts.push(whyToggle('paintTin'));
     const doorChips = (paint.doors.samples ?? []).slice(0, 6).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
     parts.push(`<div class="receipts">${eyebrow(`${n(paint.doors.uses)} shadcn components restyled through className · ${n(paint.doors.per100)} per 100 files`)}${paint.doors.uses ? `<div class="chips-row">${doorChips}</div>` : '<p class="sub">No shadcn component is given a colour or a font through className. Variants are doing their job.</p>'}</div>`);
@@ -1264,7 +1265,9 @@ function shadcnReceipt() {
   ].filter(Boolean);
   const unmatched = (k?.fellBack ?? []).filter((f) => f === 'theme' || f === 'chartColor');
   const fell = unmatched.length ? ` · ${unmatched.length === 2 ? 'accent and chart colour' : unmatched[0] === 'theme' ? 'accent' : 'chart colour'} not matched to a named shadcn theme` : '';
-  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${esc(P.evidence.join(' · '))}${facts.length ? ` · ${esc(facts.join(', '))}` : ''}${esc(fell)}</div>`;
+  const rp = P.shadcn?.registryPaint ?? null;
+  const regLine = rp ? `<div class="excl">Installed registries kept out of the own-code counts: ${esc(rp.dirs.map((d) => basename(d)).join(', '))} (${n(rp.files)} file${rp.files === 1 ? '' : 's'}${rp.tinUses ? `, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'} of their own` : ''}). Installed code, not written here, but your agent reads it like everything else and copies what it finds there.</div>` : '';
+  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${esc(P.evidence.join(' · '))}${facts.length ? ` · ${esc(facts.join(', '))}` : ''}${esc(fell)}</div>${regLine}`;
 }
 
 // User exclusions are printed in the header, never hidden: a scoped scan must
@@ -1850,7 +1853,7 @@ if (summaryPath) {
     verdict,
     role: P.role,
     kind: P.kind,
-    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ownFiles: P.shadcn.paint?.ownFiles ?? null } } : {}),
+    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null } } : {}),
     componentsMeasured,
     metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>
       ({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }))(M),

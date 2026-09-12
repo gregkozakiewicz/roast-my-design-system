@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.4.0" width="72" alt="roast-my-design-system">
+<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.5.0" width="72" alt="roast-my-design-system">
 
 # roast-my-design-system
 
@@ -9,6 +9,8 @@
 ## Your AI can write the UI. This makes sure it writes *your* UI.
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
+
+> **New in 7.5: the kit is read as it is built, and every file left out of a count is named.** A fresh `npx shadcn create` install is told apart from a repo built on one: "The score is the kit's, not yours." A rules file a framework wrote for itself is named as such, and so is the shadcn skill when it is installed. The theme file is found where it is, even when `components.json` points at a file that moved; `button/index.tsx` is a Button. The repaint advice checks whether the theme file holds the variables before telling you to swap to them. And the side panel now lists everything a check leaves out, with the reason and one honest line: your agent reads it anyway. New on that list: the Next.js crash page, an embedded widget's `!important`, and `!important` aimed at a library's own class names.
 
 > **New in 7.4: the score says what it measures, and the report has a new shape.** Under the number: "How safely an AI agent can build on this repo without going off-system." A fixed side panel holds the score, the stack, how the repo was read, an index of every section, and what is not yours and not counted. Installed code splits by one test, does it teach an agent a wrong lesson: shadcn's own bracket values are out of the count and named; palette colours inside an installed registry stay in the score and are never prompted; catalogue stock is not a trap. A factory install scores 100. Leftover theme variables become a fix.
 
@@ -79,11 +81,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.4.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.5.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.4.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.5.0)
 
 ## What makes the numbers trustworthy
 
@@ -237,8 +239,8 @@ After the roast, the skill also offers to write `design-system-rules.md` to disk
 
 - **[telekom/scale](https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html)**: Stencil, 95 components read by tag, with Claude's notes embedded
 - **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)**: Lit, the `--spectrum-*` namespace named in the header
-- **[npx shadcn create, fresh](https://gregkozakiewicz.github.io/roast-my-design-system/examples/shadcn-create-fresh.html)**: a factory install with all 61 components, scanned as is
-- **[vercel/ai-chatbot](https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)**: React, with Claude's notes embedded
+- **[npx shadcn create, fresh](https://gregkozakiewicz.github.io/roast-my-design-system/examples/shadcn-create-fresh.html)**: a factory install with all 61 components, scanned as is and read as fresh
+- **[vercel/ai-chatbot](https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)**: React on shadcn, with Claude's notes embedded
 - **[excalidraw/excalidraw](https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**
 - **[dubinc/dub](https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html)**
 

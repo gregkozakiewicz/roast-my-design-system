@@ -66,6 +66,8 @@
   .side .chips { margin:0 0 14px; gap:5px; }
   .side .facts { font:500 11.5px/1.55 var(--sans); color:var(--dim); margin-bottom:16px; }
   .side .facts .excl { margin-top:6px; font-size:11.5px; }
+  .side .facts .excl.fresh { color:var(--text); }
+  .side .facts .excl.fresh b { color:var(--text); }
   .side .facts b { color:var(--text); font-weight:600; }
   .side .idx-head { margin-bottom:4px; }
   .side .idx a { display:block; font:500 13px/1.3 var(--sans); color:var(--dim); text-decoration:none; padding:6px 0 6px 12px; border-left:2px solid var(--line); }
@@ -443,8 +445,8 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/7.3.3 -->
-<!-- rmds-score: 75 -->
+<!-- rmds-schema: gregkozakiewicz/7.4.0 -->
+<!-- rmds-score: 80 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <span class="tt-lab tt-day">Day</span>
@@ -459,41 +461,35 @@
 <aside class="side">
   <div class="eyebrow">Design-system diagnosis</div>
   <div class="repo"><span class="mono">vercel/ai-chatbot</span></div>
-  <div class="scanned">Scanned 2026-09-12 · 146 code files · 85ms</div>
-  <div class="score"><div class="eyebrow">Health score</div><div class="val">75<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 84.</b></div></div>
+  <div class="scanned">Scanned 2026-09-12 · 146 code files · 79ms</div>
+  <div class="score"><div class="eyebrow">Health score</div><div class="val">80<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 88.</b></div></div>
   <div class="chips"><span class="chip">next</span><span class="chip">TypeScript</span><span class="chip">Tailwind CSS</span><span class="chip">CVA</span><span class="chip">shadcn/ui · radix-maia</span><span class="chip chip-agent">.cursor/rules</span></div>
   <div class="facts"><div class="excl">Read as a shadcn install (high confidence): components.json in the root, 22 catalogue components in components/ui · 10 of shadcn's 10 theme variables defined · style radix-maia, base colour neutral, Tailwind 4 · 1 installed registry beside it: ai-elements · radius default · accent and chart colour not matched to a named shadcn theme</div></div>
   <div class="eyebrow idx-head">Index</div>
-  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>What the numbers mean</a><a href="#s-2"><i>02</i>Where to start</a><a href="#s-3"><i>03</i>What your agent sees</a><a href="#s-4"><i>04</i>Your present</a><a href="#shadcn"><i>05</i>shadcn theme and checks</a><a href="#s-6"><i>06</i>Off-scale spacing</a><a href="#s-7"><i>07</i>Typography &amp; shape</a><a href="#s-8"><i>08</i>Where it hurts most</a><a href="#s-9"><i>09</i>The adoption map</a></nav>
-  <div class="excs"><b>Not yours, and not counted</b><p>26 bracket values inside ui are shadcn's own ([3px], [13px], [100vw]) and are not counted. shadcn's docs allow brackets for one-off values, so your agent will treat them as normal; the rules file tells it otherwise for your own code.</p><p>Installed registry ai-elements: 9 files, 5 palette colours. Kept in the score, left out of the fixes. Your agent reads them like everything else.</p></div>
-  <div class="side-foot">roast-my-design-system 7.3.3</div>
+  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>What your agent sees</a><a href="#s-3"><i>03</i>Your present</a><a href="#shadcn"><i>04</i>shadcn theme and checks</a><a href="#s-5"><i>05</i>Off-scale spacing</a><a href="#s-6"><i>06</i>Typography &amp; shape</a><a href="#s-7"><i>07</i>Where it hurts most</a><a href="#s-8"><i>08</i>The adoption map</a></nav>
+  <div class="excs"><b>Not yours, and not counted</b><p>26 bracket values inside ui are shadcn's own ([3px], [13px], [100vw]) and are not counted. shadcn's docs allow brackets for one-off values, so your agent will treat them as normal; the rules file tells it otherwise for your own code.</p><p>2 off-scale spacing values inside ui are shadcn's own (200px, [50%]) and are not counted, for the same reason as the bracket values.</p><p>Installed registry ai-elements: 9 files, 5 palette colours. Kept in the score, left out of the fixes. Your agent reads them like everything else.</p><p>7 !important declarations aimed at a library's own class names (.cm-cursor, .cm-editor, .cm-content) are not counted: the library ships its CSS, and this is the only way through it. Your agent reads them like everything else.</p><p>1 file not judged (icons.tsx): the file is mostly drawing rather than styling. Not counted, but your agent reads it like everything else, so what is in there is still an example it can copy.</p></div>
+  <div class="side-foot">roast-my-design-system 7.5.0</div>
 </aside>
 <main class="main">
   
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">74 values like [13px] are written outside the Tailwind scale. An agent that reads them learns to do the same. 2 lines in your agent rules refer to files that no longer exist.</div>
+    <div class="verdict">74 values like [13px] are written outside the Tailwind scale. An agent that reads them learns to do the same.</div>
   </div>
 
-<section id="s-1" class="glass pad notes-sec">
-    <div class="sec-head">
-      <div class="eyebrow">Written by Claude from this scan · 2026-09-12 · not part of the measurement</div>
-      <h2>What the numbers mean</h2>
-    </div>
-    <div class="notes-body"><p>The 75 is real, but read it carefully: the colour tiles are green because shadcn carries them. 32 of the 41 colours are oklch tokens and only <strong>9 are hardcoded strays</strong>: the token architecture is doing its job, and the score credits it. The 2 shadcn checks show the other side of that: <strong>40 palette colours in the app's own code</strong> where a theme variable already exists, 67 per 100 files against an ideal of 25, and 1 shadcn component recoloured through className (13 more get a text size through className, shown and not scored). What the score can only partly price is where this repo's mess actually lives: <strong>74 bracket values written outside the Tailwind scale in the app's own code</strong> (26 more sit inside components/ui and ai-elements, shadcn's and Vercel's, not counted). [13px] alone appears 25 times, led by components/chat/sidebar-user-nav.tsx, with [10px], [0.12em] and [3px] close behind. Each one teaches the same lesson: an agent reading this code learns that when the scale does not fit, you write your own value.</p><p>The quieter finding is worse: <strong>the agent rules are stale</strong>. .cursor/rules/ultracite.mdc references pages/_document.jsx and pages/_document.js, files this scan cannot find, remnants of a pages-router past in an app-router repo. A rule the agent obeys is worse than no rule when the repo has moved on.</p><p>The component layer is disciplined at the top and fraying at the edges: the button family has grown six members, Button, SubmitButton, ArtifactCloseButton, CodeBlockCopyButton, ConversationScrollButton, PromptInputButton. Most are legitimate specialisations, but nothing in the repo says which are canonical, so the next agent adds a seventh.</p><p>The fix, calmly: the bracket values are decisions without names. [13px] used 25 times is a font-size step this design wants and the scale doesn't have: add the step, then fold the brackets in as files get touched. Delete the two dead references from ultracite.mdc today; it is a two-line fix and the cheapest win on this page. And one line in the rules naming Button as the base others wrap would close the family to accidental growth.</p></div>
-</section>
 
 
 
-<section id="s-2" class="glass pad">
-    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks · <b class="proj">75 &rarr; 84</b></p></div>
+
+<section id="s-1" class="glass pad">
+    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks · <b class="proj">80 &rarr; 88</b></p></div>
     <div class="ledger">
       <div class="ledger-row start-row">
         <span class="ledger-idx">01</span>
         <div class="start-body"><div class="start-head"><div class="start-title">Repaint the 45 colours from outside the theme</div><span class="delta">+8</span></div><div class="sub">text-red-500 appears 4 times, weather.tsx alone carries 10. The theme file already has a variable for each (a grey is <code>text-muted-foreground</code>, a status colour is a Badge variant or a variable you add). Swap the class, not the value.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="0">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="0">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the vercel-ai-chatbot repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the ai-chatbot repository, measured by roast-my-design-system.
 
 The finding: Repaint the 45 colours from outside the theme
 
@@ -506,6 +502,7 @@ How to fix it, calmly and with respect for intent:
 - Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.
 - Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.
 - Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.
+- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.
 
 Work through the files named in the finding. When you are done, re-run the scan to verify the payoff:
 
@@ -515,7 +512,7 @@ npx roast-my-design-system@latest</div></div>
         <span class="ledger-idx">02</span>
         <div class="start-body"><div class="start-head"><div class="start-title">Delete the 3 theme variables nothing uses</div></div><div class="sub">--foreground-rgb, --background-start-rgb, --background-end-rgb sit in app/globals.css next to the real theme, and nothing in the repo reads them. An agent opening that file sees 2 colour systems and can not tell which one is dead. 6 lines to delete; the cheapest fix on this page.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="1">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="1">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-1">You are fixing one design-system finding in the vercel-ai-chatbot repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-1">You are fixing one design-system finding in the ai-chatbot repository, measured by roast-my-design-system.
 
 The finding: Delete the 3 theme variables nothing uses
 
@@ -535,7 +532,7 @@ npx roast-my-design-system@latest</div></div>
         <span class="ledger-idx">03</span>
         <div class="start-body"><div class="start-head"><div class="start-title">Give your repeated bracket values names</div><span class="delta delta-target">under 20 · +4</span></div><div class="sub">[13px] appears 21 times, which reads as a decision, not drift. If it is one, name it in app/globals.css so the next component (and your agent) can reach for it; 3 more repeated values deserve the same look. The 7 values used once are worth a pass: keep the deliberate ones (optical nudges like the 1 under 4px, one-off layout widths) and round the accidents to a neighbouring step.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="2">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="2">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-2">You are fixing one design-system finding in the vercel-ai-chatbot repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-2">You are fixing one design-system finding in the ai-chatbot repository, measured by roast-my-design-system.
 
 The finding: Give your repeated bracket values names
 
@@ -548,13 +545,14 @@ How to fix it, calmly and with respect for intent:
 - Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.
 - Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.
 - Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.
+- Never round a width or height another element depends on: a preview panel, a skeleton that mirrors a chart, an editor pane. Name it if it repeats; leave it if it is one.
 
 Work through the files named in the finding. When you are done, re-run the scan to verify the payoff:
 
 npx roast-my-design-system@latest</div></div>
       </div></div></section>
 
-<section id="s-3" class="glass pad agent">
+<section id="s-2" class="glass pad agent">
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
     <p class="sub">Your agent reads <span class="mono">.cursor/rules</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">.cursor/rules · Cursor</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-no">—</b> · Codex <b class="cov-no">—</b> · Cursor <b class="cov-yes">✓</b></p>
     <div class="stale">
@@ -562,16 +560,16 @@ npx roast-my-design-system@latest</div></div>
       <div class="ledger">
     <div class="ledger-row">
       <span class="mono strong">pages/_document.jsx</span>
-      <span class="dim">named in .cursor/rules/ultracite.mdc, but the path no longer exists</span>
+      <span class="dim">named in .cursor/rules/ultracite.mdc (written by Ultracite, not by this team), but the path no longer exists</span>
     </div>
     <div class="ledger-row">
       <span class="mono strong">pages/_document.js</span>
-      <span class="dim">named in .cursor/rules/ultracite.mdc, but the path no longer exists</span>
+      <span class="dim">named in .cursor/rules/ultracite.mdc (written by Ultracite, not by this team), but the path no longer exists</span>
     </div></div>
-      <p class="sub" style="margin-top:10px">Rules rot quietly: nobody edits them when a component is renamed or a file moves. Regenerate them from a fresh scan, or fix the lines by hand.</p>
+      <p class="sub" style="margin-top:10px">These lines were written by a tool, not by this team: a rule pack that speaks about files this app does not have. Not yours to fix; worth knowing your agent reads them.</p>
     </div></section>
 
-<section id="s-4" class="glass pad gift-sec">
+<section id="s-3" class="glass pad gift-sec">
     <div class="sec-head"><h2>You sat through the roast</h2><p class="sub">so you get a present.</p></div>
     <div class="gift-stage">
       <button class="gift" id="gift" aria-label="Unwrap your generated agent rules file">
@@ -586,7 +584,7 @@ npx roast-my-design-system@latest</div></div>
       <div class="gift-pop" id="gift-pop" aria-hidden="true"></div>
       <div class="gift-reveal" id="gift-reveal" hidden>
         <div class="gift-head"><span class="mono strong">design-system-rules.md</span>
-          <span class="gift-count">24 rules generated from this scan, every one with a receipt</span></div>
+          <span class="gift-count">23 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
 &lt;!-- Generated by roast-my-design-system from a scan of vercel/ai-chatbot on 2026-09-12.
@@ -628,8 +626,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### Spacing and sizing
 
 - Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
-- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 100 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
-- Avoid new one-off CSS spacing values; 2 off-scale values are already in play.
+- No new arbitrary bracket values (`p-[13px]`, `text-[10px]`). The scan found 74 already. If a value repeats, it is a decision: name it as a token instead of writing the bracket again.
+- Avoid new one-off CSS spacing values; 1 off-scale value is already in play.
 
 ### Typography
 
@@ -657,11 +655,10 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 - Never write `style={{ ... }}` for static values; styling belongs to classes and tokens where the system can see it.
   (7 static inline blocks already exist; do not add to them.)
-- Never write !important; the scan found 9 declarations already. When a style does not apply, fix the selector or the source of the conflict instead of forcing the style through.
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 7.4.0. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 7.5.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -684,8 +681,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~13 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">13 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">5 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
-  <div class="num">6</div><div class="lab">off-scale spacing values</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">29 · cleaner than 88% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-eq">=</span></span></div></div>
+  <div class="num">4</div><div class="lab">off-scale spacing values</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">29 · cleaner than 100% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">duplicated components</div>
@@ -698,10 +695,10 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">near-identical colour pairs</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">9 · cleaner than 75% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-down">▼</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-  <div class="num">9</div><div class="lab">!important declarations</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">6 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">3 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-warn">
+  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>
+  <div class="num">2</div><div class="lab">!important declarations</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">2 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">3 <span class="dir d-down">▼</span></span></div></div>
 </div><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">components never imported</div>
@@ -756,8 +753,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="receipts"><div class="eyebrow">the theme file, variable by variable</div><p class="sub">44 variables for light, 35 for dark in app/globals.css · 12 custom variables of your own (--shadow-card, --shadow-float, --shadow-composer, --shadow-composer-focus, --shadow-inset…), 3 of them light only, 3 never mapped in @theme inline.</p></div><div class="receipts"><div class="eyebrow">45 colours from outside the theme in 10 of 68 own files · 66 per 100 files</div><div class="chips-row"><span class="vchip bad">text-red-500 ×4</span><span class="vchip bad">dark:text-neutral-50 ×4</span><span class="vchip bad">text-red-600 ×3</span><span class="vchip bad">text-green-600 ×2</span><span class="vchip bad">border-red-200 ×2</span><span class="vchip bad">bg-red-50 ×2</span><span class="vchip bad">dark:bg-red-950/50 ×2</span><span class="vchip bad">dark:bg-neutral-950 ×2</span></div><div class="chips-row"><span class="vchip" title="components/chat/weather.tsx">weather.tsx ×10</span><span class="vchip" title="components/chat/message.tsx">message.tsx ×9</span><span class="vchip" title="components/chat/sheet-editor.tsx">sheet-editor.tsx ×8</span><span class="vchip" title="components/chat/diffview.tsx">diffview.tsx ×6</span><span class="vchip" title="components/ai-elements/tool.tsx">tool.tsx ×5</span></div><p class="sub">Not counted above: 5 palette colours inside ai-elements, installed by a registry rather than written here. An agent reading those files will still copy them.</p></div><div class="whywrap"><button type="button" class="whybtn" data-why="paintTin"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-paintTin"><p>shadcn gives every project a theme file. It holds one CSS variable per job: background, foreground, muted text, border, ring, and about 30 more. Each has a light value and a dark value. Components use them through classes like bg-background and text-muted-foreground.</p><p>A palette class such as text-gray-500 or bg-blue-100 skips that file. It works on the day. It stops working at the first theme change: the variables move, the palette colour stays, and the page shows 2 designs at once. Dark mode is where it shows first. A variable carries both values; a palette class carries one, so someone adds dark:bg-gray-900 next to it, and now there are 2 places to keep in step. An AI agent reading that file copies the pair.</p><p>The ideal is 25 per 100 files. That is where the tidiest third of 15 shadcn repos in the benchmark sit; the median is 62. shadcn's own rules for agents say it in 1 line: use semantic colours, never bg-blue-500.</p></div></div><div class="receipts"><div class="eyebrow">1 shadcn components recoloured through className · 1 per 100 files</div><div class="chips-row"><span class="vchip bad">&lt;ToolOutput className=&quot;text-red-500&quot;&gt; ×1</span></div><p class="sub" style="margin-top:10px">Shown, not scored: 13 shadcn components given a text size or weight through className, 19 per 100 files. shadcn asks for a variant here too, but every shadcn repo does this at the same rate, so it says nothing about yours.</p><div class="chips-row"><span class="vchip">&lt;SidebarGroupLabel className=&quot;font-semibold&quot;&gt; ×3</span><span class="vchip">&lt;Shimmer className=&quot;font-medium&quot;&gt; ×2</span><span class="vchip">&lt;Label className=&quot;font-normal&quot;&gt; ×2</span><span class="vchip">&lt;Input className=&quot;text-sm&quot;&gt; ×2</span><span class="vchip">&lt;SelectTrigger className=&quot;text-xs&quot;&gt; ×1</span><span class="vchip">&lt;Badge className=&quot;text-xs&quot;&gt; ×1</span></div></div><div class="whywrap"><button type="button" class="whybtn" data-why="doorOverrides"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-doorOverrides"><p>A shadcn component ships with variants: outline, ghost, destructive, small, large. The variant decides how the component looks, once, in the component file you own. Passing bg-blue-100 through className decides it again at the call site, where the component can not see it.</p><p>Do this in 5 places and 1 button has 6 designs. The next person can not tell which one is intended, and an agent copies whichever it finds first. shadcn's guidance gives 3 routes: use a variant that exists, add a variant to the component, or add a variable to the theme file. className is for layout: width, margin, position.</p><p>The ideal is 2 per 100 files, the tidiest half of the 16 shadcn repos in the benchmark; the median is 1. Typography through className, a text-sm on an Input, is shown here and not scored: 12 of the 16 repos do it at the same rate, so it separates nothing, and nowhere else in this report does a text size cost points.</p></div></div>
   </section>
 
-<section id="s-6" class="glass pad">
-    <div class="sec-head"><h2>6 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
+<section id="s-5" class="glass pad">
+    <div class="sec-head"><h2>4 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
     <div class="bars">
     <div class="bar-row"><span class="bar-label">·2</span>
     <div class="bar-track"><div class="bar" style="width:100%"></div></div>
@@ -817,7 +814,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="receipts"><div class="eyebrow">74 bracket values written outside the scale</div>
     <div class="chips-row"><span class="vchip bad" title="components/chat/sidebar-user-nav.tsx">[13px] ×21</span><span class="vchip bad" title="components/chat/sidebar-history.tsx">[10px] ×11</span><span class="vchip bad" title="components/chat/sidebar-history.tsx">[0.12em] ×8</span><span class="vchip bad" title="components/chat/multimodal-input.tsx">[12px] ×7</span><span class="vchip bad" title="artifacts/code/client.tsx">[200px] ×4</span><span class="vchip bad" title="components/chat/artifact-messages.tsx">[24px] ×4</span><span class="vchip bad" title="components/chat/document-preview.tsx">[257px] ×4</span><span class="vchip bad" title="components/chat/preview.tsx">[11px] ×3</span><span class="vchip bad" title="components/chat/document-preview.tsx">[450px] ×3</span><span class="vchip bad" title="components/chat/code-editor.tsx">[300px] ×2</span><span class="vchip dim">+7 more</span></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="arbitrary"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-arbitrary"><p>Brackets exist for a reason. Sometimes the scale really lacks a value, and one w-[137px] for a stubborn third-party embed is craft, done on purpose.</p><p>But a bracket is a value with no name. A search for the token will never find it, and a scale change leaves it untouched. An agent that sees brackets in the repo learns that the scale is optional. It can not tell which brackets were deliberate, so it feels free to add its own, and the escape hatch becomes the main door.</p><p>The 20 is a budget for real exceptions, and it is a generous one: 9 of the 10 reputable systems we scanned sit at 0, including systems built on Tailwind. The average product repo carries 70.</p></div></div></div></section>
-<section id="s-7">
+<section id="s-6">
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
@@ -845,14 +842,14 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
         <span class="spec-cap" title="0 0 0 0 oklch(0.55 0.12 250 / 0%)">0 0 0 0 oklch(0.55 … ×1</span></div>
         <div class="spec-cell"><div class="spec-card" style="box-shadow:0 0 0 3px oklch(0.55 0.12 250 / 8%)"></div>
         <span class="spec-cap" title="0 0 0 3px oklch(0.55 0.12 250 / 8%)">0 0 0 3px oklch(0.5… ×1</span></div></div></div>
-    <div class="glass pad" style="margin-top:16px"><div class="sec-head"><h2>3 typefaces, declared 3 different ways</h2><p class="sub">every distinct declaration is a chance for the next one to be wrong</p></div><div class="fam-rows"><div class="mini-card"><span class="mc-path">&quot;SF Mono&quot;, &quot;Cascadia Code&quot;, &quot;Fira Code&quot;, &quot;JetBrains Mono&quot;, ui-monospac</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">Geist</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">Geist Mono</span><span class="pill pill-mint">×1</span></div></div></div>
+    
   </section>
-<section id="s-8" class="glass pad">
+<section id="s-7" class="glass pad">
     <div class="sec-head"><h2>Where it hurts most</h2><p class="sub">the 5 files carrying the most off-system styling</p></div>
     <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/app/globals.css">app/globals.css</a>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/app/globals.css">app/globals.css</a>
       <span class="ledger-pills">
         <span class="pill pill-amber">10 stray colours</span>
         
@@ -860,7 +857,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">1 inline</span>
@@ -868,7 +865,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">1 inline</span>
@@ -876,7 +873,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">04</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">1 inline</span>
@@ -884,7 +881,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">05</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/chat/multimodal-input.tsx">components/chat/multimodal-input.tsx</a>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/chat/multimodal-input.tsx">components/chat/multimodal-input.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">1 inline</span>
@@ -897,7 +894,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;MessageActions&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/ai-elements/message.tsx">components/ai-elements/message.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/chat/message-actions.tsx">components/chat/message-actions.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/ai-elements/message.tsx">components/ai-elements/message.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/chat/message-actions.tsx">components/chat/message-actions.tsx</a></div>
       
       </div>
     </div>
@@ -934,34 +931,34 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="sec-head"><h2>7 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/ai-elements/code-block.tsx">components/ai-elements/code-block.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/ai-elements/reasoning.tsx">components/ai-elements/reasoning.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/chat/console.tsx">components/chat/console.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/chat/multimodal-input.tsx">components/chat/multimodal-input.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/chat/multimodal-input.tsx">components/chat/multimodal-input.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/chat/sheet-editor.tsx">components/chat/sheet-editor.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/chat/sheet-editor.tsx">components/chat/sheet-editor.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/vercel-ai-chatbot/components/chat/suggested-actions.tsx">components/chat/suggested-actions.tsx</a><span class="mc-count">×1</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/ai-chatbot/components/chat/suggested-actions.tsx">components/chat/suggested-actions.tsx</a><span class="mc-count">×1</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div></div><div class="whywrap"><button type="button" class="whybtn" data-why="inline"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-inline"><p>An inline style is the fastest way to make one element behave. A deadline, one stubborn element, done. On the day, a fair trade.</p><p>The cost is that the design system can not see it. Theming misses it, dark mode misses it, a token change misses it. Every inline style is a private exception and requires someone to find it by hand. And agents like inline styles, because they always work and they need no knowledge of your system. Every block already in the repo teaches the agent that this is how styling is done here, so the habit spreads.</p><p>The ideal is 0, and the count is fair: only fully static blocks are counted, runtime positioning and canvas work are exempt. The average product repo carries 49 blocks. The 10 reputable systems hold a median of 12.</p></div></div>
-    <div class="receipts"><div class="eyebrow">9 !important declarations · each one forces a style through</div>
-    <div class="chips-row"><span class="vchip bad" title="app/globals.css">globals.css ×9</span></div>
+    <div class="receipts"><div class="eyebrow">2 !important declarations · each one forces a style through</div>
+    <div class="chips-row"><span class="vchip bad" title="app/globals.css">globals.css ×2</span></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="important"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-important"><p>Every !important marks a styling fight someone had to win by the end of the day. One is harmless. And no one removes it later, because nobody is sure what will break.</p><p>But each one raises the floor. The next override in that area has to shout at least as loud, so the count only climbs. An agent that loses a styling fight reaches for !important straight away, because it is the most common CSS fix it has ever seen.</p><p>The ideal is 0, because !important is CSS admitting defeat. Fix the rule that kept losing, and the next one is never needed. The average product repo carries 7.</p></div></div></div></div>
 </div>
-<section id="s-9" class="glass pad">
+<section id="s-8" class="glass pad">
     <div class="sec-head"><h2>The adoption map</h2><p class="sub">316 components defined · tile area is import count · the real system, drawn to scale</p></div>
     <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="233.3" height="312.9" class="atile">
       <title>&lt;Button&gt; · used 25× · components/ui/button.tsx</title></rect>
@@ -1037,6 +1034,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <text x="983.3" y="382.5" class="adot-n">SidebarMenu</text>
     <text x="983.3" y="400.5" class="adot-c">4×</text></g></svg>
     <p class="sub">60 more adopted components below the top 24, not drawn.</p>
+    
     <p class="sub">106 components are imported exactly once: &lt;ActiveChatProvider&gt;, &lt;AppSidebar&gt;, &lt;Artifact&gt;, &lt;ArtifactActions&gt;, &lt;ArtifactCloseButton&gt;, &lt;Badge&gt; and 100 more. Quiet corners, not yet a system.</p>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
     <tr><td class="mono strong">&lt;Button&gt;</td>
@@ -1083,8 +1081,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 7.4.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">c35604857cd0</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=7.3.3"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 7.5.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">c35604857cd0</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=7.4.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

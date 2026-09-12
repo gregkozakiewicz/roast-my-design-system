@@ -2,6 +2,77 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.5.0 — 2026-09-13
+
+The scanner reads the kit as it is built, not only as the order form
+describes it, and every file it leaves out of a count is named at the top
+of the report with the reason. Some shadcn repos move; most do not.
+
+- **A fresh shadcn install says so.** When a repo is the output of
+  `npx shadcn create` with nothing built on it yet, the report says: "It
+  is a fresh shadcn install. Nothing of your own yet: 61 components
+  installed, the theme file untouched, one demo page. The score is the
+  kit's, not yours. Run this again once you have built a few screens." The
+  summary, the adoption map and the rules file stop describing shadcn's
+  internal wiring as the team's habits. Five checks decide it, all from
+  facts already scanned; the moment a screen is built, the normal report
+  returns.
+- **What the agent rules file is, and who wrote it.** A rules file a
+  framework writes for itself (Next.js re-adds its block on every dev run)
+  is named as such: the agent does not learn the kit exists from it. When
+  the files do name the kit, or the shadcn skill is installed, the report
+  says so and points at what they do not carry: how this repo actually
+  uses it. Stale lines in a rules file a lint preset generated are the
+  tool's, not the team's, and no longer headline the summary.
+- **The sheet is found where it is, and read as it is.** When
+  `components.json` names a theme file that is missing or empty, the
+  scanner reads the stylesheet that carries the theme variables and says
+  which file and why. Rows kept under a scoped selector instead of `:root`
+  (a theme picker's `[data-theme]` blocks, a widget's `#id`) are read.
+- **A folder holding `index.tsx` is a component.** `button/index.tsx` is
+  the Button. formbricks' product app is now read as the primary install
+  with 30 catalogue components, which is also how the report learned that
+  its theme file defines none of shadcn's colour variables.
+- **The repaint advice checks the theme file first.** When the theme file
+  holds shadcn's colour variables, the move is the swap it always was. When
+  it holds none, the move is a decision: adopt the variables, map the
+  palette onto them, then repaint. Swapping `text-slate-500` for
+  `text-muted-foreground` with no variable behind it leaves the text with
+  no colour. The rules file says the same.
+- **Not counted, and named, with the caveat.** Every file a check leaves
+  out (email, print, artwork, images drawn with code, and the new cases
+  below) is listed in the side panel with the reason and one line that
+  stays true: your agent reads it like everything else.
+  - The Next.js crash page (`global-error.tsx`) replaces the root layout,
+    so the stylesheet never loads there and its styling has to be inline.
+  - A stylesheet that imports Tailwind with the `important` flag, or sits
+    in a package whose Tailwind config scopes utilities under an id, is an
+    embedded widget living inside someone else's page. Its `!important` is
+    the only way through the host's CSS.
+  - An `!important` whose selector names only a known library's class
+    names (a code editor, a date picker, an emoji picker), none of which
+    the team writes in its own code, is aimed at CSS the library ships. A
+    check of 56 clones: 30% of all `!important` is this kind, and the
+    count that remains still separates tidy repos from messy ones.
+  - Off-scale spacing values inside shadcn's own component files, the
+    same rule as its bracket values since 7.4.
+  - A name defined by two catalogue components (Toaster in `toast.tsx` and
+    `sonner.tsx`) is upstream's overlap, listed and never counted.
+- **The fix prompts name the two mistakes an agent makes chasing points.**
+  The repaint prompt: a gradient, an illustration or a status colour keeps
+  its colour; add a variable rather than swap to a grey. The bracket and
+  spacing prompts: never round a width another element depends on, a
+  preview panel, a skeleton that mirrors a chart.
+- **The shadcn slice is rebuilt** with the `!important` rule. 16 repos.
+- Scores: a factory install 100 and read as fresh; Kiranism's
+  next-shadcn-dashboard-starter 78 to 87 (its two amber tiles were the
+  crash page); vercel/ai-chatbot 75 to 80 (7 of its 9 `!important` restyle
+  a code editor); formbricks 33 unchanged (its product app has no theme
+  file, and now the report says so).
+- `summary.json`: `shadcn.fresh` (boolean). Rules files gain no new
+  section. A new test fixture, a real `npx shadcn create --defaults`
+  scaffold, locks the fresh path.
+
 ## 7.4.0 — 2026-09-13
 
 The report has a new shape, and the score says what it measures. On shadcn

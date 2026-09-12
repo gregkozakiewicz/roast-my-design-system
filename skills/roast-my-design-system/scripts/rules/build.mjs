@@ -121,7 +121,9 @@ const repoName = h.profile?.name ?? 'this repo';
       const files = d.files.map((f) => (typeof f === 'string' ? f : f.file));
       const ranked = [...files].sort((a, b) => sharedScore(b) - sharedScore(a));
       const clear = sharedScore(ranked[0]) > sharedScore(ranked[1]);
-      if (d.wrapped) {
+      if (d.upstream) {
+        rule(`\`<${d.name}>\` is defined by two shadcn components (${files.map((f) => `\`${f}\``).join(', ')}), upstream's overlap. Import whichever the surrounding code already uses; do not create a third.`);
+      } else if (d.wrapped) {
         rule(`\`<${d.name}>\` is defined twice and one wraps the other${clear ? `. Import \`${ranked[0]}\`` : ''}; do not create a third.`);
       } else if (clear) {
         rule(`\`<${d.name}>\` exists in ${files.length} places. Treat \`${ranked[0]}\` as canonical; do not import the other ${files.length === 2 ? 'copy' : 'copies'}, and never create another.`);

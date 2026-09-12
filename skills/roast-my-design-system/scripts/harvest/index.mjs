@@ -96,7 +96,7 @@ decideProfile(profile, components, files, target);
   }
 }
 
-const duplicates = findDuplicates(components, profile.uiDir, target);
+const duplicates = findDuplicates(components, profile.uiDir, target, profile.uiDirs ?? null);
 const context = harvestContext(target);
 const staleRules = ruleStaleness(target, components,
   new Set(neverImportedComponents(components, profile.uiDir).map((c) => c.name)),

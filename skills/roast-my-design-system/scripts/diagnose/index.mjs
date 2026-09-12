@@ -601,7 +601,7 @@ function sheetSection() {
   const sheet = sc.sheet, paint = sc.paint;
   const parts = [];
   if (sheet?.found) {
-    const bits = [`${n(sheet.lightRows)} variables for light, ${n(sheet.darkRows)} for dark in ${esc(sheet.file)}`];
+    const bits = [`${n(sheet.lightRows)} variables for light, ${n(sheet.darkRows)} for dark in ${esc(sheet.file)}${sheet.scope ? ` under ${esc(sheet.scope)}` : ''}${sheet.configured && sheet.configured !== sheet.file ? ` (components.json names ${esc(sheet.configured)}, ${sheet.configuredFound ? 'which holds no theme rows' : 'which does not exist'})` : ''}`];
     if (sheet.hslEra) bits.push('written in the Tailwind 3 form (hsl triplets)');
     if (sheet.shadcnMissing?.length) bits.push(`${sheet.shadcnMissing.length} of the ${SHADCN_ROW_COUNT} current shadcn variables not defined (${sheet.shadcnMissing.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${sheet.shadcnMissing.length > 4 ? '…' : ''})${sheet.hslEra ? ', normal for an install from before the chart and sidebar rows existed' : ''}`);
     if (sheet.missingDark?.length) bits.push(`${sheet.missingDark.length} variable${sheet.missingDark.length === 1 ? '' : 's'} with no dark value (${sheet.missingDark.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')})`);
@@ -641,7 +641,7 @@ function duplicatesSection() {
     </div>` : '';
   const dupeCards = exactDupes.slice(0, 8).map((d) => `
     <div class="fam">
-      ${eyebrow(`&lt;${esc(d.name)}&gt; · ${d.wrapped ? 'defined twice, one wraps the other' : `${d.files.length} implementations`}`)}
+      ${eyebrow(`&lt;${esc(d.name)}&gt; · ${d.upstream ? 'two shadcn components define it: upstream\'s overlap, not counted' : d.wrapped ? 'defined twice, one wraps the other' : `${d.files.length} implementations`}`)}
       <div class="fam-rows">
       ${d.files.slice(0, 6).map((f) => `<div class="mini-card">${fileLink(f)}</div>`).join('')}
       ${d.files.length > 6 ? `<div class="mini-card dim">…and ${d.files.length - 6} more</div>` : ''}
@@ -1218,8 +1218,13 @@ function agentSection() {
   const managedBy = managedOnly ? agentFiles[0].managedBy : null;
   const skill = (h.context ?? []).find((c) => c.kind === 'agent-skill');
   const skillLine = P.isShadcn ? (skill ? ` The shadcn skill is installed (<span class="mono">${esc(skill.file)}</span>), so the agent can read the kit's configuration.` : ' shadcn offers a skill for that and it is not installed here.') : '';
+  // the files name the kit (or the skill is installed): the gap is the
+  // repo's own habits, which no hand-written file carries
+  const namesKit = P.isShadcn && (skill || agentFiles.some((c) => c.mentionsDesign === true && c.managedOnly !== true));
   const msg = managedOnly
     ? `<p class="sub">Your agent reads ${readsList}. ${esc(managedBy)} wrote it, and it is only about ${esc(managedBy)}: nothing in it mentions the theme file or the component folder, so the agent does not know the ${P.isShadcn ? 'kit' : 'design system'} is there.${skillLine} Add the rules file below and the agent knows the theme, the components and the styling rules.</p>`
+    : namesKit
+    ? `<p class="sub">Your agent reads ${readsList}${nestedCount && rootAgent.length ? `, plus ${nestedCount} rules file${nestedCount === 1 ? '' : 's'} nested in subfolders` : ''}${skill ? `, and the shadcn skill is installed (<span class="mono">${esc(skill.file)}</span>)` : ''}. ${skill && !agentFiles.some((c) => c.mentionsDesign) ? 'The skill tells it' : 'They tell it'} the kit is there. What ${skill && !agentFiles.some((c) => c.mentionsDesign) ? 'it does' : 'they do'} not carry is how this repo actually uses it: the numbers below, which the rules file turns into rules with receipts.</p>`
     : agentFiles.length
     ? `<p class="sub">Your agent reads ${readsList}${nestedCount && rootAgent.length ? `, plus ${nestedCount} rules file${nestedCount === 1 ? '' : 's'} nested in subfolders` : ''}. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p>`
     : `<p class="sub">No <span class="mono">CLAUDE.md</span>, no <span class="mono">AGENTS.md</span>, no <span class="mono">.cursorrules</span>. Every time your AI builds UI here, it guesses, from everything below. This is why its output looks almost-but-not-quite right.</p>`;

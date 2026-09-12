@@ -1,4 +1,6 @@
 import { readFileSync } from 'node:fs';
+import { CATALOGUE } from '../profiles/shadcn-data.mjs';
+import { doorName } from '../profiles/shadcn.mjs';
 import { join } from 'node:path';
 
 /**
@@ -55,7 +57,8 @@ const ROUTE_FRAGMENT_RE = /(^|\/)app\/.*\/(form|header|footer|nav|page|layout|lo
  *   name from the other are tagged wrapped:true (composition, not competition)
  * @returns { exactDuplicates: [{name, files, wrapped?}], families: [{root, members: [{name, file, usageCount}]}] }
  */
-export function findDuplicates(components, uiDir = null, root = null) {
+export function findDuplicates(components, uiDir = null, root = null, uiDirs = null) {
+  const catalogueDirs = uiDirs ?? (uiDir ? [uiDir] : []);
   // Email templates legitimately mirror web component names (email Footer !=
   // web Footer); cross-matching them manufactures duplicates.
   const EMAIL_PATH_RE = /(^|\/)emails?(\/|-)/i;
@@ -88,9 +91,16 @@ export function findDuplicates(components, uiDir = null, root = null) {
   // agent trap worth listing, but not a competing implementation.
   const perFile = new Map();
   for (const c of comps) perFile.set(c.file, (perFile.get(c.file) ?? 0) + 1);
+  // Every copy inside the shadcn catalogue, each a catalogue door (toast.tsx
+  // and sonner.tsx both define Toaster): upstream's overlap, not the team's.
+  // Listed with a badge, never counted, like a wrapped pair.
+  for (const d of exactDuplicates) {
+    if (!catalogueDirs.length) break;
+    if (d.files.every((f) => catalogueDirs.some((u) => f.startsWith(`${u}/`)) && CATALOGUE.has(doorName(f)))) { d.wrapped = true; d.upstream = true; }
+  }
   if (root) {
     for (const d of exactDuplicates) {
-      if (d.files.length !== 2) continue;
+      if (d.files.length !== 2 || d.wrapped) continue;
       // A file defining 8+ components is an API surface (menu-item variants of
       // real components elsewhere) — same-name there is deliberate, not a copy.
       if (d.files.some((f) => (perFile.get(f) ?? 0) >= 8)) { d.wrapped = true; continue; }

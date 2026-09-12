@@ -33,6 +33,11 @@ import { CATALOGUE, BLOCK_COMPONENTS, REGISTRY_DIRS, KNOWN_ROWS, TWEAKCN_ROWS, L
 const readJSON = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
 const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return ''; } };
 const stripExt = (f) => f.replace(/\.[cm]?[jt]sx?$/, '');
+// A door is a file named after the component, or a folder named after it
+// holding an index file (formbricks: button/index.tsx). doorDir is the
+// catalogue folder the door sits in, either way.
+export const doorName = (f) => { const st = stripExt(basename(f)); return st === 'index' ? basename(dirname(f)) : st; };
+const doorDir = (f) => (stripExt(basename(f)) === 'index' ? dirname(dirname(f)) : dirname(f));
 
 /**
  * Every folder in the walk holding 8+ catalogue door names AND the marks of
@@ -47,8 +52,8 @@ function catalogueSweep(root, files) {
   const byDir = new Map();
   for (const f of files.code) {
     if (!/\.[jt]sx$/.test(f)) continue;
-    const d = dirname(f);
-    if (!CATALOGUE.has(stripExt(basename(f)))) continue;
+    const d = doorDir(f);
+    if (!CATALOGUE.has(doorName(f))) continue;
     const e = byDir.get(d) ?? { names: 0, marked: 0 };
     e.names += 1;
     if (e.marked < 3 && SHADCN_CODE_RE.test(read(join(root, f)))) e.marked += 1;
@@ -104,11 +109,17 @@ function resolveAlias(root, wsRoot, alias) {
 const CONTRACT_ROWS = ['background', 'foreground', 'primary', 'muted', 'border', 'ring', 'accent', 'card', 'popover', 'destructive'];
 function themeContract(root, files) {
   const seen = new Set();
+  let best = null, bestCount = 0;
   for (const f of (files.styles ?? []).slice(0, 60)) {
     const css = read(join(root, f));
-    for (const r of CONTRACT_ROWS) if (!seen.has(r) && new RegExp(`--${r}\\s*:`).test(css)) seen.add(r);
-    if (seen.size === CONTRACT_ROWS.length) break;
+    let here = 0;
+    for (const r of CONTRACT_ROWS) if (new RegExp(`--${r}\\s*:`).test(css)) { seen.add(r); here += 1; }
+    // the file that carries most of the contract is the sheet when the
+    // config names one that is missing or empty (a starter that moved it)
+    if (here > bestCount) { best = f; bestCount = here; }
+    if (seen.size === CONTRACT_ROWS.length && bestCount === CONTRACT_ROWS.length) break;
   }
+  themeContract.file = best;
   return seen.size;
 }
 
@@ -130,7 +141,22 @@ function readSheet(root, wsRoot, cssPath, files = null) {
   const file = [join(wsRoot, cssPath), join(wsRoot, 'src', cssPath)].find((p) => existsSync(p));
   if (!file) return { file: cssPath, found: false };
   const css = read(file);
-  const light = rowsUnder(css, ':root'), dark = rowsUnder(css, '\\.dark');
+  let light = rowsUnder(css, ':root'), dark = rowsUnder(css, '\\.dark');
+  // Rows under a scoped selector instead of :root (a theme picker's
+  // [data-theme='x'] blocks, a widget's #id): the first block holding
+  // --background is the sheet, its .dark twin the evening values.
+  let scope = null;
+  if (!light.has('background')) {
+    for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      const sel = m[1].trim().split(/\s*\n\s*/).pop();
+      if (!/--background\s*:/.test(m[2]) || sel.startsWith('@')) continue;
+      const rows = new Map();
+      for (const d of m[2].matchAll(/--([a-z0-9-]+)\s*:\s*([^;]+);/gi)) rows.set(d[1], d[2].trim());
+      if (/\.dark\b/.test(sel)) { if (!dark.has('background')) dark = rows; }
+      else if (!light.has('background')) { light = rows; scope = sel; }
+      if (light.has('background') && dark.has('background')) break;
+    }
+  }
   const themeInline = rowsUnder(css, '@theme\\s+inline');
   const rows = [...light.keys()];
   const known = rows.filter((r) => KNOWN_ROWS.has(r));
@@ -162,7 +188,7 @@ function readSheet(root, wsRoot, cssPath, files = null) {
     customUnused = [...pending];
   }
   return {
-    file: file.slice(root.length + 1), found: true, hslEra, customUnused,
+    file: file.slice(root.length + 1), found: true, scope, hslEra, customUnused,
     lightRows: rows.length, darkRows: dark.size, shadcnPresent, shadcnMissing: SHADCN_ROWS.filter((r) => !light.has(r)),
     known: known.length, custom, missingDark, customMissingDark, customUnregistered, tweakcnPresent,
     spacing, spacingChanged: spacing !== null && norm(spacing) !== FACTORY_SPACING,
@@ -220,6 +246,10 @@ export default {
       .map((f) => ({ file: f, cfg: readJSON(join(root, f)) }))
       .filter((c) => c.cfg && (c.cfg.aliases || c.cfg.style !== undefined || c.cfg.tailwind));
 
+    // the theme contract (5+ of shadcn's named variables in one stylesheet),
+    // computed once: the decision below reads the count, the sheet reader
+    // falls back to the file
+    const contract = themeContract(root, files);
     // 2. catalogues: through each config's alias, then a sweep for door names
     const installs = [];
     for (const { file, cfg } of configs) {
@@ -229,12 +259,18 @@ export default {
       let catalogueNames = 0;
       if (uiAbs) {
         const rel = uiAbs.slice(root.length + 1).replace(/\\/g, '/');
-        catalogueNames = files.code.filter((f) => f.startsWith(`${rel}/`) && CATALOGUE.has(stripExt(basename(f)))).length;
+        catalogueNames = files.code.filter((f) => f.startsWith(`${rel}/`) && CATALOGUE.has(doorName(f))).length;
         uiAbs = rel;
       }
       const pkg = readJSON(join(wsRoot, 'package.json')) ?? readJSON(join(root, 'package.json')) ?? {};
       const deps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
-      const sheet = readSheet(root, wsRoot, cfg.tailwind?.css, files);
+      let sheet = readSheet(root, wsRoot, cfg.tailwind?.css, files);
+      // the named sheet is missing or holds no rows: read the stylesheet that
+      // carries the theme contract instead, and say so
+      if ((!sheet?.found || sheet.lightRows === 0) && contract && themeContract.file) {
+        const fallback = readSheet(root, root, themeContract.file, files);
+        if (fallback?.found && fallback.lightRows > 0) sheet = { ...fallback, configured: cfg.tailwind?.css ?? null, configuredFound: sheet?.found === true };
+      }
       installs.push({ config: file, uiDir: uiAbs, catalogueNames, kit: readKit(cfg, sheet, deps), sheet });
     }
     const swept = catalogueSweep(root, files);
@@ -247,7 +283,6 @@ export default {
     // catalogue folder. Without it: a catalogue by name AND the theme contract
     // in a stylesheet (5 or more of shadcn's named variables); names and
     // Radix alone describe half the React world.
-    const contract = themeContract(root, files);
     const withConfigAndDir = installs.filter((i) => i.config && i.uiDir);
     const byName = installs.filter((i) => i.catalogueNames >= 8);
     if (!withConfigAndDir.length && !(byName.length && contract >= 5)) return null;
@@ -276,7 +311,7 @@ export default {
     const cssVars = kit ? kit.cssVariables : true;
     profile.designSystem = { kind: 'shadcn', name: 'shadcn/ui', confidence: 'high', cssVariables: cssVars };
     // kit doors installed as blocks into own code
-    const blockFiles = files.code.filter((f) => /\.[jt]sx$/.test(f) && !profile.uiDirs.some((d) => f.startsWith(`${d}/`)) && BLOCK_COMPONENTS.has(stripExt(basename(f))));
+    const blockFiles = files.code.filter((f) => /\.[jt]sx$/.test(f) && !profile.uiDirs.some((d) => f.startsWith(`${d}/`)) && BLOCK_COMPONENTS.has(doorName(f)));
     // third-party registries installed beside the catalogue: a folder named
     // as the CLI creates it, or as a `registries` key in components.json
     // names it. Installed code, judged like the catalogue.

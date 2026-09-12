@@ -363,13 +363,18 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     const widget = WIDGET_CSS_RE.test(text) || widgetDirs.some((d) => file.startsWith(d));
     if (imp && widget) mediumFiles.push({ file, reason: WIDGET_REASON, count: imp });
     else if (imp) {
+      // innermost blocks carry a selector to judge; anything outside them
+      // (a declaration above a nested SCSS block) is counted, unjudged
+      let inBlocks = 0;
       for (const m of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
         const n = (m[2].match(/!\s*important/gi) ?? []).length;
         if (!n) continue;
+        inBlocks += n;
         const sel = m[1].trim().split(/\s*\n\s*/).pop();
         const classes = sel.startsWith('@') ? [] : [...sel.matchAll(/\.([A-Za-z_][\w-]*)/g)].map((x) => x[1]);
         importantBlocks.push({ file, count: n, classes });
       }
+      if (imp > inBlocks) importantBlocks.push({ file, count: imp - inBlocks, classes: [] });
     }
     // Character ranges holding a re-statement of an already-named token. The
     // blanket colour sweep below reads the whole file, so it needs to be told

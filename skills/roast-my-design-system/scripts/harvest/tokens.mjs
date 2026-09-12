@@ -293,6 +293,17 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   const inlineStyleFiles = new Map();
   // !important is the cascade admitting defeat; counted per style file.
   const importantFiles = new Map();
+  // An embedded widget (a survey, a chat bubble) lives inside a stranger's
+  // page and must beat the host's CSS: Tailwind imported with the important
+  // flag, or a config scoping every utility under an id. There, !important is
+  // the medium, like inline styles in email. Skipped, named with the reason.
+  const WIDGET_CSS_RE = /@import\s+["']tailwindcss(?:\/utilities\.css)?["'][^;]*\bimportant\b/;
+  const WIDGET_CONFIG_RE = /\bimportant\s*:\s*["']#/;
+  const widgetDirs = codeFiles.filter((f) => /(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f))
+    .filter((f) => WIDGET_CONFIG_RE.test(readSource(join(root, f)) ?? ''))
+    .map((f) => f.slice(0, f.lastIndexOf('/') + 1));
+  const mediumFiles = [];
+  const WIDGET_REASON = 'an embedded widget forces its rules through the host page\'s CSS, so !important is the medium';
 
   // Colours that appear in a CSS custom-property DEFINITION (--grey-100: #f5f5f5)
   // are deliberate tokens; everything else is a hardcoded stray. The diagnosis
@@ -342,7 +353,9 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     // character offset below still points at the same place in the file.
     const text = raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length));
     const imp = (text.match(/!\s*important/gi) ?? []).length;
-    if (imp) importantFiles.set(file, (importantFiles.get(file) ?? 0) + imp);
+    const widget = WIDGET_CSS_RE.test(text) || widgetDirs.some((d) => file.startsWith(d));
+    if (imp && widget) mediumFiles.push({ file, reason: WIDGET_REASON, count: imp });
+    else if (imp) importantFiles.set(file, (importantFiles.get(file) ?? 0) + imp);
     // Character ranges holding a re-statement of an already-named token. The
     // blanket colour sweep below reads the whole file, so it needs to be told
     // which stretches of it are variants rather than new colours.
@@ -657,7 +670,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       files: [...importantFiles.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
         .map(([file, count]) => ({ file, count })),
     },
-    exemptFiles,
+    exemptFiles: [...exemptFiles, ...mediumFiles],
     inlineStyles: {
       count: inlineStyleCount,
       files: [...inlineStyleFiles.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10)

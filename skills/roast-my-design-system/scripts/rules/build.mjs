@@ -190,7 +190,7 @@ if (neverImported.length >= 3) {
   section('Styling discipline');
   rule(`Never write ${reusable.length ? '`style={{ ... }}`' : 'inline `style="..."` attributes'} for static values; styling belongs to classes and tokens where the system can see it.`);
   if ((t.inlineStyles?.count ?? 0) > 0) lines.push(`  (${t.inlineStyles.count} static inline block${t.inlineStyles.count === 1 ? '' : 's'} already exist; do not add to them.)`);
-  if ((t.important?.count ?? 0) >= 3) rule(`Never write !important; the scan found ${t.important.count} declaration${t.important.count === 1 ? '' : 's'} already. When a style does not apply, fix the selector or the source of the conflict instead of shouting over it.`);
+  if ((t.important?.count ?? 0) >= 3) rule(`Never write !important; the scan found ${t.important.count} declaration${t.important.count === 1 ? '' : 's'} already. When a style does not apply, fix the selector or the source of the conflict instead of forcing the style through.`);
   rule('Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.');
   
   lines.push('');

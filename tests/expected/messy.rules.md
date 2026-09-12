@@ -45,7 +45,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 - Never write `style={{ ... }}` for static values; styling belongs to classes and tokens where the system can see it.
   (2 static inline blocks already exist; do not add to them.)
-- Never write !important; the scan found 3 declarations already. When a style does not apply, fix the selector or the source of the conflict instead of shouting over it.
+- Never write !important; the scan found 3 declarations already. When a style does not apply, fix the selector or the source of the conflict instead of forcing the style through.
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---

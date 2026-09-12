@@ -301,7 +301,8 @@ if (componentsMeasured && hardDupes.length > 0) candidates.push({ ratio: 1 + har
 if (inline.count > 20) candidates.push({ ratio: inline.count / 20, text: `${n(inline.count)} inline style blocks skip the design system. An agent that reads them learns to do the same` });
 if (arbitraryCount >= 20) candidates.push({ ratio: arbitraryCount / 30, text: `${n(arbitraryCount)} values like ${arbitrary[0].value} are written outside the Tailwind scale. An agent that reads them learns to do the same` });
 if (agentFiles.length === 0) candidates.push({ ratio: 1.3, text: `No agent rules file, so your AI agent has nothing to follow` });
-if ((h.staleRules ?? []).length >= 2) candidates.push({ ratio: 1.2 + h.staleRules.length / 10, text: `${h.staleRules.length} lines in your agent rules refer to files that no longer exist` });
+const staleOwn = (h.staleRules ?? []).filter((s) => !s.tool);
+if (staleOwn.length >= 2) candidates.push({ ratio: 1.2 + staleOwn.length / 10, text: `${staleOwn.length} lines in your agent rules refer to files that no longer exist` });
 const findings = candidates.sort((a, b) => b.ratio - a.ratio).map((c) => c.text);
 
 let verdict = fresh
@@ -1146,6 +1147,7 @@ function whereToStartSection() {
   // reads at click time, so a forwarded report keeps working offline.
   const unesc = (s) => s.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&rarr;/g, '->').replace(/&amp;/g, '&');
   const promptFor = (item) => fixPrompt({
+    metric: item.metric,
     title: unesc(item.title),
     sub: unesc(item.sub),
     deltaText: item.delta > 0 ? `about +${item.delta} points` : (item.target ? `about +${item.target.gain} points once ${item.target.target === 0 ? 'they are all cleared' : `the count is under ${n(item.target.target)}`}` : ''),
@@ -1251,13 +1253,13 @@ function agentSection() {
   const staleRows = stale.map((s) => `
     <div class="ledger-row">
       <span class="mono strong">${esc(s.ref)}</span>
-      <span class="dim">${s.problem === 'missing' ? 'named in' : 'named canonical in'} ${esc(s.file)}, ${s.problem === 'missing' ? 'but the path no longer exists' : 'but nothing imports it this scan'}</span>
+      <span class="dim">${s.problem === 'missing' ? 'named in' : 'named canonical in'} ${esc(s.file)}${s.tool ? ` (written by ${esc(s.tool)}, not by this team)` : ''}, ${s.problem === 'missing' ? 'but the path no longer exists' : 'but nothing imports it this scan'}</span>
     </div>`).join('');
   const staleBlock = stale.length ? `
     <div class="stale">
       ${eyebrow(`${stale.length} rule reference${stale.length === 1 ? '' : 's'} gone stale · a rule your agent obeys is worse than no rule when the repo has moved on`)}
       <div class="ledger">${staleRows}</div>
-      <p class="sub" style="margin-top:10px">Rules rot quietly: nobody edits them when a component is renamed or a file moves. Regenerate them from a fresh scan, or fix the lines by hand.</p>
+      <p class="sub" style="margin-top:10px">${stale.every((s) => s.tool) ? 'These lines were written by a tool, not by this team: a rule pack that speaks about files this app does not have. Not yours to fix; worth knowing your agent reads them.' : 'Rules rot quietly: nobody edits them when a component is renamed or a file moves. Regenerate them from a fresh scan, or fix the lines by hand.'}</p>
     </div>` : '';
   return `<section class="glass pad agent">
     ${sectionHead('What your AI agent sees today', '')}

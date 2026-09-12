@@ -115,7 +115,8 @@ const bench = existsSync(outPath) ? JSON.parse(readFileSync(outPath, 'utf8')) : 
 // the curated ideals for the tiles only this kind measures join the general
 // ideal table; an ideal the file already has is never overwritten here
 bench.ideal2026 = bench.ideal2026 ?? {};
-for (const m of Object.keys(stats)) if (!bench.ideal2026[m] && IDEAL_2026[m]) bench.ideal2026[m] = IDEAL_2026[m];
+// the 2 shadcn ideals are owned by the slice and always refreshed from ideal.mjs
+for (const m of Object.keys(stats)) if ((!bench.ideal2026[m] || ['paintTin', 'doorOverrides'].includes(m)) && IDEAL_2026[m]) bench.ideal2026[m] = IDEAL_2026[m];
 bench.slices = bench.slices ?? {};
 bench.slices[kind] = {
   builtAt: new Date().toISOString(),

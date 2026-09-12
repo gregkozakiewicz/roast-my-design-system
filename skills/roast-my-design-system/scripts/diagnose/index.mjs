@@ -343,7 +343,7 @@ const FALLBACK_TARGET = {
   colors: 'a system needs ~24', greys: 'a scale has up to 13', spacing: 'a dozen deliberate exceptions',
   exactDuplicates: 'should be 0', inlineStyles: 'invisible to any system', nearPairs: '1 colour recorded twice',
   important: 'forces a style through', neverImported: 'the system nobody found', arbitrary: 'a handful of deliberate exceptions',
-  paintTin: 'the theme file already has a variable for it', doorOverrides: 'use a variant instead',
+  paintTin: 'the theme file already has a variable for it', doorOverrides: 'use a variant, or add one',
 };
 // Dress one judged tile for the page: formatted number, comparison rows.
 // Accepts a judged tile from score.mjs, or the positional form the
@@ -613,7 +613,8 @@ function sheetSection() {
     parts.push(`<div class="receipts">${eyebrow(`${n(paint.tin.uses)} colours from outside the theme in ${n(paint.tin.files)} of ${n(paint.ownFiles)} own files · ${n(paint.tin.per100)} per 100 files`)}${paint.tin.uses ? `<div class="chips-row">${tinChips}</div><div class="chips-row">${tinFiles}</div>` : '<p class="sub">Your own code takes every colour from the theme file. This is what shadcn is designed for.</p>'}${rp?.tinUses ? `<p class="sub">Not counted above: ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'} inside ${esc(rp.dirs.map((d) => basename(d)).join(', '))}, installed by a registry rather than written here. An agent reading those files will still copy them.</p>` : ''}</div>`);
     parts.push(whyToggle('paintTin'));
     const doorChips = (paint.doors.samples ?? []).slice(0, 6).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
-    parts.push(`<div class="receipts">${eyebrow(`${n(paint.doors.uses)} shadcn components restyled through className · ${n(paint.doors.per100)} per 100 files`)}${paint.doors.uses ? `<div class="chips-row">${doorChips}</div>` : '<p class="sub">No shadcn component is given a colour or a font through className. Variants are doing their job.</p>'}</div>`);
+    const typoChips = (paint.typo?.samples ?? []).slice(0, 6).map((s) => `<span class="vchip">${esc(s.value)} ×${s.count}</span>`).join('');
+    parts.push(`<div class="receipts">${eyebrow(`${n(paint.doors.uses)} shadcn components recoloured through className · ${n(paint.doors.per100)} per 100 files`)}${paint.doors.uses ? `<div class="chips-row">${doorChips}</div>` : '<p class="sub">No shadcn component is given a colour through className. Variants are doing their job.</p>'}${paint.typo?.uses ? `<p class="sub" style="margin-top:10px">Shown, not scored: ${n(paint.typo.uses)} shadcn components given a text size or weight through className, ${n(paint.typo.per100)} per 100 files. shadcn asks for a variant here too, but every shadcn repo does this at the same rate, so it says nothing about yours.</p><div class="chips-row">${typoChips}</div>` : ''}</div>`);
     parts.push(whyToggle('doorOverrides'));
   }
   if (!parts.length) return '';
@@ -1087,8 +1088,8 @@ function whereToStartSection() {
     if (pt.doors.uses >= 5) {
       const s0 = pt.doors.samples[0];
       c.push({ score: 15 + pt.doors.per100 / 4, metric: 'doorOverrides', after: 0,
-        title: `Stop restyling shadcn components through className`,
-        sub: `${n(pt.doors.uses)} shadcn components receive a colour or a font through className, like ${esc(s0.value)}. Use the variant that does it, or add one to the component you own. className on a shadcn component is for layout only.` });
+        title: `Stop recolouring shadcn components through className`,
+        sub: `${n(pt.doors.uses)} shadcn components receive a colour through className, like ${esc(s0.value)}. Use the variant that does it, or add one to the component you own. className on a shadcn component is for layout only.` });
     }
   }
 

@@ -41,8 +41,19 @@ repos 2 counts change meaning; no other repo moves.
   in own code instead, because shadcn's own docs allow brackets for one-off
   values and nothing shadcn ships says otherwise. Leftover variables are
   named as not to be used.
-- **The shadcn slice is rebuilt** with own-code brackets and registries
-  counted the new way. 16 repos.
+- **The restyled-components tile counts colour only.** It used to count a
+  colour or a text size passed into a shadcn component through className.
+  An audit of the 16 shadcn repos in the benchmark split the two: colour is
+  rare and sharp (13 repos at 0 to 6 per 100 files, then 13, 26 and 32 on the
+  3 repos that repaint the kit); a text size on an Input is on 12 of 16 repos
+  at the same rate, so it separates nothing, and nowhere else in the report
+  does a text size cost points. The tile is now "components recoloured from
+  outside", ideal 2 per 100 files, the tidiest half. Typography through
+  className is shown in the shadcn section and named in the rules file, not
+  scored. Most shadcn repos gain a green tile from this: vercel/ai-chatbot
+  67 to 75, its 13 restyled components all typography.
+- **The shadcn slice is rebuilt** with own-code brackets, registries in the
+  paint counts and colour-only overrides. 16 repos.
 - `summary.json` gains `ownCodeScore` and `installedPoints` when installed
   code costs points. New fields only.
 - 6 unit checks for the installed-code split and the breakdown.

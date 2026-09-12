@@ -10,6 +10,8 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
+> **New in 7.4: the score says what it measures, and the report has a new shape.** Under the number: "How safely an AI agent can build on this repo without going off-system." A fixed side panel holds the score, the stack, how the repo was read, an index of every section, and what is not yours and not counted. Installed code splits by one test, does it teach an agent a wrong lesson: shadcn's own bracket values are out of the count and named; palette colours inside an installed registry stay in the score and are never prompted; catalogue stock is not a trap. A factory install scores 100. Leftover theme variables become a fix.
+
 > **New in 7.3: shadcn repos are compared with shadcn repos.** The benchmark carries a shadcn slice, 17 of the 34 fleet repos, and on a shadcn repo every fleet line reads against it: "Avg shadcn repo", "cleaner than 60% of shadcn repos". Ideals and the reputable-systems line stay the same for everyone.
 
 > **New in 7.2: shadcn repos are read as shadcn repos.** The scanner finds the installed catalogue where it actually lives, reads the theme file `components.json` names, and prints how it decided under the report header. 2 new tiles appear on shadcn repos only, both from shadcn's own rules for agents: palette colours in your own code where a theme row exists, and kit components repainted through `className`. Counted per 100 of your own files, never inside the catalogue. The rules file gains a shadcn section. Scores on other repos do not move.

@@ -102,7 +102,7 @@ export function makeHealthOf(b) {
 export const PROFILE_TILES = {
   shadcn: [
     ['paintTin', 'off-theme colours per 100 files'],
-    ['doorOverrides', 'components restyled from outside per 100 files'],
+    ['doorOverrides', 'components recoloured from outside per 100 files'],
   ],
 };
 export const tilesFor = (kind) => [...TILES, ...(PROFILE_TILES[kind] ?? [])];

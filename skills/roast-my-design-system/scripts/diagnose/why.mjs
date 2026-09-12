@@ -16,9 +16,9 @@ export const WHY = {
     'The ideal is 25 per 100 files. That is where the tidiest third of 15 shadcn repos in the benchmark sit; the median is 62. shadcn\'s own rules for agents say it in 1 line: use semantic colours, never bg-blue-500.',
   ],
   doorOverrides: [
-    'A shadcn component ships with variants: outline, ghost, destructive, small, large. The variant decides how the component looks, once, in the component file you own. Passing bg-blue-100 or font-bold through className decides it again at the call site, where the component can not see it.',
+    'A shadcn component ships with variants: outline, ghost, destructive, small, large. The variant decides how the component looks, once, in the component file you own. Passing bg-blue-100 through className decides it again at the call site, where the component can not see it.',
     'Do this in 5 places and 1 button has 6 designs. The next person can not tell which one is intended, and an agent copies whichever it finds first. shadcn\'s guidance gives 3 routes: use a variant that exists, add a variant to the component, or add a variable to the theme file. className is for layout: width, margin, position.',
-    'The ideal is 15 per 100 files, the tidiest third of the same 15 repos; the median is 22.',
+    'The ideal is 2 per 100 files, the tidiest half of the 16 shadcn repos in the benchmark; the median is 1. Typography through className, a text-sm on an Input, is shown here and not scored: 12 of the 16 repos do it at the same rate, so it separates nothing, and nowhere else in this report does a text size cost points.',
   ],
   colors: [
     'Look, nobody consciously chooses 100 colours to start with. They were added with each change, and the change after that. No one was checking for the drift, because no one expected it. Then come the multipliers: a rebrand, a dark-mode pass, ad hoc files, each one multiplying the values again.',

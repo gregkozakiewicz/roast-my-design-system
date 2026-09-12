@@ -91,8 +91,8 @@
       "note": "palette colours in own code where a theme variable exists, per 100 files"
     },
     "doorOverrides": {
-      "value": 15,
-      "note": "shadcn components given a colour or font through className, per 100 files"
+      "value": 2,
+      "note": "shadcn components given a colour through className, per 100 files; the tidiest half of 16 shadcn repos sit under this (2026-09-13 audit)"
     }
   },
   "stats": {
@@ -1852,7 +1852,7 @@
   },
   "slices": {
     "shadcn": {
-      "builtAt": "2026-09-12T19:42:38.843Z",
+      "builtAt": "2026-09-12T20:07:59.374Z",
       "repoCount": 16,
       "note": "every repo in the fleet the scanner reads as shadcn; the \"cleaner than\" line on a shadcn repo reads against these",
       "stats": {
@@ -2219,26 +2219,26 @@
         "doorOverrides": {
           "values": [
             0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
             3,
-            5,
+            4,
+            4,
+            6,
             13,
-            13,
-            15,
-            16,
-            16,
-            17,
-            21,
-            22,
             26,
-            28,
-            31,
-            44,
-            55
+            32
           ],
-          "p25": 13,
-          "median": 17,
-          "p75": 27,
-          "p90": 38
+          "p25": 1,
+          "median": 2,
+          "p75": 5,
+          "p90": 20
         }
       },
       "repos": [
@@ -2266,7 +2266,7 @@
             "neverImported": 99,
             "components": 1453,
             "paintTin": 22,
-            "doorOverrides": 5
+            "doorOverrides": 1
           }
         },
         {
@@ -2347,7 +2347,7 @@
             "neverImported": 0,
             "components": 316,
             "paintTin": 66,
-            "doorOverrides": 21
+            "doorOverrides": 1
           }
         },
         {
@@ -2374,7 +2374,7 @@
             "neverImported": 100,
             "components": 272,
             "paintTin": 33,
-            "doorOverrides": 17
+            "doorOverrides": 4
           }
         },
         {
@@ -2401,7 +2401,7 @@
             "neverImported": 44,
             "components": 811,
             "paintTin": 62,
-            "doorOverrides": 22
+            "doorOverrides": 6
           }
         },
         {
@@ -2428,7 +2428,7 @@
             "neverImported": 2,
             "components": 1085,
             "paintTin": 296,
-            "doorOverrides": 31
+            "doorOverrides": 26
           }
         },
         {
@@ -2455,7 +2455,7 @@
             "neverImported": 5,
             "components": 1137,
             "paintTin": 5,
-            "doorOverrides": 16
+            "doorOverrides": 1
           }
         },
         {
@@ -2482,7 +2482,7 @@
             "neverImported": 19,
             "components": 700,
             "paintTin": 100,
-            "doorOverrides": 3
+            "doorOverrides": 1
           }
         },
         {
@@ -2509,7 +2509,7 @@
             "neverImported": 13,
             "components": 777,
             "paintTin": 488,
-            "doorOverrides": 55
+            "doorOverrides": 32
           }
         },
         {
@@ -2536,7 +2536,7 @@
             "neverImported": 0,
             "components": 911,
             "paintTin": 179,
-            "doorOverrides": 15
+            "doorOverrides": 3
           }
         },
         {
@@ -2563,7 +2563,7 @@
             "neverImported": 1,
             "components": 246,
             "paintTin": 42,
-            "doorOverrides": 13
+            "doorOverrides": 4
           }
         },
         {
@@ -2590,7 +2590,7 @@
             "neverImported": 0,
             "components": 1204,
             "paintTin": 21,
-            "doorOverrides": 26
+            "doorOverrides": 0
           }
         },
         {
@@ -2617,7 +2617,7 @@
             "neverImported": 30,
             "components": 1494,
             "paintTin": 58,
-            "doorOverrides": 28
+            "doorOverrides": 2
           }
         },
         {
@@ -2644,7 +2644,7 @@
             "neverImported": 26,
             "components": 971,
             "paintTin": 32,
-            "doorOverrides": 44
+            "doorOverrides": 1
           }
         },
         {
@@ -2671,7 +2671,7 @@
             "neverImported": 23,
             "components": 3630,
             "paintTin": 8,
-            "doorOverrides": 16
+            "doorOverrides": 0
           }
         }
       ]

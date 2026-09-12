@@ -139,7 +139,8 @@ test('paint from a tin and repainted doors are counted over own code only, never
     assert.equal(paint.tin.samples[0].count, 1);
     // doors: Card with bg-blue-100 font-bold, Button with text-red-600; the layout-only Button is fine
     assert.equal(paint.doors.uses, 2);
-    assert.match(paint.doors.samples.map((s) => s.value).join(' '), /<Card className="bg-blue-100 font-bold">/);
+    assert.match(paint.doors.samples.map((s) => s.value).join(' '), /<Card className="bg-blue-100">/);
+    assert.equal(paint.typo.uses, 0); // font-bold rode along with a colour; nothing typography-only here
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 

@@ -6,10 +6,14 @@
  *     row exists: `text-gray-500`, `bg-blue-100`, `text-emerald-600` on a
  *     status, and the manual evening override `dark:bg-gray-950`. 1 sin, 3
  *     spellings. The rule: "Semantic colors. Never `bg-blue-500`."
- *  2. Doors repainted from outside. A colour or typography class passed into
- *     a kit component through className (`<Card className="bg-blue-100
- *     font-bold">`) where a variant or a sheet row was the intended route.
- *     The rule: "className for layout only."
+ *  2. Doors recoloured from outside. A colour class passed into a kit
+ *     component through className (`<Card className="bg-blue-100">`) where
+ *     a variant or a sheet row was the intended route. The rule: "className
+ *     for layout only." Typography through className (`<Input
+ *     className="text-sm">`) is counted separately as a receipt, never
+ *     scored: the 2026-09-13 fleet audit found it on 12 of 16 shadcn repos at
+ *     a flat rate, so it separates nothing, and nowhere else in the report
+ *     does a text size cost points.
  *
  * Both are counted over OWN code only: never inside the catalogue (those are
  * kit doors, edited on purpose), never in exempt files (email, print,
@@ -30,9 +34,10 @@ const TIN_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border|ring|outlin
 // Evening overrides painted by hand with white or black (the palette shades
 // are already caught above with their dark: prefix).
 const DARK_WB_RE = /(?<![\w-])dark:(?:bg|text|border)-(?:white|black)(?:\/\d+)?(?![\w-])/g;
-// Colour or typography passed into a kit door: palette colour, black/white,
-// weight, size.
-const DOOR_CLASS_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:(?:bg|text|border)-(?:${PALETTE}|white|black)(?:-(?:50|[1-9]00|950))?(?:/\\d+)?|font-(?:thin|extralight|light|normal|medium|semibold|bold|extrabold|black)|text-(?:xs|sm|base|lg|xl|[2-9]xl))(?![\\w-])`, 'g');
+// Colour passed into a kit door: palette colour, black, white, any variant prefix.
+const DOOR_COLOR_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border)-(?:${PALETTE}|white|black)(?:-(?:50|[1-9]00|950))?(?:/\\d+)?(?![\\w-])`, 'g');
+// Typography passed into a kit door: weight or size. A receipt, not a score.
+const DOOR_TYPO_RE = /(?<![\w-])(?:[\w-]+:)*(?:font-(?:thin|extralight|light|normal|medium|semibold|bold|extrabold|black)|text-(?:xs|sm|base|lg|xl|[2-9]xl))(?![\w-])/g;
 
 const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demos?|templates?|playground|fixtures?|__tests__|__mocks__|e2e|cypress)\//i;
 
@@ -52,6 +57,7 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set() 
   let ownFiles = 0;
   const tin = { uses: 0, files: 0, top: [], samples: new Map() };
   const doors = { uses: 0, files: 0, top: [], samples: new Map() };
+  const typo = { uses: 0, files: 0, top: [], samples: new Map() };
   const bump = (bucket, file, count, sample) => {
     bucket.uses += count; bucket.files += 1;
     bucket.top.push({ file, count });
@@ -77,19 +83,27 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set() 
     }
 
     if (doorOpen) {
-      let hits = 0; const seen = new Map();
+      let hits = 0, thits = 0; const seen = new Map(), tseen = new Map();
       for (const m of src.matchAll(doorOpen)) {
         const cls = m[2] ?? m[3] ?? '';
-        const bad = cls.match(DOOR_CLASS_RE);
-        if (!bad) continue;
-        hits += 1;
-        const key = `<${m[1]} className="${bad.slice(0, 3).join(' ')}">`;
-        seen.set(key, (seen.get(key) ?? 0) + 1);
+        const colour = cls.match(DOOR_COLOR_RE);
+        if (colour) {
+          hits += 1;
+          const key = `<${m[1]} className="${colour.slice(0, 3).join(' ')}">`;
+          seen.set(key, (seen.get(key) ?? 0) + 1);
+        } else {
+          const t = cls.match(DOOR_TYPO_RE);
+          if (t) { thits += 1; const key = `<${m[1]} className="${t.slice(0, 2).join(' ')}">`; tseen.set(key, (tseen.get(key) ?? 0) + 1); }
+        }
       }
       if (hits) {
         bump(doors, f, hits, null);
         for (const [k, v] of seen) doors.samples.set(k, (doors.samples.get(k) ?? 0) + v);
         doors.top.at(-1).sample = [...seen.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      }
+      if (thits) {
+        bump(typo, f, thits, null);
+        for (const [k, v] of tseen) typo.samples.set(k, (typo.samples.get(k) ?? 0) + v);
       }
     }
   }
@@ -101,5 +115,5 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set() 
     top: b.top.sort((a, b2) => b2.count - a.count).slice(0, 8),
     samples: [...b.samples.entries()].sort((a, b2) => b2[1] - a[1]).slice(0, 10).map(([value, count]) => ({ value, count })),
   });
-  return { ownFiles, tin: finish(tin), doors: finish(doors) };
+  return { ownFiles, tin: finish(tin), doors: finish(doors), typo: finish(typo) };
 }

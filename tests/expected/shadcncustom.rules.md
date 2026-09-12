@@ -42,7 +42,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Use the semantic classes the theme gives you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The variables already carry both modes.
   (26 palette colours already sit in own code, `text-red-600` ×2, `text-gray-500` ×2, `text-gray-700` ×2; do not add to them.)
 - Before adding classes to a shadcn component, use one of its variants (`variant="outline"`, `size="sm"`). `className` on a shadcn component is for layout only: width, margin, position. Never colour, never typography.
-  (3 shadcn components already restyled through className, like `<Card className="bg-blue-100 text-blue-900 font-bold">` and `<Badge className="bg-gray-200 text-gray-700">`; do not add to them.)
+  (3 shadcn components already recoloured through className, like `<Card className="bg-blue-100 text-blue-900 dark:bg-gray-900">` and `<Badge className="bg-gray-200 text-gray-700">`; do not add to them.)
 - `src/components/ai-elements` is an installed registry (added through the shadcn CLI, not written here). Treat it like `src/components/ui`: reach for what is there before building your own, and do not copy the 3 palette colours inside into own code.
 - Edit the component you own in `src/components/ui`. Never build a second one beside it under another name. A wrapper that composes shadcn components is fine; a second implementation is not.
 - Merge classes with `cn()`. Never concatenate strings and never write a ternary inside a className string.

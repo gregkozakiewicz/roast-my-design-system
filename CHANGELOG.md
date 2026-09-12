@@ -2,6 +2,51 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.4.0 — 2026-09-13
+
+The report has a new shape, and the score says what it measures. On shadcn
+repos 2 counts change meaning; no other repo moves.
+
+- **What the score measures, in 1 line under the number.** "How safely an AI
+  agent can build on this repo without going off-system." That is the
+  definition every tile, exclusion and fix prompt is judged by from now on.
+  The README and the landing page say the same.
+- **A new layout: a fixed side panel and a scrolling main column.** The
+  panel holds the repo name, the score with its definition and what the top
+  fixes would lift it to, the stack, how the repo was read, an index of every
+  section that rendered, and a block called "Not yours, and not counted".
+  The summary sentence opens the main column. Below 900px the panel sits
+  above the content. The page is 10% denser.
+- **Installed code is named, and split 2 ways.** What the team did not write
+  is either kept out of the count and named, or kept in the score and
+  attributed, by 1 test: does it teach an agent a wrong lesson.
+  - Bracket values inside the shadcn catalogue, kit blocks and registries
+    are shadcn's own choices, a true lesson badly framed. Out of the count,
+    listed in the side panel with their values. A factory install with all
+    61 components now scores 100, was 96.
+  - Palette colours inside an installed registry such as ai-elements teach
+    the same wrong lesson as in own code. Kept in the score. When they cost
+    points, the side panel says how many and what own code alone would
+    score. Never prompted: not the team's files to edit.
+  - Unused catalogue components stay stock, not scored, and the agent-trap
+    box no longer fires on them. It used to say "303 components are never
+    imported" above a tile saying the same 303 were stock.
+- **Leftover theme variables become a fix.** A custom variable defined in
+  the theme file that nothing in the repo reads (the Next.js starter's
+  `--foreground-rgb` next to the real `--foreground`) is a "Where to start"
+  move: an agent opening the file sees 2 colour systems and can not tell
+  which one is dead. 6 lines to delete on vercel/ai-chatbot.
+- **The rules file tells the agent whose brackets they are.** On a shadcn
+  repo it names the installed bracket values as shadcn's and says what to do
+  in own code instead, because shadcn's own docs allow brackets for one-off
+  values and nothing shadcn ships says otherwise. Leftover variables are
+  named as not to be used.
+- **The shadcn slice is rebuilt** with own-code brackets and registries
+  counted the new way. 16 repos.
+- `summary.json` gains `ownCodeScore` and `installedPoints` when installed
+  code costs points. New fields only.
+- 6 unit checks for the installed-code split and the breakdown.
+
 ## 7.3.3 — 2026-09-13
 
 - **A shadcn install needs the theme, not just the file names.** From 7.2.0

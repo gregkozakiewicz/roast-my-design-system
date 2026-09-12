@@ -27,7 +27,7 @@ import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { lastTouchedDates } from '../lib/lasttouched.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { decideProfile, profileOf } from '../profiles/index.mjs';
+import { decideProfile, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
 import { countPaint } from './paint.mjs';
 
 function arg(name, fallback) {
@@ -58,6 +58,7 @@ const exclusions = loadExclusions(target, argAll('exclude'));
 const files = walkRepo(target, 14, exclusions);
 const profile = profileRepo(target, files);
 const { components } = harvestComponents(target, files.code);
+const tokens = harvestTokens(target, files.styles, files.code);
 // Repo kind and measurability, decided once in profiles/ and read everywhere
 // (a published components package with no app pages is a LIBRARY; a stack the
 // detector cannot read is NOT MEASURED, never scored as zeros). The decision
@@ -68,22 +69,30 @@ decideProfile(profile, components, files, target);
 {
   const P = profileOf(profile);
   if (P.isShadcn) {
-    const installed = [...P.uiDirs, ...(profile.shadcn?.registryDirs ?? [])];
-    const doorFiles = new Set([...installed.flatMap((d) => files.code.filter((f) => f.startsWith(`${d}/`))), ...(profile.shadcn?.blockFiles ?? [])]);
-    const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
-    profile.shadcn.paint = countPaint(target, files.code, { uiDirs: [...installed, ...(profile.shadcn.blockFiles ?? [])], kitNames });
-    // what the installed registries carry themselves: kept out of the own-code
-    // counts, shown in the header, because an agent reads them all the same
     const regDirs = profile.shadcn.registryDirs ?? [];
+    const blocks = profile.shadcn.blockFiles ?? [];
+    const allInstalled = installedDirs(P);
+    const doorFiles = new Set(allInstalled.flatMap((d) => files.code.filter((f) => f === d || f.startsWith(`${d}/`))));
+    const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
+    // The score reads the repo as the agent meets it: own code plus installed
+    // registries, because a palette colour in ai-elements teaches the same
+    // wrong lesson as one in own code. The catalogue and kit blocks stay out:
+    // editing them is the intended use.
+    profile.shadcn.paint = countPaint(target, files.code, { uiDirs: [...P.uiDirs, ...blocks], kitNames });
+    // Own code alone, for the breakdown line under the score.
+    profile.shadcn.paintOwn = regDirs.length ? countPaint(target, files.code, { uiDirs: allInstalled, kitNames }) : profile.shadcn.paint;
     if (regDirs.length) {
       const regFiles = files.code.filter((f) => regDirs.some((d) => f.startsWith(`${d}/`)));
       const rp = countPaint(target, regFiles, { uiDirs: [], kitNames });
-      profile.shadcn.registryPaint = { files: rp.ownFiles, tinUses: rp.tin.uses, dirs: regDirs };
+      profile.shadcn.registryPaint = { files: rp.ownFiles, tinUses: rp.tin.uses, doorUses: rp.doors.uses, dirs: regDirs };
     }
+    // Bracket values inside installed code are shadcn's (or a registry's)
+    // choices: a true lesson, badly framed. Kept out of the count, named.
+    const split = splitArbitrary(tokens.tailwind?.arbitrary ?? [], allInstalled);
+    profile.shadcn.arbitraryInstalled = split.installed;
   }
 }
 
-const tokens = harvestTokens(target, files.styles, files.code);
 const duplicates = findDuplicates(components, profile.uiDir, target);
 const context = harvestContext(target);
 const staleRules = ruleStaleness(target, components,

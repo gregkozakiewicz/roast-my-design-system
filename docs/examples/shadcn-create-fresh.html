@@ -50,7 +50,34 @@
   /* fixed gradient wash on its own layer: background-attachment:fixed +
      backdrop-filter makes Chromium skip repaints on scroll */
   body::before { content:''; position:fixed; inset:0; z-index:-1; background:var(--page-grad), var(--bg); }
-  .wrap { max-width:1120px; margin:0 auto; padding:48px 28px 72px; }
+  .wrap { zoom:0.9; }
+  /* two columns: a fixed side panel and the scrolling main column */
+  .side { position:fixed; left:0; top:0; bottom:0; width:300px; padding:22px 24px; overflow:auto; z-index:5;
+    border-right:1px solid var(--line); background:var(--card-solid, var(--bg)); }
+  .main { margin-left:300px; padding:22px 40px 60px; max-width:1080px; }
+  .side .repo { font:600 20px/1.25 var(--disp); letter-spacing:-.01em; margin:4px 0 4px; word-break:break-all; }
+  .side .repo .mono { font-size:17px; }
+  .side .scanned { font:500 11.5px/1.5 var(--sans); color:var(--dim); margin:0 0 16px; }
+  .side .score { text-align:left; margin:0 0 16px; }
+  .side .score .def { font:500 11.5px/1.5 var(--sans); color:var(--dim); margin-top:8px; }
+  .side .score .def b { color:var(--text); font-weight:700; }
+  .side .score .bd { font:500 11.5px/1.5 var(--sans); color:var(--dim); margin-top:8px; padding-top:8px; border-top:1px solid var(--line); }
+  .side .score .bd b { color:var(--text); }
+  .side .chips { margin:0 0 14px; gap:5px; }
+  .side .facts { font:500 11.5px/1.55 var(--sans); color:var(--dim); margin-bottom:16px; }
+  .side .facts .excl { margin-top:6px; font-size:11.5px; }
+  .side .facts b { color:var(--text); font-weight:600; }
+  .side .idx-head { margin-bottom:4px; }
+  .side .idx a { display:block; font:500 13px/1.3 var(--sans); color:var(--dim); text-decoration:none; padding:6px 0 6px 12px; border-left:2px solid var(--line); }
+  .side .idx a:hover, .side .idx a.on { color:var(--accent); border-left-color:var(--accent); }
+  .side .idx a i { font-style:normal; font-size:10.5px; margin-right:8px; opacity:.6; }
+  .side .excs { margin-top:16px; padding-top:12px; border-top:1px solid var(--line); font:500 11.5px/1.55 var(--sans); color:var(--dim); }
+  .side .excs b { color:var(--text); display:block; margin-bottom:4px; }
+  .side .excs p { margin:0 0 6px; }
+  .side .side-foot { margin-top:18px; font:500 11px/1.5 var(--sans); color:var(--dim2, var(--dim)); }
+  .main > .verdict-card { margin-top:0; }
+  @media (max-width: 900px) { .side { position:static; width:auto; border-right:0; border-bottom:1px solid var(--line); } .main { margin-left:0; padding:20px; } }
+  @media print { .side { position:static; width:auto; border-right:0; } .main { margin-left:0; } .wrap { zoom:1; } }
 
   .glass { background:var(--card); backdrop-filter:blur(24px) saturate(140%); -webkit-backdrop-filter:blur(24px) saturate(140%);
     border:1px solid var(--line); border-radius:16px;
@@ -92,8 +119,8 @@
 
   .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
   .chip { border:1px solid var(--line); background:var(--card); border-radius:99px;
-    padding:4px 12px; font:500 11.5px/1.5 var(--sans); color:var(--text); }
-  .chip-agent { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
+    padding:3px 8px; font:500 10.5px/1.5 var(--sans); color:var(--text); }
+  .chip-agent { font-weight:600; }
   .coverage { margin-top:12px; }
   .cov-yes { color:var(--ok); font-weight:700; }
   .cov-no { color:var(--coral); font-weight:700; }
@@ -416,8 +443,8 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAALAUlEQVR42s2bbZBVZR3Af+eey8KyAspAZILhC2w65ih8KCqZhmyMKT8oIGoTDUUvI6LQjPRla6bRUYkZ5VOJBY5mvqQjNA0jfoCptNK0nEkiBM1FImTlLQaWvXfvPacP+392//x5zjnPvXsXPDNndu+9z/k///fX50SMzBWZv0mTcEryNzV/W45oq66SwKyb788HZgKXAh+Xz2OAUfJ7P9AHHAM+AP4N7JbP+oqFCclHjQGRIFeTz6OAGcANwBeBq4BJwPhAeMeBQ8AO4PfAS8AeYRRAWZicco6vSKkpwCeAZcBWoCII6jsRIipy98ntPvfLGvtcRWAukz2sxp2TK1b/TwZ+DOw0iNcUYWmDt2NUzXy/U/aanIHLWTGBWFRwDLAUWA1Ml99qxizcVQGOyH1Q7LtPfhsjfmEKMFHu0epZre5l+dsN/BR4TODEHt/T8kur3CyxTSeZOlA10joIvAD8UPzBdKAtB36brLlBnnlBYGiYVcWQVHCYlWGSIxYxviNOyhFeM0i9CnxXPH8WI91dljsL8ZkC61XDbL3nIcFppKLbIMA24CFj45rwl4GblJqi1DYOcFqxrB0ld2Rg3CR7WEa4zw8pDYtaTfx5wDPKm9fU5u8D3zKElwIILkleMCnHNNqMLynLXu8rIdRU9HhGcG0JEyLlpDapDRO14fPAJZ7sLQTuOOANYC/wltjzw8Ai4GKPBmjYl8jeqcLHCWST4DwsJjgvPgp4SoWmutqsyyAYNcjY8cCBjDB4FHgWWGwSqNhoWpcSSl2F3KcE97hZJjhur1H2Vlee+NtG1ZvRrHESzrRTSzzJ0F8lCSp5nCiCS9WD55oGtNJL/BIFNFFZ2e1KGtEwTGucqH/qITrxONntwLUKhs41blfZZ6KeW9IoE2IVfnqMw6uKJEKzr6jAGeYxwGaU7vdjwPcNUQ6XZYKjdow9KhzHoQi3AZuNl02B+xqw97w12rl2BzAgVRLtB77pKbudX7jPg/dmoamwdnAcvc1jT1uV2hUxMTKJzELgJ8DjwG+BLcDvgBeB3oC6wOHQCyzIUWm391YP/reFmEIETAB2GdU7AHQWALBp6ELgOVHBdBh3KPH6+07BWYfGXUJbVGT7d3uyrJWmEMmT+ueBbcZ51ZRDs3eo2i8qwAHz+0pPtnp3li8oKaf0pvL2CfB3qdSy7CdS9z1Smenavz4MySfASSX5coDpOU08X3BPVHR4U2g8Q4tipbY2tVya40Ej9dvPPcifDbW3uOnQuNSTui/MiwhPKpVLgbeBsTmSd3nAz9RzSYtsvk8hWw5w3F+WrFHnJ2OFBk3Tr7OkeBFw2Czuysmn3cYrPLE6bYHa3xyQbDkpzpb8YKdydO63HxmaDgutg3Q5QhabwuKEAPapi3vmWlmXtID4xCP5UoCz+5yKNFXgFlVFusaNxXGxhu82WS8LXE79iiorSx4GlCWmp8NwdKlheqjDc/h8VhVTDu/fmKh0ntDi1iRC6yAcpy6vK++fSlnqk777PA84ZcJZYkJeEkh8XfZdFKD2jjGfAf6bkSpPU+15VBPH0fa63WOqAmaLiLIn2YmAR4xt5XV3kwCn1xWQr8dK7Q96tM/ts8iYwRKzdr9pr3Od2IkDdByYkxFiAD4GvOtB4BDwB2lyvGcI9/mJmpLI2IJcPVaS359hem6Ph40GzBGazqDPSfdCQSAVBI4D+zxzvUjWzJSOTCpI1wTWduDrkmxcAHwS+II4nStViztWewH8UmJ+WbXV9TVKNGmOdHumKDj6cvhcYXDfJzSNkzUd0oobvL5nJLILaPeEwJJZXzfPPZshvfFSwu7zpNkfCHOigmRrjqzNc7ru+x2mx9hu6pvBBK+kFqCGDyfU0MJyGOnX5c0NYtW6Kgn3HwHmShVYUrD2K3NKPPBSUfvnleSLmhvjTMrbJzRhmDIIqM0QWFEq6htATsjY2NfRSRRT3hMH9bgwx/X+KhmhNhHzfEKcVj2wEROrpigqAmAnTCWPnYd0UhudyqYK+YqY0CbZJ8mBGQkTjzXRdksLaEo1A6pmUbvHUenraEFPIIuBdeF8BbhDMripIi2LsNOcD4FviA3HGU7SXjVlwqk8127WVDUDTnra1R05Dqk7Z2MXiuKcNSVxaPeKP+nMmOs5JuwGbpRcv0zxAYn/id+JlNcfbxx5r/5wyDiXDobGzz5p/lMhp9WtXRxVG6dPiX3qGQG/EES/kmNWqRD9jqTJe5R/yLr2yf5OCJOVQCMJqYf1A7NFrZ0DOwVcn5MITVRMqJkE4y3gj8Aq9WyUo033ShbaQf5018G6VPb2ZaFO+9aYROh6ocmtOwJco4FPVO1pR9DyjKLE2fi6gFT46ZyZX6wKGlt7FGWDMxg6jOFLhW800W25oa1bErXTJLHdFAwbMipBnZKeLCiGUuAHBSX1xSoPWGGYnFcMdapmhy6GDqosz+25wdC23dcPuN+UlTuUH/AxoSTxOSszc0x4g4HTHrZdHqmc4hXFvOUBRZHD5zJlDo64x4wpTRZaNG33+/oB8zxjpS9lpKgO+cvFnnyDDQfjHVV5lTww2pX2OXO6qwFz6AT+pZjwVaX+kdBg+5TzbD/ASWKP6uamqnGQ1xK7VTGtnsGAqYEMqCp1vjPAHGIliL2ibR1mcLrelOV7VCYbWWTWGkkcleaCbyLk67tpLmsGXBTIAD3m1kyIAwat14i0teZMU9HN0bTWJ9SyGmr0Gmk+UICEA9TlGYQ0wwBrTisCzKGUIZgHzIisV5opZ0Q3PRTdYvpnB8TZRDnzuJIaUfeYbtDuJhhgD0ItD2BCZFLxy9R4zDm/LXlDUse1rykVdGqzsQHPPBP4laSjKfCfJhlgu0ghmqBx3Ghsvy605dLhuPiisekqML+Bnp3r221g4NzP1CYZYJlwV0G16vafrzS4oel2SfXSe02qu1d1W6MCp6QJnaRSUppggDWHOzJwcJ+nmaw2EVpmh47H3YIHlQo5xF6SpCbkXFAc6L1DGGDzk1WGGIfPaIZOr9aUCT8YEFJP04JYcuXXPCPmRzMkTYCHpkkT0N93q+GJ7T886uk5via0xDRwTkiPvo54gK4LILDoKmJAYgqtiqTe0zMEsM4jrCMMHapqGE+nvrfI5vZ87kZVYzdzbl8zwB2oqHpS6n4JX/MzzKtDeXyNY0XNCeNmJeQeXGns0DFhm5Sm5LS1QxjwJ4/qvy0jrbnmGX34aobgoJMdx8CVgWEzmAmr8R9S3q9GUY1s6NaMlsHIn8WGV0kIneAhXDN4kZoQ2fOEq1tBvC8y3KnKzpqx2acZOreP8c7DeTGjzTw/S/bypd2VwCJqWJqwQE1o7BT4kFRfn85oZNhj8zp9dcfk2zjzqDwCcz1D7ykkngnTglZKPs8xXqVszzGiajz2ZimVL2/SCcXy7K0CS7+EVTXat01watjhRU0i5t4Xukds1vXX+jn91CZSkPwN+If09vdK2+q4mtaMlrb1FAYGqp8Crpbs7ULTUk9VZnlUeolrOYvvDVnGXcHA4apTRkL9GYnNCakY90lS0y3/93D6iD41GV3VdK2fZGgKDOfg9TmbiFwniUqPh4AqZ77slHdgoupR81RgPyF7MRLOrpnLInC1hKGXKT49EnK4ql9grRbYNJiKt9wHFDHC2eAYaUrMZWC2fyUDJ0vGMvTecKxmhu794V6R9E7gLzJkeVfN+lr6/vBIqE4egpPF0V3AwOktN7ioiv0fFQf5YQCD+agywMLW88O0gWft3HFEXpT+P6MvfkXS23zuAAAAAElFTkSuQmCC) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/7.3.2 -->
-<!-- rmds-score: 96 -->
+<!-- rmds-schema: gregkozakiewicz/7.3.3 -->
+<!-- rmds-score: 100 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <span class="tt-lab tt-day">Day</span>
@@ -429,62 +456,37 @@
 </button>
 <script>try{var t=localStorage.getItem('roast-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <div class="wrap">
-
-<header>
-  <div class="hero">
-    <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · 394ms · 69 code files</div>
-      <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">fresh</span> · scanned 2026-09-12</div>
-    </div>
-    <div class="score"><div class="eyebrow">Health score</div><div class="val">96<span class="slash">/</span><span class="of">100</span></div></div>
-  </div>
+<aside class="side">
+  <div class="eyebrow">Design-system diagnosis</div>
+  <div class="repo"><span class="mono">fresh</span></div>
+  <div class="scanned">Scanned 2026-09-12 · 69 code files · 467ms</div>
+  <div class="score"><div class="eyebrow">Health score</div><div class="val">100<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system.</div></div>
   <div class="chips"><span class="chip">next</span><span class="chip">TypeScript</span><span class="chip">Tailwind CSS</span><span class="chip">CVA</span><span class="chip">shadcn/ui · base-nova</span><span class="chip chip-agent">AGENTS.md</span></div>
-  <div class="excl">Read as a shadcn install (high confidence): components.json in the root, 61 catalogue components in components/ui · style base-nova, base colour neutral, Tailwind 4 · accent neutral, charts neutral, radius default, icons lucide</div>
-  
+  <div class="facts"><div class="excl">Read as a shadcn install (high confidence): components.json in the root, 61 catalogue components in components/ui · 10 of shadcn's 10 theme variables defined · style base-nova, base colour neutral, Tailwind 4 · accent neutral, charts neutral, radius default, icons lucide</div></div>
+  <div class="eyebrow idx-head">Index</div>
+  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>What your agent sees</a><a href="#s-2"><i>02</i>Your present</a><a href="#shadcn"><i>03</i>shadcn theme and checks</a><a href="#s-4"><i>04</i>Off-scale spacing</a><a href="#s-5"><i>05</i>Typography &amp; shape</a><a href="#s-6"><i>06</i>The adoption map</a></nav>
+  <div class="excs"><b>Not yours, and not counted</b><p>24 bracket values inside ui are shadcn's own ([2.5rem], [-2.5rem], [2px]) and are not counted. shadcn's docs allow brackets for one-off values, so your agent will treat them as normal; the rules file tells it otherwise for your own code.</p><p>303 catalogue components not used yet: stock on the shelf, not scored.</p></div>
+  <div class="side-foot">roast-my-design-system 7.3.3</div>
+</aside>
+<main class="main">
   
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">24 values like [2.5rem] are written outside the Tailwind scale. An agent that reads them learns to do the same.</div>
+    <div class="verdict">This repo is in good shape, and your agent has rules to read. Keep them in step with the code.</div>
   </div>
-</header>
 
 
 
 
 
-<section class="glass pad">
-    <div class="sec-head"><h2>Where to start</h2><p class="sub">One tweak to increase your score.</p></div>
-    <div class="ledger">
-      <div class="ledger-row start-row">
-        <span class="ledger-idx">01</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Give your repeated bracket values names</div><span class="delta delta-target">under 20 · +5</span></div><div class="sub">24 bracket values sit outside the scale, almost all used once. Keep the deliberate ones (optical nudges, one-off widths) and round the rest to a neighbouring step.</div>
-        <div class="start-actions"><button type="button" class="fixbtn" data-fix="0">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="0">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the fresh repository, measured by roast-my-design-system.
 
-The finding: Give your repeated bracket values names
 
-The detail: 24 bracket values sit outside the scale, almost all used once. Keep the deliberate ones (optical nudges, one-off widths) and round the rest to a neighbouring step.
-
-Expected payoff: about +5 points once the count is under 20 on the report's 0-100 score.
-
-How to fix it, calmly and with respect for intent:
-- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
-- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.
-- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.
-- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.
-
-Work through the files named in the finding. When you are done, re-run the scan to verify the payoff:
-
-npx roast-my-design-system@latest</div></div>
-      </div></div></section>
-
-<section class="glass pad agent">
+<section id="s-1" class="glass pad agent">
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
     <p class="sub">Your agent reads <span class="mono">AGENTS.md</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">AGENTS.md · generic (AGENTS.md standard)</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-no">—</b> · Codex <b class="cov-yes">✓</b> · Cursor <b class="cov-yes">✓</b> · <span class="dim">Claude Code skips AGENTS.md: add a CLAUDE.md containing the single line <span class="mono">@AGENTS.md</span> and it reads the same rules</span></p></section>
 
-<section class="glass pad gift-sec">
+<section id="s-2" class="glass pad gift-sec">
     <div class="sec-head"><h2>You sat through the roast</h2><p class="sub">so you get a present.</p></div>
     <div class="gift-stage">
       <button class="gift" id="gift" aria-label="Unwrap your generated agent rules file">
@@ -499,7 +501,7 @@ npx roast-my-design-system@latest</div></div>
       <div class="gift-pop" id="gift-pop" aria-hidden="true"></div>
       <div class="gift-reveal" id="gift-reveal" hidden>
         <div class="gift-head"><span class="mono strong">design-system-rules.md</span>
-          <span class="gift-count">19 rules generated from this scan, every one with a receipt</span></div>
+          <span class="gift-count">20 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
 &lt;!-- Generated by roast-my-design-system from a scan of fresh on 2026-09-12.
@@ -553,6 +555,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Edit the component you own in `components/ui`. Never build a second one beside it under another name. A wrapper that composes shadcn components is fine; a second implementation is not.
 - Merge classes with `cn()`. Never concatenate strings and never write a ternary inside a className string.
 - Add a component with `npx shadcn@latest add &lt;name&gt;`, then edit it. To see what changed upstream, run `npx shadcn@latest add &lt;name&gt; --diff`.
+- Bracket values in `components/ui` are shadcn's, not a pattern to copy. The installed components use a few values Tailwind's scale does not have (`[2.5rem]`, `[-2.5rem]`, `[2px]`), written by shadcn's authors for those components only. In your own code, do not write a bracket value: use a step from the scale, or a variable from the theme file. If a value you need is missing, add it to the theme file once and use it by name.
 - Radius comes from the `--radius` variable and the scale derived from it; never a bracket value. Never change `--spacing`: it resizes every gap in the app.
 - Small habits shadcn expects: `gap-*` not `space-x/y-*`; `size-4` not `w-4 h-4`; `truncate` for one-line clipping; no `z-index` on Dialog, Sheet, Popover or Tooltip, they stack themselves; icons from the project's own icon library only.
 
@@ -562,7 +565,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 7.3.3. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 7.4.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -573,7 +576,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
   </section>
 
-<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> 303 components are never imported anywhere. An agent searching for a Button finds the unused ones next to the real one with nothing to tell them apart, so an old dead end becomes today's example.</span></div>
+
 
 <div class="stats"><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
@@ -607,10 +610,10 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   
   <div class="num">303</div><div class="lab">components never imported</div>
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">16 · messier than 100% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">catalogue stock: installed by the shadcn CLI, not used yet</span><span class="rval"> </span></div></div>
-</div><div class="stat glass st-warn">
-  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>
-  <div class="num">24</div><div class="lab">arbitrary bracket values</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">166 · cleaner than 94% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">0</div><div class="lab">arbitrary bracket values</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg shadcn repo</span><span class="rval">131 · cleaner than 100% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-eq">=</span></span></div></div>
 </div><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">off-theme colours per 100 files</div>
@@ -657,7 +660,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="receipts"><div class="eyebrow">the theme file, variable by variable</div><p class="sub">32 variables for light, 31 for dark in app/globals.css.</p></div><div class="receipts"><div class="eyebrow">0 colours from outside the theme in 0 of 3 own files · 0 per 100 files</div><p class="sub">Your own code takes every colour from the theme file. This is what shadcn is designed for.</p></div><div class="whywrap"><button type="button" class="whybtn" data-why="paintTin"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-paintTin"><p>shadcn gives every project a theme file. It holds one CSS variable per job: background, foreground, muted text, border, ring, and about 30 more. Each has a light value and a dark value. Components use them through classes like bg-background and text-muted-foreground.</p><p>A palette class such as text-gray-500 or bg-blue-100 skips that file. It works on the day. It stops working at the first theme change: the variables move, the palette colour stays, and the page shows 2 designs at once. Dark mode is where it shows first. A variable carries both values; a palette class carries one, so someone adds dark:bg-gray-900 next to it, and now there are 2 places to keep in step. An AI agent reading that file copies the pair.</p><p>The ideal is 25 per 100 files. That is where the tidiest third of 15 shadcn repos in the benchmark sit; the median is 62. shadcn's own rules for agents say it in 1 line: use semantic colours, never bg-blue-500.</p></div></div><div class="receipts"><div class="eyebrow">0 shadcn components restyled through className · 0 per 100 files</div><p class="sub">No shadcn component is given a colour or a font through className. Variants are doing their job.</p></div><div class="whywrap"><button type="button" class="whybtn" data-why="doorOverrides"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-doorOverrides"><p>A shadcn component ships with variants: outline, ghost, destructive, small, large. The variant decides how the component looks, once, in the component file you own. Passing bg-blue-100 or font-bold through className decides it again at the call site, where the component can not see it.</p><p>Do this in 5 places and 1 button has 6 designs. The next person can not tell which one is intended, and an agent copies whichever it finds first. shadcn's guidance gives 3 routes: use a variant that exists, add a variant to the component, or add a variable to the theme file. className is for layout: width, margin, position.</p><p>The ideal is 15 per 100 files, the tidiest third of the same 15 repos; the median is 22.</p></div></div>
   </section>
 
-<section class="glass pad">
+<section id="s-4" class="glass pad">
     <div class="sec-head"><h2>4 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
     <div class="bars">
     <div class="bar-row"><span class="bar-label">·2</span>
@@ -714,11 +717,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="bar-row"><span class="bar-label">·5</span>
     <div class="bar-track"><div class="bar" style="width:2%"></div></div>
     <span class="bar-count">1</span></div></div>
-    <div class="whywrap"><button type="button" class="whybtn" data-why="spacing"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-spacing"><p>Nobody starts a design system with 50 spacing values. A deadline, a last-minute change, and someone nudged a layout until it sat right, and 13px honestly sat better than 12px. The next person can not tell a deliberate exception from a new value, or honestly never noticed, and copies it either way.</p><p>That is how layout rhythm starts drifting. Two lists almost align, two cards almost match, and the page stops looking right. An agent copies nudge after nudge, because to an agent 13px looks as intentional as 12px. And once one page carries enough exceptions, the agent treats them as canonical, and the poison spreads to the other pages.</p><p>The 12 is a budget for values outside the scale, and it is a generous one: the 10 reputable design systems we scanned hold a median of 6. The average product repo carries 34, which is a second, unwritten scale.</p></div></div>
-    <div class="receipts"><div class="eyebrow">24 bracket values written outside the scale</div>
-    <div class="chips-row"><span class="vchip bad" title="components/ui/sheet.tsx">[2.5rem] ×4</span><span class="vchip bad" title="components/ui/sheet.tsx">[-2.5rem] ×4</span><span class="vchip bad" title="components/ui/chart.tsx">[2px] ×3</span><span class="vchip bad" title="components/ui/item.tsx">[3px] ×3</span><span class="vchip bad" title="components/ui/checkbox.tsx">[4px] ×2</span><span class="vchip bad" title="components/ui/bubble.tsx">[80%] ×1</span><span class="vchip bad" title="components/ui/calendar.tsx">[0.8rem] ×1</span><span class="vchip bad" title="components/ui/dropdown-menu.tsx">[96px] ×1</span><span class="vchip bad" title="components/ui/questionnaire.tsx">[0.625rem] ×1</span><span class="vchip bad" title="components/ui/switch.tsx">[18.4px] ×1</span><span class="vchip dim">+3 more</span></div>
-    <div class="whywrap"><button type="button" class="whybtn" data-why="arbitrary"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-arbitrary"><p>Brackets exist for a reason. Sometimes the scale really lacks a value, and one w-[137px] for a stubborn third-party embed is craft, done on purpose.</p><p>But a bracket is a value with no name. A search for the token will never find it, and a scale change leaves it untouched. An agent that sees brackets in the repo learns that the scale is optional. It can not tell which brackets were deliberate, so it feels free to add its own, and the escape hatch becomes the main door.</p><p>The 20 is a budget for real exceptions, and it is a generous one: 9 of the 10 reputable systems we scanned sit at 0, including systems built on Tailwind. The average product repo carries 70.</p></div></div></div></section>
-<section>
+    <div class="whywrap"><button type="button" class="whybtn" data-why="spacing"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-spacing"><p>Nobody starts a design system with 50 spacing values. A deadline, a last-minute change, and someone nudged a layout until it sat right, and 13px honestly sat better than 12px. The next person can not tell a deliberate exception from a new value, or honestly never noticed, and copies it either way.</p><p>That is how layout rhythm starts drifting. Two lists almost align, two cards almost match, and the page stops looking right. An agent copies nudge after nudge, because to an agent 13px looks as intentional as 12px. And once one page carries enough exceptions, the agent treats them as canonical, and the poison spreads to the other pages.</p><p>The 12 is a budget for values outside the scale, and it is a generous one: the 10 reputable design systems we scanned hold a median of 6. The average product repo carries 34, which is a second, unwritten scale.</p></div></div></section>
+<section id="s-5">
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
@@ -744,7 +744,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 
 </div>
-<section class="glass pad">
+<section id="s-6" class="glass pad">
     <div class="sec-head"><h2>The adoption map</h2><p class="sub">354 components defined · tile area is import count · the real system, drawn to scale</p></div>
     
     
@@ -798,11 +798,12 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 7.3.3</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">e7638a4495c0</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=7.3.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 7.4.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">e7638a4495c0</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=7.3.3"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>
+</main>
 <script>
 (function(){
   var gift=document.getElementById('gift'); if(!gift) return;

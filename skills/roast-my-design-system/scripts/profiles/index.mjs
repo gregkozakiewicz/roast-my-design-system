@@ -100,3 +100,41 @@ export function profileOf(h) {
   };
 }
 
+/**
+ * Installed code: folders the team did not write. The catalogue, kit blocks
+ * installed into own code, and third-party registries. Under the agent-safety
+ * definition (2026-09-13) installed code splits in two: what teaches a wrong
+ * lesson stays in the score, attributed (registry palette colours); what
+ * teaches a true lesson or none is kept out of the count and named at the top
+ * (shadcn's own bracket values, unused stock).
+ */
+export function installedDirs(P) {
+  const sc = P?.shadcn ?? {};
+  return [...(P?.uiDirs ?? []), ...(sc.registryDirs ?? []), ...(sc.blockFiles ?? [])];
+}
+const underAny = (file, dirs) => dirs.some((d) => file === d || file.startsWith(`${d}/`));
+
+/**
+ * Split bracket-value entries ({value, count, files:[{file,count}]}) into the
+ * team's own uses and installed uses. Own entries keep only own files with
+ * counts re-summed; installed is a flat count with its top values.
+ */
+export function splitArbitrary(entries, dirs) {
+  if (!dirs.length) return { own: entries, installed: { uses: 0, values: [] } };
+  const own = [];
+  const installedValues = new Map();
+  let installedUses = 0;
+  for (const e of entries) {
+    const ownFiles = (e.files ?? []).filter((f) => !underAny(f.file, dirs));
+    const instFiles = (e.files ?? []).filter((f) => underAny(f.file, dirs));
+    const instCount = instFiles.reduce((s, f) => s + f.count, 0);
+    if (instCount) { installedUses += instCount; installedValues.set(e.value, (installedValues.get(e.value) ?? 0) + instCount); }
+    // the file list under an entry is capped, so own is the remainder of the
+    // entry's total, never a sum of the files that happened to be listed
+    const ownCount = e.count - instCount;
+    if (ownCount > 0) own.push({ ...e, count: ownCount, files: ownFiles });
+  }
+  own.sort((a, b) => b.count - a.count);
+  const values = [...installedValues.entries()].sort((a, b) => b[1] - a[1]).map(([value, count]) => ({ value, count }));
+  return { own, installed: { uses: installedUses, values } };
+}

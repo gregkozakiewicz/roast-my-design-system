@@ -8,10 +8,12 @@
     "slice": {
       "kind": "shadcn",
       "repoCount": 16,
-      "builtAt": "2026-09-12T19:02:27.297Z"
+      "builtAt": "2026-09-12T19:42:38.843Z"
     }
   },
   "score": 82,
+  "ownCodeScore": 82,
+  "installedPoints": 0,
   "noSystemLikely": false,
   "verdict": "No agent rules file, so your AI agent has nothing to follow.",
   "role": "product",
@@ -35,7 +37,7 @@
     ],
     "registryFiles": 2,
     "registryPaletteColours": 3,
-    "ownFiles": 6
+    "ownFiles": 8
   },
   "componentsMeasured": true,
   "metrics": {
@@ -120,30 +122,36 @@
     {
       "metric": "paintTin",
       "label": "off-theme colours per 100 files",
-      "value": 383,
-      "display": "383",
+      "value": 325,
+      "display": "325",
       "health": "bad"
     },
     {
       "metric": "doorOverrides",
       "label": "components restyled from outside per 100 files",
-      "value": 50,
-      "display": "50",
+      "value": 38,
+      "display": "38",
       "health": "bad"
     }
   ],
   "moves": [
     {
-      "title": "Repaint the 23 colours from outside the theme",
+      "title": "Repaint the 26 colours from outside the theme",
       "sub": "text-red-600 appears 2 times, Panel.tsx alone carries 9. The theme file already has a variable for each (a grey is text-muted-foreground, a status colour is a Badge variant or a variable you add). Swap the class, not the value.",
       "delta": 9,
-      "prompt": "You are fixing one design-system finding in the shadcncustom repository, measured by roast-my-design-system.\n\nThe finding: Repaint the 23 colours from outside the theme\n\nThe detail: text-red-600 appears 2 times, Panel.tsx alone carries 9. The theme file already has a variable for each (a grey is text-muted-foreground, a status colour is a Badge variant or a variable you add). Swap the class, not the value.\n\nExpected payoff: about +9 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+      "prompt": "You are fixing one design-system finding in the shadcncustom repository, measured by roast-my-design-system.\n\nThe finding: Repaint the 26 colours from outside the theme\n\nThe detail: text-red-600 appears 2 times, Panel.tsx alone carries 9. The theme file already has a variable for each (a grey is text-muted-foreground, a status colour is a Badge variant or a variable you add). Swap the class, not the value.\n\nExpected payoff: about +9 points on the report's 0-100 score.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
     },
     {
       "title": "Write the agent rules file",
       "sub": "No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.",
       "delta": 0,
       "prompt": "You are fixing one design-system finding in the shadcncustom repository, measured by roast-my-design-system.\n\nThe finding: Write the agent rules file\n\nThe detail: No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    },
+    {
+      "title": "Delete the 2 theme variables nothing uses",
+      "sub": "--success, --brand-glow sit in src/styles/globals.css next to the real theme, and nothing in the repo reads them. An agent opening that file sees 2 colour systems and can not tell which one is dead. 4 lines to delete; the cheapest fix on this page.",
+      "delta": 0,
+      "prompt": "You are fixing one design-system finding in the shadcncustom repository, measured by roast-my-design-system.\n\nThe finding: Delete the 2 theme variables nothing uses\n\nThe detail: --success, --brand-glow sit in src/styles/globals.css next to the real theme, and nothing in the repo reads them. An agent opening that file sees 2 colour systems and can not tell which one is dead. 4 lines to delete; the cheapest fix on this page.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
     }
   ],
   "packages": []

@@ -31,8 +31,8 @@ import { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA } from '../lib/feedback.mjs';
 import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
-import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
-import { profileOf } from '../profiles/index.mjs';
+import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
+import { profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
 
 // The benchmark and every judgement made against it live in score.mjs; this
 // file only draws. The same numbers reach summary.json through scoreHarvest.
@@ -234,7 +234,7 @@ const typefaces = distinctTypefaces(fontFamilies);
 const { colorTokens, colorStrays, tokenLed, greyStrays } = M;
 
 // Arbitrary bracket values (p-[13px], text-[10px]) — scale erosion, counted.
-const arbitrary = h.tokens.tailwind?.arbitrary ?? [];
+let arbitrary = h.tokens.tailwind?.arbitrary ?? [];
 const arbitraryCount = M.arbitrary;
 
 // !important declarations: the cascade admitting defeat.
@@ -248,6 +248,10 @@ const nearPairs = nearColorPairs(colors);
 const collisions = h.tokens.tokenCollisions ?? [];
 
 const P = profileOf(h);
+// On a shadcn repo the bracket list is the team's own; installed brackets are
+// named in the side panel instead (see coreMetrics for the count).
+if (P.isShadcn) arbitrary = splitArbitrary(arbitrary, installedDirs(P)).own;
+const breakdown = scoreBreakdown(h, bench);
 const neverImported = neverImportedComponents(h.components, P.uiDir);
 
 // Measurability and kind, decided once in profiles/ (telekom/scale, 2026-09-01):
@@ -549,7 +553,9 @@ function collisionsTrap() {
   return trapBox(`--${esc(top.name)} is ${where(a)}, and ${where(b)}. One name, two colours, and nothing in the code says which is the real one. An agent reads whichever package it opened, so the brand depends on where it started.${rest}`);
 }
 function orphansTrap() {
-  if (!componentsMeasured || isLibrary) return '';
+  // Catalogue stock is protective, not a trap: an agent reaches for it
+  // instead of building its own version (Sahaj Jain, 2026-09-09).
+  if (!componentsMeasured || isLibrary || vendoredUi) return '';
   if (neverImported.length < 10) return '';
   return trapBox(`${neverImported.length} components are never imported anywhere. An agent searching for a Button finds the unused ones next to the real one with nothing to tell them apart, so an old dead end becomes today's example.`);
 }
@@ -975,9 +981,15 @@ function extraSectionsHtml() {
 // buttons hold, published in --summary so the MCP server's roast-fix prompt
 // hands out byte-identical text. One composer, two doors.
 let startMoves = [];
+let startProjection = null;
 
 function whereToStartSection() {
   const c = [];
+  if (P.isShadcn && (P.shadcn?.sheet?.customUnused ?? []).length) {
+    const dead = P.shadcn.sheet.customUnused;
+    c.push({ score: 40, metric: null, title: `Delete the ${dead.length} theme variable${dead.length === 1 ? '' : 's'} nothing uses`,
+      sub: `${dead.slice(0, 3).map((r) => `--${esc(r)}`).join(', ')}${dead.length > 3 ? ' and more' : ''} sit in ${esc(P.shadcn.sheet.file)} next to the real theme, and nothing in the repo reads them. An agent opening that file sees 2 colour systems and can not tell which one is dead. ${dead.length * 2} lines to delete; the cheapest fix on this page.` });
+  }
   if (agentFiles.length === 0) c.push({ score: 60, metric: null, title: 'Write the agent rules file',
     sub: `No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.` });
   if (componentsMeasured && hardDupes.length > 0) {
@@ -1100,6 +1112,7 @@ function whereToStartSection() {
   const applied = new Map();
   for (const item of top3) if (item.metric && item.after !== undefined && item.delta > 0) applied.set(item.metric, item.after);
   const after = projectedScore(applied);
+  startProjection = { count: top3.length, after };
   const words = ['One tweak', 'Two tweaks', 'Three tweaks'][top3.length - 1];
   const head = healthScore !== null && after > healthScore
     ? `${words} · <b class="proj">${healthScore} &rarr; ${after}</b>`
@@ -1265,9 +1278,7 @@ function shadcnReceipt() {
   ].filter(Boolean);
   const unmatched = (k?.fellBack ?? []).filter((f) => f === 'theme' || f === 'chartColor');
   const fell = unmatched.length ? ` · ${unmatched.length === 2 ? 'accent and chart colour' : unmatched[0] === 'theme' ? 'accent' : 'chart colour'} not matched to a named shadcn theme` : '';
-  const rp = P.shadcn?.registryPaint ?? null;
-  const regLine = rp ? `<div class="excl">Installed registries kept out of the own-code counts: ${esc(rp.dirs.map((d) => basename(d)).join(', '))} (${n(rp.files)} file${rp.files === 1 ? '' : 's'}${rp.tinUses ? `, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'} of their own` : ''}). Installed code, not written here, but your agent reads it like everything else and copies what it finds there.</div>` : '';
-  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${esc(P.evidence.join(' · '))}${facts.length ? ` · ${esc(facts.join(', '))}` : ''}${esc(fell)}</div>${regLine}`;
+  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${esc(P.evidence.join(' · '))}${facts.length ? ` · ${esc(facts.join(', '))}` : ''}${esc(fell)}</div>`;
 }
 
 // User exclusions are printed in the header, never hidden: a scoped scan must
@@ -1286,6 +1297,85 @@ function exclusionsLine() {
   return `<div class="excl">${parts.join(' · ')} · ${n(total)} files kept out of this scan</div>`;
 }
 
+
+// ---------- the side panel (fixed left column, 2026-09 template) ----------
+// Score, the definition it measures, the stack, how the repo was read, the
+// index of what rendered, and what is not the team's and not counted.
+function sidePanel() {
+  const date = esc((h.harvestedAt ?? '').slice(0, 10));
+  const def = 'How safely an AI agent can build on this repo without going off-system.';
+  const lift = startProjection && healthScore !== null && startProjection.after > healthScore
+    ? ` <b>${['One fix lifts', 'Two fixes lift', 'Three fixes lift'][startProjection.count - 1] ?? 'The fixes lift'} it to ${startProjection.after}.</b>` : '';
+  const rp = P.shadcn?.registryPaint ?? null;
+  const bd = breakdown.ownScore !== null && breakdown.installedPoints > 0 && rp
+    ? `<div class="bd">Of which <b>${breakdown.installedPoints} point${breakdown.installedPoints === 1 ? '' : 's'}</b> come from installed code you did not write: ${esc(rp.dirs.map((d) => basename(d)).join(', '))} (${n(rp.files)} file${rp.files === 1 ? '' : 's'}, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}). Your own code alone would score <b>${breakdown.ownScore}</b>. Kept in the score because your agent reads those files like everything else; left out of the fixes because they are not yours to edit.</div>` : '';
+  const scoreBlock = healthScore !== null
+    ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note</div>' : ''}<div class="def">${def}${lift}</div>${bd}</div>` : '';
+  const chips = `<div class="chips">${stack.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>`;
+  const facts = [
+    shadcnReceipt(),
+    exclusionsLine(),
+    commissionedBy ? `<div class="excl">Commissioned by <b>${esc(commissionedBy)}</b></div>` : '',
+  ].join('');
+  return `<aside class="side">
+  <div class="eyebrow">Design-system diagnosis</div>
+  <div class="repo"><span class="mono">${esc(repoName)}</span></div>
+  <div class="scanned">Scanned ${date} · ${n(h.files.code)} code files · ${h.tookMs}ms</div>
+  ${scoreBlock}
+  ${chips}
+  <div class="facts">${facts}</div>
+  <div class="eyebrow idx-head">Index</div>
+  <nav class="idx" id="idx"></nav>
+  ${exceptionsBlock()}
+  <div class="side-foot">roast-my-design-system ${VERSION}</div>
+</aside>`;
+}
+
+// What is not the team's, and how it is treated. Every exclusion is named
+// here with what it carries and the honest caveat: the agent reads it anyway.
+function exceptionsBlock() {
+  const lines = [];
+  if (P.isShadcn) {
+    const ai = P.shadcn?.arbitraryInstalled;
+    if (ai?.uses) lines.push(`${n(ai.uses)} bracket value${ai.uses === 1 ? '' : 's'} inside ${esc(P.uiDirs.map((d) => basename(d)).join(', '))} are shadcn's own (${ai.values.slice(0, 3).map((v) => esc(v.value)).join(', ')}) and are not counted. shadcn's docs allow brackets for one-off values, so your agent will treat them as normal; the rules file tells it otherwise for your own code.`);
+    if (vendoredUi && neverImported.length) lines.push(`${n(neverImported.length)} catalogue component${neverImported.length === 1 ? '' : 's'} not used yet: stock on the shelf, not scored.`);
+    const rp = P.shadcn?.registryPaint;
+    if (rp) lines.push(`Installed registr${rp.dirs.length === 1 ? 'y' : 'ies'} ${esc(rp.dirs.map((d) => basename(d)).join(', '))}: ${n(rp.files)} file${rp.files === 1 ? '' : 's'}${rp.tinUses ? `, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}` : ''}. Kept in the score, left out of the fixes. Your agent reads them like everything else.`);
+  } else if (isLibrary) {
+    lines.push('A library: unused components are internal-only, and downstream consumers are invisible from here.');
+  }
+  if (!lines.length) return '';
+  return `<div class="excs"><b>Not yours, and not counted</b>${lines.map((l) => `<p>${l}</p>`).join('')}</div>`;
+}
+
+// The index is built from what rendered: every section with a heading gets
+// a stable id, in page order, and the side panel lists them. Nothing here is
+// hand-maintained, so a section that did not render is never listed.
+function addIndex(page) {
+  // heading text is already HTML-escaped; strip tags and leading counts only
+  const short = (t) => t.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().replace(/^[\d,]+ /, '')
+    .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^You sat through the roast$/, 'Your present')
+    .replace(/^The shadcn theme and the 2 shadcn checks$/, 'shadcn theme and checks').replace(/, declared .*$/, '')
+    .replace(/^off-scale spacing values$/, 'Off-scale spacing').replace(/^inline style blocks?$/, 'Inline styles').replace(/^typefaces?$/, 'Typefaces');
+  const entries = [];
+  let i = 0;
+  const body = page.replace(/<section\b([^>]*)>([\s\S]*?)(?=<section\b|<footer>|<\/main>)/g, (m, attrs, inner) => {
+    const h2 = inner.match(/<h2>([\s\S]*?)<\/h2>/);
+    if (!h2) return m;
+    i += 1;
+    let id = (attrs.match(/\bid="([^"]+)"/) ?? [])[1];
+    let open = attrs;
+    if (!id) { id = `s-${i}`; open = ` id="${id}"${attrs}`; }
+    entries.push({ id, text: short(h2[1]) });
+    return `<section${open}>${inner}`;
+  });
+  const nav = entries.map((e, k) => `<a href="#${e.id}"><i>${String(k + 1).padStart(2, '0')}</i>${e.text}</a>`).join('');
+  return body.replace('<nav class="idx" id="idx"></nav>', `<nav class="idx" id="idx">${nav}</nav>`);
+}
+
+// Rendered first: the side panel quotes its projection.
+const whereToStartHtml = whereToStartSection();
+
 const html = `<!doctype html>
 <html lang="en" data-theme="${themeName}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1302,7 +1392,34 @@ const html = `<!doctype html>
   /* fixed gradient wash on its own layer: background-attachment:fixed +
      backdrop-filter makes Chromium skip repaints on scroll */
   body::before { content:''; position:fixed; inset:0; z-index:-1; background:var(--page-grad), var(--bg); }
-  .wrap { max-width:1120px; margin:0 auto; padding:48px 28px 72px; }
+  .wrap { zoom:0.9; }
+  /* two columns: a fixed side panel and the scrolling main column */
+  .side { position:fixed; left:0; top:0; bottom:0; width:300px; padding:22px 24px; overflow:auto; z-index:5;
+    border-right:1px solid var(--line); background:var(--card-solid, var(--bg)); }
+  .main { margin-left:300px; padding:22px 40px 60px; max-width:1080px; }
+  .side .repo { font:600 20px/1.25 var(--disp); letter-spacing:-.01em; margin:4px 0 4px; word-break:break-all; }
+  .side .repo .mono { font-size:17px; }
+  .side .scanned { font:500 11.5px/1.5 var(--sans); color:var(--dim); margin:0 0 16px; }
+  .side .score { text-align:left; margin:0 0 16px; }
+  .side .score .def { font:500 11.5px/1.5 var(--sans); color:var(--dim); margin-top:8px; }
+  .side .score .def b { color:var(--text); font-weight:700; }
+  .side .score .bd { font:500 11.5px/1.5 var(--sans); color:var(--dim); margin-top:8px; padding-top:8px; border-top:1px solid var(--line); }
+  .side .score .bd b { color:var(--text); }
+  .side .chips { margin:0 0 14px; gap:5px; }
+  .side .facts { font:500 11.5px/1.55 var(--sans); color:var(--dim); margin-bottom:16px; }
+  .side .facts .excl { margin-top:6px; font-size:11.5px; }
+  .side .facts b { color:var(--text); font-weight:600; }
+  .side .idx-head { margin-bottom:4px; }
+  .side .idx a { display:block; font:500 13px/1.3 var(--sans); color:var(--dim); text-decoration:none; padding:6px 0 6px 12px; border-left:2px solid var(--line); }
+  .side .idx a:hover, .side .idx a.on { color:var(--accent); border-left-color:var(--accent); }
+  .side .idx a i { font-style:normal; font-size:10.5px; margin-right:8px; opacity:.6; }
+  .side .excs { margin-top:16px; padding-top:12px; border-top:1px solid var(--line); font:500 11.5px/1.55 var(--sans); color:var(--dim); }
+  .side .excs b { color:var(--text); display:block; margin-bottom:4px; }
+  .side .excs p { margin:0 0 6px; }
+  .side .side-foot { margin-top:18px; font:500 11px/1.5 var(--sans); color:var(--dim2, var(--dim)); }
+  .main > .verdict-card { margin-top:0; }
+  @media (max-width: 900px) { .side { position:static; width:auto; border-right:0; border-bottom:1px solid var(--line); } .main { margin-left:0; padding:20px; } }
+  @media print { .side { position:static; width:auto; border-right:0; } .main { margin-left:0; } .wrap { zoom:1; } }
 
   .glass { background:var(--card); backdrop-filter:blur(24px) saturate(140%); -webkit-backdrop-filter:blur(24px) saturate(140%);
     border:1px solid var(--line); border-radius:16px;
@@ -1344,8 +1461,8 @@ const html = `<!doctype html>
 
   .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
   .chip { border:1px solid var(--line); background:var(--card); border-radius:99px;
-    padding:4px 12px; font:500 11.5px/1.5 var(--sans); color:var(--text); }
-  .chip-agent { background:var(--text); color:var(--bg); border-color:var(--text); font-weight:600; }
+    padding:3px 8px; font:500 10.5px/1.5 var(--sans); color:var(--text); }
+  .chip-agent { font-weight:600; }
   .coverage { margin-top:12px; }
   .cov-yes { color:var(--ok); font-weight:700; }
   .cov-no { color:var(--coral); font-weight:700; }
@@ -1681,32 +1798,20 @@ const html = `<!doctype html>
 </button>
 <script>try{var t=localStorage.getItem('roast-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <div class="wrap">
-
-<header>
-  <div class="hero">
-    <div>
-      <div class="kicker"><span class="dot"></span>Scan complete · ${h.tookMs}ms · ${n(h.files.code)} code files</div>
-      <h1>Design System Diagnosis</h1>
-      <div class="meta"><span class="mono">${esc(repoName)}</span> · scanned ${esc((h.harvestedAt ?? '').slice(0, 10))}${commissionedBy ? ` · commissioned by ${esc(commissionedBy)}` : ''}</div>
-    </div>
-    ${healthScore !== null ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note below</div>' : ''}</div>` : ''}
-  </div>
-  <div class="chips">${stack.map((s) => `<span class="chip">${esc(s)}</span>`).join('')}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>
-  ${shadcnReceipt()}
-  ${exclusionsLine()}
+${sidePanel()}
+<main class="main">
   ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output).</span></div>` : ''}
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     ${eyebrow('Summary')}
     <div class="verdict">${esc(verdict)}</div>
   </div>
-</header>
 
 ${notesSection()}
 
 ${extraSectionsHtml()}
 
-${whereToStartSection()}
+${whereToStartHtml}
 
 ${agentSection()}
 
@@ -1737,6 +1842,7 @@ ${componentsSection()}
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>
+</main>
 <script>
 (function(){
   var gift=document.getElementById('gift'); if(!gift) return;
@@ -1831,7 +1937,7 @@ ${componentsSection()}
 </script>
 </div></body></html>`;
 
-writeFileSync(outPath, html);
+writeFileSync(outPath, addIndex(html));
 
 // Machine-readable summary for wrappers (the npx CLI reads this instead of
 // parsing the HTML): --summary <path> writes score, verdict and per-tile health.
@@ -1849,6 +1955,7 @@ if (summaryPath) {
     ...(extraSections.length ? { sectionsEmbedded: extraSections.map((s) => s.title) } : {}),
     ...(h.exclusions ? { exclusions: h.exclusions } : {}),
     score: healthScore,
+    ...(breakdown.ownScore !== null ? { ownCodeScore: breakdown.ownScore, installedPoints: breakdown.installedPoints } : {}),
     noSystemLikely,
     verdict,
     role: P.role,

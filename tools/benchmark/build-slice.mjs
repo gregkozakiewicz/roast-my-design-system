@@ -23,7 +23,7 @@ import { harvestComponents } from '../../skills/roast-my-design-system/scripts/h
 import { harvestTokens } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
 import { findDuplicates } from '../../skills/roast-my-design-system/scripts/harvest/duplicates.mjs';
 import { countPaint } from '../../skills/roast-my-design-system/scripts/harvest/paint.mjs';
-import { decideProfile, profileOf } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
+import { decideProfile, profileOf, installedDirs, splitArbitrary } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
 import { distinctTypefaces } from '../../skills/roast-my-design-system/scripts/lib/typefaces.mjs';
 import { nearColorPairs } from '../../skills/roast-my-design-system/scripts/lib/nearpairs.mjs';
 import { neverImportedComponents } from '../../skills/roast-my-design-system/scripts/lib/neverimported.mjs';
@@ -59,10 +59,12 @@ for (const full of wanted) {
     const dupes = findDuplicates(components, profile.uiDir, root);
     const reusable = components.filter((c) => !c.isPage);
     // the tiles only this kind measures, counted as the harvest counts them
-    const installed = [...P.uiDirs, ...(profile.shadcn?.registryDirs ?? [])];
-    const doorFiles = new Set([...installed.flatMap((d) => files.code.filter((f) => f.startsWith(`${d}/`))), ...(profile.shadcn?.blockFiles ?? [])]);
+    const allInstalled = installedDirs(P);
+    const doorFiles = new Set(allInstalled.flatMap((d) => files.code.filter((f) => f === d || f.startsWith(`${d}/`))));
     const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
-    const paint = countPaint(root, files.code, { uiDirs: [...installed, ...(profile.shadcn?.blockFiles ?? [])], kitNames });
+    // as the harvest counts: registries in, catalogue and blocks out
+    const paint = countPaint(root, files.code, { uiDirs: [...P.uiDirs, ...(profile.shadcn?.blockFiles ?? [])], kitNames });
+    const ownArbitrary = splitArbitrary(tokens.tailwind.arbitrary ?? [], allInstalled).own;
     rows.push({
       repo: full,
       confidence: P.confidence,
@@ -81,7 +83,7 @@ for (const full of wanted) {
         shadows: tokens.shadows.length,
         exactDuplicates: dupes.exactDuplicates.length,
         inlineStyles: tokens.inlineStyles.count,
-        arbitrary: (tokens.tailwind.arbitrary ?? []).reduce((sum, a) => sum + a.count, 0),
+        arbitrary: ownArbitrary.reduce((sum, a) => sum + a.count, 0),
         nearPairs: nearColorPairs(tokens.colors).length,
         important: tokens.important?.count ?? 0,
         neverImported: neverImportedComponents(components, profile.uiDir).length,

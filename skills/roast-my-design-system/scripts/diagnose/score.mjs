@@ -26,7 +26,7 @@ import { isGrey } from '../lib/color.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { profileOf } from '../profiles/index.mjs';
+import { profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
 
 export { SCHEMA_VERSION };
 
@@ -124,7 +124,14 @@ export const TILES = [
  * The numbers every judgement rests on, read once from a harvest. Plain
  * integers and flags; the same formulas the per-package pass uses.
  */
-export function coreMetrics(h) {
+export function coreMetrics(h, opts = {}) {
+  const P = profileOf(h);
+  // On a shadcn repo the bracket count is the team's own: brackets inside the
+  // catalogue, kit blocks and registries are installed choices, not drift.
+  const arbitraryEntries = P.isShadcn ? splitArbitrary(h.tokens?.tailwind?.arbitrary ?? [], installedDirs(P)).own : (h.tokens?.tailwind?.arbitrary ?? []);
+  // ownCode: the breakdown under the score. Same metrics, paint counted on
+  // own code only, so the difference is what installed registries cost.
+  const paint = opts.ownCode ? (P.shadcn?.paintOwn ?? P.shadcn?.paint) : P.shadcn?.paint;
   const colors = h.tokens?.colors ?? [];
   const greys = colors.filter((c) => isGrey(c.value));
   const colorTokens = colors.filter((c) => c.isToken).length;
@@ -151,7 +158,7 @@ export function coreMetrics(h) {
     nearPairs: nearColorPairs(colors).length,
     important: h.tokens?.important?.count ?? 0,
     neverImported: neverImportedComponents(h.components, profileOf(h).uiDir).length,
-    arbitrary: (h.tokens?.tailwind?.arbitrary ?? []).reduce((sum, a) => sum + a.count, 0),
+    arbitrary: arbitraryEntries.reduce((sum, a) => sum + a.count, 0),
     // Measurability and kind, decided once in profiles/: an unreadable stack
     // takes no score credit; a library's orphans are shown, not judged; a
     // vendored shadcn catalogue is stock on a shelf, not abandonment.
@@ -163,9 +170,24 @@ export function coreMetrics(h) {
     // utility-class mode (components.json cssVariables: false): the palette IS
     // the theme by design, so a palette class is not paint from a tin
     utilityPalette: profileOf(h).designSystem?.cssVariables === false,
-    paintTin: profileOf(h).shadcn?.paint?.tin?.per100 ?? 0,
-    doorOverrides: profileOf(h).shadcn?.paint?.doors?.per100 ?? 0,
+    paintTin: paint?.tin?.per100 ?? 0,
+    doorOverrides: paint?.doors?.per100 ?? 0,
   };
+}
+
+/**
+ * The score as the agent meets the repo, and the score own code alone would
+ * earn. The difference is what installed code the team did not write costs.
+ * ownScore is null when nothing installed carries any weight (no registries).
+ */
+export function scoreBreakdown(h, bench = loadBenchmark()) {
+  const b = benchHelpers(bench, profileOf(h).kind);
+  const healthOf = makeHealthOf(b);
+  const all = scoreOfTiles(tileHealths(coreMetrics(h), healthOf));
+  const P = profileOf(h);
+  if (!P.isShadcn || !(P.shadcn?.registryDirs ?? []).length) return { score: all, ownScore: null, installedPoints: 0 };
+  const own = scoreOfTiles(tileHealths(coreMetrics(h, { ownCode: true }), healthOf));
+  return { score: all, ownScore: own, installedPoints: own === null || all === null ? 0 : own - all };
 }
 
 /**

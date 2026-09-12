@@ -125,7 +125,7 @@ function rowsUnder(css, selector) {
 const norm = (v) => (v ?? '').replace(/\s+/g, ' ').trim();
 
 /** Read the sheet: the CSS file the config names. */
-function readSheet(root, wsRoot, cssPath) {
+function readSheet(root, wsRoot, cssPath, files = null) {
   if (!cssPath) return null;
   const file = [join(wsRoot, cssPath), join(wsRoot, 'src', cssPath)].find((p) => existsSync(p));
   if (!file) return { file: cssPath, found: false };
@@ -146,8 +146,23 @@ function readSheet(root, wsRoot, cssPath) {
   const customUnregistered = themeVars.size
     ? custom.filter((r) => !/^(font|shadow|tracking|spacing|radius|ease|breakpoint|typeset)/.test(r) && !themeVars.has(`color-${r}`))
     : [];
+  // A custom row nothing references anywhere (no var(--x), no class built on
+  // it) is a leftover: the Next.js starter's --foreground-rgb next to the real
+  // --foreground. An agent can not tell which colour system is dead.
+  let customUnused = [];
+  if (files && custom.length) {
+    const rel = file.slice(root.length + 1);
+    const others = [...(files.code ?? []), ...(files.styles ?? [])].filter((f) => f !== rel).slice(0, 4000);
+    const pending = new Set(custom.filter((r) => !/^(font|shadow|tracking|spacing|radius|ease|breakpoint|typeset)/.test(r)));
+    for (const f of others) {
+      if (!pending.size) break;
+      const src = read(join(root, f));
+      for (const r of [...pending]) if (src.includes(`--${r}`) || new RegExp(`[-:]${r}(?![\\w-])`).test(src)) pending.delete(r);
+    }
+    customUnused = [...pending];
+  }
   return {
-    file: file.slice(root.length + 1), found: true, hslEra,
+    file: file.slice(root.length + 1), found: true, hslEra, customUnused,
     lightRows: rows.length, darkRows: dark.size, shadcnPresent, shadcnMissing: SHADCN_ROWS.filter((r) => !light.has(r)),
     known: known.length, custom, missingDark, customMissingDark, customUnregistered, tweakcnPresent,
     spacing, spacingChanged: spacing !== null && norm(spacing) !== FACTORY_SPACING,
@@ -219,7 +234,7 @@ export default {
       }
       const pkg = readJSON(join(wsRoot, 'package.json')) ?? readJSON(join(root, 'package.json')) ?? {};
       const deps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
-      const sheet = readSheet(root, wsRoot, cfg.tailwind?.css);
+      const sheet = readSheet(root, wsRoot, cfg.tailwind?.css, files);
       installs.push({ config: file, uiDir: uiAbs, catalogueNames, kit: readKit(cfg, sheet, deps), sheet });
     }
     const swept = catalogueSweep(root, files);

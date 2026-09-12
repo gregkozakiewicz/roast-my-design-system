@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.3.2" width="72" alt="roast-my-design-system">
+<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.4.0" width="72" alt="roast-my-design-system">
 
 # roast-my-design-system
 
@@ -20,7 +20,7 @@ A free CLI tool (and Claude Code skill) that roasts your repo's design system wi
 
 Run it on your codebase and get, in about a second:
 
-- **A health score you can defend in a meeting.** 0 to 100, deterministic, and benchmarked against 3 yardsticks: Ideal Design System norms, 34 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
+- **A health score you can defend in a meeting.** It measures how safely an AI agent can build new UI on this repo without going off-system. Everything else on the report is receipts for humans. 0 to 100, deterministic, and benchmarked against 3 yardsticks: Ideal Design System norms, 34 scanned public repos and 10 reputable design systems (Primer, Polaris, Carbon, shadcn/ui…).
 - **Per-package scores for monorepos.** One blended number hides which package is the problem: `packages/ui` scores 80 while `apps/web` scores 40, and now you can see it.
 - **Reads React and web components alike.** Stencil, Lit and custom elements are detected by tag registration and counted by kebab tag. Libraries get composition maps, not adoption accusations. Earned token namespaces are named in the header. Anything the scan can not read is declared "not measured" instead of scored.
 - **The receipts behind it.** Every colour and its near-identical twin. Every spacing value, typeface, duplicated or never-imported component, inline style and !important. All with real file paths, in one self-contained HTML report you can open, Slack or email.
@@ -77,11 +77,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: health score, the line saying how the repo was read as a shadcn install, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.3.2)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.4.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.3.2)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.4.0)
 
 ## What makes the numbers trustworthy
 

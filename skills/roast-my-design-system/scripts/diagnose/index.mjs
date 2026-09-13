@@ -608,7 +608,7 @@ function sheetSection() {
     if (sheet.shadcnMissing?.length) bits.push(`${sheet.shadcnMissing.length} of the ${SHADCN_ROW_COUNT} current shadcn variables not defined (${sheet.shadcnMissing.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${sheet.shadcnMissing.length > 4 ? '…' : ''})${sheet.hslEra ? ', normal for an install from before the chart and sidebar rows existed' : ''}`);
     if (sheet.missingDark?.length) bits.push(`${sheet.missingDark.length} variable${sheet.missingDark.length === 1 ? '' : 's'} with no dark value (${sheet.missingDark.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')})`);
     if (sheet.custom?.length) bits.push(`${sheet.custom.length} custom variable${sheet.custom.length === 1 ? '' : 's'} of your own (${sheet.custom.slice(0, 5).map((r) => `--${esc(r)}`).join(', ')}${sheet.custom.length > 5 ? '…' : ''})${sheet.customMissingDark?.length ? `, ${sheet.customMissingDark.length} of them light only` : ''}${sheet.customUnregistered?.length ? `, ${sheet.customUnregistered.length} never mapped in @theme inline` : ''}`);
-    if (sheet.tweakcnPresent >= 10) bits.push('tweakcn variables present: shadows and letter-spacing are themed');
+    if (sheet.tweakcnPresent >= 10) bits.push(`a tweakcn-style theme: ${sheet.tweakcnPresent} of the rows tweakcn adds to every theme it exports are here (shadows, letter-spacing, spacing), so the theme came from a theme editor or copied its shape, and updates will come from there too`);
     if (sheet.spacingChanged) bits.push(`<b>--spacing is ${esc(sheet.spacing)}</b>, not the default 0.25rem: this resizes every gap in the app at once, which shadcn\'s own changelog says never to do`);
     parts.push(`<div class="receipts">${eyebrow('the theme file, variable by variable')}<p class="sub">${bits.join(' · ')}.</p></div>`);
   } else if (sheet) {
@@ -1277,7 +1277,7 @@ function agentSection() {
 // quiet unrecognised chip, because not knowing IS a finding here.
 const ns = h.tokens.namespaces ?? null;
 const dsChip =
-  ds.kind === 'shadcn' ? `shadcn/ui${ds.cssVariables === false ? ' (utility classes, no CSS variables)' : ''}${P.shadcn?.kit?.style ? ` · ${P.shadcn.kit.style}` : ''}`
+  ds.kind === 'shadcn' ? `shadcn/ui${ds.cssVariables === false ? ' (utility classes, no CSS variables)' : ''}${P.shadcn?.kit?.style ? ` · ${P.shadcn.kit.style}` : ''}${(P.shadcn?.sheet?.tweakcnPresent ?? 0) >= 10 ? ' · tweakcn-style theme' : ''}`
   : ds.kind === 'library' ? ds.name
   : ns ? `custom design system (--${ns.primary}-*${ns.partner ? ` + --${ns.partner}-*` : ''})`
   // A tokenFile alone is a technicality (Lion's is one drawer style file);

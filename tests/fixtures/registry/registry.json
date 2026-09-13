@@ -1,0 +1,129 @@
+{
+ "$schema": "https://ui.shadcn.com/schema/registry.json",
+ "name": "tiny",
+ "homepage": "https://example.test",
+ "items": [
+  {
+   "name": "badge",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/radix/ui/badge.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "card",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/radix/ui/card.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "kbd",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/radix/ui/kbd.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "pill",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/radix/ui/pill.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "tag",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/radix/ui/tag.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "badge",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/base/ui/badge.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "card",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/base/ui/card.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "kbd",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/base/ui/kbd.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "pill",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/base/ui/pill.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "tag",
+   "type": "registry:ui",
+   "files": [
+    {
+     "path": "registry/base/ui/tag.tsx",
+     "type": "registry:ui"
+    }
+   ]
+  },
+  {
+   "name": "badge-demo",
+   "type": "registry:example",
+   "files": [
+    {
+     "path": "registry/example/badge-demo.tsx",
+     "type": "registry:example"
+    }
+   ]
+  },
+  {
+   "name": "midnight",
+   "type": "registry:style",
+   "cssVars": {
+    "light": {
+     "primary": "oklch(0.2 0 0)"
+    },
+    "dark": {
+     "primary": "oklch(0.9 0 0)"
+    }
+   }
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, basename } from 'node:path';
 /**
  * Profiles — what kind of repo is this, decided once and read everywhere.
  *
@@ -22,6 +22,7 @@ import { join } from 'node:path';
  * fixture's expected output is byte-identical before and after.
  */
 import shadcn from './shadcn.mjs';
+import { readRegistry, publishesLine, variantsFromDirs } from './registry.mjs';
 import library from './library.mjs';
 import product from './product.mjs';
 
@@ -60,6 +61,23 @@ export function decideProfile(profile, components, files, root = null) {
   profile.kind = picked.kind;
   profile.kindConfidence = decision.confidence;
   profile.kindEvidence = decision.evidence;
+  // A shadcn repo that PUBLISHES a registry is a registry: the fourth kind.
+  // Every count still reads the shadcn facts (release (a): zero score change);
+  // the kind, the receipt and the header line say what it is.
+  if (picked === shadcn && root) {
+    const reg = readRegistry(root, files);
+    if (reg) {
+      if (!reg.variants.length) reg.variants = variantsFromDirs(reg, profile.uiDirs, files);
+      delete reg.itemNames;
+      profile.kind = 'registry';
+      profile.registry = reg;
+      profile.kindEvidence = [
+        reg.builtFrom ? `registry built from ${reg.items} packages by ${reg.source}` : `${reg.source} publishes ${publishesLine(reg)}`,
+        ...(reg.variants.length ? [`the same components kept in ${reg.variants.length} variants (${reg.variants.map((d) => basename(d)).join(', ')})`] : []),
+        ...decision.evidence,
+      ];
+    }
+  }
 
   // Measurability. The gate fires on the situation, never a list of known
   // frameworks: a repo with real code volume where the detector found almost
@@ -90,7 +108,10 @@ export function profileOf(h) {
     confidence: p.kindConfidence ?? null,
     evidence: p.kindEvidence ?? [],
     isLibrary: role === 'library',
-    isShadcn: kind === 'shadcn',
+    // a registry is read with the shadcn facts, plus what it publishes
+    isShadcn: kind === 'shadcn' || kind === 'registry',
+    isRegistry: kind === 'registry',
+    registry: p.registry ?? null,
     shadcn: p.shadcn ?? null,
     uiDirs: p.uiDirs ?? (p.uiDir ? [p.uiDir] : []),
     // A vendored shadcn catalogue is stock on a shelf, not abandonment.

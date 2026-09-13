@@ -33,6 +33,7 @@ import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
 import { ownSpacing, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
+import { publishesLine } from '../profiles/registry.mjs';
 
 // The benchmark and every judgement made against it live in score.mjs; this
 // file only draws. The same numbers reach summary.json through scoreHarvest.
@@ -1317,6 +1318,12 @@ function shadcnReceipt() {
     const pages = comps.filter((c) => c.isPage && f.ownFiles.includes(c.file)).length;
     return `<div class="excl fresh">It is a fresh shadcn install${k?.style ? ` (style ${esc(k.style)}${k.baseColor ? `, base colour ${esc(k.baseColor)}` : ''}${k.tailwind ? `, Tailwind ${esc(k.tailwind)}` : ''})` : ''}. Nothing of your own yet: ${n(doors)} component${doors === 1 ? '' : 's'} installed, the theme file untouched, ${pages === 1 ? 'one demo page' : `${pages} pages`}. <b>The score is the kit's, not yours.</b> Run this again once you have built a few screens.</div><div class="excl">Evidence: ${receipt}</div>`;
   }
+  if (P.isRegistry && P.registry) {
+    const r = P.registry;
+    const what = r.builtFrom ? `publishes ${r.items} component${r.items === 1 ? '' : 's'}, built from its packages folder` : `publishes ${esc(publishesLine(r))}`;
+    const pages = comps.filter((c) => c.isPage).length;
+    return `<div class="excl fresh">Read as a shadcn registry: ${what}${r.variants.length ? `, the same components kept in ${r.variants.length} variants` : ''}. ${pages ? ` Its own site: ${n(pages)} page${pages === 1 ? '' : 's'}.` : ''} Scored as a shadcn install for now; the registry rules come next.</div><div class="excl">Evidence: ${receipt}</div>`;
+  }
   return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${receipt}</div>`;
 }
 
@@ -2027,6 +2034,7 @@ if (summaryPath) {
     verdict,
     role: P.role,
     kind: P.kind,
+    ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants } } : {}),
     ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true } } : {}),
     componentsMeasured,
     metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>

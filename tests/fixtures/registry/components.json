@@ -1,0 +1,1 @@
+{ "$schema": "https://ui.shadcn.com/schema.json", "style": "base-nova", "tailwind": { "css": "app/globals.css", "baseColor": "neutral", "cssVariables": true }, "aliases": { "components": "@/components", "utils": "@/lib/utils", "ui": "@/components/ui" } }

@@ -45,7 +45,8 @@ export function loadBenchmark() {
  * ideals and the reputable-systems line are the same for every kind.
  */
 export function benchHelpers(bench, kind = 'product') {
-  const slice = bench?.slices?.[kind] ?? null;
+  // registries are compared with the shadcn repos, labelled as such (Greg, 2026-09-13)
+  const slice = bench?.slices?.[kind === 'registry' ? 'shadcn' : kind] ?? null;
   if (slice?.stats) bench = { ...bench, stats: { ...(bench?.stats ?? {}), ...slice.stats } };
   const sliceInfo = slice ? { kind, repoCount: slice.repoCount, builtAt: slice.builtAt } : null;
   // where does this value sit among the scanned fleet? ("more colours than 90%")
@@ -105,6 +106,8 @@ export const PROFILE_TILES = {
     ['doorOverrides', 'components recoloured from outside per 100 files'],
   ],
 };
+// a registry measures what a shadcn repo measures (release (a), 2026-09-13)
+PROFILE_TILES.registry = PROFILE_TILES.shadcn;
 export const tilesFor = (kind) => [...TILES, ...(PROFILE_TILES[kind] ?? [])];
 
 /** The tiles, in report order: metric key, the label the report prints. */

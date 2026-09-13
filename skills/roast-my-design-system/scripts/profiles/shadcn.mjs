@@ -305,7 +305,7 @@ export default {
     if (kit?.style) evidence.push(`style ${kit.style}${kit.baseColor ? `, base colour ${kit.baseColor}` : ''}${kit.tailwind ? `, Tailwind ${kit.tailwind}` : ''}`);
     // ten or more of the rows tweakcn adds to every theme it exports: a
     // fingerprint of a theme editor, not a signature, so "tweakcn-style"
-    if ((sheet?.tweakcnPresent ?? 0) >= 10) evidence.push(`tweakcn-style theme (${sheet.tweakcnPresent} of its rows present)`);
+    if ((sheet?.tweakcnPresent ?? 0) >= 10) evidence.push(`tweakcn theme (${sheet.tweakcnPresent} of its rows present)`);
 
     // 4. write the facts every consumer reads
     profile.uiDirs = installs.map((i) => i.uiDir).filter(Boolean);

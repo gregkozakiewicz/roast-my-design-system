@@ -286,7 +286,12 @@ const offenders = h.tokens.offenders ?? [];
 const candidates = [];
 const effColors = tokenLed ? colorStrays : colors.length;
 const effGreys = tokenLed ? greyStrays : greys.length;
-if (typefaces.length > 3) candidates.push({ ratio: typefaces.length / 3, text: `${typefaces.length} typefaces. Most products use 2 or 3` });
+// Every typeface declared in one file is a picker (a theme editor's font
+// list, shadcn's docs site): one choice offered, one in use at a time.
+const fontFiles = new Set(fontFamilies.flatMap((f) => (f.files ?? []).map((x) => x.file)));
+const fontPicker = typefaces.length > 3 && fontFiles.size === 1 ? [...fontFiles][0] : null;
+if (fontPicker) candidates.push({ ratio: 1.05, text: `${typefaces.length} typefaces offered by a picker in one file (${basename(fontPicker)}), one in use at a time` });
+else if (typefaces.length > 3) candidates.push({ ratio: typefaces.length / 3, text: `${typefaces.length} typefaces. Most products use 2 or 3` });
 else if (typefaces.length && fontFamilies.length > 6) candidates.push({ ratio: fontFamilies.length / 6, text: `${typefaces.length} typeface${typefaces.length > 1 ? 's' : ''} declared ${fontFamilies.length} different ways` });
 if (effColors > 24 * 1.25) candidates.push({ ratio: effColors / 24, text: tokenLed
   ? `${n(colorStrays)} hardcoded colours outside the token set, your agent will happily copy them at random`
@@ -608,7 +613,7 @@ function sheetSection() {
     if (sheet.shadcnMissing?.length) bits.push(`${sheet.shadcnMissing.length} of the ${SHADCN_ROW_COUNT} current shadcn variables not defined (${sheet.shadcnMissing.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${sheet.shadcnMissing.length > 4 ? '…' : ''})${sheet.hslEra ? ', normal for an install from before the chart and sidebar rows existed' : ''}`);
     if (sheet.missingDark?.length) bits.push(`${sheet.missingDark.length} variable${sheet.missingDark.length === 1 ? '' : 's'} with no dark value (${sheet.missingDark.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')})`);
     if (sheet.custom?.length) bits.push(`${sheet.custom.length} custom variable${sheet.custom.length === 1 ? '' : 's'} of your own (${sheet.custom.slice(0, 5).map((r) => `--${esc(r)}`).join(', ')}${sheet.custom.length > 5 ? '…' : ''})${sheet.customMissingDark?.length ? `, ${sheet.customMissingDark.length} of them light only` : ''}${sheet.customUnregistered?.length ? `, ${sheet.customUnregistered.length} never mapped in @theme inline` : ''}`);
-    if (sheet.tweakcnPresent >= 10) bits.push(`a tweakcn-style theme: ${sheet.tweakcnPresent} of the rows tweakcn adds to every theme it exports are here (shadows, letter-spacing, spacing), so the theme came from a theme editor or copied its shape, and updates will come from there too`);
+    if (sheet.tweakcnPresent >= 10) bits.push(`a tweakcn theme: ${sheet.tweakcnPresent} of the rows tweakcn adds to every theme it exports are here (shadows, letter-spacing, spacing), so the theme came from a theme editor or copied its shape, and updates will come from there too`);
     if (sheet.spacingChanged) bits.push(`<b>--spacing is ${esc(sheet.spacing)}</b>, not the default 0.25rem: this resizes every gap in the app at once, which shadcn\'s own changelog says never to do`);
     parts.push(`<div class="receipts">${eyebrow('the theme file, variable by variable')}<p class="sub">${bits.join(' · ')}.</p></div>`);
   } else if (sheet) {
@@ -1277,7 +1282,7 @@ function agentSection() {
 // quiet unrecognised chip, because not knowing IS a finding here.
 const ns = h.tokens.namespaces ?? null;
 const dsChip =
-  ds.kind === 'shadcn' ? `shadcn/ui${ds.cssVariables === false ? ' (utility classes, no CSS variables)' : ''}${P.shadcn?.kit?.style ? ` · ${P.shadcn.kit.style}` : ''}${(P.shadcn?.sheet?.tweakcnPresent ?? 0) >= 10 ? ' · tweakcn-style theme' : ''}`
+  ds.kind === 'shadcn' ? `shadcn/ui${ds.cssVariables === false ? ' (utility classes, no CSS variables)' : ''}${P.shadcn?.kit?.style ? ` · ${P.shadcn.kit.style}` : ''}`
   : ds.kind === 'library' ? ds.name
   : ns ? `custom design system (--${ns.primary}-*${ns.partner ? ` + --${ns.partner}-*` : ''})`
   // A tokenFile alone is a technicality (Lion's is one drawer style file);
@@ -1357,7 +1362,7 @@ function sidePanel() {
     ? `<div class="bd">Of which <b>${breakdown.installedPoints} point${breakdown.installedPoints === 1 ? '' : 's'}</b> come from installed code you did not write: ${esc(rp.dirs.map((d) => basename(d)).join(', '))} (${n(rp.files)} file${rp.files === 1 ? '' : 's'}, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}). Your own code alone would score <b>${breakdown.ownScore}</b>. Kept in the score because your agent reads those files like everything else; left out of the fixes because they are not yours to edit.</div>` : '';
   const scoreBlock = healthScore !== null
     ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note</div>' : ''}<div class="def">${def}${lift}</div>${bd}</div>` : '';
-  const chips = `<div class="chips">${stack.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>`;
+  const chips = `<div class="chips">${stack.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}${(P.shadcn?.sheet?.tweakcnPresent ?? 0) >= 10 ? '<span class="chip">tweakcn theme</span>' : ''}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>`;
   const facts = [
     shadcnReceipt(),
     exclusionsLine(),

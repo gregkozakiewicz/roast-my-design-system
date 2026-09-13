@@ -1327,7 +1327,7 @@ function shadcnReceipt() {
     const r = P.registry;
     const what = r.builtFrom ? `publishes ${r.items} component${r.items === 1 ? '' : 's'}, built from its packages folder` : `publishes ${esc(publishesLine(r))}`;
     const pages = comps.filter((c) => c.isPage).length;
-    return `<div class="excl fresh">Read as a shadcn registry: ${what}${r.variants.length ? `, the same components kept in ${r.variants.length} variants` : ''}. ${pages ? ` Its own site: ${n(pages)} page${pages === 1 ? '' : 's'}.` : ''} Scored as a shadcn install for now; the registry rules come next.</div><div class="excl">Evidence: ${receipt}</div>`;
+    return `<div class="excl fresh">Read as a shadcn registry: ${what}${r.variants.length ? `, the same components kept in ${r.variants.length} variants` : ''}.${pages ? ` Its own site: ${n(pages)} page${pages === 1 ? '' : 's'}.` : ''} Scored as a shadcn install for now; the registry rules come next.</div><div class="excl">Evidence: ${receipt}</div>`;
   }
   return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${receipt}</div>`;
 }

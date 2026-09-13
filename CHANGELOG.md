@@ -2,6 +2,36 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.6.0 — 2026-09-13
+
+The scanner recognises a fourth kind of repo, a registry, and names it.
+Nothing is counted differently yet, so no score moves.
+
+- **Registries are recognised.** A project that publishes components or
+  themes for other repos to install with the shadcn CLI (shadcn's own
+  source, magicui, kibo-ui, tweakcn) used to be read as an app that had
+  installed shadcn, which turned its product range into sprawl: shadcn's
+  source showed 132 duplicate components, one per base library. The scanner
+  now finds the registry file (or the route that builds one from a packages
+  folder) and says under the score what the repo publishes: "Read as a
+  shadcn registry: publishes 54 components, 97 blocks, 7 styles and 238
+  demos, the same components kept in 4 variants." Every count still reads
+  the shadcn profile and the shadcn benchmark slice. The counting rules for
+  registries are the next release.
+- **A tweakcn theme is named.** When the theme file carries the rows
+  tweakcn adds to every theme it exports, the report shows a "tweakcn
+  theme" pill next to the design-system one and says so in the evidence
+  line and the theme section. One repo in the benchmark fleet carries it,
+  and its README credits tweakcn.
+- **A font picker is a choice, not sprawl.** When every typeface is
+  declared in one file, the summary says "16 typefaces offered by a picker
+  in one file, one in use at a time" instead of "16 typefaces. Most
+  products use 2 or 3." A reader who acted on the old sentence could only
+  have removed the picker.
+- `summary.json`: `kind` can now be `registry`, with a `registry` block
+  (what it publishes, the variants, where the list came from). New values
+  and fields only. A new test fixture, a tiny registry with two variants.
+
 ## 7.5.0 — 2026-09-13
 
 The scanner reads the kit as it is built, not only as the order form

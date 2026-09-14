@@ -2,6 +2,23 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.8.0 — 2026-09-14
+
+For guard-my-design-system: the engine's doorway carries the profile facts.
+No score moves, nothing on the report changes.
+
+- **`learnSystem()` returns `profile`.** How the repo was read, decided by
+  the same profiles the report uses: `kind` and `role`; `installedDirs`, the
+  folders the team did not write on a shadcn repo (the catalogue, installed
+  registries, kit blocks; empty on a registry, whose published folders are
+  its own work); `paletteReady`, true on a shadcn repo whose theme file holds
+  the variables in CSS-variable mode; `sheetFile`; `widgetDirs`; and for a
+  registry the counted folders, variants and block folders.
+- **Three shared rules exported** so both checkers judge the same line the
+  same way: the widget-stylesheet and library-class rules for `!important`,
+  and the palette-class pattern behind the off-theme colours tile.
+- Unit test for the doorway on a shadcn kit, a registry and a plain product.
+
 ## 7.7.0 — 2026-09-14
 
 The registry profile counts. A repo that publishes a shadcn registry is

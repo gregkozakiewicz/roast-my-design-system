@@ -2,6 +2,45 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.7.0 — 2026-09-14
+
+The registry profile counts. A repo that publishes a shadcn registry is
+scored on what it publishes and nothing else. Four registries move; no
+other kind of repo does.
+
+- **Only what a registry publishes is counted.** The folders its registry
+  items point at (or the packages a route builds from) are the code under
+  measure. The docs site, demos, examples and any catalogue installed for
+  the site are kept out and named in the header with file counts, the same
+  way a `.roastignore` exclusion is. The theme file the published
+  components read stays in scope.
+- **Variants count once.** Sibling folders holding the same published
+  components (shadcn's aria, base, radix and new-york-v4) count through the
+  folder the registry file names; the others are listed with their file
+  counts. shadcn's source went from 132 duplicate components to 1.
+- **Blocks are the range.** A name whose every copy sits inside published
+  blocks (sixteen sidebar blocks, each with its own AppSidebar) is listed
+  and not counted: a user installs one block, never all of them.
+- **Published components are the project's own work.** No installed-code
+  exemption for bracket values or palette colours: what ships to every
+  installer is held to the same ideals as an app's own code. Unused
+  published components are stock, not orphans, because their users live
+  in other repos.
+- **Published themes are checked.** Every theme in the registry is read
+  for every shadcn colour variable, light and dark. A new tile on
+  registries, "published themes incomplete", ideal 0, with the missing
+  variables named. For a registry that publishes themes and no code, this
+  check is the score and the other tiles say why they do not apply.
+- **The rules file** tells the agent that a palette colour or bracket
+  value written in published code ships into every repo that installs it.
+- Scores: shadcn's own source 69 to 84, tweakcn 73 to 100 (36 themes, all
+  complete), kibo-ui 73 to 78 (palette colours and inline styles in the
+  components it publishes), magicui 64 to 69.
+- `summary.json`: the `registry` block gains `counted`, `showcase`,
+  `variantsDropped` and `themes`; tiles gain `themesIncomplete` on
+  registries. The registry test fixture gains a second variant and two
+  themes, one incomplete.
+
 ## 7.6.0 — 2026-09-13
 
 The scanner recognises a fourth kind of repo, a registry, and names it.

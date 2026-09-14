@@ -6,18 +6,7 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
 
 - Design tokens live in `app/globals.css`. Reach for an existing token before inventing any value.
 - Never hardcode colour values in components; add a token first if one is genuinely missing.
-- This repo uses shadcn/ui; its components live in `components/ui`. Prefer extending it over building parallel pieces.
-
-### Canonical components
-
-- Use these existing components instead of writing new ones:
-  - `<Button>` from `components/ui/button.tsx` (used 1x)
-
-### Known duplicates: do not make it worse
-
-- `<Ubadge>` exists in 2 places (`registry/base/ui/badge.tsx`, `registry/radix/ui/badge.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `<Ucard>` exists in 2 places (`registry/base/ui/card.tsx`, `registry/radix/ui/card.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `<Ukbd>` exists in 2 places (`registry/base/ui/kbd.tsx`, `registry/radix/ui/kbd.tsx`). Match whichever the surrounding code already imports, and never create another.
+- This repo uses shadcn/ui. Prefer extending it over building parallel pieces.
 
 ### Spacing and sizing
 
@@ -25,6 +14,7 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
 
 ### shadcn: the components and the theme
 
+- This repo publishes a shadcn registry (5 components, 2 styles). A palette colour, a bracket value or a hand-written dark: colour written here ships into every repo that installs it. Hold published code to the theme variables and the scale harder than app code, and keep demos and examples out of published files.
 - This is a shadcn install (style `base-nova`, base colour neutral). The theme is a set of CSS variables in `app/globals.css`: background, foreground, primary, muted, border and the rest, each with a light and a dark value. Change a colour there, never in a component.
 - Use the semantic classes the theme gives you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The variables already carry both modes.
 - Before adding classes to a shadcn component, use one of its variants (`variant="outline"`, `size="sm"`). `className` on a shadcn component is for layout only: width, margin, position. Never colour, never typography.

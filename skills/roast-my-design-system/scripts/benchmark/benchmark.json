@@ -93,6 +93,10 @@
     "doorOverrides": {
       "value": 2,
       "note": "shadcn components given a colour through className, per 100 files; the tidiest half of 16 shadcn repos sit under this (2026-09-13 audit)"
+    },
+    "themesIncomplete": {
+      "value": 0,
+      "note": "published themes missing a shadcn colour variable in light or dark; a gap here ships into every repo that installs the theme"
     }
   },
   "stats": {

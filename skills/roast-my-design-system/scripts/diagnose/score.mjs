@@ -78,8 +78,8 @@ export function benchHelpers(bench, kind = 'product') {
   return { percentile, cleanerPct, ideal, median, displayAvg, refMedian, sliceInfo };
 }
 
-export const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles', 'nearPairs', 'important', 'neverImported']);
-export const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10, nearPairs: 2, important: 5, neverImported: 2 };
+export const ZERO_IDEAL = new Set(['exactDuplicates', 'inlineStyles', 'nearPairs', 'important', 'neverImported', 'themesIncomplete']);
+export const WARN_TOLERANCE = { exactDuplicates: 2, inlineStyles: 10, nearPairs: 2, important: 5, neverImported: 2, themesIncomplete: 1 };
 export const SCORE_OF = { good: 100, warn: 55, bad: 10 };
 
 /** healthOf(metric, value) for one benchmark: 'good' | 'warn' | 'bad' | 'info'. */
@@ -107,7 +107,7 @@ export const PROFILE_TILES = {
   ],
 };
 // a registry measures what a shadcn repo measures (release (a), 2026-09-13)
-PROFILE_TILES.registry = PROFILE_TILES.shadcn;
+PROFILE_TILES.registry = [...PROFILE_TILES.shadcn, ['themesIncomplete', 'published themes incomplete']];
 export const tilesFor = (kind) => [...TILES, ...(PROFILE_TILES[kind] ?? [])];
 
 /** The tiles, in report order: metric key, the label the report prints. */
@@ -176,6 +176,11 @@ export function coreMetrics(h, opts = {}) {
     utilityPalette: profileOf(h).designSystem?.cssVariables === false,
     paintTin: paint?.tin?.per100 ?? 0,
     doorOverrides: paint?.doors?.per100 ?? 0,
+    // a registry's published themes, checked for every variable in both modes
+    themesIncomplete: P.registry?.themes?.incomplete ?? 0,
+    themesPublished: P.registry?.themes?.total ?? 0,
+    // a registry that publishes themes and no code: the themes check is the score
+    stylesOnly: !!(P.isRegistry && P.registry?.themes?.total && (P.registry?.counted?.code ?? 0) === 0),
   };
 }
 
@@ -203,12 +208,14 @@ export function tileHealths(m, healthOf) {
     colors: m.colors, greys: m.greys, spacing: m.spacing, exactDuplicates: m.exactDuplicates,
     inlineStyles: m.inlineStyles, nearPairs: m.nearPairs, important: m.important,
     neverImported: m.neverImported, arbitrary: m.arbitrary,
-    paintTin: m.paintTin ?? 0, doorOverrides: m.doorOverrides ?? 0,
+    paintTin: m.paintTin ?? 0, doorOverrides: m.doorOverrides ?? 0, themesIncomplete: m.themesIncomplete ?? 0,
   };
   const judged = { ...shown, colors: m.tokenLed ? m.colorStrays : m.colors, greys: m.tokenLed ? m.greyStrays : m.greys };
   return tilesFor(m.kind ?? 'product').map(([metric, label]) => {
     let health = healthOf(metric, judged[metric]);
     let value = shown[metric], healthValue = judged[metric];
+    // a registry that publishes no themes has nothing to check here
+    if (metric === 'themesIncomplete' && !m.themesPublished) { health = 'na'; value = null; healthValue = null; }
     if (!m.componentsMeasured && (metric === 'exactDuplicates' || metric === 'neverImported')) {
       health = 'na'; value = null; healthValue = null;
     } else if (metric === 'neverImported' && (m.isLibrary || (m.vendoredUi && m.neverImported > 0))) {
@@ -216,7 +223,10 @@ export function tileHealths(m, healthOf) {
     } else if (metric === 'paintTin' && m.utilityPalette) {
       health = 'info';
     }
-    return { metric, label, value, healthValue, health };
+    // a registry that publishes themes and no code: nothing else applies
+    let naReason = null;
+    if (m.stylesOnly && metric !== 'themesIncomplete') { health = 'na'; value = null; healthValue = null; naReason = 'this registry publishes themes and no code, so there is nothing here to measure'; }
+    return { metric, label, value, healthValue, health, ...(naReason ? { naReason } : {}) };
   });
 }
 

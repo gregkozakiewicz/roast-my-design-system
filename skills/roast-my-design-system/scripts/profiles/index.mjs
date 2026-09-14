@@ -22,7 +22,8 @@ import { join, basename } from 'node:path';
  * fixture's expected output is byte-identical before and after.
  */
 import shadcn from './shadcn.mjs';
-import { readRegistry, publishesLine, variantsFromDirs } from './registry.mjs';
+import { readRegistry, publishesLine, variantsFromDirs, scopeFiles } from './registry.mjs';
+export { scopeFiles };
 import library from './library.mjs';
 import product from './product.mjs';
 
@@ -64,16 +65,19 @@ export function decideProfile(profile, components, files, root = null) {
   // A shadcn repo that PUBLISHES a registry is a registry: the fourth kind.
   // Every count still reads the shadcn facts (release (a): zero score change);
   // the kind, the receipt and the header line say what it is.
-  if (picked === shadcn && root) {
+  if (root) {
     const reg = readRegistry(root, files);
     if (reg) {
       if (!reg.variants.length) reg.variants = variantsFromDirs(reg, profile.uiDirs, files);
       delete reg.itemNames;
       profile.kind = 'registry';
+      // consumers of what it publishes live in other repos: library semantics
+      profile.role = 'library';
       profile.registry = reg;
       profile.kindEvidence = [
         reg.builtFrom ? `registry built from ${reg.items} packages by ${reg.source}` : `${reg.source} publishes ${publishesLine(reg)}`,
         ...(reg.variants.length ? [`the same components kept in ${reg.variants.length} variants (${reg.variants.map((d) => basename(d)).join(', ')})`] : []),
+        ...(reg.themes?.total ? [`${reg.themes.total} published theme${reg.themes.total === 1 ? '' : 's'} checked, ${reg.themes.incomplete} incomplete`] : []),
         ...decision.evidence,
       ];
     }

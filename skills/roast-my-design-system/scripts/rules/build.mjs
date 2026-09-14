@@ -121,7 +121,9 @@ const repoName = h.profile?.name ?? 'this repo';
       const files = d.files.map((f) => (typeof f === 'string' ? f : f.file));
       const ranked = [...files].sort((a, b) => sharedScore(b) - sharedScore(a));
       const clear = sharedScore(ranked[0]) > sharedScore(ranked[1]);
-      if (d.upstream) {
+      if (d.blocks) {
+        rule(`\`<${d.name}>\` is defined in ${files.length} published blocks, each a self-contained install. Copy the whole block or none of it; never import across blocks.`);
+      } else if (d.upstream) {
         rule(`\`<${d.name}>\` is defined by two shadcn components (${files.map((f) => `\`${f}\``).join(', ')}), upstream's overlap. Import whichever the surrounding code already uses; do not create a third.`);
       } else if (d.wrapped) {
         rule(`\`<${d.name}>\` is defined twice and one wraps the other${clear ? `. Import \`${ranked[0]}\`` : ''}; do not create a third.`);
@@ -179,6 +181,7 @@ if (neverImported.length >= 3) {
     const sheetFile = sc.sheet?.found ? sc.sheet.file : null;
     const paint = sc.paint ?? null;
     section('shadcn: the components and the theme');
+    if (P.isRegistry) rule(`This repo publishes a shadcn registry${P.registry?.publishes ? ` (${[['components', P.registry.publishes.components], ['blocks', P.registry.publishes.blocks], ['styles', P.registry.publishes.styles]].filter(([, v]) => v).map(([k, v]) => `${v} ${k}`).join(', ')})` : ''}. A palette colour, a bracket value or a hand-written dark: colour written here ships into every repo that installs it. Hold published code to the theme variables and the scale harder than app code, and keep demos and examples out of published files.`);
     rule(`This is a shadcn install${sc.kit?.style ? ` (style \`${sc.kit.style}\`${sc.kit.baseColor ? `, base colour ${sc.kit.baseColor}` : ''})` : ''}. The theme is a set of CSS variables${sheetFile ? ` in \`${sheetFile}\`` : ''}: background, foreground, primary, muted, border and the rest, each with a light and a dark value. Change a colour there, never in a component.`);
     if ((sc.sheet?.shadcnPresent ?? 0) >= 5 || sc.kit?.cssVariables === false) rule('Use the semantic classes the theme gives you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The variables already carry both modes.');
     else rule(`${sheetFile ? `\`${sheetFile}\` defines` : 'The theme file defines'} none of shadcn's colour variables, so \`bg-background\` and \`text-muted-foreground\` have nothing behind them here. Until the theme variables are adopted, stay with the palette classes the surrounding file already uses; do not introduce semantic classes with no variable behind them, and do not add a second palette.`);

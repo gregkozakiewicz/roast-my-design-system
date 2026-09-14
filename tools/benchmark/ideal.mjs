@@ -33,6 +33,7 @@ export const IDEAL_2026 = {
   // probe of the 15 shadcn repos in the fleet: the tidiest third sit under
   // these. Judged only on repos read as shadcn; every other repo ignores them.
   paintTin: { value: 25, note: 'palette colours in own code where a theme variable exists, per 100 files' },
+  themesIncomplete: { value: 0, note: 'published themes missing a shadcn colour variable in light or dark; a gap here ships into every repo that installs the theme' },
   doorOverrides: { value: 2, note: 'shadcn components given a colour through className, per 100 files; the tidiest half of 16 shadcn repos sit under this (2026-09-13 audit)' },
 };
 

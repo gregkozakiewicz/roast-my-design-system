@@ -19,7 +19,8 @@
  *      (app/r/registry.json/route.ts, kibo-ui)
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
-import { join, dirname, basename } from 'node:path';
+import { join, dirname, basename, relative } from 'node:path';
+import { SHADCN_ROWS } from './shadcn-data.mjs';
 
 const readJSON = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
 
@@ -109,7 +110,18 @@ export function readRegistry(root, files) {
   if (best) {
     const publishes = tally(best.items);
     const itemNames = best.items.filter((it) => /^registry:(ui|component)$/.test(String(it?.type ?? ''))).map((it) => it.name).filter(Boolean);
-    return { source: best.source, builtFrom: null, items: best.items.length, publishes, variants: variantDirs(best.items, root), itemNames };
+    // item file paths are relative to the registry file's folder
+    const base = dirname(best.source);
+    const rel = (p) => (base === '.' ? p : `${base}/${p}`);
+    const dirsOf = (re) => [...new Set(best.items.filter((it) => re.test(String(it?.type ?? '')))
+      .flatMap((it) => (it.files ?? []).map((f) => (typeof f === 'string' ? f : f?.path)).filter(Boolean).map((p) => rel(dirname(p)))))].sort();
+    return {
+      source: best.source, builtFrom: null, items: best.items.length, publishes, variants: variantDirs(best.items, root), itemNames,
+      publishedDirs: dirsOf(/^registry:(ui|component|block|lib|hook|style|theme|file|page|internal)$/),
+      demoDirs: dirsOf(/^registry:example$/),
+      blockDirs: dirsOf(/^registry:block$/),
+      themes: themeCheck(best.items),
+    };
   }
   // 2. a route that builds the registry from packages/* (kibo-ui)
   const route = look.routes[0] ?? null;
@@ -127,7 +139,9 @@ export function readRegistry(root, files) {
       if (!pkgs && existsSync(join(root, 'packages'))) pkgs = join(root, 'packages');
       if (pkgs) {
         const names = readdirSync(pkgs, { withFileTypes: true }).filter((e) => e.isDirectory() && existsSync(join(pkgs, e.name, 'index.tsx'))).map((e) => e.name);
-        return { source: route, builtFrom: 'packages', items: names.length, publishes: { components: names.length, blocks: 0, styles: 0, demos: 0, other: 0 }, variants: [] };
+        const pkgRel = relative(root, pkgs).replace(/\\/g, '/');
+        return { source: route, builtFrom: 'packages', items: names.length, publishes: { components: names.length, blocks: 0, styles: 0, demos: 0, other: 0 }, variants: [], itemNames: names,
+          publishedDirs: names.map((nm) => `${pkgRel}/${nm}`), demoDirs: [], blockDirs: [], themes: { total: 0, incomplete: 0, worst: [] } };
       }
     }
   }
@@ -140,19 +154,75 @@ export function readRegistry(root, files) {
  * registry.json lists one file per component (new-york-v4), while the same
  * components sit again under bases/aria, bases/base and bases/radix.
  */
-export function variantsFromDirs(reg, uiDirs, files) {
+export function variantsFromDirs(reg, _uiDirs, files) {
   const names = new Set();
   // names come from the registry items when it is a file, else from packages
   if (reg.itemNames) for (const nm of reg.itemNames) names.add(nm);
   if (names.size < 5) return [];
   const stem = (f) => { const b = basename(f).replace(/\.[cm]?[jt]sx?$/, ''); return b === 'index' ? basename(dirname(f)) : b; };
+  // every folder holding most of the published names, catalogue or not
+  const byDir = new Map();
+  for (const f of files.code ?? []) {
+    if (!/\.[jt]sx$/.test(f)) continue;
+    const d = dirname(f);
+    if (!byDir.has(d)) byDir.set(d, new Set());
+    byDir.get(d).add(stem(f));
+  }
   const hits = [];
-  for (const d of uiDirs ?? []) {
-    const have = new Set((files.code ?? []).filter((f) => f.startsWith(`${d}/`) && /\.[jt]sx$/.test(f)).map(stem));
+  for (const [d, have] of byDir) {
     const shared = [...names].filter((nm) => have.has(nm)).length;
     if (shared >= Math.max(5, Math.ceil(names.size * 0.5))) hits.push(d);
   }
   return hits.length > 1 ? hits.sort() : [];
+}
+
+/**
+ * Published themes, checked: every shadcn colour variable present for light
+ * and for dark. --radius is not per mode and is left out. A theme with a
+ * missing row ships that gap into every repo that installs it.
+ */
+const THEME_ROWS = SHADCN_ROWS.filter((r) => r !== 'radius');
+function themeCheck(items) {
+  const worst = [];
+  let total = 0, incomplete = 0;
+  for (const it of items) {
+    if (!/^registry:(style|theme)$/.test(String(it?.type ?? ''))) continue;
+    const cv = it.cssVars ?? {};
+    if (!cv.light && !cv.dark) continue;
+    total += 1;
+    const has = (mode) => new Set(Object.keys(cv[mode] ?? {}).map((k) => k.replace(/^--/, '')));
+    const light = has('light'), dark = has('dark');
+    const missingLight = THEME_ROWS.filter((r) => !light.has(r));
+    const missingDark = THEME_ROWS.filter((r) => !dark.has(r));
+    if (missingLight.length || missingDark.length) {
+      incomplete += 1;
+      if (worst.length < 6) worst.push({ name: it.name, missingLight, missingDark });
+    }
+  }
+  return { total, incomplete, worst };
+}
+
+/**
+ * What is counted on a registry: the code it publishes, one variant of it.
+ * Everything else (the docs site, demos, examples, an installed catalogue
+ * for the site) is kept out and named, with file counts per folder.
+ */
+export function scopeFiles(reg, files) {
+  const under = (f, dirs) => dirs.some((d) => f === d || f.startsWith(`${d}/`));
+  const published = reg.publishedDirs ?? [];
+  const secondary = (reg.variants ?? []).filter((d) => !under(d, published) && !published.some((p) => p === d || p.startsWith(`${d}/`)));
+  const top = (f) => { const seg = f.split('/'); return (seg[0] === 'apps' || seg[0] === 'packages') && seg.length > 2 ? seg.slice(0, 2).join('/') : seg.length > 1 ? seg[0] : '(root)'; };
+  const out = { code: [], styles: [], other: files.other ?? [] };
+  const showcase = new Map(), variants = new Map();
+  for (const kind of ['code', 'styles']) {
+    for (const f of files[kind] ?? []) {
+      if (under(f, secondary)) { const d = secondary.find((v) => f.startsWith(`${v}/`)); variants.set(d, (variants.get(d) ?? 0) + 1); continue; }
+      if (under(f, published)) { out[kind].push(f); continue; }
+      showcase.set(top(f), (showcase.get(top(f)) ?? 0) + 1);
+    }
+  }
+  const list = (m) => [...m.entries()].sort((a, b) => b[1] - a[1]).map(([dir, n]) => ({ dir, files: n }));
+  return { files: out, showcase: list(showcase), variantsDropped: list(variants) };
 }
 
 /** The header sentence: what it publishes, in words. */

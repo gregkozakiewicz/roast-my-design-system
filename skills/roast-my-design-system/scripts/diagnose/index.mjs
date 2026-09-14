@@ -368,7 +368,7 @@ function tile(t, pLabel, pMetric, pFallback) {
   const { metric, label, value, healthValue, health } = t;
   if (health === 'na') {
     return { num: '—', label, health, metric, healthValue: null,
-      rows: [{ label: `not measured: ${notMeasuredReason}`, val: '', dir: '' }] };
+      rows: [{ label: t.naReason ? t.naReason : `not measured: ${notMeasuredReason}`, val: '', dir: '' }] };
   }
   const iv = ideal(metric), rm = refMedian(metric);
   const pct = percentile(metric, value);
@@ -441,7 +441,7 @@ function projectedScore(applied) {
 // A utility-class shadcn repo with no hardcoded colours has zero literal
 // colours and a real system: the palette is bg-zinc-900 and friends.
 const utilityPalette = ds.kind === 'shadcn' && ds.cssVariables === false && twColorUtils >= 5;
-const noSystemLikely = !utilityPalette && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0));
+const noSystemLikely = !utilityPalette && !(P.isRegistry && P.registry?.themes?.total) && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0));
 
 // ---------- section renderers ----------
 const DIR = {
@@ -619,6 +619,11 @@ function sheetSection() {
   } else if (sheet) {
     parts.push(`<div class="receipts">${eyebrow('the theme')}<p class="sub">components.json names ${esc(sheet.file)} as the theme file, and it was not found.</p></div>`);
   }
+  if (P.isRegistry && P.registry?.themes?.total) {
+    const t = P.registry.themes;
+    const rows = t.worst.map((w) => `<div class="ledger-row"><span class="mono strong">${esc(w.name)}</span><span class="dim">${w.missingLight.length ? `light missing ${w.missingLight.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${w.missingLight.length > 4 ? ` and ${w.missingLight.length - 4} more` : ''}` : ''}${w.missingLight.length && w.missingDark.length ? ' · ' : ''}${w.missingDark.length ? `dark missing ${w.missingDark.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${w.missingDark.length > 4 ? ` and ${w.missingDark.length - 4} more` : ''}` : ''}</span></div>`).join('');
+    parts.push(`<div class="receipts">${eyebrow(`${n(t.total)} published theme${t.total === 1 ? '' : 's'} · ${n(t.incomplete)} incomplete`)}<p class="sub">${t.incomplete ? `A theme missing a variable ships that gap into every repo that installs it. ${t.incomplete === 1 ? 'The one' : `The ${t.incomplete}`} below ${t.incomplete === 1 ? 'is' : 'are'} short of the full set in at least one mode.` : 'Every published theme carries every shadcn colour variable, for light and for dark.'}</p>${rows ? `<div class="ledger">${rows}</div>` : ''}${whyToggle('themesIncomplete')}</div>`);
+  }
   if (paint) {
     const tinChips = (paint.tin.samples ?? []).slice(0, 8).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
     const tinFiles = (paint.tin.top ?? []).slice(0, 5).map((f) => `<span class="vchip" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('');
@@ -648,7 +653,7 @@ function duplicatesSection() {
     </div>` : '';
   const dupeCards = exactDupes.slice(0, 8).map((d) => `
     <div class="fam">
-      ${eyebrow(`&lt;${esc(d.name)}&gt; · ${d.upstream ? 'two shadcn components define it: upstream\'s overlap, not counted' : d.wrapped ? 'defined twice, one wraps the other' : `${d.files.length} implementations`}`)}
+      ${eyebrow(`&lt;${esc(d.name)}&gt; · ${d.blocks ? `defined in ${d.files.length} blocks that each install alone: the range, not counted` : d.upstream ? 'two shadcn components define it: upstream\'s overlap, not counted' : d.wrapped ? 'defined twice, one wraps the other' : `${d.files.length} implementations`}`)}
       <div class="fam-rows">
       ${d.files.slice(0, 6).map((f) => `<div class="mini-card">${fileLink(f)}</div>`).join('')}
       ${d.files.length > 6 ? `<div class="mini-card dim">…and ${d.files.length - 6} more</div>` : ''}
@@ -1326,8 +1331,12 @@ function shadcnReceipt() {
   if (P.isRegistry && P.registry) {
     const r = P.registry;
     const what = r.builtFrom ? `publishes ${r.items} component${r.items === 1 ? '' : 's'}, built from its packages folder` : `publishes ${esc(publishesLine(r))}`;
-    const pages = comps.filter((c) => c.isPage).length;
-    return `<div class="excl fresh">Read as a shadcn registry: ${what}${r.variants.length ? `, the same components kept in ${r.variants.length} variants` : ''}.${pages ? ` Its own site: ${n(pages)} page${pages === 1 ? '' : 's'}.` : ''} Scored as a shadcn install for now; the registry rules come next.</div><div class="excl">Evidence: ${receipt}</div>`;
+    const kept = (r.showcase ?? []).reduce((a, e) => a + e.files, 0);
+    const th = r.themes?.total ? ` ${n(r.themes.total)} published theme${r.themes.total === 1 ? '' : 's'} checked, ${n(r.themes.incomplete)} incomplete.` : '';
+    const counted = (r.counted?.code ?? 0) === 0 && r.themes?.total
+      ? `<b>It publishes no code, so the themes check is the score</b>: the ${n(kept)} files of the app that makes them are not counted.`
+      : `<b>Only what it publishes is counted</b>: ${n(r.counted?.code ?? 0)} code file${(r.counted?.code ?? 0) === 1 ? '' : 's'}${kept ? `, with ${n(kept)} more kept out as its site, demos and examples` : ''}.`;
+    return `<div class="excl fresh">Read as a shadcn registry: ${what}${r.variants.length ? `, the same components kept in ${r.variants.length} variants` : ''}. ${counted}${th}</div><div class="excl">Evidence: ${receipt}</div>`;
   }
   return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${receipt}</div>`;
 }
@@ -1392,6 +1401,13 @@ function exceptionsBlock() {
     const si = spacingOwn.installed;
     const sv = si.values.length;
     if (sv) lines.push(`${n(sv)} off-scale spacing value${sv === 1 ? '' : 's'} inside ${esc(P.uiDirs.map((d) => basename(d)).join(', '))} ${sv === 1 ? 'is' : 'are'} shadcn's own (${si.values.slice(0, 3).map((v) => esc(v.value)).join(', ')}) and ${sv === 1 ? 'is' : 'are'} not counted, for the same reason as the bracket values.`);
+    if (P.isRegistry && P.registry) {
+      const r = P.registry;
+      const sc = r.showcase ?? [];
+      if (sc.length) lines.push(`${n(sc.reduce((a, e) => a + e.files, 0))} files outside what the registry publishes (${sc.slice(0, 4).map((e) => `${esc(e.dir)} ${n(e.files)}`).join(', ')}${sc.length > 4 ? ` and ${sc.length - 4} more folders` : ''}) are not counted: the docs site, demos and examples nobody installs. Your agent reads them like everything else.`);
+      const vd = r.variantsDropped ?? [];
+      if (vd.length) lines.push(`${vd.length} variant${vd.length === 1 ? '' : 's'} of the same components (${vd.map((e) => esc(basename(dirname(e.dir)) === 'bases' ? basename(dirname(e.dir)) + '/' + basename(e.dir) : e.dir)).join(', ')}, ${n(vd.reduce((a, e) => a + e.files, 0))} files) counted once, through the variant the registry file names.`);
+    }
     if (vendoredUi && neverImported.length) lines.push(`${n(neverImported.length)} catalogue component${neverImported.length === 1 ? '' : 's'} not used yet: stock on the shelf, not scored.`);
     const rp = P.shadcn?.registryPaint;
     if (rp) lines.push(`Installed registr${rp.dirs.length === 1 ? 'y' : 'ies'} ${esc(rp.dirs.map((d) => basename(d)).join(', '))}: ${n(rp.files)} file${rp.files === 1 ? '' : 's'}${rp.tinUses ? `, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}` : ''}. Kept in the score, left out of the fixes. Your agent reads them like everything else.`);
@@ -2039,7 +2055,7 @@ if (summaryPath) {
     verdict,
     role: P.role,
     kind: P.kind,
-    ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants } } : {}),
+    ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants, counted: P.registry.counted ?? null, showcase: P.registry.showcase ?? [], variantsDropped: P.registry.variantsDropped ?? [], themes: P.registry.themes ? { total: P.registry.themes.total, incomplete: P.registry.themes.incomplete } : null } } : {}),
     ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true } } : {}),
     componentsMeasured,
     metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>

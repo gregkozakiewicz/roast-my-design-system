@@ -27,7 +27,7 @@ import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { lastTouchedDates } from '../lib/lasttouched.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { decideProfile, decideFresh, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
+import { decideProfile, decideFresh, profileOf, installedDirs, splitArbitrary, scopeFiles } from '../profiles/index.mjs';
 import { countPaint } from './paint.mjs';
 
 function arg(name, fallback) {
@@ -55,15 +55,35 @@ const outPath = resolve(arg('out', 'harvest.json'));
 
 const t0 = Date.now();
 const exclusions = loadExclusions(target, argAll('exclude'));
-const files = walkRepo(target, 14, exclusions);
+let files = walkRepo(target, 14, exclusions);
 const profile = profileRepo(target, files);
-const { components } = harvestComponents(target, files.code);
-const tokens = harvestTokens(target, files.styles, files.code);
+let { components } = harvestComponents(target, files.code);
+let tokens = harvestTokens(target, files.styles, files.code);
 // Repo kind and measurability, decided once in profiles/ and read everywhere
 // (a published components package with no app pages is a LIBRARY; a stack the
 // detector cannot read is NOT MEASURED, never scored as zeros). The decision
 // lands on the profile with its evidence, so the JSON says why.
 decideProfile(profile, components, files, target);
+// A registry is counted on what it publishes, one variant of it. The rest
+// (docs site, demos, an installed catalogue for the site) is kept out and
+// named in the header like any exclusion; secondary variants likewise.
+if (profileOf(profile).isRegistry) {
+  const scope = scopeFiles(profile.registry, files);
+  profile.registry.showcase = scope.showcase;
+  profile.registry.variantsDropped = scope.variantsDropped;
+  for (const e of scope.showcase) exclusions.patterns.push({ pattern: e.dir, source: 'the registry profile (not published)', files: e.files });
+  for (const e of scope.variantsDropped) exclusions.patterns.push({ pattern: e.dir, source: 'the registry profile (a variant counted once)', files: e.files });
+  files = scope.files;
+  // the theme file the published components read stays in scope: it is the
+  // colour system they are judged against, wherever the repo keeps it
+  const sheetFile = profile.shadcn?.sheet?.found ? profile.shadcn.sheet.file : null;
+  if (sheetFile && !files.styles.includes(sheetFile)) files.styles.push(sheetFile);
+  ({ components } = harvestComponents(target, files.code));
+  tokens = harvestTokens(target, files.styles, files.code);
+  // published components are the project's own work, not installed code
+  profile.uiDirs = []; profile.uiDir = null; profile.vendoredUi = false;
+  profile.registry.counted = { code: files.code.length, styles: files.styles.length };
+}
 // A shadcn kitchen gets the 2 paint checks from shadcn's own agent rules,
 // counted over own code only (never the kit's doors, never exempt files).
 {
@@ -97,6 +117,17 @@ decideProfile(profile, components, files, target);
 }
 
 const duplicates = findDuplicates(components, profile.uiDir, target, profile.uiDirs ?? null);
+// A registry's blocks are self-contained kits, each installed alone
+// (sidebar-01 to sidebar-16 every one with its own AppSidebar). A name whose
+// every copy sits inside a block is the range, not confusion: listed, never
+// counted, like a wrapped pair.
+{
+  const blockDirs = profile.registry?.blockDirs ?? [];
+  if (blockDirs.length) {
+    const inBlock = (f) => blockDirs.some((d) => f === d || f.startsWith(`${d}/`));
+    for (const d of duplicates.exactDuplicates) if (!d.wrapped && d.files.every(inBlock)) { d.wrapped = true; d.blocks = true; }
+  }
+}
 const context = harvestContext(target);
 const staleRules = ruleStaleness(target, components,
   new Set(neverImportedComponents(components, profile.uiDir).map((c) => c.name)),

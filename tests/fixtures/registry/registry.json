@@ -54,56 +54,6 @@
    ]
   },
   {
-   "name": "badge",
-   "type": "registry:ui",
-   "files": [
-    {
-     "path": "registry/base/ui/badge.tsx",
-     "type": "registry:ui"
-    }
-   ]
-  },
-  {
-   "name": "card",
-   "type": "registry:ui",
-   "files": [
-    {
-     "path": "registry/base/ui/card.tsx",
-     "type": "registry:ui"
-    }
-   ]
-  },
-  {
-   "name": "kbd",
-   "type": "registry:ui",
-   "files": [
-    {
-     "path": "registry/base/ui/kbd.tsx",
-     "type": "registry:ui"
-    }
-   ]
-  },
-  {
-   "name": "pill",
-   "type": "registry:ui",
-   "files": [
-    {
-     "path": "registry/base/ui/pill.tsx",
-     "type": "registry:ui"
-    }
-   ]
-  },
-  {
-   "name": "tag",
-   "type": "registry:ui",
-   "files": [
-    {
-     "path": "registry/base/ui/tag.tsx",
-     "type": "registry:ui"
-    }
-   ]
-  },
-  {
    "name": "badge-demo",
    "type": "registry:example",
    "files": [
@@ -118,10 +68,87 @@
    "type": "registry:style",
    "cssVars": {
     "light": {
+     "background": "oklch(1 0 0)",
+     "foreground": "oklch(0.1 0 0)",
      "primary": "oklch(0.2 0 0)"
     },
     "dark": {
-     "primary": "oklch(0.9 0 0)"
+     "background": "oklch(0.1 0 0)",
+     "foreground": "oklch(1 0 0)"
+    }
+   }
+  },
+  {
+   "name": "noon",
+   "type": "registry:theme",
+   "cssVars": {
+    "light": {
+     "background": "oklch(0.5 0 0)",
+     "foreground": "oklch(0.5 0 0)",
+     "card": "oklch(0.5 0 0)",
+     "card-foreground": "oklch(0.5 0 0)",
+     "popover": "oklch(0.5 0 0)",
+     "popover-foreground": "oklch(0.5 0 0)",
+     "primary": "oklch(0.5 0 0)",
+     "primary-foreground": "oklch(0.5 0 0)",
+     "secondary": "oklch(0.5 0 0)",
+     "secondary-foreground": "oklch(0.5 0 0)",
+     "muted": "oklch(0.5 0 0)",
+     "muted-foreground": "oklch(0.5 0 0)",
+     "accent": "oklch(0.5 0 0)",
+     "accent-foreground": "oklch(0.5 0 0)",
+     "destructive": "oklch(0.5 0 0)",
+     "border": "oklch(0.5 0 0)",
+     "input": "oklch(0.5 0 0)",
+     "ring": "oklch(0.5 0 0)",
+     "chart-1": "oklch(0.5 0 0)",
+     "chart-2": "oklch(0.5 0 0)",
+     "chart-3": "oklch(0.5 0 0)",
+     "chart-4": "oklch(0.5 0 0)",
+     "chart-5": "oklch(0.5 0 0)",
+     "sidebar": "oklch(0.5 0 0)",
+     "sidebar-foreground": "oklch(0.5 0 0)",
+     "sidebar-primary": "oklch(0.5 0 0)",
+     "sidebar-primary-foreground": "oklch(0.5 0 0)",
+     "sidebar-accent": "oklch(0.5 0 0)",
+     "sidebar-accent-foreground": "oklch(0.5 0 0)",
+     "sidebar-border": "oklch(0.5 0 0)",
+     "sidebar-ring": "oklch(0.5 0 0)",
+     "destructive-foreground": "oklch(0.5 0 0)"
+    },
+    "dark": {
+     "background": "oklch(0.5 0 0)",
+     "foreground": "oklch(0.5 0 0)",
+     "card": "oklch(0.5 0 0)",
+     "card-foreground": "oklch(0.5 0 0)",
+     "popover": "oklch(0.5 0 0)",
+     "popover-foreground": "oklch(0.5 0 0)",
+     "primary": "oklch(0.5 0 0)",
+     "primary-foreground": "oklch(0.5 0 0)",
+     "secondary": "oklch(0.5 0 0)",
+     "secondary-foreground": "oklch(0.5 0 0)",
+     "muted": "oklch(0.5 0 0)",
+     "muted-foreground": "oklch(0.5 0 0)",
+     "accent": "oklch(0.5 0 0)",
+     "accent-foreground": "oklch(0.5 0 0)",
+     "destructive": "oklch(0.5 0 0)",
+     "border": "oklch(0.5 0 0)",
+     "input": "oklch(0.5 0 0)",
+     "ring": "oklch(0.5 0 0)",
+     "chart-1": "oklch(0.5 0 0)",
+     "chart-2": "oklch(0.5 0 0)",
+     "chart-3": "oklch(0.5 0 0)",
+     "chart-4": "oklch(0.5 0 0)",
+     "chart-5": "oklch(0.5 0 0)",
+     "sidebar": "oklch(0.5 0 0)",
+     "sidebar-foreground": "oklch(0.5 0 0)",
+     "sidebar-primary": "oklch(0.5 0 0)",
+     "sidebar-primary-foreground": "oklch(0.5 0 0)",
+     "sidebar-accent": "oklch(0.5 0 0)",
+     "sidebar-accent-foreground": "oklch(0.5 0 0)",
+     "sidebar-border": "oklch(0.5 0 0)",
+     "sidebar-ring": "oklch(0.5 0 0)",
+     "destructive-foreground": "oklch(0.5 0 0)"
     }
    }
   }

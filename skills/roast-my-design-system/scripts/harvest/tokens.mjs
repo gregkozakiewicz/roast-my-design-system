@@ -8,7 +8,7 @@
  */
 import { existsSync } from 'node:fs';
 import {
-  EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass,
+  EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
 import { canonical, parseColor } from '../lib/color.mjs';
@@ -297,8 +297,6 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // page and must beat the host's CSS: Tailwind imported with the important
   // flag, or a config scoping every utility under an id. There, !important is
   // the medium, like inline styles in email. Skipped, named with the reason.
-  const WIDGET_CSS_RE = /@import\s+["']tailwindcss(?:\/utilities\.css)?["'][^;]*\bimportant\b/;
-  const WIDGET_CONFIG_RE = /\bimportant\s*:\s*["']#/;
   const widgetDirs = codeFiles.filter((f) => /(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f))
     .filter((f) => WIDGET_CONFIG_RE.test(readSource(join(root, f)) ?? ''))
     .map((f) => f.slice(0, f.lastIndexOf('/') + 1));

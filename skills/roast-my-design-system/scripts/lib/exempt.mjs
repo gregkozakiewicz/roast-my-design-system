@@ -64,3 +64,11 @@ export function exemptReason(file, text = '') {
  */
 export const LIBRARY_CLASS_RE = /^(cm-|ͼ|ProseMirror|monaco-|sp-|react-datepicker|react-tel-input|DateInput_|DayPicker|react-grid-|react-resizable|react-flow|react-select|react-toastify|Toastify|select2|EmojiPickerReact|epr-|notion-|fc-|fc$|tippy-|hljs|language-|ps__|ace_|ng-|docsearch|DocSearch|grecaptcha|rr-|sbdocs|docs-story|mapboxgl-|leaflet-|swiper-|slick-|rc-|ant-|Mui|ck-|ql-|tox-|mce-|DraftEditor|public-Draft|w-md-editor|rdp-|recharts-|apexcharts-|intercom-|crisp-|hubspot|shiki|katex|mermaid|prism-)/;
 export const isLibraryClass = (c) => LIBRARY_CLASS_RE.test(c);
+
+/**
+ * An embedded widget (a survey, a chat bubble) lives inside a stranger's page
+ * and must beat the host's CSS: Tailwind imported with the important flag, or
+ * a config scoping every utility under an id. There, !important is the medium.
+ */
+export const WIDGET_CSS_RE = /@import\s+["']tailwindcss(?:\/utilities\.css)?["'][^;]*\bimportant\b/;
+export const WIDGET_CONFIG_RE = /\bimportant\s*:\s*["']#/;

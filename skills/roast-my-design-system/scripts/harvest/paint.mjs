@@ -30,7 +30,8 @@ import { PALETTE } from '../profiles/shadcn-data.mjs';
 // and any opacity suffix. Word boundary at the front stops `text-primary` and
 // `bg-sidebar` from matching; the shade stops `border-gray` (no shade) which
 // is not a Tailwind class.
-const TIN_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border|ring|outline|from|to|via|fill|stroke|divide|decoration|placeholder|caret|accent|shadow)-(?:${PALETTE})-(?:50|[1-9]00|950)(?:/\\d+)?(?![\\w-])`, 'g');
+// exported for the guard: the same pattern judges an added line
+export const PALETTE_CLASS_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border|ring|outline|from|to|via|fill|stroke|divide|decoration|placeholder|caret|accent|shadow)-(?:${PALETTE})-(?:50|[1-9]00|950)(?:/\\d+)?(?![\\w-])`, 'g');
 // Evening overrides painted by hand with white or black (the palette shades
 // are already caught above with their dark: prefix).
 const DARK_WB_RE = /(?<![\w-])dark:(?:bg|text|border)-(?:white|black)(?:\/\d+)?(?![\w-])/g;
@@ -70,7 +71,7 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set() 
     if (src === null || exemptReason(f, src)) continue;
     ownFiles += 1;
 
-    const tinHits = [...src.matchAll(TIN_RE)].map((m) => m[0]);
+    const tinHits = [...src.matchAll(PALETTE_CLASS_RE)].map((m) => m[0]);
     const wbHits = [...src.matchAll(DARK_WB_RE)].map((m) => m[0]);
     const all = [...tinHits, ...wbHits];
     if (all.length) {

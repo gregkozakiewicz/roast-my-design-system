@@ -10,10 +10,13 @@
  * text for styling, and say which on-system value a stray most resembles.
  */
 import { extname, join } from 'node:path';
-import { walkRepo, readSource } from '../harvest/walk.mjs';
+import { walkRepo, readSource, profileRepo } from '../harvest/walk.mjs';
+import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
+import { PALETTE_CLASS_RE } from '../harvest/paint.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { harvestComponents, definedComponents } from '../harvest/components.mjs';
 import { loadExclusions } from './exclusions.mjs';
+import { WIDGET_CONFIG_RE } from './exempt.mjs';
 import { hexRgb } from './nearpairs.mjs';
 import { typefaceOf, GENERIC_FONTS } from './typefaces.mjs';
 
@@ -26,6 +29,13 @@ export { definedComponents };
 // The files no checker should judge. Exported so a guard reads the same list
 // as the engine rather than keeping a copy that drifts.
 export { EMAIL_PRINT_RE, ARTWORK_NAME_RE, SVG_MARKUP_RE, exemptReason } from './exempt.mjs';
+// !important as the medium (7.5): a widget stylesheet that must beat its host
+// page, and a selector aimed at a library's own class names. The guard reads
+// the same patterns, so the two checkers agree about the same declaration.
+export { WIDGET_CSS_RE, WIDGET_CONFIG_RE, LIBRARY_CLASS_RE, isLibraryClass } from './exempt.mjs';
+// A palette class (bg-blue-500, text-gray-600) where a theme variable exists:
+// the shadcn paint check (7.2). Only meaningful when system.profile.paletteReady.
+export { PALETTE_CLASS_RE };
 
 // Radius, font size, shadow and typeface: the patterns, so both checkers agree
 // on what a declaration is and what counts as a disciplined value.
@@ -63,6 +73,14 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   const exclusions = loadExclusions(repoRoot, exclude);
   const files = walkRepo(repoRoot, 14, exclusions);
   const t = harvestTokens(repoRoot, files.styles, files.code);
+  const components = harvestComponents(repoRoot, files.code).components
+    .map(({ name, file, usageCount, isPage }) => ({ name, file, usageCount, isPage }));
+  const profile = profileRepo(repoRoot, files);
+  decideProfile(profile, components, files, repoRoot);
+  const P = profileOf(profile);
+  const widgetDirs = files.code.filter((f) => /(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f))
+    .filter((f) => WIDGET_CONFIG_RE.test(readSource(join(repoRoot, f)) ?? ''))
+    .map((f) => f.slice(0, f.lastIndexOf('/') + 1));
 
   // Every --var definition, as normalizedValue → name, so a guard can say
   // "use var(--blue-500)" instead of leaving the reader to hunt the hex.
@@ -97,9 +115,34 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     // Trimmed to the four fields a guard can act on: what it is called, where
     // it lives, how much the repo leans on it, and whether it is a page (pages
     // are routes, not reusable parts, so two of a name is not a duplicate).
-    components: harvestComponents(repoRoot, files.code).components
-      .map(({ name, file, usageCount, isPage }) => ({ name, file, usageCount, isPage })),
+    components,
     files: { styles: files.styles.length, code: files.code.length },
+    // How the repo was read (7.1 to 7.7), decided once by the same profiles
+    // the report uses, so a guard treats installed code, a registry's
+    // published folders and a widget's stylesheet the way the score does.
+    profile: {
+      kind: P.kind,
+      role: P.role,
+      // folders the team did not write (a shadcn catalogue, installed
+      // registries, kit blocks): their brackets and copies are not the PR's
+      // sin. Empty on a registry: what it publishes is its own work.
+      // only a shadcn kit has installed code; a hand-written components/ui on a
+      // plain product is the team's own (the report splits nothing there either)
+      installedDirs: P.isShadcn && !P.isRegistry ? installedDirs(P) : [],
+      // a shadcn kit whose theme file holds the variables, in CSS-variable
+      // mode: a palette class in own code is paint from a tin
+      paletteReady: P.isShadcn && (P.shadcn?.sheet?.shadcnPresent ?? 0) >= 5 && P.designSystem?.cssVariables !== false,
+      sheetFile: P.shadcn?.sheet?.found ? P.shadcn.sheet.file : null,
+      // packages whose Tailwind config scopes utilities under an id: widgets
+      widgetDirs,
+      // a registry: only the published folders are counted; sibling variants
+      // and blocks hold the same names by design
+      registry: P.isRegistry && P.registry ? {
+        countedDirs: P.registry.publishedDirs ?? [],
+        variants: P.registry.variants ?? [],
+        blockDirs: P.registry.blockDirs ?? [],
+      } : null,
+    },
   };
 }
 

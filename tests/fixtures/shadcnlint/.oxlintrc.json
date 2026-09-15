@@ -1,0 +1,10 @@
+{
+  "jsPlugins": ["@shadcn/lint"],
+  "rules": {
+    "shadcn/no-restyle": ["error", { "allow": ["layout"], "contracts": [{ "pattern": "^CardTitle$", "allow": ["layout", "typography"] }] }],
+    "shadcn/no-raw-colors": ["error", { "allow": ["*-amber-*"] }],
+    "shadcn/no-arbitrary-values": ["error", { "allow": ["layout"] }],
+    "shadcn/no-inline-styles": "error",
+    "shadcn/no-unknown-classes": "warn"
+  }
+}

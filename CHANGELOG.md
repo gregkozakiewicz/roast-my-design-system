@@ -2,6 +2,29 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.9.0 — 2026-09-15
+
+shadcn/lint, read as the team's declared policy. No score moves.
+
+- **A shadcn/lint config is read and reported.** shadcn shipped
+  `@shadcn/lint` on 14 September: six rules, errors that name the variant or
+  theme variable to use. When a shadcn repo runs it, the report shows a
+  `shadcn/lint` pill, and the shadcn section lists which rules are on and
+  what each allows, denies and contracts, read from `.oxlintrc.json` in full
+  or from `eslint.config.*` by pattern (the rule names and their literal
+  allow and deny lists; anything else is reported as present and not read).
+  A palette colour the config allows, exactly or by its glob, is marked
+  "allowed by your lint config" in the receipts. The score does not move:
+  what a linter allows is the team's decision, and the agent still reads
+  the class. Category words such as `layout` are named, never applied per
+  class; their category mapping is theirs.
+- **The agent box and the rules file** say the linter is set up and that an
+  agent which runs it gets an error with the fix.
+- `summary.json`: `shadcn.lint` with the file, its kind, the rules on and
+  whether it was read in full.
+- The reader was checked against all 44 example configs in shadcn/lint's
+  own docs at 0.1.0. New fixture: a factory kit with a lint config.
+
 ## 7.8.0 — 2026-09-14
 
 For guard-my-design-system: the engine's doorway carries the profile facts.

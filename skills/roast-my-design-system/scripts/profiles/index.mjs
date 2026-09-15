@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { join, basename } from 'node:path';
+import { join, basename, dirname } from 'node:path';
 /**
  * Profiles — what kind of repo is this, decided once and read everywhere.
  *
@@ -23,6 +23,7 @@ import { join, basename } from 'node:path';
  */
 import shadcn from './shadcn.mjs';
 import { readRegistry, publishesLine, variantsFromDirs, scopeFiles } from './registry.mjs';
+import { readShadcnLint } from './shadcn-lint.mjs';
 export { scopeFiles };
 import library from './library.mjs';
 import product from './product.mjs';
@@ -65,6 +66,12 @@ export function decideProfile(profile, components, files, root = null) {
   // A shadcn repo that PUBLISHES a registry is a registry: the fourth kind.
   // Every count still reads the shadcn facts (release (a): zero score change);
   // the kind, the receipt and the header line say what it is.
+  // shadcn/lint, when the team runs it: their declared policy, read and
+  // reported, never scored (see profiles/shadcn-lint.mjs)
+  if (root && profile.shadcn) {
+    const wsDirs = (profile.shadcn.installs ?? []).map((i) => i.config).filter(Boolean).map((f) => dirname(f)).filter((d) => d && d !== '.');
+    profile.shadcn.lint = readShadcnLint(root, wsDirs);
+  }
   if (root) {
     const reg = readRegistry(root, files);
     if (reg) {

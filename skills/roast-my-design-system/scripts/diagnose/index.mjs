@@ -33,6 +33,7 @@ import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
 import { ownSpacing, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
+import { rulesOn as lintRulesOn, describeRule as lintDescribe, entryMatcher as lintMatcher, RULE_TILE as LINT_TILE } from '../profiles/shadcn-lint.mjs';
 import { publishesLine } from '../profiles/registry.mjs';
 
 // The benchmark and every judgement made against it live in score.mjs; this
@@ -619,13 +620,20 @@ function sheetSection() {
   } else if (sheet) {
     parts.push(`<div class="receipts">${eyebrow('the theme')}<p class="sub">components.json names ${esc(sheet.file)} as the theme file, and it was not found.</p></div>`);
   }
+  if (P.shadcn?.lint) {
+    const L = P.shadcn.lint;
+    const on = lintRulesOn(L);
+    const rows = on.map((r) => `<div class="ledger-row"><span class="mono strong">shadcn/${esc(r)}</span><span class="dim">${esc(lintDescribe(r, L.rules[r]).replace(/^[\w-]+\s?/, '').replace(/^\((.*)\)$/, '$1') || 'on')}${LINT_TILE[r] ? '' : ' · no tile on this page reads it'}</span></div>`).join('');
+    parts.push(`<div class="receipts">${eyebrow(`shadcn/lint is set up · ${n(on.length)} of 6 rules on · ${esc(L.file)}`)}<p class="sub">${L.readFully ? 'Read from the config file.' : 'The config is code; the rule names were read, some options were not.'} What the linter allows is the team's decision and is marked below, and the score does not move: your agent still reads the class. ${on.length ? 'An agent that runs the lint gets an error with the variant or variable to use instead.' : 'No shadcn rule is switched on yet.'}</p>${rows ? `<div class="ledger">${rows}</div>` : ''}${L.overrides ? `<p class="sub">${n(L.overrides)} override${L.overrides === 1 ? '' : 's'} scope the rules to folders.</p>` : ''}</div>`);
+  }
   if (P.isRegistry && P.registry?.themes?.total) {
     const t = P.registry.themes;
     const rows = t.worst.map((w) => `<div class="ledger-row"><span class="mono strong">${esc(w.name)}</span><span class="dim">${w.missingLight.length ? `light missing ${w.missingLight.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${w.missingLight.length > 4 ? ` and ${w.missingLight.length - 4} more` : ''}` : ''}${w.missingLight.length && w.missingDark.length ? ' · ' : ''}${w.missingDark.length ? `dark missing ${w.missingDark.slice(0, 4).map((r) => `--${esc(r)}`).join(', ')}${w.missingDark.length > 4 ? ` and ${w.missingDark.length - 4} more` : ''}` : ''}</span></div>`).join('');
     parts.push(`<div class="receipts">${eyebrow(`${n(t.total)} published theme${t.total === 1 ? '' : 's'} · ${n(t.incomplete)} incomplete`)}<p class="sub">${t.incomplete ? `A theme missing a variable ships that gap into every repo that installs it. ${t.incomplete === 1 ? 'The one' : `The ${t.incomplete}`} below ${t.incomplete === 1 ? 'is' : 'are'} short of the full set in at least one mode.` : 'Every published theme carries every shadcn colour variable, for light and for dark.'}</p>${rows ? `<div class="ledger">${rows}</div>` : ''}${whyToggle('themesIncomplete')}</div>`);
   }
   if (paint) {
-    const tinChips = (paint.tin.samples ?? []).slice(0, 8).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}</span>`).join('');
+    const rawAllow = P.shadcn?.lint?.rules?.['no-raw-colors'] ? lintMatcher(P.shadcn.lint.rules['no-raw-colors'].allow) : null;
+    const tinChips = (paint.tin.samples ?? []).slice(0, 8).map((s) => `<span class="vchip bad">${esc(s.value)} ×${s.count}${rawAllow?.test(s.value) ? ' · allowed by your lint config' : ''}</span>`).join('');
     const tinFiles = (paint.tin.top ?? []).slice(0, 5).map((f) => `<span class="vchip" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('');
     const rp = sc.registryPaint ?? null;
     parts.push(`<div class="receipts">${eyebrow(`${n(paint.tin.uses)} colours from outside the theme in ${n(paint.tin.files)} of ${n(paint.ownFiles)} own files · ${n(paint.tin.per100)} per 100 files`)}${paint.tin.uses ? `<div class="chips-row">${tinChips}</div><div class="chips-row">${tinFiles}</div>` : '<p class="sub">Your own code takes every colour from the theme file. This is what shadcn is designed for.</p>'}${rp?.tinUses ? `<p class="sub">Not counted above: ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'} inside ${esc(rp.dirs.map((d) => basename(d)).join(', '))}, installed by a registry rather than written here. An agent reading those files will still copy them.</p>` : ''}</div>`);
@@ -1240,16 +1248,18 @@ function agentSection() {
   const managedBy = managedOnly ? agentFiles[0].managedBy : null;
   const skill = (h.context ?? []).find((c) => c.kind === 'agent-skill');
   const skillLine = P.isShadcn ? (skill ? ` The shadcn skill is installed (<span class="mono">${esc(skill.file)}</span>), so the agent can read the kit's configuration.` : ' shadcn offers a skill for that and it is not installed here.') : '';
+  const lintOn = P.shadcn?.lint ? lintRulesOn(P.shadcn.lint) : [];
+  const lintLine = P.shadcn?.lint ? ` shadcn/lint is set up${lintOn.length ? ` with ${lintOn.length} rule${lintOn.length === 1 ? '' : 's'} on` : ', no rule on yet'}: an agent that runs it gets an error with the fix when it goes off-theme.` : '';
   // the files name the kit (or the skill is installed): the gap is the
   // repo's own habits, which no hand-written file carries
   const namesKit = P.isShadcn && (skill || agentFiles.some((c) => c.mentionsDesign === true && c.managedOnly !== true));
   const msg = managedOnly
-    ? `<p class="sub">Your agent reads ${readsList}. ${esc(managedBy)} wrote it, and it is only about ${esc(managedBy)}: nothing in it mentions the theme file or the component folder, so the agent does not know the ${P.isShadcn ? 'kit' : 'design system'} is there.${skillLine} Add the rules file below and the agent knows the theme, the components and the styling rules.</p>`
+    ? `<p class="sub">Your agent reads ${readsList}. ${esc(managedBy)} wrote it, and it is only about ${esc(managedBy)}: nothing in it mentions the theme file or the component folder, so the agent does not know the ${P.isShadcn ? 'kit' : 'design system'} is there.${skillLine}${lintLine} Add the rules file below and the agent knows the theme, the components and the styling rules.</p>`
     : namesKit
-    ? `<p class="sub">Your agent reads ${readsList}${nestedCount && rootAgent.length ? `, plus ${nestedCount} rules file${nestedCount === 1 ? '' : 's'} nested in subfolders` : ''}${skill ? `, and the shadcn skill is installed (<span class="mono">${esc(skill.file)}</span>)` : ''}. ${skill && !agentFiles.some((c) => c.mentionsDesign) ? 'The skill tells it' : 'They tell it'} the kit is there. What ${skill && !agentFiles.some((c) => c.mentionsDesign) ? 'it does' : 'they do'} not carry is how this repo actually uses it: the numbers below, which the rules file turns into rules with receipts.</p>`
+    ? `<p class="sub">Your agent reads ${readsList}${nestedCount && rootAgent.length ? `, plus ${nestedCount} rules file${nestedCount === 1 ? '' : 's'} nested in subfolders` : ''}${skill ? `, and the shadcn skill is installed (<span class="mono">${esc(skill.file)}</span>)` : ''}. ${skill && !agentFiles.some((c) => c.mentionsDesign) ? 'The skill tells it' : 'They tell it'} the kit is there. What ${skill && !agentFiles.some((c) => c.mentionsDesign) ? 'it does' : 'they do'} not carry is how this repo actually uses it: the numbers below, which the rules file turns into rules with receipts.${lintLine}</p>`
     : agentFiles.length
     ? `<p class="sub">Your agent reads ${readsList}${nestedCount && rootAgent.length ? `, plus ${nestedCount} rules file${nestedCount === 1 ? '' : 's'} nested in subfolders` : ''}. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p>`
-    : `<p class="sub">No <span class="mono">CLAUDE.md</span>, no <span class="mono">AGENTS.md</span>, no <span class="mono">.cursorrules</span>. Every time your AI builds UI here, it guesses, from everything below. This is why its output looks almost-but-not-quite right.</p>`;
+    : `<p class="sub">No <span class="mono">CLAUDE.md</span>, no <span class="mono">AGENTS.md</span>, no <span class="mono">.cursorrules</span>. Every time your AI builds UI here, it guesses, from everything below. This is why its output looks almost-but-not-quite right.${lintLine}</p>`;
   // Door coverage, stated as fact: which tools can read what exists. Claude
   // Code reads CLAUDE.md only; Codex reads AGENTS.md; Cursor reads AGENTS.md
   // and .cursor/rules (its legacy .cursorrules is labelled, not judged).
@@ -1394,7 +1404,7 @@ function sidePanel() {
     ? `<div class="bd">Of which <b>${breakdown.installedPoints} point${breakdown.installedPoints === 1 ? '' : 's'}</b> come from installed code you did not write: ${esc(rp.dirs.map((d) => basename(d)).join(', '))} (${n(rp.files)} file${rp.files === 1 ? '' : 's'}, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}). Your own code alone would score <b>${breakdown.ownScore}</b>. Kept in the score because your agent reads those files like everything else; left out of the fixes because they are not yours to edit.</div>` : '';
   const scoreBlock = healthScore !== null
     ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note</div>' : ''}<div class="def">${def}${lift}</div>${bd}</div>` : '';
-  const chips = `<div class="chips">${stack.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}${(P.shadcn?.sheet?.tweakcnPresent ?? 0) >= 10 ? '<span class="chip">tweakcn theme</span>' : ''}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>`;
+  const chips = `<div class="chips">${stack.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}${(P.shadcn?.sheet?.tweakcnPresent ?? 0) >= 10 ? '<span class="chip">tweakcn theme</span>' : ''}${P.shadcn?.lint ? '<span class="chip">shadcn/lint</span>' : ''}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>`;
   const facts = [
     shadcnReceipt(),
     exclusionsLine(),
@@ -2080,7 +2090,7 @@ if (summaryPath) {
     role: P.role,
     kind: P.kind,
     ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants, counted: P.registry.counted ?? null, showcase: P.registry.showcase ?? [], variantsDropped: P.registry.variantsDropped ?? [], themes: P.registry.themes ? { total: P.registry.themes.total, incomplete: P.registry.themes.incomplete } : null } } : {}),
-    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true } } : {}),
+    ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true, ...(P.shadcn.lint ? { lint: { file: P.shadcn.lint.file, kind: P.shadcn.lint.kind, rulesOn: lintRulesOn(P.shadcn.lint), readFully: P.shadcn.lint.readFully } } : {}) } } : {}),
     componentsMeasured,
     metrics: (({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }) =>
       ({ colors, colorTokens, colorStrays, greys, greyStrays, spacing, exactDuplicates, inlineStyles, nearPairs, important, neverImported, arbitrary, tokenLed }))(M),

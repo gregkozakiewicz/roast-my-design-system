@@ -9,6 +9,7 @@ import { nearColorPairs } from './../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { VERSION } from '../lib/version.mjs';
 import { profileOf, installedDirs, splitArbitrary, ownSpacing } from '../profiles/index.mjs';
+import { rulesOn as lintRulesOn, describeRule as lintDescribe } from '../profiles/shadcn-lint.mjs';
 
 export function rulesMarkdown(h, opts = {}) {
   // compact: the size-aware variant for agent files with tight practical
@@ -193,6 +194,10 @@ if (neverImported.length >= 3) {
     rule(`Edit the component you own in \`${P.uiDir ?? 'components/ui'}\`. Never build a second one beside it under another name. A wrapper that composes shadcn components is fine; a second implementation is not.`);
     rule('Merge classes with `cn()`. Never concatenate strings and never write a ternary inside a className string.');
     rule('Add a component with `npx shadcn@latest add <name>`, then edit it. To see what changed upstream, run `npx shadcn@latest add <name> --diff`.');
+    if (sc.lint) {
+      const on = lintRulesOn(sc.lint);
+      rule(`This repo runs shadcn/lint (\`${sc.lint.file}\`${on.length ? `: ${on.map((r) => lintDescribe(r, sc.lint.rules[r])).join('; ')}` : ': no rule on yet'}). Run the project's lint after every change; its errors name the variant or theme variable to use.`);
+    }
     const ai = sc.arbitraryInstalled ?? null;
     if (ai?.uses) rule(`Bracket values in \`${P.uiDir ?? 'components/ui'}\` are shadcn's, not a pattern to copy. The installed components use a few values Tailwind's scale does not have (${ai.values.slice(0, 3).map((v) => `\`${v.value}\``).join(', ')}), written by shadcn's authors for those components only. In your own code, do not write a bracket value: use a step from the scale, or a variable from the theme file. If a value you need is missing, add it to the theme file once and use it by name.`);
     else rule('In your own code, do not write a bracket value: use a step from the scale, or a variable from the theme file. If a value you need is missing, add it to the theme file once and use it by name.');

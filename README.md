@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.7.0" width="72" alt="roast-my-design-system">
+<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.9.0" width="72" alt="roast-my-design-system">
 
 # roast-my-design-system
 
@@ -9,6 +9,8 @@
 ## Your AI can write the UI. This makes sure it writes *your* UI.
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
+
+> **New in 7.9: a shadcn/lint config is read as the team's declared policy.** shadcn shipped `@shadcn/lint` on 14 September, six rules with errors that name the variant or theme variable to use. When a repo runs it, the report shows which rules are on and what each allows, read from `.oxlintrc.json` in full or from `eslint.config.*` by pattern, and marks the palette colours the config allows. The score does not move: what a linter allows is a team decision, and the agent still reads the class. Checked against all 44 example configs in shadcn/lint's docs at 0.1.0. `summary.json` gains `shadcn.lint`.
 
 > **New in 7.7: four repo profiles, and the fourth is `registry`.** The scanner decides once what kind of repo it is reading, `product`, `library`, `shadcn` or `registry`, and every count, ideal and benchmark line reads that decision. `registry` is new: a repo that publishes a shadcn registry (a `registry.json` with typed items, or a route that builds one from a packages folder) is counted on what it publishes and nothing else. The docs site, demos and examples are kept out and named in the header with file counts; the same components kept in several variants count once; a name repeated only inside published blocks is the range, not a duplicate; published components are the project's own work, with no installed-code exemption. Published themes get their own tile: every shadcn colour variable present for light and for dark, ideal 0. For a registry that publishes themes and no code, that check is the score. Covers shadcn's own source (84), magicui (69), kibo-ui (78) and tweakcn (100, 36 themes, all complete). No other kind of repo moves. `summary.json`: `kind: "registry"` with a `registry` block (`publishes`, `counted`, `showcase`, `variantsDropped`, `themes`); tiles gain `themesIncomplete` on registries.
 
@@ -75,11 +77,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.7.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.9.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.7.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.9.0)
 
 ## What makes the numbers trustworthy
 

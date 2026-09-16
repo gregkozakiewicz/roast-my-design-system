@@ -8,7 +8,7 @@
  */
 import { existsSync } from 'node:fs';
 import {
-  EMAIL_PRINT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
+  EMAIL_PRINT_RE, EMAIL_KIT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
 import { canonical, parseColor } from '../lib/color.mjs';
@@ -516,6 +516,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     // triggered the "every single one is hardcoded" banner on it.
     const renderToImage = RENDER_TO_IMAGE_RE.test(src) || OG_ROUTE_RE.test(f);
     if (renderToImage) { skip(f, src); continue; }
+    // an email written with an email kit, wherever it lives (react-email)
+    if (EMAIL_KIT_RE.test(src)) { skip(f, src); continue; }
 
     // Tailwind classes
     for (const cls of classStrings(src)) {

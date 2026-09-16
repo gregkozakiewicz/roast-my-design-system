@@ -670,6 +670,7 @@ export function GET() { return new ImageResponse(<div style={{ background: '#c0f
   for (const [file, code, label] of [
     ['app/api/og/route.tsx', SCENE, 'an OG route is exempt by its path'],
     ['src/cards/Share.tsx', OG, 'a satori or next/og surface is exempt by what it imports'],
+    ['components/two-buttons/tailwind.tsx', `import { Button } from 'react-email';\n${SCENE}`, 'an email built with an email kit is exempt by what it imports'],
     ['src/renderers/Board.tsx', SCENE, 'a pixel renderer is exempt'],
     ['src/components/Anything.tsx', DRAWING, 'a file that is mostly drawing is exempt whatever it is called'],
   ]) {

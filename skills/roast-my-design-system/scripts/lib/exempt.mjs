@@ -24,6 +24,9 @@
  * lines), so both give the same answer about the same file.
  */
 export const EMAIL_PRINT_RE = /email|(^|[/.])print([/.]|$)/i;
+// An email built with an email kit is an email wherever it lives: react-email
+// keeps 75 templates in folders like two-buttons/ (2026-09-16).
+export const EMAIL_KIT_RE = /from\s+['"](?:react-email|@react-email\/[\w-]+|jsx-email|@jsx-email\/[\w-]+|mjml-react|@faire\/mjml-react)['"]/;
 // Next.js's crash page replaces the root layout, so the app's stylesheet
 // never loads there: Next.js tells developers to build it self-contained,
 // styling written on the elements. The medium, not a lapse (2026-09-13).
@@ -45,7 +48,7 @@ export const svgHeavy = (text) =>
  */
 export function exemptReason(file, text = '') {
   if (!file) return null;
-  if (EMAIL_PRINT_RE.test(file)) return 'email and print styling has to be inline, because there is no cascade to inherit';
+  if (EMAIL_PRINT_RE.test(file) || EMAIL_KIT_RE.test(text)) return 'email and print styling has to be inline, because there is no cascade to inherit';
   if (CRASH_PAGE_RE.test(file)) return 'the crash page replaces the root layout, so the stylesheet never loads there and its styling has to be inline';
   if (RENDERER_PATH_RE.test(file)) return 'a renderer draws pixels, so its colours are the picture rather than the interface';
   if (OG_ROUTE_RE.test(file) || RENDER_TO_IMAGE_RE.test(text)) return 'a render-to-image surface accepts nothing but inline styling, so there is no on-system way to write one';

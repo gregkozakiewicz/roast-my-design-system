@@ -6,9 +6,9 @@
     "repoCount": 34,
     "referenceSystems": 10
   },
-  "score": 100,
+  "score": null,
   "noSystemLikely": true,
-  "verdict": "No agent rules file, so your AI agent has nothing to follow.",
+  "verdict": "Almost no colour or spacing values were found in this repo, so there is nothing here to measure. No score is given: every count is zero because the scan read nothing, which is not the same as a repo in good shape.",
   "role": "product",
   "kind": "product",
   "componentsMeasured": false,

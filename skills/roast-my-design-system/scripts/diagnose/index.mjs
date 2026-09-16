@@ -312,7 +312,19 @@ const staleOwn = (h.staleRules ?? []).filter((s) => !s.tool);
 if (staleOwn.length >= 2) candidates.push({ ratio: 1.2 + staleOwn.length / 10, text: `${staleOwn.length} lines in your agent rules refer to files that no longer exist` });
 const findings = candidates.sort((a, b) => b.ratio - a.ratio).map((c) => c.text);
 
-let verdict = fresh
+const utilityPalette = ds.kind === 'shadcn' && ds.cssVariables === false && twColorUtils >= 5;
+const noSystemLikely = !utilityPalette && !(P.isRegistry && P.registry?.themes?.total) && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0));
+// A scan that found almost no styling has not measured health: every tile
+// reads good because every count is zero. Withhold the number and say where
+// the UI probably is (better-auth: 257 UI files, all under demo/ and docs/,
+// folders this scan skips on purpose). Caught 2026-09-16.
+const skippedDirs = h.files?.skippedDirs ?? [];
+const skippedUI = skippedDirs.reduce((a, e) => a + e.files, 0);
+let verdict = noSystemLikely
+  ? `${skippedUI >= 20
+    ? `The UI in this repo sits in folders the scan skips on purpose (${skippedDirs.slice(0, 3).map((e) => `${e.dir}, ${n(e.files)} files`).join('; ')}), so there was almost nothing here to measure.`
+    : 'Almost no colour or spacing values were found in this repo, so there is nothing here to measure.'} No score is given: every count is zero because the scan read nothing, which is not the same as a repo in good shape.`
+  : fresh
   ? 'A fresh shadcn install with nothing built on it yet. Everything below describes the kit you are starting from.'
   : findings.length === 0
   ? (agentFiles.length > 0
@@ -399,7 +411,8 @@ const bigStats = judgedTiles.map(tile);
 
 // Health score for the hero: the scored tiles averaged (good 100 / warn 55 / bad 10).
 const scoredTiles = bigStats.filter((s) => s.health in SCORE_OF);
-const healthScore = scoreOfTiles(judgedTiles);
+// noSystemLikely: nothing was read, so nothing is scored (2026-09-16)
+const healthScore = noSystemLikely ? null : scoreOfTiles(judgedTiles);
 
 // ---------- what a fix is worth ----------
 // The score is the average of the scored tiles, so moving one tile across a
@@ -441,8 +454,6 @@ function projectedScore(applied) {
 // system in it at all; say that up front instead of quietly scoring zeros.
 // A utility-class shadcn repo with no hardcoded colours has zero literal
 // colours and a real system: the palette is bg-zinc-900 and friends.
-const utilityPalette = ds.kind === 'shadcn' && ds.cssVariables === false && twColorUtils >= 5;
-const noSystemLikely = !utilityPalette && !(P.isRegistry && P.registry?.themes?.total) && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0));
 
 // ---------- section renderers ----------
 const DIR = {
@@ -1428,7 +1439,9 @@ function sidePanel() {
   const bd = breakdown.ownScore !== null && breakdown.installedPoints > 0 && rp
     ? `<div class="bd">Of which <b>${breakdown.installedPoints} point${breakdown.installedPoints === 1 ? '' : 's'}</b> come from installed code you did not write: ${esc(rp.dirs.map((d) => basename(d)).join(', '))} (${n(rp.files)} file${rp.files === 1 ? '' : 's'}, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}). Your own code alone would score <b>${breakdown.ownScore}</b>. Kept in the score because your agent reads those files like everything else; left out of the fixes because they are not yours to edit.</div>` : '';
   const scoreBlock = healthScore !== null
-    ? `<div class="score${noSystemLikely ? ' muted' : ''}">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div>${noSystemLikely ? '<div class="note">little here to score · see the note</div>' : ''}<div class="def">${def}${lift}</div>${bd}</div>` : '';
+    ? `<div class="score">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div><div class="def">${def}${lift}</div>${bd}</div>`
+    : noSystemLikely
+    ? `<div class="score muted">${eyebrow('Health score')}<div class="val">&mdash;</div><div class="note">nothing here was measured · see the note</div><div class="def">${def}</div></div>` : '';
   const chips = `<div class="chips">${stack.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}${(P.shadcn?.sheet?.tweakcnPresent ?? 0) >= 10 ? '<span class="chip">tweakcn theme</span>' : ''}${P.shadcn?.lint ? '<span class="chip">shadcn/lint</span>' : ''}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>`;
   const facts = [
     shadcnReceipt(),
@@ -1956,7 +1969,9 @@ ${ogTags()}
 <div class="wrap">
 ${sidePanel()}
 <main class="main">
-  ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output).</span></div>` : ''}
+  ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>${skippedUI >= 20
+    ? `<b>Almost nothing here was measured.</b> The UI in this repo sits in folders the scan skips on purpose: ${skippedDirs.slice(0, 4).map((e) => `<span class="mono">${esc(e.dir)}</span> (${n(e.files)} files)`).join(', ')}. A docs site, a demo or an examples folder carries its own styling, which is not the product's design language, so none of it was read. No score is given. To measure one of them, scan that folder directly.`
+    : `There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output). No score is given.`}</span></div>` : ''}
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     ${eyebrow('Summary')}

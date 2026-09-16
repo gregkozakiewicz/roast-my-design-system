@@ -236,6 +236,9 @@ const harvest = {
     code: files.code.length,
     styles: files.styles.length,
     styleFiles: files.styles,
+    // folders the walk skips on purpose, with the UI inside them: a scan that
+    // saw almost nothing can say where the UI actually lives
+    ...(files.skipped?.length ? { skippedDirs: files.skipped } : {}),
   },
   components,
   tokens,

@@ -22,6 +22,9 @@ export function readSource(p) {
   } catch { return null; }
 }
 
+// Skipped because they are output or machinery, never because they might
+// hold the product's UI: never named in the report as "UI we skipped".
+const BUILD_ONLY = new Set(['node_modules', '.next', '.git', 'dist', 'build', 'out', 'coverage', '.turbo', '.vercel', '.cache', 'storybook-static']);
 const SKIP_DIRS = new Set([
   'node_modules', '.next', '.git', 'dist', 'build', 'out', 'coverage',
   '.turbo', '.vercel', '.cache', 'storybook-static',
@@ -87,13 +90,34 @@ export function walkRepo(root, maxDepth = 14, exclusions = null) {
       hit.files += 1;
     }
   };
+  // Folders skipped on purpose (docs sites, demos, examples, tests) with a
+  // count of the UI files inside them. A repo whose only UI lives there
+  // measures as empty, and the report has to say why rather than call it
+  // healthy (better-auth, 2026-09-16).
+  const skippedByDir = new Map();
+  const UI_FILE_RE = /\.(tsx|jsx|vue|svelte|astro|css|scss|sass|less)$/;
+  const countSkipped = (dir, name) => {
+    let n = 0;
+    const walkIn = (d, depth) => {
+      if (depth > 6) return;
+      let es = [];
+      try { es = readdirSync(d, { withFileTypes: true }); } catch { return; }
+      for (const e of es) {
+        if (e.name.startsWith('.') || e.name === 'node_modules') continue;
+        if (e.isDirectory()) walkIn(join(d, e.name), depth + 1);
+        else if (UI_FILE_RE.test(e.name) && !TEST_FILE_RE.test(e.name)) n += 1;
+      }
+    };
+    walkIn(dir, 0);
+    if (n) skippedByDir.set(name, (skippedByDir.get(name) ?? 0) + n);
+  };
   const recurse = (dir, depth) => {
     if (depth > maxDepth) return;
     let entries = [];
     try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
     for (const e of entries) {
       if (e.name.startsWith('.') && e.name !== '.cursorrules') continue;
-      if (SKIP_DIRS.has(e.name)) continue;
+      if (SKIP_DIRS.has(e.name)) { if (e.isDirectory() && !BUILD_ONLY.has(e.name)) countSkipped(join(dir, e.name), e.name); continue; }
       // A symlink is followed nowhere: a linked directory was already skipped
       // (isDirectory is false for it), and a linked FILE could point anywhere
       // on the machine, `leak.css -> ~/.ssh/id_rsa` included. The repo's own
@@ -117,6 +141,10 @@ export function walkRepo(root, maxDepth = 14, exclusions = null) {
     }
   };
   recurse(root, 0);
+  // folders skipped on purpose (a docs site, demos, examples), with the UI
+  // files inside them: a repo whose only UI lives there measures as empty,
+  // and the report has to say why rather than call it healthy.
+  files.skipped = [...skippedByDir.entries()].sort((a, b) => b[1] - a[1]).map(([dir, n]) => ({ dir, files: n }));
   return files;
 }
 

@@ -45,6 +45,11 @@ export const PROFILES = [shadcn, tailwind, library, product];
  * `componentDetection` (measurability), and the new `kind`, `kindConfidence`
  * and `kindEvidence` (the receipt: why this kind, in words).
  */
+// A repo with this many app pages outside what it publishes is a product
+// that also publishes, not a registry (fleet 2026-09-16: every registry sits
+// under 30, supabase at 312).
+const PRODUCT_PAGES = 60;
+
 export function decideProfile(profile, components, files, root = null) {
   const reusable = components.filter((c) => !c.isPage);
   const counts = {
@@ -81,6 +86,17 @@ export function decideProfile(profile, components, files, root = null) {
     if (reg) {
       if (!reg.variants.length) reg.variants = variantsFromDirs(reg, profile.uiDirs, files);
       delete reg.itemNames;
+      // Publishing has to be what the repo is FOR. A product that also ships
+      // a small registry (supabase: 312 app pages beside 31 published
+      // components) would otherwise be scored on the side offering and the
+      // product never read at all. The fleet splits cleanly: every real
+      // registry has under 30 pages outside what it publishes, supabase 312.
+      const published = reg.publishedDirs ?? [];
+      const outside = (components ?? []).filter((c) => c.isPage && !published.some((d) => c.file === d || c.file.startsWith(`${d}/`))).length;
+      if (outside >= PRODUCT_PAGES) {
+        profile.publishesRegistry = { source: reg.source, publishes: reg.publishes, dirs: published, pagesOutside: outside };
+        return profile;
+      }
       profile.kind = 'registry';
       // consumers of what it publishes live in other repos: library semantics
       profile.role = 'library';
@@ -130,6 +146,8 @@ export function profileOf(h) {
     tailwind: p.tailwind ?? null,
     isRegistry: kind === 'registry',
     registry: p.registry ?? null,
+    // a product that also publishes a registry: named, not read as one
+    publishesRegistry: p.publishesRegistry ?? null,
     shadcn: p.shadcn ?? null,
     uiDirs: p.uiDirs ?? (p.uiDir ? [p.uiDir] : []),
     // A vendored shadcn catalogue is stock on a shelf, not abandonment.

@@ -110,9 +110,20 @@ export function readRegistry(root, files) {
   if (best) {
     const publishes = tally(best.items);
     const itemNames = best.items.filter((it) => /^registry:(ui|component)$/.test(String(it?.type ?? ''))).map((it) => it.name).filter(Boolean);
-    // item file paths are relative to the registry file's folder
-    const base = dirname(best.source);
-    const rel = (p) => (base === '.' ? p : `${base}/${p}`);
+    // Item paths are relative to the package root, which is the registry
+    // file's own folder for a source file and an ancestor for a built copy
+    // (supabase ships apps/ui-library/public/r/registry.json whose paths are
+    // relative to apps/ui-library). Pick the base where the first path
+    // actually exists on disk, 2026-09-16.
+    const firstPath = best.items.flatMap((it) => (it.files ?? []).map((f) => (typeof f === 'string' ? f : f?.path))).find(Boolean);
+    let base = dirname(best.source);
+    if (firstPath) {
+      const bases = [];
+      for (let d = dirname(best.source); ; d = dirname(d)) { bases.push(d); if (d === '.' || d === '' || d === '/') break; }
+      const found = bases.find((d) => existsSync(join(root, d === '.' ? '' : d, firstPath)));
+      if (found) base = found;
+    }
+    const rel = (p) => (base === '.' || base === '' ? p : `${base}/${p}`);
     const dirsOf = (re) => [...new Set(best.items.filter((it) => re.test(String(it?.type ?? '')))
       .flatMap((it) => (it.files ?? []).map((f) => (typeof f === 'string' ? f : f?.path)).filter(Boolean).map((p) => rel(dirname(p)))))].sort();
     return {

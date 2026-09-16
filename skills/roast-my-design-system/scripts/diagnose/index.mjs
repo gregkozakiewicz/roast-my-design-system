@@ -1365,6 +1365,14 @@ function shadcnReceipt() {
 // A Tailwind repo with its own theme: what the vocabulary is, how much of
 // the repo speaks it, and (when it barely does) that the theme is not the
 // system yet rather than a score.
+// A product that also publishes a registry: the fact, and that the published
+// folders were read like the rest of the repo.
+function publishesRegistryLine() {
+  const pr = P.publishesRegistry;
+  if (!pr) return '';
+  return `<div class="excl">This repo also publishes a shadcn registry (${esc(publishesLine({ publishes: pr.publishes, items: 0 }))}) from ${esc(pr.dirs.slice(0, 2).join(', ') || pr.source)}. With ${n(pr.pagesOutside)} app pages beside it, the product is what this scan measures, and the published folders are read like the rest of the repo rather than on their own.</div>`;
+}
+
 function tailwindReceipt() {
   if (!P.isTailwind || !P.tailwind) return '';
   const t = P.tailwind;
@@ -1446,6 +1454,7 @@ function sidePanel() {
   const facts = [
     shadcnReceipt(),
     tailwindReceipt(),
+    publishesRegistryLine(),
     exclusionsLine(),
     commissionedBy ? `<div class="excl">Commissioned by <b>${esc(commissionedBy)}</b></div>` : '',
   ].join('');
@@ -2132,6 +2141,7 @@ if (summaryPath) {
     verdict,
     role: P.role,
     kind: P.kind,
+    ...(P.publishesRegistry ? { publishesRegistry: { source: P.publishesRegistry.source, publishes: P.publishesRegistry.publishes } } : {}),
     ...(P.isTailwind && P.tailwind ? { tailwind: { file: P.tailwind.file, names: P.tailwind.names.length, restated: P.tailwind.restated, uses: P.tailwind.uses, usedIn: P.tailwind.usedIn, adopted: P.tailwind.adopted, evidence: P.evidence } } : {}),
     ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants, counted: P.registry.counted ?? null, showcase: P.registry.showcase ?? [], variantsDropped: P.registry.variantsDropped ?? [], themes: P.registry.themes ? { total: P.registry.themes.total, incomplete: P.registry.themes.incomplete } : null } } : {}),
     ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true, ...(P.shadcn.lint ? { lint: { file: P.shadcn.lint.file, kind: P.shadcn.lint.kind, rulesOn: lintRulesOn(P.shadcn.lint), readFully: P.shadcn.lint.readFully } } : {}) } } : {}),

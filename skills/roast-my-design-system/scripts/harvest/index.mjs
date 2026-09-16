@@ -28,6 +28,7 @@ import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { lastTouchedDates } from '../lib/lasttouched.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
 import { decideProfile, decideFresh, profileOf, installedDirs, splitArbitrary, scopeFiles } from '../profiles/index.mjs';
+import { publishesLine } from '../profiles/registry.mjs';
 import { countPaint } from './paint.mjs';
 
 function arg(name, fallback) {
@@ -67,6 +68,22 @@ decideProfile(profile, components, files, target);
 // A registry is counted on what it publishes, one variant of it. The rest
 // (docs site, demos, an installed catalogue for the site) is kept out and
 // named in the header like any exclusion; secondary variants likewise.
+if (profileOf(profile).isRegistry) {
+  const scope = scopeFiles(profile.registry, files);
+  // The registry file names folders; if none of them hold code in this repo,
+  // the paths did not match and scoping would count nothing. Read the whole
+  // repo instead and say so: a score from zero files is worse than no
+  // profile at all (supabase, 2026-09-16).
+  const publishesCode = (profile.registry.publishes?.components ?? 0) + (profile.registry.publishes?.blocks ?? 0) > 0;
+  if (publishesCode && scope.files.code.length < 5) {
+    profile.registry.scopeFailed = { counted: scope.files.code.length, dirs: profile.registry.publishedDirs ?? [] };
+    profile.kind = profile.role === 'library' ? 'library' : 'product';
+    profile.kindEvidence = [
+      `${profile.registry.source} publishes ${publishesLine(profile.registry)}, but its file paths match no folder in this repo, so the whole repo was read instead`,
+      ...(profile.kindEvidence ?? []),
+    ];
+  }
+}
 if (profileOf(profile).isRegistry) {
   const scope = scopeFiles(profile.registry, files);
   profile.registry.showcase = scope.showcase;

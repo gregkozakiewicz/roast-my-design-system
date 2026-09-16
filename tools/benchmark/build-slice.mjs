@@ -67,7 +67,7 @@ for (const full of wanted) {
     const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
     // as the harvest counts: registries in, catalogue and blocks out
     const paint = kind === 'tailwind'
-      ? countPaint(root, files.code, { retuned: profile.tailwind?.retuned ?? [] })
+      ? countPaint(root, files.code, { retuned: profile.tailwind?.retuned ?? [], families: profile.tailwind?.families ?? null })
       : countPaint(root, files.code, { uiDirs: [...P.uiDirs, ...(profile.shadcn?.blockFiles ?? [])], kitNames });
     const ownArbitrary = splitArbitrary(tokens.tailwind.arbitrary ?? [], allInstalled).own;
     rows.push({

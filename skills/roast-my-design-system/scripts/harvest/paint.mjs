@@ -34,6 +34,7 @@ import { PALETTE } from '../profiles/shadcn-data.mjs';
 export const PALETTE_CLASS_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border|ring|outline|from|to|via|fill|stroke|divide|decoration|placeholder|caret|accent|shadow)-(?:${PALETTE})-(?:50|[1-9]00|950)(?:/\\d+)?(?![\\w-])`, 'g');
 // Evening overrides painted by hand with white or black (the palette shades
 // are already caught above with their dark: prefix).
+const GREY_HUE_RE = /-(?:slate|gray|zinc|neutral|stone|mauve|olive|mist|taupe|white|black)(?:-|\/|$)/;
 const DARK_WB_RE = /(?<![\w-])dark:(?:bg|text|border)-(?:white|black)(?:\/\d+)?(?![\w-])/g;
 // Colour passed into a kit door: palette colour, black, white, any variant prefix.
 const DOOR_COLOR_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border)-(?:${PALETTE}|white|black)(?:-(?:50|[1-9]00|950))?(?:/\\d+)?(?![\\w-])`, 'g');
@@ -48,7 +49,7 @@ const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demos?|temp
  * @param opts { uiDirs: string[], kitNames: Set<string> } — catalogue folders
  *   and the component names defined in them
  */
-export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(), retuned = [] } = {}) {
+export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(), retuned = [], families = null } = {}) {
   const inCatalogue = (f) => uiDirs.some((d) => f === d || f.startsWith(`${d}/`));
   const names = [...kitNames].filter((n) => /^[A-Z][A-Za-z0-9]*$/.test(n));
   const doorOpen = names.length
@@ -73,9 +74,13 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(),
     ownFiles += 1;
 
     // a palette name the theme gave its own colour is the theme, not drift
+    // and a palette grey is only drift where the theme has a grey of its own
+    // (families is set for a Tailwind theme; a shadcn theme always has both)
+    const hasFamily = (c) => !families || (GREY_HUE_RE.test(c) ? families.grey : families.colour);
     const tinHits = [...src.matchAll(PALETTE_CLASS_RE)].map((m) => m[0])
-      .filter((c) => !retunedSet.has(c.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, '')));
-    const wbHits = [...src.matchAll(DARK_WB_RE)].map((m) => m[0]);
+      .filter((c) => !retunedSet.has(c.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, '')))
+      .filter(hasFamily);
+    const wbHits = [...src.matchAll(DARK_WB_RE)].map((m) => m[0]).filter(hasFamily);
     const all = [...tinHits, ...wbHits];
     if (all.length) {
       const counts = new Map();

@@ -2681,7 +2681,7 @@
       ]
     },
     "tailwind": {
-      "builtAt": "2026-09-16T21:38:40.611Z",
+      "builtAt": "2026-09-16T21:44:16.645Z",
       "repoCount": 10,
       "note": "every repo in the fleet the scanner reads as tailwind; the \"cleaner than\" line on a tailwind repo reads against these",
       "ideal2026": {

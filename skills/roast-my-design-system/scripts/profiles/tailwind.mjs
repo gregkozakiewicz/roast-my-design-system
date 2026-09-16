@@ -19,7 +19,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { PALETTE } from './shadcn-data.mjs';
 import { TAILWIND_DEFAULTS } from './tailwind-defaults.mjs';
-import { canonical } from '../lib/color.mjs';
+import { canonical, parseColor } from '../lib/color.mjs';
 
 const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return ''; } };
 // Tailwind's own palette names (plus the black, white and keyword colours it also
@@ -62,6 +62,32 @@ function readTheme(root, styleFiles) {
     if (!best || own.length > best.own.length) best = { file: f, names, own, tuned };
   }
   return best;
+}
+
+// Which kinds of colour the theme names: greys, real colours, or both. A palette
+// grey is only drift when the theme has a grey of its own to use instead
+// (hey.xyz names four brand pinks and no grey, 2026-09-16).
+const GREY_NAME_RE = /gr[ae]y|neutral|slate|zinc|stone|surface|background|foreground|(^|-)(bg|fg|text|border|line|divider|muted|ink|base|canvas|charcoal|contrast)(-|\d|$)/;
+function themeFamilies(root, styleFiles, names) {
+  const defs = new Map();
+  for (const f of styleFiles ?? []) {
+    for (const d of read(join(root, f)).matchAll(/(--[\w-]+)\s*:\s*([^;{}]+);/g)) if (!defs.has(d[1])) defs.set(d[1], d[2].trim());
+  }
+  const resolve = (v, depth = 0) => {
+    const m = /^var\(\s*(--[\w-]+)\s*(?:,\s*([^)]+))?\)$/.exec(v);
+    if (!m) return v;
+    if (depth > 4) return null;
+    const pal = /^--color-(.+)$/.exec(m[1]);
+    const next = defs.get(m[1]) ?? (pal ? TAILWIND_DEFAULTS[pal[1]] : undefined) ?? m[2];
+    return next === undefined ? null : resolve(next.trim(), depth + 1);
+  };
+  const out = { grey: false, colour: false };
+  for (const [n, v] of names) {
+    const c = parseColor(resolve(v) ?? '');
+    const grey = c ? Math.max(c.r, c.g, c.b) - Math.min(c.r, c.g, c.b) <= 12 : GREY_NAME_RE.test(n);
+    out[grey ? 'grey' : 'colour'] = true;
+  }
+  return out;
 }
 
 /** How often the repo writes its own names as classes (bg-surface, text-brand),
@@ -130,6 +156,8 @@ export default {
       restated: theme.names.size - theme.own.length,
       // Tailwind names given the repo's own colours: on-theme, never drift
       retuned: theme.tuned,
+      // which palette classes have a theme colour to stand in for them
+      families: themeFamilies(root, files.styles, theme.own.map((x) => [x, theme.names.get(x)])),
       uses,
       usedIn,
       // a theme nobody uses is not the system yet: shown with receipts, not scored

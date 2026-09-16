@@ -15,7 +15,7 @@ export const WHY = {
     'A palette class such as text-gray-500 or bg-blue-100 skips that file. It works on the day. It stops working at the first theme change: the variables move, the palette colour stays, and the page shows 2 designs at once. Dark mode is where it shows first. A variable carries both values; a palette class carries one, so someone adds dark:bg-gray-900 next to it, and now there are 2 places to keep in step. An AI agent reading that file copies the pair.',
     'The ideal is 25 per 100 files. That is where the tidiest third of 15 shadcn repos in the benchmark sit; the median is 62. shadcn\'s own rules for agents say it in 1 line: use semantic colours, never bg-blue-500.',
   ],
-  // DRAFT for Greg's approval (2026-09-16): the same tile on a Tailwind repo.
+  // The same tile on a Tailwind repo (approved by Greg, 2026-09-16).
   paintTinTailwind: [
     'Your theme names each colour once: a line like --color-surface in the stylesheet, and the class bg-surface wherever it is used. Change the line and every screen follows, the way a price change at the till reaches every shelf.',
     'A palette class such as text-gray-500 or bg-blue-100 skips the theme. It looks right on the day. At the first theme change the named colours move and the palette class stays where it was, so the page shows 2 designs at once. An AI agent reading that file cannot tell which one is the rule, and copies whichever it sees more often.',

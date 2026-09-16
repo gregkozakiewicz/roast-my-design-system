@@ -102,3 +102,30 @@ test('a slice ideal replaces the general one for that kind only', async () => {
   assert.equal(benchHelpers(bench, 'tailwind').ideal('paintTin'), 3);
   assert.equal(benchHelpers(bench, 'shadcn').ideal('paintTin'), 25);
 });
+
+test('a theme of brand colours only does not turn palette greys into drift', async () => {
+  const { countPaint } = await import('../../skills/roast-my-design-system/scripts/harvest/paint.mjs');
+  const page = { 'src/a.tsx': '<div className="bg-brand-500 text-brand-600 border-brand-50 text-gray-500 dark:bg-black bg-red-500" />' };
+  const { profile } = recognise(page, small(['brand-50', 'brand-500', 'brand-600']));
+  assert.deepEqual(profile.tailwind.families, { grey: false, colour: true });
+  const root = mkdtempSync(join(tmpdir(), 'roast-tw-'));
+  try {
+    writeFileSync(join(root, 'a.tsx'), page['src/a.tsx']);
+    assert.equal(countPaint(root, ['a.tsx']).tin.uses, 3);
+    assert.equal(countPaint(root, ['a.tsx'], { families: profile.tailwind.families }).tin.uses, 1);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('a colour behind a variable is read through it', () => {
+  const css = `:root { --ink: #222; --pink: #f36; }
+@theme {
+  --color-text: var(--ink);
+  --color-accent: var(--pink);
+  --color-highlight: var(--missing, #ff0);
+}
+`;
+  const { profile } = recognise({ 'src/a.tsx': '<div className="text-text bg-accent bg-highlight" />' }, css);
+  assert.deepEqual(profile.tailwind.families, { grey: true, colour: true });
+});

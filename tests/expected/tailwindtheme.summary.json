@@ -4,7 +4,12 @@
   "benchmark": {
     "builtAt": "2026-09-10T23:51:05.104Z",
     "repoCount": 34,
-    "referenceSystems": 10
+    "referenceSystems": 10,
+    "slice": {
+      "kind": "tailwind",
+      "repoCount": 10,
+      "builtAt": "2026-09-16T21:32:53.682Z"
+    }
   },
   "score": 91,
   "noSystemLikely": false,

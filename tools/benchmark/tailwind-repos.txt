@@ -1,0 +1,24 @@
+# Candidates for the Tailwind slice: public repos with a Tailwind v4 @theme.
+# The engine decides membership, as for every slice: only the ones it reads as
+# `tailwind` with the theme adopted are measured. Gathered 2026-09-16 from the
+# fleet plus popular, recently active Tailwind repos on GitHub.
+# One per line: github org/repo. Lines starting with # are skipped.
+
+Infisical/infisical
+triggerdotdev/trigger.dev
+baptisteArno/typebot.io
+nodejs/nodejs.org
+fuma-nama/fumadocs
+C4illin/ConvertX
+slymnoyann/hey.xyz
+resend/react-email
+sst/opencode
+mastra-ai/mastra
+langgenius/dify
+
+# read, not Tailwind by the engine's reading (kept so a rebuild re-checks them)
+plausible/analytics
+huggingface/chat-ui
+evidence-dev/evidence
+tailwindlabs/tailwindcss.com
+makeplane/plane

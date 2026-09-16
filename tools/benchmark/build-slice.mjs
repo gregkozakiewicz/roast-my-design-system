@@ -8,6 +8,7 @@
  * curated ideals are left exactly as they were.
  *
  *   node tools/benchmark/build-slice.mjs --clones <dir> [--kind shadcn] [--repos repos.txt] [--out benchmark.json]
+ *   node tools/benchmark/build-slice.mjs --clones <dir> --kind tailwind --repos tools/benchmark/tailwind-repos.txt
  *
  * Which repos belong to the slice is decided by the engine's own profile
  * layer (profiles/), never by a hand list: the slice is "every repo in the
@@ -44,7 +45,7 @@ const present = new Set(readdirSync(clonesDir));
 const rows = [];
 for (const full of wanted) {
   const name = full.split('/')[1];
-  const dir = [name, name.toLowerCase()].find((d) => present.has(d) && existsSync(join(clonesDir, d, '.git')));
+  const dir = [name, name.toLowerCase(), full.replace('/', '-')].find((d) => present.has(d) && existsSync(join(clonesDir, d, '.git')));
   if (!dir) { console.error(`  ✗ missing clone: ${full}`); continue; }
   const root = join(clonesDir, dir);
   const t0 = Date.now();
@@ -55,6 +56,8 @@ for (const full of wanted) {
     decideProfile(profile, components, files, root);
     const P = profileOf(profile);
     if (P.kind !== kind) { console.log(`  · ${full}: ${P.kind}, not in the ${kind} slice`); continue; }
+    // a theme nobody uses yet is shown, not scored, so it is no yardstick either
+    if (kind === 'tailwind' && !profile.tailwind?.adopted) { console.log(`  · ${full}: theme not adopted yet, not in the slice`); continue; }
     const tokens = harvestTokens(root, files.styles, files.code);
     const dupes = findDuplicates(components, profile.uiDir, root);
     const reusable = components.filter((c) => !c.isPage);
@@ -63,14 +66,17 @@ for (const full of wanted) {
     const doorFiles = new Set(allInstalled.flatMap((d) => files.code.filter((f) => f === d || f.startsWith(`${d}/`))));
     const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
     // as the harvest counts: registries in, catalogue and blocks out
-    const paint = countPaint(root, files.code, { uiDirs: [...P.uiDirs, ...(profile.shadcn?.blockFiles ?? [])], kitNames });
+    const paint = kind === 'tailwind'
+      ? countPaint(root, files.code, { retuned: profile.tailwind?.retuned ?? [] })
+      : countPaint(root, files.code, { uiDirs: [...P.uiDirs, ...(profile.shadcn?.blockFiles ?? [])], kitNames });
     const ownArbitrary = splitArbitrary(tokens.tailwind.arbitrary ?? [], allInstalled).own;
     rows.push({
       repo: full,
       confidence: P.confidence,
       style: profile.shadcn?.kit?.style ?? null,
       baseColor: profile.shadcn?.kit?.baseColor ?? null,
-      tailwind: profile.shadcn?.kit?.tailwind ?? null,
+      tailwind: profile.shadcn?.kit?.tailwind ?? profile.tailwindVersion ?? null,
+      ...(kind === 'tailwind' ? { themeNames: profile.tailwind.names.length, retuned: profile.tailwind.retuned.length, themeUses: profile.tailwind.uses } : {}),
       codeFiles: files.code.length,
       ownFiles: paint.ownFiles,
       metrics: {
@@ -106,6 +112,7 @@ const quantile = (sorted, q) => {
   return Math.round(sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo));
 };
 const stats = {};
+if (kind === 'tailwind') for (const r of rows) delete r.metrics.doorOverrides;
 for (const m of Object.keys(rows[0].metrics)) {
   const values = rows.map((r) => r.metrics[m]).sort((a, b) => a - b);
   stats[m] = { values, p25: quantile(values, 0.25), median: quantile(values, 0.5), p75: quantile(values, 0.75), p90: quantile(values, 0.9) };
@@ -128,5 +135,6 @@ bench.slices[kind] = {
 writeFileSync(outPath, JSON.stringify(bench, null, 2));
 console.log(`\n✓ ${kind} slice from ${rows.length} repos → ${outPath}`);
 for (const m of ['colors', 'exactDuplicates', 'arbitrary', 'paintTin', 'doorOverrides']) {
+  if (!stats[m]) continue;
   console.log(`  ${m}: median ${stats[m].median} (p25 ${stats[m].p25} / p75 ${stats[m].p75})   ideal: ${bench.ideal2026[m]?.value ?? '—'}`);
 }

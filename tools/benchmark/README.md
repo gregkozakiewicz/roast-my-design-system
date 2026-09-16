@@ -44,3 +44,20 @@ scanner reads as shadcn. The general statistics are not touched by this
 script. On a shadcn repo the report's fleet line reads "Avg shadcn repo" and
 the "cleaner than" percentage is against the slice.
 
+
+## The Tailwind slice
+
+A repo with a Tailwind v4 theme of its own is compared with other such repos.
+Few of them sit in the general fleet (most Tailwind repos there are shadcn
+installs, which the shadcn slice takes first), so the candidates have their
+own list, `tailwind-repos.txt`. The engine still decides membership: only the
+repos it reads as `tailwind` with the theme adopted are measured. The slice
+carries the general statistics plus `paintTin`; it has no `doorOverrides`.
+
+```bash
+node tools/benchmark/build-slice.mjs --clones ~/roast-clones --kind tailwind --repos tools/benchmark/tailwind-repos.txt
+```
+
+Clone folders may be named `repo` or `org-repo`. The ideal for `paintTin` is
+still the shadcn one (25 per 100 files) while the Tailwind median is 9
+(10 repos, 2026-09-16).

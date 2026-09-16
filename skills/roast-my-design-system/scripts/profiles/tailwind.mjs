@@ -18,11 +18,26 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { PALETTE } from './shadcn-data.mjs';
+import { TAILWIND_DEFAULTS } from './tailwind-defaults.mjs';
+import { canonical } from '../lib/color.mjs';
 
 const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return ''; } };
 // Tailwind's own palette names (plus the black, white and keyword colours it also
 // ships): a theme that restates them adds no vocabulary
 const PALETTE_NAME_RE = new RegExp(`^(?:(?:${PALETTE})(?:-(?:50|[1-9]00|950))?|black|white|transparent|current|inherit)$`);
+// A restated palette name counts as the repo's own when its value was changed on
+// purpose: Hugging Face Chat redefines all eleven greys, Plausible points yellow
+// at amber (2026-09-16). A copy of Tailwind's own value adds nothing.
+const near = (a, b) => a.split(',').every((x, i) => Math.abs(Number(x) - Number(b.split(',')[i])) <= 2);
+function retuned(name, value) {
+  const v = value.replace(/\s+/g, ' ').trim().toLowerCase();
+  const d = TAILWIND_DEFAULTS[name];
+  if (d === undefined || v === d.toLowerCase()) return false;
+  if (v === `var(--color-${name})` || v === 'initial') return false;
+  const cv = canonical(v), cd = canonical(d);
+  return !(cv && cd && near(cv, cd));
+}
+
 // what counts as a theme worth judging
 // three, not six: a small brand palette used everywhere is still a system
 // (hey.xyz: four brand shades; ConvertX: four colours, 2026-09-16)
@@ -42,8 +57,9 @@ function readTheme(root, styleFiles) {
       }
     }
     if (!names.size) continue;
-    const own = [...names.keys()].filter((n) => !PALETTE_NAME_RE.test(n));
-    if (!best || own.length > best.own.length) best = { file: f, names, own };
+    const tuned = [...names].filter(([n, v]) => PALETTE_NAME_RE.test(n) && retuned(n, v)).map(([n]) => n);
+    const own = [...names.keys()].filter((n) => !PALETTE_NAME_RE.test(n) || tuned.includes(n));
+    if (!best || own.length > best.own.length) best = { file: f, names, own, tuned };
   }
   return best;
 }
@@ -84,6 +100,13 @@ export default {
     // the dependency is the only claim that the repo is a Tailwind repo
     if (!(profile.stylingDeps ?? []).some((d) => /tailwind/i.test(d))) return null;
 
+    // Svelte and Vue files are not read yet, so their class uses cannot be
+    // counted: Hugging Face Chat writes its greys 1,591 times in .svelte and
+    // would be told its theme is "not adopted yet" (2026-09-16). Stand aside.
+    const blind = (files.other ?? []).filter((f) => /\.(svelte|vue)$/.test(f)).length;
+    const seen = (files.code ?? []).filter((f) => /\.(tsx|jsx)$/.test(f)).length;
+    if (blind > seen) return null;
+
     const theme = readTheme(root, files.styles);
     if (!theme || theme.own.length < MIN_NAMES) return null;
     const { uses, files: usedIn } = countUses(root, files.code, files.styles, theme.own);
@@ -94,7 +117,7 @@ export default {
     if (uses === 0) return null;
 
     const evidence = [
-      `${theme.own.length} colour variables of its own in ${theme.file}${theme.names.size > theme.own.length ? ` (${theme.names.size - theme.own.length} restate Tailwind's palette and are not counted as vocabulary)` : ''}`,
+      `${theme.own.length} colour variables of its own in ${theme.file}${theme.names.size > theme.own.length ? ` (${theme.names.size - theme.own.length} restate Tailwind's palette unchanged and are not counted as vocabulary)` : ''}${theme.tuned.length ? `, ${theme.tuned.length} of them Tailwind names given new colours` : ''}`,
       uses >= MIN_USES
         ? `used as classes ${uses} times across ${usedIn} files`
         : `used as classes ${uses} times: defined, but not adopted yet`,
@@ -105,6 +128,8 @@ export default {
       file: theme.file,
       names: theme.own,
       restated: theme.names.size - theme.own.length,
+      // Tailwind names given the repo's own colours: on-theme, never drift
+      retuned: theme.tuned,
       uses,
       usedIn,
       // a theme nobody uses is not the system yet: shown with receipts, not scored

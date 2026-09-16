@@ -13,13 +13,14 @@
   "kind": "tailwind",
   "tailwind": {
     "file": "app/globals.css",
-    "names": 8,
-    "restated": 1,
+    "names": 9,
+    "restated": 0,
+    "retuned": 1,
     "uses": 21,
     "usedIn": 4,
     "adopted": true,
     "evidence": [
-      "8 colour variables of its own in app/globals.css (1 restate Tailwind's palette and are not counted as vocabulary)",
+      "9 colour variables of its own in app/globals.css, 1 of them Tailwind names given new colours",
       "used as classes 21 times across 4 files",
       "Tailwind v4 theme block"
     ]

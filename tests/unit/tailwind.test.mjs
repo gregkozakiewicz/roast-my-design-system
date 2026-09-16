@@ -21,7 +21,7 @@ const theme = `@import "tailwindcss";
 }
 `;
 
-function recognise(files, css = theme) {
+function recognise(files, css = theme, other = []) {
   const root = mkdtempSync(join(tmpdir(), 'roast-tw-'));
   try {
     mkdirSync(join(root, 'src'), { recursive: true });
@@ -31,6 +31,7 @@ function recognise(files, css = theme) {
     const ctx = {
       root,
       files: {
+        other,
         styles: ['src/theme.css', ...Object.keys(files).filter((f) => f.endsWith('.css'))],
         code: Object.keys(files).filter((f) => !f.endsWith('.css')),
       },
@@ -71,4 +72,26 @@ test('three colours of its own are enough; two are not', () => {
   const page = { 'src/a.tsx': '<div className="bg-brand-50 text-brand-500 border-brand-600" />' };
   assert.ok(recognise(page, small(['brand-50', 'brand-500', 'brand-600'])).result);
   assert.equal(recognise(page, small(['brand-50', 'brand-500'])).result, null);
+});
+
+test('a Tailwind name given a new colour is the repo\'s own; an unchanged copy is not', () => {
+  const css = `@theme {
+  --color-gray-50: #eaeaea;
+  --color-gray-600: #454545;
+  --color-yellow-500: var(--color-amber-500);
+  --color-red-500: oklch(63.7% 0.237 25.331);
+  --color-red-600: var(--color-red-600);
+}
+`;
+  const page = { 'src/a.tsx': '<div className="bg-gray-50 text-gray-600 hover:bg-yellow-500/50 text-red-500" />' };
+  const { profile } = recognise(page, css);
+  assert.deepEqual(profile.tailwind.retuned, ['gray-50', 'gray-600', 'yellow-500']);
+  assert.equal(profile.tailwind.restated, 2);
+  assert.equal(profile.tailwind.uses, 3);
+});
+
+test('a repo whose interface is mostly Svelte or Vue is not judged as a Tailwind theme', () => {
+  const page = { 'src/a.tsx': '<div className="bg-brand-500" />' };
+  assert.equal(recognise(page, theme, ['src/A.svelte', 'src/B.svelte']).result, null);
+  assert.ok(recognise(page, theme, ['src/A.vue']).result);
 });

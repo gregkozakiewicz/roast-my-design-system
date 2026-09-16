@@ -48,13 +48,14 @@ const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demos?|temp
  * @param opts { uiDirs: string[], kitNames: Set<string> } — catalogue folders
  *   and the component names defined in them
  */
-export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set() } = {}) {
+export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(), retuned = [] } = {}) {
   const inCatalogue = (f) => uiDirs.some((d) => f === d || f.startsWith(`${d}/`));
   const names = [...kitNames].filter((n) => /^[A-Z][A-Za-z0-9]*$/.test(n));
   const doorOpen = names.length
     ? new RegExp(`<(${names.join('|')})\\b[^>]*?className=(?:"([^"]*)"|\\{cn\\(\\s*["'\`]([^"'\`]*)["'\`])`, 'g')
     : null;
 
+  const retunedSet = new Set(retuned);
   let ownFiles = 0;
   const tin = { uses: 0, files: 0, top: [], samples: new Map() };
   const doors = { uses: 0, files: 0, top: [], samples: new Map() };
@@ -71,7 +72,9 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set() 
     if (src === null || exemptReason(f, src)) continue;
     ownFiles += 1;
 
-    const tinHits = [...src.matchAll(PALETTE_CLASS_RE)].map((m) => m[0]);
+    // a palette name the theme gave its own colour is the theme, not drift
+    const tinHits = [...src.matchAll(PALETTE_CLASS_RE)].map((m) => m[0])
+      .filter((c) => !retunedSet.has(c.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, '')));
     const wbHits = [...src.matchAll(DARK_WB_RE)].map((m) => m[0]);
     const all = [...tinHits, ...wbHits];
     if (all.length) {

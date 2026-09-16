@@ -27,7 +27,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 ### The Tailwind theme
 
-- This repo names its colours in `app/globals.css`: `surface`, `surface-raised`, `ink`, `ink-quiet`, `brand`, `brand-strong`, `edge`, `danger`. Use them as classes (`bg-surface`), never a palette class like `bg-blue-500` or `text-gray-600` where one of these exists.
+- This repo names its colours in `app/globals.css`: `surface`, `surface-raised`, `ink`, `ink-quiet`, `brand`, `brand-strong`, `edge`, `danger`. Use them as classes (`bg-surface`), never a palette class like `bg-gray-600` or `text-red-500` where one of these exists.
+- `app/globals.css` gives 1 of Tailwind's own names this repo's colours: `blue-500`. Those classes are the theme here, not stray palette colours. Use them as they are and never restate their values in a component.
 - The scan found 4 palette classes in own code (`text-slate-500`, `bg-blue-100`, `text-blue-700`). Do not add more; if a colour you need is missing, add it to the theme once and use it by name.
 
 ### Styling discipline

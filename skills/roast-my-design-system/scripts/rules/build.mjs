@@ -180,7 +180,12 @@ if (neverImported.length >= 3) {
   if (P.isTailwind && P.tailwind) {
     const t = P.tailwind;
     section('The Tailwind theme');
-    rule(`This repo names its colours in \`${t.file}\`: ${t.names.slice(0, 8).map((x) => `\`${x}\``).join(', ')}${t.names.length > 8 ? ` and ${t.names.length - 8} more` : ''}. Use them as classes (\`bg-${t.names[0]}\`), never a palette class like \`bg-blue-500\` or \`text-gray-600\` where one of these exists.`);
+    const tuned = new Set(t.retuned ?? []);
+    const fresh = t.names.filter((x) => !tuned.has(x));
+    // the example of what not to write must not be a name this theme retuned
+    const [a, b] = ['blue-500', 'gray-600', 'red-500', 'slate-600', 'emerald-500', 'zinc-600'].filter((x) => !tuned.has(x));
+    if (fresh.length) rule(`This repo names its colours in \`${t.file}\`: ${fresh.slice(0, 8).map((x) => `\`${x}\``).join(', ')}${fresh.length > 8 ? ` and ${fresh.length - 8} more` : ''}. Use them as classes (\`bg-${fresh[0]}\`), never a palette class like \`bg-${a}\` or \`text-${b}\` where one of these exists.`);
+    if (tuned.size) rule(`\`${t.file}\` gives ${tuned.size} of Tailwind's own names this repo's colours: ${[...tuned].slice(0, 8).map((x) => `\`${x}\``).join(', ')}${tuned.size > 8 ? ` and ${tuned.size - 8} more` : ''}. Those classes are the theme here, not stray palette colours. Use them as they are and never restate their values in a component.`);
     if (t.paint?.tin?.uses) rule(`The scan found ${t.paint.tin.uses} palette classes in own code${t.paint.tin.samples?.length ? ` (${t.paint.tin.samples.slice(0, 3).map((x) => `\`${x.value}\``).join(', ')})` : ''}. Do not add more; if a colour you need is missing, add it to the theme once and use it by name.`);
     if (!t.adopted) rule(`The theme is defined but barely used (${t.uses} class uses). Before adding colours anywhere, check whether the theme already names what you need.`);
   }

@@ -107,7 +107,7 @@ if (profileOf(profile).isRegistry) {
 {
   const P = profileOf(profile);
   if (P.isTailwind && profile.tailwind?.adopted) {
-    profile.tailwind.paint = countPaint(target, files.code, { uiDirs: [], kitNames: new Set() });
+    profile.tailwind.paint = countPaint(target, files.code, { uiDirs: [], kitNames: new Set(), retuned: profile.tailwind.retuned });
   }
 }
 // A shadcn kitchen gets the 2 paint checks from shadcn's own agent rules,

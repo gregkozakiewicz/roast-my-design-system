@@ -24,7 +24,9 @@ const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return '';
 // ships): a theme that restates them adds no vocabulary
 const PALETTE_NAME_RE = new RegExp(`^(?:(?:${PALETTE})(?:-(?:50|[1-9]00|950))?|black|white|transparent|current|inherit)$`);
 // what counts as a theme worth judging
-const MIN_NAMES = 6;
+// three, not six: a small brand palette used everywhere is still a system
+// (hey.xyz: four brand shades; ConvertX: four colours, 2026-09-16)
+const MIN_NAMES = 3;
 const MIN_USES = 20;
 
 /** Colour variables declared in @theme blocks: name → value, first wins. */

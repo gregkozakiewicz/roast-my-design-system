@@ -21,11 +21,11 @@ const theme = `@import "tailwindcss";
 }
 `;
 
-function recognise(files) {
+function recognise(files, css = theme) {
   const root = mkdtempSync(join(tmpdir(), 'roast-tw-'));
   try {
     mkdirSync(join(root, 'src'), { recursive: true });
-    writeFileSync(join(root, 'src/theme.css'), theme);
+    writeFileSync(join(root, 'src/theme.css'), css);
     for (const [f, body] of Object.entries(files)) writeFileSync(join(root, f), body);
     const profile = { stylingDeps: ['Tailwind CSS'] };
     const ctx = {
@@ -63,4 +63,12 @@ test('@apply in a stylesheet counts as use', () => {
 test('a class name outside @apply in a stylesheet is not a use', () => {
   const { result } = recognise({ 'src/b.css': '/* bg-surface */ .bg-surface { color: red; }\n' });
   assert.equal(result, null);
+});
+
+const small = (names) => `@theme {\n${names.map((n) => `  --color-${n}: #123;`).join('\n')}\n}\n`;
+
+test('three colours of its own are enough; two are not', () => {
+  const page = { 'src/a.tsx': '<div className="bg-brand-50 text-brand-500 border-brand-600" />' };
+  assert.ok(recognise(page, small(['brand-50', 'brand-500', 'brand-600'])).result);
+  assert.equal(recognise(page, small(['brand-50', 'brand-500'])).result, null);
 });

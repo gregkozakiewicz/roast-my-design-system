@@ -313,7 +313,12 @@ if (staleOwn.length >= 2) candidates.push({ ratio: 1.2 + staleOwn.length / 10, t
 const findings = candidates.sort((a, b) => b.ratio - a.ratio).map((c) => c.text);
 
 const utilityPalette = ds.kind === 'shadcn' && ds.cssVariables === false && twColorUtils >= 5;
-const noSystemLikely = !utilityPalette && !(P.isRegistry && P.registry?.themes?.total) && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0));
+// Nothing to measure comes in two shapes: a repo with no styling at all, and
+// a repo with plenty of code whose colour system lives somewhere else (strapi:
+// 3,134 files, 1 colour, no stylesheet, @strapi/design-system installed).
+// Both get no score rather than a flattering one (2026-09-16).
+const systemElsewhere = colors.length < 5 && !h.tokens.tokenFile && twColorUtils < 5 && (h.files.code ?? 0) >= 200;
+const noSystemLikely = !utilityPalette && !(P.isRegistry && P.registry?.themes?.total) && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0) || systemElsewhere);
 // A scan that found almost no styling has not measured health: every tile
 // reads good because every count is zero. Withhold the number and say where
 // the UI probably is (better-auth: 257 UI files, all under demo/ and docs/,
@@ -321,8 +326,12 @@ const noSystemLikely = !utilityPalette && !(P.isRegistry && P.registry?.themes?.
 const skippedDirs = h.files?.skippedDirs ?? [];
 const skippedUI = skippedDirs.reduce((a, e) => a + e.files, 0);
 let verdict = noSystemLikely
-  ? `${skippedUI >= 20
+  ? `${skippedUI >= 20 && !systemElsewhere
     ? `The UI in this repo sits in folders the scan skips on purpose (${skippedDirs.slice(0, 3).map((e) => `${e.dir}, ${n(e.files)} files`).join('; ')}), so there was almost nothing here to measure.`
+    : systemElsewhere && (h.profile?.designSystemDeps ?? []).length
+    ? `Almost no colour values were found in ${n(h.files.code)} code files, and this repo installs ${(h.profile.designSystemDeps).map((d) => d).join(', ')}: its colour system lives in that package, not here.`
+    : systemElsewhere
+    ? `Almost no colour values were found in ${n(h.files.code)} code files, so the colour system lives somewhere this scan cannot see: a package this repo installs, a CDN stylesheet, or a parent repo.`
     : 'Almost no colour or spacing values were found in this repo, so there is nothing here to measure.'} No score is given: every count is zero because the scan read nothing, which is not the same as a repo in good shape.`
   : fresh
   ? 'A fresh shadcn install with nothing built on it yet. Everything below describes the kit you are starting from.'
@@ -1978,8 +1987,10 @@ ${ogTags()}
 <div class="wrap">
 ${sidePanel()}
 <main class="main">
-  ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>${skippedUI >= 20
+  ${noSystemLikely ? `<div class="nods">${ICONS.warn}<span>${skippedUI >= 20 && !systemElsewhere
     ? `<b>Almost nothing here was measured.</b> The UI in this repo sits in folders the scan skips on purpose: ${skippedDirs.slice(0, 4).map((e) => `<span class="mono">${esc(e.dir)}</span> (${n(e.files)} files)`).join(', ')}. A docs site, a demo or an examples folder carries its own styling, which is not the product's design language, so none of it was read. No score is given. To measure one of them, scan that folder directly.`
+    : systemElsewhere
+    ? `<b>The colour system is not in this repo.</b> ${n(h.files.code)} code files were read and almost no colour values were found${(h.profile?.designSystemDeps ?? []).length ? `, while <span class="mono">${esc(h.profile.designSystemDeps.join(', '))}</span> ${h.profile.designSystemDeps.length === 1 ? 'is' : 'are'} installed` : ''}. The tokens, the palette and the scale live in a package this repo depends on, so there is nothing here to measure and no score is given. Scan that package to see its system.`
     : `There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output). No score is given.`}</span></div>` : ''}
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>

@@ -298,6 +298,10 @@ export function profileRepo(root, files) {
     typescript: Boolean(deps.typescript || existsSync(join(root, 'tsconfig.json'))),
     designSystem,
     stylingDeps: styling,
+    // Packages that look like a design system this repo installs rather than
+    // owns. When a repo's colours are nowhere to be found, this names where
+    // they probably live (strapi installs @strapi/design-system, 2026-09-16).
+    designSystemDeps: Object.keys(deps).filter((d) => /(^|\/)(design-system|design_system|ui-kit|uikit)$/.test(d) || /^@[\w-]+\/(ui|design|design-system|components)$/.test(d)).slice(0, 4),
     importAlias: componentsJson?.aliases?.components?.split('/')[0] || alias || null,
     uiDir: uiDir || null,
     // A vendored catalogue is not components this team wrote: `shadcn add`

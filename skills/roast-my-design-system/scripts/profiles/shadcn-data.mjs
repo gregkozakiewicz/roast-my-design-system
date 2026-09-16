@@ -113,4 +113,8 @@ export const THEMES = [
 ];
 
 // Tailwind's named palette: paint from a tin when it appears in own code.
-export const PALETTE = 'slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose';
+// Tailwind's own hues. mauve, olive, mist and taupe arrived in 4.2 (they are
+// also shadcn base colours); without them a repo restating Tailwind's palette
+// looked like it had a vocabulary of its own (caught 2026-09-16 on
+// tailwindlabs/tailwindcss).
+export const PALETTE = 'slate|gray|zinc|neutral|stone|mauve|olive|mist|taupe|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose';

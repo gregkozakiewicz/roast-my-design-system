@@ -77,6 +77,11 @@ export default {
     const theme = readTheme(root, files.styles);
     if (!theme || theme.own.length < MIN_NAMES) return null;
     const { uses, files: usedIn } = countUses(root, files.code, theme.own);
+    // A theme nothing in the repo uses is not this repo's system: it is a
+    // package's default theme sitting in the tree (tailwindlabs/tailwindcss
+    // ships Tailwind's own, 2026-09-16). Under 20 uses is "defined, not
+    // adopted yet" and still worth reporting; zero is not a claim at all.
+    if (uses === 0) return null;
 
     const evidence = [
       `${theme.own.length} colour variables of its own in ${theme.file}${theme.names.size > theme.own.length ? ` (${theme.names.size - theme.own.length} restate Tailwind's palette and are not counted as vocabulary)` : ''}`,

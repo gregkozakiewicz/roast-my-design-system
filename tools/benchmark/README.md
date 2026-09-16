@@ -60,5 +60,5 @@ node tools/benchmark/build-slice.mjs --clones ~/roast-clones --kind tailwind --r
 
 Clone folders may be named `repo` or `org-repo`. The slice carries its own
 `paintTin` ideal (3 per 100 files, from `IDEAL_BY_KIND` in `ideal.mjs`) in
-place of the shadcn one (25): 4 of the 10 Tailwind repos sit at or under 3
-and the median is 9 (2026-09-16).
+place of the shadcn one (25): 4 of the 11 Tailwind repos sit at or under 3
+and the median is 10 (2026-09-16).

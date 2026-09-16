@@ -129,3 +129,13 @@ test('a colour behind a variable is read through it', () => {
   const { profile } = recognise({ 'src/a.tsx': '<div className="text-text bg-accent bg-highlight" />' }, css);
   assert.deepEqual(profile.tailwind.families, { grey: true, colour: true });
 });
+
+test('a small theme counts as used at 3 uses per colour, a big one at 20 uses', () => {
+  const page = (n) => ({ 'src/a.tsx': `<div className="${'bg-brand-500 '.repeat(n)}" />` });
+  const three = small(['brand-50', 'brand-500', 'brand-600']);
+  assert.equal(recognise(page(9), three).profile.tailwind.adopted, true);
+  assert.equal(recognise(page(8), three).profile.tailwind.adopted, false);
+  assert.equal(recognise(page(19), theme).profile.tailwind.adopted, true);
+  const many = small(Array.from({ length: 10 }, (_, i) => `brand-${i + 1}`).concat('brand-500'));
+  assert.equal(recognise(page(19), many).profile.tailwind.adopted, false);
+});

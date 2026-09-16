@@ -43,6 +43,9 @@ function retuned(name, value) {
 // (hey.xyz: four brand shades; ConvertX: four colours, 2026-09-16)
 const MIN_NAMES = 3;
 const MIN_USES = 20;
+// a small theme proves itself sooner: 3 uses per colour is enough when that is
+// under 20 (hey.xyz: 4 colours, 15 uses, Greg 2026-09-16)
+const usedEnough = (uses, names) => uses >= Math.min(MIN_USES, 3 * names);
 
 /** Colour variables declared in @theme blocks: name → value, first wins. */
 function readTheme(root, styleFiles) {
@@ -144,7 +147,7 @@ export default {
 
     const evidence = [
       `${theme.own.length} colour variables of its own in ${theme.file}${theme.names.size > theme.own.length ? ` (${theme.names.size - theme.own.length} restate Tailwind's palette unchanged and are not counted as vocabulary)` : ''}${theme.tuned.length ? `, ${theme.tuned.length} of them Tailwind names given new colours` : ''}`,
-      uses >= MIN_USES
+      usedEnough(uses, theme.own.length)
         ? `used as classes ${uses} times across ${usedIn} files`
         : `used as classes ${uses} times: defined, but not adopted yet`,
       twRaw ? `Tailwind ${twRaw}` : 'Tailwind v4 theme block',
@@ -161,8 +164,8 @@ export default {
       uses,
       usedIn,
       // a theme nobody uses is not the system yet: shown with receipts, not scored
-      adopted: uses >= MIN_USES,
+      adopted: usedEnough(uses, theme.own.length),
     };
-    return { confidence: uses >= MIN_USES ? 'high' : 'medium', evidence };
+    return { confidence: usedEnough(uses, theme.own.length) ? 'high' : 'medium', evidence };
   },
 };

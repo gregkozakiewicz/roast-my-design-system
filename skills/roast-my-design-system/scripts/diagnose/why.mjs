@@ -19,7 +19,7 @@ export const WHY = {
   paintTinTailwind: [
     'Your theme names each colour once: a line like --color-surface in the stylesheet, and the class bg-surface wherever it is used. Change the line and every screen follows, the way a price change at the till reaches every shelf.',
     'A palette class such as text-gray-500 or bg-blue-100 skips the theme. It looks right on the day. At the first theme change the named colours move and the palette class stays where it was, so the page shows 2 designs at once. An AI agent reading that file cannot tell which one is the rule, and copies whichever it sees more often.',
-    'The ideal is 3 per 100 files. 4 of the 10 Tailwind repos in the benchmark sit at or under it; the median is 9. A status colour or a chart colour with no name in the theme is not a mistake: give it a name once, and it stops counting.',
+    'The ideal is 3 per 100 files. 4 of the 11 Tailwind repos in the benchmark sit at or under it; the median is 10. A status colour or a chart colour with no name in the theme is not a mistake: give it a name once, and it stops counting.',
   ],
   themesIncomplete: [
     'A published theme is a set of CSS variables a repo installs with one command: background, foreground, primary, muted, border and the rest, each with a light value and a dark value. A component in that repo reads the variable; if the theme never set it, the component gets nothing.',

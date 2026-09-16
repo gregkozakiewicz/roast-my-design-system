@@ -46,7 +46,7 @@ export function loadBenchmark() {
  */
 export function benchHelpers(bench, kind = 'product') {
   // registries are compared with the shadcn repos, labelled as such (Greg,
-  // 2026-09-13). A tailwind repo reads the tailwind slice (10 repos,
+  // 2026-09-13). A tailwind repo reads the tailwind slice (11 repos,
   // 2026-09-16).
   const slice = bench?.slices?.[kind === 'registry' ? 'shadcn' : kind] ?? null;
   if (slice?.stats) bench = { ...bench, stats: { ...(bench?.stats ?? {}), ...slice.stats } };

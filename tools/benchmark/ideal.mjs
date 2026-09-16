@@ -42,6 +42,6 @@ export const IDEAL_2026 = {
 // Written into benchmark.json under slices.<kind>.ideal2026 by build-slice.mjs.
 export const IDEAL_BY_KIND = {
   tailwind: {
-    paintTin: { value: 3, note: 'palette colours in own code where a theme colour exists, per 100 files; 4 of the 10 Tailwind repos sit at or under this, the median is 9 (2026-09-16)' },
+    paintTin: { value: 3, note: 'palette colours in own code where a theme colour exists, per 100 files; 4 of the 11 Tailwind repos sit at or under this, the median is 10 (2026-09-16)' },
   },
 };

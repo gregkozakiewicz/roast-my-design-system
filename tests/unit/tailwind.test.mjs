@@ -95,3 +95,10 @@ test('a repo whose interface is mostly Svelte or Vue is not judged as a Tailwind
   assert.equal(recognise(page, theme, ['src/A.svelte', 'src/B.svelte']).result, null);
   assert.ok(recognise(page, theme, ['src/A.vue']).result);
 });
+
+test('a slice ideal replaces the general one for that kind only', async () => {
+  const { benchHelpers } = await import('../../skills/roast-my-design-system/scripts/diagnose/score.mjs');
+  const bench = { ideal2026: { paintTin: { value: 25 } }, stats: {}, slices: { tailwind: { stats: {}, ideal2026: { paintTin: { value: 3 } } } } };
+  assert.equal(benchHelpers(bench, 'tailwind').ideal('paintTin'), 3);
+  assert.equal(benchHelpers(bench, 'shadcn').ideal('paintTin'), 25);
+});

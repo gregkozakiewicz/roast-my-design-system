@@ -37,3 +37,11 @@ export const IDEAL_2026 = {
   doorOverrides: { value: 2, note: 'shadcn components given a colour through className, per 100 files; the tidiest half of 16 shadcn repos sit under this (2026-09-13 audit)' },
 };
 
+
+// Ideals that belong to one kind of repo and override the table above for it.
+// Written into benchmark.json under slices.<kind>.ideal2026 by build-slice.mjs.
+export const IDEAL_BY_KIND = {
+  tailwind: {
+    paintTin: { value: 3, note: 'palette colours in own code where a theme colour exists, per 100 files; 4 of the 10 Tailwind repos sit at or under this, the median is 9 (2026-09-16)' },
+  },
+};

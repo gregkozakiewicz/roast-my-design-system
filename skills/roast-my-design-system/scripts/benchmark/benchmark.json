@@ -2681,9 +2681,15 @@
       ]
     },
     "tailwind": {
-      "builtAt": "2026-09-16T21:32:53.682Z",
+      "builtAt": "2026-09-16T21:38:40.611Z",
       "repoCount": 10,
       "note": "every repo in the fleet the scanner reads as tailwind; the \"cleaner than\" line on a tailwind repo reads against these",
+      "ideal2026": {
+        "paintTin": {
+          "value": 3,
+          "note": "palette colours in own code where a theme colour exists, per 100 files; 4 of the 10 Tailwind repos sit at or under this, the median is 9 (2026-09-16)"
+        }
+      },
       "stats": {
         "colors": {
           "values": [

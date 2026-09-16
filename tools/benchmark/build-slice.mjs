@@ -28,7 +28,7 @@ import { decideProfile, profileOf, installedDirs, splitArbitrary } from '../../s
 import { distinctTypefaces } from '../../skills/roast-my-design-system/scripts/lib/typefaces.mjs';
 import { nearColorPairs } from '../../skills/roast-my-design-system/scripts/lib/nearpairs.mjs';
 import { neverImportedComponents } from '../../skills/roast-my-design-system/scripts/lib/neverimported.mjs';
-import { IDEAL_2026 } from './ideal.mjs';
+import { IDEAL_2026, IDEAL_BY_KIND } from './ideal.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 function arg(name, fallback) {
@@ -129,6 +129,7 @@ bench.slices[kind] = {
   builtAt: new Date().toISOString(),
   repoCount: rows.length,
   note: `every repo in the fleet the scanner reads as ${kind}; the "cleaner than" line on a ${kind} repo reads against these`,
+  ...(IDEAL_BY_KIND[kind] ? { ideal2026: IDEAL_BY_KIND[kind] } : {}),
   stats,
   repos: rows,
 };
@@ -136,5 +137,5 @@ writeFileSync(outPath, JSON.stringify(bench, null, 2));
 console.log(`\n✓ ${kind} slice from ${rows.length} repos → ${outPath}`);
 for (const m of ['colors', 'exactDuplicates', 'arbitrary', 'paintTin', 'doorOverrides']) {
   if (!stats[m]) continue;
-  console.log(`  ${m}: median ${stats[m].median} (p25 ${stats[m].p25} / p75 ${stats[m].p75})   ideal: ${bench.ideal2026[m]?.value ?? '—'}`);
+  console.log(`  ${m}: median ${stats[m].median} (p25 ${stats[m].p25} / p75 ${stats[m].p75})   ideal: ${(IDEAL_BY_KIND[kind]?.[m] ?? bench.ideal2026[m])?.value ?? '—'}`);
 }

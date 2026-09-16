@@ -63,7 +63,8 @@ export function benchHelpers(bench, kind = 'product') {
     if (!vals?.length) return null;
     return Math.round((vals.filter((v) => v > value).length / vals.length) * 100);
   };
-  const ideal = (metric) => bench?.ideal2026?.[metric]?.value ?? null;
+  // a slice can carry its own ideal for a tile (tailwind paintTin: 3, not shadcn's 25)
+  const ideal = (metric) => slice?.ideal2026?.[metric]?.value ?? bench?.ideal2026?.[metric]?.value ?? null;
   const median = (metric) => bench?.stats?.[metric]?.median ?? null;
   // A zero median reads as broken data ("Avg: 0 typefaces") when it means
   // "the median repo declares none". Fall back to the fleet mean there; it

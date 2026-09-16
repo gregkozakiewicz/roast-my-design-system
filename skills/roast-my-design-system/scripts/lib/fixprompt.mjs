@@ -10,9 +10,17 @@
 // The two mistakes an agent chasing points makes (three repos, 2026-09-13):
 // repainting a picture to a grey, and rounding a width another element
 // depends on. Named in the prompt for the moves where they happen.
+// A colour that identifies someone else's service is data, not styling, and
+// !important is required by a utility class and by any override of CSS a
+// library ships. Both were found by reading n8n's own prompts, 2026-09-16.
+const BRAND_LINE = "- A colour that identifies someone else's service stays where it is: an integration's brand colour, a provider's badge, a logo. Tokenise the colours your own interface uses.";
+const IMPORTANT_LINE = '- A utility class and an override of CSS a library ships both need !important to work at all. Fix the specificity only where the selector is your own; leave the ones aimed at a library, and the single-purpose classes that have to win.';
+
 const TRAP_LINES = {
-  paintTin: '- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.',
-  colors: '- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.',
+  paintTin: `- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.\n${BRAND_LINE}`,
+  colors: `- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.\n${BRAND_LINE}`,
+  nearPairs: BRAND_LINE,
+  important: IMPORTANT_LINE,
   arbitrary: '- Never round a width or height another element depends on: a preview panel, a skeleton that mirrors a chart, an editor pane. Name it if it repeats; leave it if it is one.',
   spacing: '- Never round a width or height another element depends on: a preview panel, a skeleton that mirrors a chart, an editor pane. Name it if it repeats; leave it if it is one.',
 };

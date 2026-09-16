@@ -45,7 +45,9 @@ export function loadBenchmark() {
  * ideals and the reputable-systems line are the same for every kind.
  */
 export function benchHelpers(bench, kind = 'product') {
-  // registries are compared with the shadcn repos, labelled as such (Greg, 2026-09-13)
+  // registries are compared with the shadcn repos, labelled as such (Greg,
+  // 2026-09-13). A tailwind repo has no slice yet: the fleet line reads the
+  // general benchmark, which the row already names.
   const slice = bench?.slices?.[kind === 'registry' ? 'shadcn' : kind] ?? null;
   if (slice?.stats) bench = { ...bench, stats: { ...(bench?.stats ?? {}), ...slice.stats } };
   const sliceInfo = slice ? { kind, repoCount: slice.repoCount, builtAt: slice.builtAt } : null;
@@ -108,6 +110,9 @@ export const PROFILE_TILES = {
 };
 // a registry measures what a shadcn repo measures (release (a), 2026-09-13)
 PROFILE_TILES.registry = [...PROFILE_TILES.shadcn, ['themesIncomplete', 'published themes incomplete']];
+// A Tailwind repo with its own theme gets the colour check and nothing that
+// needs a component catalogue (no restyled-component tile without one).
+PROFILE_TILES.tailwind = [['paintTin', 'off-theme colours per 100 files']];
 export const tilesFor = (kind) => [...TILES, ...(PROFILE_TILES[kind] ?? [])];
 
 /** The tiles, in report order: metric key, the label the report prints. */
@@ -134,7 +139,8 @@ export function coreMetrics(h, opts = {}) {
   const arbitraryEntries = P.isShadcn ? splitArbitrary(h.tokens?.tailwind?.arbitrary ?? [], installedDirs(P)).own : (h.tokens?.tailwind?.arbitrary ?? []);
   // ownCode: the breakdown under the score. Same metrics, paint counted on
   // own code only, so the difference is what installed registries cost.
-  const paint = opts.ownCode ? (P.shadcn?.paintOwn ?? P.shadcn?.paint) : P.shadcn?.paint;
+  const paint = P.isTailwind ? P.tailwind?.paint
+    : opts.ownCode ? (P.shadcn?.paintOwn ?? P.shadcn?.paint) : P.shadcn?.paint;
   const colors = h.tokens?.colors ?? [];
   const greys = colors.filter((c) => isGrey(c.value));
   const colorTokens = colors.filter((c) => c.isToken).length;
@@ -180,6 +186,7 @@ export function coreMetrics(h, opts = {}) {
     themesIncomplete: P.registry?.themes?.incomplete ?? 0,
     themesPublished: P.registry?.themes?.total ?? 0,
     // a registry that publishes themes and no code: the themes check is the score
+    themeUnadopted: !!(P.isTailwind && P.tailwind && !P.tailwind.adopted),
     stylesOnly: !!(P.isRegistry && P.registry?.themes?.total && (P.registry?.counted?.code ?? 0) === 0),
   };
 }
@@ -216,6 +223,8 @@ export function tileHealths(m, healthOf) {
     let value = shown[metric], healthValue = judged[metric];
     // a registry that publishes no themes has nothing to check here
     if (metric === 'themesIncomplete' && !m.themesPublished) { health = 'na'; value = null; healthValue = null; }
+    // a Tailwind theme the repo barely uses is not the system yet: shown, not scored
+    if (metric === 'paintTin' && m.themeUnadopted) health = 'info';
     if (!m.componentsMeasured && (metric === 'exactDuplicates' || metric === 'neverImported')) {
       health = 'na'; value = null; healthValue = null;
     } else if (metric === 'neverImported' && (m.isLibrary || (m.vendoredUi && m.neverImported > 0))) {

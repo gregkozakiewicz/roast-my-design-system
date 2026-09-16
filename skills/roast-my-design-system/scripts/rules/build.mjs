@@ -177,6 +177,13 @@ if (neverImported.length >= 3) {
   // Written from shadcn's docs and the agent skill it ships (skills/shadcn in
   // shadcn-ui/ui), with this repo's receipts where the scan has them.
   const P = profileOf(h);
+  if (P.isTailwind && P.tailwind) {
+    const t = P.tailwind;
+    section('The Tailwind theme');
+    rule(`This repo names its colours in \`${t.file}\`: ${t.names.slice(0, 8).map((x) => `\`${x}\``).join(', ')}${t.names.length > 8 ? ` and ${t.names.length - 8} more` : ''}. Use them as classes (\`bg-${t.names[0]}\`), never a palette class like \`bg-blue-500\` or \`text-gray-600\` where one of these exists.`);
+    if (t.paint?.tin?.uses) rule(`The scan found ${t.paint.tin.uses} palette classes in own code${t.paint.tin.samples?.length ? ` (${t.paint.tin.samples.slice(0, 3).map((x) => `\`${x.value}\``).join(', ')})` : ''}. Do not add more; if a colour you need is missing, add it to the theme once and use it by name.`);
+    if (!t.adopted) rule(`The theme is defined but barely used (${t.uses} class uses). Before adding colours anywhere, check whether the theme already names what you need.`);
+  }
   if (P.isShadcn) {
     const sc = P.shadcn ?? {};
     const sheetFile = sc.sheet?.found ? sc.sheet.file : null;

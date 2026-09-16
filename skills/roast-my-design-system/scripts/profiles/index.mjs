@@ -22,6 +22,7 @@ import { join, basename, dirname } from 'node:path';
  * fixture's expected output is byte-identical before and after.
  */
 import shadcn from './shadcn.mjs';
+import tailwind from './tailwind.mjs';
 import { readRegistry, publishesLine, variantsFromDirs, scopeFiles } from './registry.mjs';
 import { readShadcnLint } from './shadcn-lint.mjs';
 export { scopeFiles };
@@ -32,7 +33,10 @@ import product from './product.mjs';
 // says how to READ the repo (shadcn: a kit over a sheet); the role says what
 // usage MEANS (library: composition, not adoption). A shadcn library keeps
 // both: kind shadcn, role library.
-export const PROFILES = [shadcn, library, product];
+// Order matters: a shadcn repo IS a Tailwind repo, so the kit is recognised
+// first; tailwind is the fallback for a Tailwind repo with its own theme and
+// no kit. Library before product, product always last.
+export const PROFILES = [shadcn, tailwind, library, product];
 
 /**
  * Decide the repo's kind from the profiler's facts and what the scan found.
@@ -121,6 +125,9 @@ export function profileOf(h) {
     isLibrary: role === 'library',
     // a registry is read with the shadcn facts, plus what it publishes
     isShadcn: kind === 'shadcn' || kind === 'registry',
+    // a Tailwind repo with its own theme and no kit
+    isTailwind: kind === 'tailwind',
+    tailwind: p.tailwind ?? null,
     isRegistry: kind === 'registry',
     registry: p.registry ?? null,
     shadcn: p.shadcn ?? null,

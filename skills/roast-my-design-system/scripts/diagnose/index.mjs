@@ -1351,6 +1351,31 @@ function shadcnReceipt() {
   return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${receipt}</div>`;
 }
 
+// A Tailwind repo with its own theme: what the vocabulary is, how much of
+// the repo speaks it, and (when it barely does) that the theme is not the
+// system yet rather than a score.
+function tailwindReceipt() {
+  if (!P.isTailwind || !P.tailwind) return '';
+  const t = P.tailwind;
+  return `<div class="excl fresh">Read as a Tailwind repo with its own theme: ${n(t.names.length)} colour variable${t.names.length === 1 ? '' : 's'} of its own in ${esc(t.file)}${t.adopted ? `, used as classes ${n(t.uses)} times across ${n(t.usedIn)} files` : `, used as classes ${n(t.uses)} times: defined, but not adopted yet, so the colour check is shown and not scored`}. No component kit here, so nothing is read as installed code.</div><div class="excl">Evidence: ${esc(P.evidence.join(' · '))}</div>`;
+}
+
+// A Tailwind repo's own theme: the vocabulary, how much of the repo speaks
+// it, and where a palette class was written instead.
+function tailwindSection() {
+  if (!P.isTailwind || !P.tailwind) return '';
+  const t = P.tailwind;
+  const paint = t.paint;
+  const names = t.names.slice(0, 24).map((x) => `<span class="vchip">${esc(x)}</span>`).join('');
+  const parts = [`<div class="receipts">${eyebrow(`${n(t.names.length)} colour variable${t.names.length === 1 ? '' : 's'} of its own in ${esc(t.file)}${t.restated ? ` · ${n(t.restated)} more restate Tailwind's palette and are not counted as vocabulary` : ''}`)}<div class="chips-row">${names}${t.names.length > 24 ? `<span class="vchip dim">+${t.names.length - 24} more</span>` : ''}</div><p class="sub" style="margin-top:8px">${t.adopted ? `The repo writes these names as classes ${n(t.uses)} times across ${n(t.usedIn)} files. That is the system working.` : `The repo writes these names as classes only ${n(t.uses)} times. A theme nobody uses is not the system yet: the colours below are shown with receipts and take nothing off the score.`}</p></div>`];
+  if (paint) {
+    const chips = (paint.tin.samples ?? []).slice(0, 8).map((x) => `<span class="vchip bad">${esc(x.value)} ×${x.count}</span>`).join('');
+    const topFiles = (paint.tin.top ?? []).slice(0, 5).map((f) => `<span class="vchip dim" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('');
+    parts.push(`<div class="receipts">${eyebrow(`${n(paint.tin.uses)} palette colours where one of your own names exists · ${n(paint.tin.per100)} per 100 files`)}${paint.tin.uses ? `<div class="chips-row">${chips}</div><div class="chips-row">${topFiles}</div><p class="sub" style="margin-top:8px">Your theme names the colour once; a palette class decides it again at the call site. The first theme change moves the variable and leaves the palette class behind, and an agent reading that file copies whichever it finds.</p>` : '<p class="sub">Every colour in your own code comes from the theme. This is what the theme is for.</p>'}${whyToggle('paintTin')}</div>`);
+  }
+  return `<section class="glass pad">${sectionHead('Your Tailwind theme, and what goes around it', 'a theme of named colours, and the places a palette class was written instead')}${parts.join('')}</section>`;
+}
+
 // User exclusions are printed in the header, never hidden: a scoped scan must
 // say it is scoped, or the score could be quietly gamed. Grouped by source
 // (.roastignore vs --exclude), with the total number of files kept out.
@@ -1407,6 +1432,7 @@ function sidePanel() {
   const chips = `<div class="chips">${stack.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}${(P.shadcn?.sheet?.tweakcnPresent ?? 0) >= 10 ? '<span class="chip">tweakcn theme</span>' : ''}${P.shadcn?.lint ? '<span class="chip">shadcn/lint</span>' : ''}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>`;
   const facts = [
     shadcnReceipt(),
+    tailwindReceipt(),
     exclusionsLine(),
     commissionedBy ? `<div class="excl">Commissioned by <b>${esc(commissionedBy)}</b></div>` : '',
   ].join('');
@@ -1481,7 +1507,8 @@ function addIndex(page) {
   // heading text is already HTML-escaped; strip tags and leading counts only
   const short = (t) => t.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().replace(/^[\d,]+ /, '')
     .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^You sat through the roast$/, 'Your present')
-    .replace(/^The shadcn theme and the 2 shadcn checks$/, 'shadcn theme and checks').replace(/, declared .*$/, '')
+    .replace(/^The shadcn theme and the 2 shadcn checks$/, 'shadcn theme and checks')
+    .replace(/^Your Tailwind theme, and what goes around it$/, 'Your Tailwind theme').replace(/, declared .*$/, '')
     .replace(/^off-scale spacing values$/, 'Off-scale spacing').replace(/^inline style blocks?$/, 'Inline styles').replace(/^typefaces?$/, 'Typefaces');
   const entries = [];
   let i = 0;
@@ -1954,6 +1981,7 @@ ${packagesSection()}
 
 <section style="margin-top:16px">${paletteSection()}</section>
 ${sheetSection()}
+${tailwindSection()}
 
 ${spacingBars()}
 ${typographySection()}
@@ -2089,6 +2117,7 @@ if (summaryPath) {
     verdict,
     role: P.role,
     kind: P.kind,
+    ...(P.isTailwind && P.tailwind ? { tailwind: { file: P.tailwind.file, names: P.tailwind.names.length, restated: P.tailwind.restated, uses: P.tailwind.uses, usedIn: P.tailwind.usedIn, adopted: P.tailwind.adopted, evidence: P.evidence } } : {}),
     ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants, counted: P.registry.counted ?? null, showcase: P.registry.showcase ?? [], variantsDropped: P.registry.variantsDropped ?? [], themes: P.registry.themes ? { total: P.registry.themes.total, incomplete: P.registry.themes.incomplete } : null } } : {}),
     ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true, ...(P.shadcn.lint ? { lint: { file: P.shadcn.lint.file, kind: P.shadcn.lint.kind, rulesOn: lintRulesOn(P.shadcn.lint), readFully: P.shadcn.lint.readFully } } : {}) } } : {}),
     componentsMeasured,

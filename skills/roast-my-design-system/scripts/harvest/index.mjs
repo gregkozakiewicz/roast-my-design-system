@@ -84,6 +84,15 @@ if (profileOf(profile).isRegistry) {
   profile.uiDirs = []; profile.uiDir = null; profile.vendoredUi = false;
   profile.registry.counted = { code: files.code.length, styles: files.styles.length };
 }
+// A Tailwind repo with its own theme gets the one check that matters there:
+// a palette colour written where one of its own names exists. Counted over
+// own code, never in exempt files, the same counter the kits use.
+{
+  const P = profileOf(profile);
+  if (P.isTailwind && profile.tailwind?.adopted) {
+    profile.tailwind.paint = countPaint(target, files.code, { uiDirs: [], kitNames: new Set() });
+  }
+}
 // A shadcn kitchen gets the 2 paint checks from shadcn's own agent rules,
 // counted over own code only (never the kit's doors, never exempt files).
 {

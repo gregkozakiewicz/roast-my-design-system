@@ -20,9 +20,9 @@ import { join } from 'node:path';
 import { PALETTE } from './shadcn-data.mjs';
 
 const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return ''; } };
-// Tailwind's own palette names (plus the black and white it also ships): a theme
-// that restates them adds no vocabulary
-const PALETTE_NAME_RE = new RegExp(`^(?:(?:${PALETTE})(?:-(?:50|[1-9]00|950))?|black|white)$`);
+// Tailwind's own palette names (plus the black, white and keyword colours it also
+// ships): a theme that restates them adds no vocabulary
+const PALETTE_NAME_RE = new RegExp(`^(?:(?:${PALETTE})(?:-(?:50|[1-9]00|950))?|black|white|transparent|current|inherit)$`);
 // what counts as a theme worth judging
 const MIN_NAMES = 6;
 const MIN_USES = 20;
@@ -46,14 +46,21 @@ function readTheme(root, styleFiles) {
   return best;
 }
 
-/** How often the repo writes its own names as classes (bg-surface, text-brand). */
-function countUses(root, codeFiles, own) {
+/** How often the repo writes its own names as classes (bg-surface, text-brand),
+ *  in markup or in a stylesheet's @apply line (nodejs.org styles through CSS
+ *  modules: 521 uses in @apply, almost none in its components, 2026-09-16). */
+function countUses(root, codeFiles, styleFiles, own) {
   if (!own.length) return { uses: 0, files: 0 };
   const re = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border|ring|outline|from|to|via|fill|stroke|divide|decoration|placeholder|caret|accent|shadow)-(?:${own.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\w-])`, 'g');
   let uses = 0, files = 0;
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx|ts|js|mjs|vue|svelte|astro|html)$/.test(f)) continue;
     const n = (read(join(root, f)).match(re) ?? []).length;
+    if (n) { uses += n; files += 1; }
+  }
+  for (const f of styleFiles ?? []) {
+    const applies = read(join(root, f)).match(/@apply[^;}]*/g) ?? [];
+    const n = applies.reduce((sum, a) => sum + (a.match(re) ?? []).length, 0);
     if (n) { uses += n; files += 1; }
   }
   return { uses, files };
@@ -77,7 +84,7 @@ export default {
 
     const theme = readTheme(root, files.styles);
     if (!theme || theme.own.length < MIN_NAMES) return null;
-    const { uses, files: usedIn } = countUses(root, files.code, theme.own);
+    const { uses, files: usedIn } = countUses(root, files.code, files.styles, theme.own);
     // A theme nothing in the repo uses is not this repo's system: it is a
     // package's default theme sitting in the tree (tailwindlabs/tailwindcss
     // ships Tailwind's own, 2026-09-16). Under 20 uses is "defined, not

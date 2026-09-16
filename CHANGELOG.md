@@ -2,6 +2,63 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 7.10.0 — 2026-09-16
+
+A fifth profile, `tailwind`, with its own benchmark. Three fixes for scores
+that were too high on repos the scan could not properly read. Scores move for
+Tailwind repos and for the repos named below.
+
+- **The `tailwind` profile.** A repo that uses Tailwind v4 and defines at
+  least 3 colours of its own in an `@theme` block is read as a Tailwind repo.
+  It gets one extra check: Tailwind palette colours (such as `text-gray-500`)
+  written in its own code, per 100 files, with the theme file, its colour
+  names and the stray classes listed in the report. The rules file gets a
+  section that names the theme's colours.
+- **What counts as the repo's own colours.** A new name such as `brand` or
+  `surface` counts. A Tailwind name given a different colour (Hugging Face
+  Chat's greys, Plausible's yellow pointed at amber) counts, and its classes
+  are never treated as strays. A Tailwind name restated with Tailwind's own
+  value does not count, nor do `black`, `white`, `transparent`, `current`
+  and `inherit`. The list of Tailwind's colour values was checked against
+  tailwindcss 4.3.3.
+- **When the theme counts as used.** Uses are counted in components and in
+  `@apply` lines in stylesheets. A theme counts as used at 20 uses, or 3
+  uses per colour if that is lower. A theme used less than that is shown in
+  the report and not scored.
+- **Strays are counted fairly.** A Tailwind grey is only a stray if the
+  theme has a grey of its own; a Tailwind colour is only a stray if the
+  theme has a colour of its own. hey.xyz, whose theme is four brand pinks,
+  goes from 152 strays per 100 files to 10.
+- **A Tailwind benchmark.** Tailwind repos are compared with a group of 11
+  Tailwind repos, not the general fleet. The target for strays is 3 per 100
+  files (4 of the 11 meet it; the median is 10). shadcn repos keep their
+  target of 25. The "why this matters" text for this check is written for
+  Tailwind. The builder and the repo list are in `tools/benchmark/`.
+- **Not read as Tailwind yet:** repos whose interface is mostly Svelte or
+  Vue (those files are not read), Tailwind v3 configs, and themes imported
+  from an installed package.
+- **No score when the scan could not read the repo.** better-auth scored
+  100 because its interface sits in `demo/` and `docs/`, which the scan
+  skips. strapi scored 75 because its colours live in
+  `@strapi/design-system`, an installed package. Both now get no score, and
+  the report says where the interface or the colours are. The `empty` and
+  `vueapp` test fixtures also move to no score.
+- **A registry must be what the repo is for.** supabase scored 100 as a
+  registry because its registry paths matched no folder. A repo with 60 or
+  more app pages outside what it publishes now keeps its own kind, and a
+  registry whose paths match fewer than 5 code files is not used to narrow
+  the scan. supabase now scores 28.
+- **Email templates are skipped wherever they are.** A file that imports
+  `react-email`, `@react-email/*`, `jsx-email` or `mjml-react` is treated as
+  an email. react-email's inline style count goes from 558 to 33.
+- **Fix prompts:** two new warnings. `!important` is needed on utility
+  classes and when overriding a library's CSS. A colour that identifies
+  another company's service should stay as it is.
+- `summary.json`: `kind: "tailwind"` with a `tailwind` block (`file`,
+  `names`, `restated`, `retuned`, `uses`, `usedIn`, `adopted`, `evidence`);
+  `score: null` when nothing could be measured; `benchmark.slice` names the
+  Tailwind slice on Tailwind repos.
+
 ## 7.9.0 — 2026-09-15
 
 shadcn/lint, read as the team's declared policy. No score moves.

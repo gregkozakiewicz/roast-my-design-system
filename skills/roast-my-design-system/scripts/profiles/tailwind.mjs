@@ -20,8 +20,9 @@ import { join } from 'node:path';
 import { PALETTE } from './shadcn-data.mjs';
 
 const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return ''; } };
-// Tailwind's own palette names: a theme that restates them adds no vocabulary
-const PALETTE_NAME_RE = new RegExp(`^(?:${PALETTE})(?:-(?:50|[1-9]00|950))?$`);
+// Tailwind's own palette names (plus the black and white it also ships): a theme
+// that restates them adds no vocabulary
+const PALETTE_NAME_RE = new RegExp(`^(?:(?:${PALETTE})(?:-(?:50|[1-9]00|950))?|black|white)$`);
 // what counts as a theme worth judging
 const MIN_NAMES = 6;
 const MIN_USES = 20;

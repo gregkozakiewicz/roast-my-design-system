@@ -72,3 +72,25 @@ test("another library's createTheme is not the MUI theme; a nested ThemeProvider
   assert.deepEqual(k.themeFiles, ['src/Graph.tsx']);
   assert.equal(k.colour.samples.some((s) => s.value === '#555'), false);
 });
+
+test("each kit's advice names its own idioms, never another kit's", async () => {
+  const { KITS } = await import('../../skills/roast-my-design-system/scripts/profiles/kit-common.mjs');
+  await import('../../skills/roast-my-design-system/scripts/profiles/mantine.mjs');
+  const m = KITS.Mantine.advice;
+  const text = [m.colourHow, m.spacingHow({}), m.rulesTheme('x'), m.promptColour, m.promptSpacing, m.promptInline].join(' ');
+  assert.doesNotMatch(text, /\bsx\b|MUI|theme\.palette/);
+  const u = KITS.MUI.advice;
+  assert.doesNotMatch([u.colourHow, u.spacingHow({}), u.promptColour].join(' '), /Mantine|--mantine/);
+});
+
+test('Mantine spacing written as a number or rem() is pixels; a theme size is not', async () => {
+  const { MANTINE } = await import('../../skills/roast-my-design-system/scripts/profiles/mantine.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'roast-kit-'));
+  try {
+    writeFileSync(join(root, 'Card.tsx'), `import { Box, rem } from '@mantine/core';\nexport const C = () => <Box p={10} mt="md" gap={0} style={{ padding: rem(12) }} />;\n`);
+    const k = countKitPaint(root, ['Card.tsx'], MANTINE);
+    assert.deepEqual(k.px.samples.map((s) => s.value).sort(), ['p: 10px', 'padding: 12px']);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

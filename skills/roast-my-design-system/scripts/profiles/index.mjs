@@ -24,6 +24,7 @@ import { join, basename, dirname } from 'node:path';
 import shadcn from './shadcn.mjs';
 import tailwind from './tailwind.mjs';
 import mui from './mui.mjs';
+import mantine from './mantine.mjs';
 import { readRegistry, publishesLine, variantsFromDirs, scopeFiles } from './registry.mjs';
 import { readShadcnLint } from './shadcn-lint.mjs';
 export { scopeFiles };
@@ -40,7 +41,7 @@ import product from './product.mjs';
 // A component kit installed from npm (mui) is read after shadcn, so a shadcn
 // repo keeps its reading, and before tailwind: a kit product is judged on
 // the kit's theme, not on a Tailwind theme it may also carry.
-export const PROFILES = [shadcn, mui, tailwind, library, product];
+export const PROFILES = [shadcn, mui, mantine, tailwind, library, product];
 
 /**
  * Decide the repo's kind from the profiler's facts and what the scan found.

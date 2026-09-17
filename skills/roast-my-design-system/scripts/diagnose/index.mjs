@@ -33,6 +33,7 @@ import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
 import { ownSpacing, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
+import { KITS } from '../profiles/kit-common.mjs';
 import { rulesOn as lintRulesOn, describeRule as lintDescribe, entryMatcher as lintMatcher, RULE_TILE as LINT_TILE } from '../profiles/shadcn-lint.mjs';
 import { publishesLine } from '../profiles/registry.mjs';
 
@@ -319,7 +320,8 @@ const utilityPalette = ds.kind === 'shadcn' && ds.cssVariables === false && twCo
 // Both get no score rather than a flattering one (2026-09-16).
 // a kit product's colours sit on its components, read by its profile
 const systemElsewhere = !P.isKit && colors.length < 5 && !h.tokens.tokenFile && twColorUtils < 5 && (h.files.code ?? 0) >= 200;
-const noSystemLikely = !utilityPalette && !(P.isRegistry && P.registry?.themes?.total) && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0) || systemElsewhere);
+// a kit product is measured on its components, even with no stylesheet colours
+const noSystemLikely = !P.isKit && !utilityPalette && !(P.isRegistry && P.registry?.themes?.total) && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0) || systemElsewhere);
 // A scan that found almost no styling has not measured health: every tile
 // reads good because every count is zero. Withhold the number and say where
 // the UI probably is (better-auth: 257 UI files, all under demo/ and docs/,
@@ -1156,15 +1158,13 @@ function whereToStartSection() {
       const s0 = k.colour.samples[0], f0 = k.colour.top[0];
       c.push({ score: 20 + k.colour.per100 / 4, metric: 'kitColour', after: 0,
         title: `Move the ${n(k.colour.uses)} colours written on components into the ${esc(k.name)} theme`,
-        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}.${s0.inTheme ? ` ${esc(s0.value)} is already in your theme: read it from there, from the entry that holds it in every mode.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with createTheme() and put the palette there`}. On an MUI component, point at it: <code>color: 'text.secondary'</code> in sx, or <code>theme.palette.primary.main</code> in a styled() call.` });
+        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}.${s0.inTheme ? ` ${esc(s0.value)} is already in your theme: read it from there, from the entry that holds it in every mode.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with ${KITS[k.name]?.advice.themeCall ?? "the kit's theme call"} and put the palette there`}. ${KITS[k.name]?.advice.colourHow ?? ''}` });
     }
     if (k.px.uses >= 10) {
       const s0 = k.px.samples[0], f0 = k.px.top[0];
       c.push({ score: 15 + k.px.per100 / 4, metric: 'kitPx', after: 0,
         title: `Put the ${n(k.px.uses)} pixel spacings on the theme's spacing steps`,
-        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}. ${k.spacingUnit === 'custom'
-          ? `This theme's spacing is custom (a function or a responsive config), so a step is not a fixed number of pixels: convert only after checking what <code>theme.spacing(1)</code> is here, and leave the rest.`
-          : `${esc(k.name)} spacing is a step count: <code>p: 2</code> is <code>theme.spacing(2)</code>, which is ${k.spacingUnit ? `${2 * Number(k.spacingUnit)}px on this theme (one step is ${esc(k.spacingUnit)}px)` : '16px on the default theme'}. A spacing that lands exactly on a step becomes the step; one that does not stays.`}` });
+        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}. ${KITS[k.name]?.advice.spacingHow(k) ?? ''}` });
     }
   }
 
@@ -1417,7 +1417,7 @@ function kitSection() {
   const k = P.kit;
   const chips = (list, cls) => list.slice(0, 8).map((x) => `<span class="vchip ${cls}">${esc(x.value)} ×${x.count}</span>`).join('');
   const files = (list) => list.slice(0, 5).map((f) => `<span class="vchip dim" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('');
-  const parts = [`<div class="receipts">${eyebrow(k.themeFiles.length ? `Theme in ${esc(k.themeFiles[0])}${k.themeFiles.length > 1 ? ` and ${n(k.themeFiles.length - 1)} more` : ''} · read ${n(k.refs)} times from components` : `No theme of its own · the ${esc(k.name)} defaults`)}<p class="sub">${k.themeFiles.length ? `Components reach the theme ${n(k.refsPer100)} times per 100 kit files, through paths like <code>text.secondary</code> and <code>theme.spacing()</code>. That is the system working.` : `Without a theme of its own, every colour a component needs is either ${esc(k.name)}'s default or written by hand.`}</p></div>`];
+  const parts = [`<div class="receipts">${eyebrow(k.themeFiles.length ? `Theme in ${esc(k.themeFiles[0])}${k.themeFiles.length > 1 ? ` and ${n(k.themeFiles.length - 1)} more` : ''} · read ${n(k.refs)} times from components` : `No theme of its own · the ${esc(k.name)} defaults`)}<p class="sub">${k.themeFiles.length ? `Components reach the theme ${n(k.refsPer100)} times per 100 kit files, through ${KITS[k.name]?.advice.refExamples ?? 'theme references'}. That is the system working.` : `Without a theme of its own, every colour a component needs is either ${esc(k.name)}'s default or written by hand.`}</p></div>`];
   parts.push(`<div class="receipts">${eyebrow(`${n(k.colour.uses)} colours written on components · ${n(k.colour.per100)} per 100 kit files`)}${k.colour.uses ? `<div class="chips-row">${chips(k.colour.samples, 'bad')}</div><div class="chips-row">${files(k.colour.top)}</div>` : '<p class="sub">Every colour on a component comes from the theme.</p>'}${whyToggle('kitColour')}</div>`);
   parts.push(`<div class="receipts">${eyebrow(`${n(k.px.uses)} pixel sizes written on components · ${n(k.px.per100)} per 100 kit files`)}${k.px.uses ? `<div class="chips-row">${chips(k.px.samples, 'warn')}</div><div class="chips-row">${files(k.px.top)}</div>` : '<p class="sub">Spacing, type size and radius on components come from the theme.</p>'}${whyToggle('kitPx')}</div>`);
   if (k.exempt?.length) parts.push(`<p class="sub">Not counted: ${n(k.exempt.length)} file${k.exempt.length === 1 ? '' : 's'} of colour data or artwork (${esc(k.exempt.slice(0, 3).map((e) => basename(e.file)).join(', '))}).</p>`);

@@ -55,7 +55,7 @@ export function colourTable(src, literals) {
 const SPACING_NUM_RE = /(?:^|[{,\n])\s*spacing\s*:\s*(\d+(?:\.\d+)?)\s*(?=[,}\n])/g;
 const SPACING_CUSTOM_RE = /\bspacing(?:Config)?\s*:\s*(?:\([^)]*\)\s*=>|\w+\s*=>|function\b|\[|\w+\()/;
 
-export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, themeImportRe = importRe }) {
+export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, themeImportRe = importRe, pxPropRes = [] }) {
   const themeFiles = [];
   const themeValues = new Set();
   const spacingUnits = new Set();
@@ -99,7 +99,11 @@ export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, theme
       ?? (colours.length && RENDERER_IMPORT_RE.test(code) ? 'the file drives a chart or a map, so its colours are the picture' : null);
     if (why) { if (colours.length) exempt.push({ file: f, reason: why }); continue; }
     if (colours.length) bump(colour, f, colours);
-    const pxHits = [...code.matchAll(PX_RE)].map((m) => `${m[1]}: ${m[3]}`).filter((v) => !/: (0|1)px$/.test(v));
+    // a kit whose numbers are pixels (Mantine's p={10}, rem(10)) adds its own patterns
+    const pxHits = [
+      ...[...code.matchAll(PX_RE)].map((m) => `${m[1]}: ${m[3]}`),
+      ...pxPropRes.flatMap((re) => [...code.matchAll(re)].map((m) => `${m[1]}: ${m[2]}px`)),
+    ].filter((v) => !/: (0|1)px$/.test(v));
     if (pxHits.length) bump(px, f, pxHits);
   }
 

@@ -1,0 +1,1 @@
+{ "name": "mui-kit", "private": true, "dependencies": { "@mui/material": "^7.3.0", "react": "19.2.8", "recharts": "^3.2.0" } }

@@ -9,12 +9,12 @@
  * imports it in 10 of 5,737 files (2026-09-17), which is not an MUI product.
  * Older MUI (@material-ui/*, v4) counts: Backstage imports it in 595 files.
  */
-import { countKitPaint } from '../lib/kitpaint.mjs';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { kitProfile } from './kit-common.mjs';
 
 export const MUI = {
   name: 'MUI',
+  kind: 'mui',
+  packages: ['@mui/material', '@material-ui/core'],
   importRe: /from\s+['"]@(?:mui|material-ui)\/|require\(\s*['"]@(?:mui|material-ui)\//,
   // createTheme(), or a theme handed straight to a provider: Headlamp wraps its
   // graph view in <ThemeProvider theme={(outer) => ({...})}> with its own greys
@@ -22,32 +22,19 @@ export const MUI = {
   // the theme call has to come from MUI: CodeMirror exports a createTheme too
   themeImportRe: /import\s*(?:\{[^}]*\b(?:createTheme|createMuiTheme|extendTheme|experimental_extendTheme|ThemeProvider)\b[^}]*\}|ThemeProvider|createTheme)\s*from\s*['"]@(?:mui|material-ui)\//,
   refRe: /theme\.palette\.|theme\.spacing\(|theme\.typography\.|theme\.shape\.|\bvars\.palette\.|['"](?:primary|secondary|error|warning|info|success|text|background|grey|divider|action|common)\.(?:main|light|dark|contrastText|primary|secondary|disabled|paper|default|hover|selected|black|white|\d{2,3})['"]/g,
-};
-
-// enough use to call it the kit the product is built on
-const MIN_FILES = 30;
-
-export default {
-  kind: 'mui',
-
-  recognise(profile, counts, ctx) {
-    if (!ctx?.root || !ctx?.files) return null;
-    const pkg = profile.designSystem?.pkg;
-    // a cheap gate before reading every file: the dependency is somewhere
-    if (!(pkg === '@mui/material' || (ctx.files.other ?? []).some((f) => f.endsWith('package.json') && /"@(?:mui\/material|material-ui\/core)"/.test(readSafe(join(ctx.root, f)))))) return null;
-    const paint = countKitPaint(ctx.root, ctx.files.code, MUI);
-    if (paint.kitFiles < MIN_FILES) return null;
-    profile.designSystem = { kind: 'kit', name: MUI.name, pkg: '@mui/material', confidence: 'high' };
-    profile.kit = { name: MUI.name, ...paint };
-    return {
-      confidence: paint.themeFiles.length ? 'high' : 'medium',
-      evidence: [
-        `MUI imported in ${paint.kitFiles} files`,
-        paint.themeFiles.length ? `theme defined in ${paint.themeFiles[0]}${paint.themeFiles.length > 1 ? ` and ${paint.themeFiles.length - 1} more` : ''}` : 'no createTheme() found: the default MUI theme',
-        `the theme is referenced ${paint.refs} times from components`,
-      ],
-    };
+  advice: {
+    themeCall: 'createTheme()',
+    refExamples: '<code>text.secondary</code> and <code>theme.spacing()</code>',
+    colourHow: "On an MUI component, point at it: <code>color: 'text.secondary'</code> in sx, or <code>theme.palette.primary.main</code> in a styled() call.",
+    spacingHow: (k) => (k.spacingUnit === 'custom'
+      ? "This theme's spacing is custom (a function or a responsive config), so a step is not a fixed number of pixels: convert only after checking what <code>theme.spacing(1)</code> is here, and leave the rest."
+      : `MUI spacing is a step count: <code>p: 2</code> is <code>theme.spacing(2)</code>, which is ${k.spacingUnit ? `${2 * Number(k.spacingUnit)}px on this theme (one step is ${k.spacingUnit}px)` : '16px on the default theme'}. A spacing that lands exactly on a step becomes the step; one that does not stays.`),
+    rulesTheme: (file) => `A colour, a spacing step or a radius is decided in \`${file}\`. On a component, read it: sx paths (\`color: 'text.secondary'\`, \`p: 2\`) or \`theme.palette\` / \`theme.spacing()\` in styled().`,
+    rulesSpacing: 'Use spacing steps (`p: 2`), not pixels',
+    promptColour: "- Read the theme where the kit reads it: sx paths ('text.secondary', 'primary.main'), theme.palette in styled() and makeStyles. Never import the theme file into a component just to read a hex.",
+    promptSpacing: '- A bare number is a spacing step only inside sx and theme.spacing(). Inside style={{}} or a plain style object it is pixels, so convert only in sx.',
+    promptInline: "- Move a style to sx or a styled() component only on MUI components or on wrappers that pass their props to one MUI component. Your own wrappers that take a style prop keep style; web components ignore sx.",
   },
 };
 
-function readSafe(p) { try { return readFileSync(p, 'utf8'); } catch { return ''; } }
+export default kitProfile(MUI);

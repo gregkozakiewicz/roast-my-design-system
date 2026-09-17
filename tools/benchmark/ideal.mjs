@@ -41,6 +41,10 @@ export const IDEAL_2026 = {
 // Ideals that belong to one kind of repo and override the table above for it.
 // Written into benchmark.json under slices.<kind>.ideal2026 by build-slice.mjs.
 export const IDEAL_BY_KIND = {
+  mantine: {
+    kitColour: { value: 3, note: 'colours written onto Mantine components per 100 kit files; 9 of the 19 Mantine products sit at or under this, the median is 4 (2026-09-17)' },
+    kitPx: { value: 28, note: 'spacing written as pixels on Mantine components (p={10}, rem(10), padding: "10px") per 100 kit files; 6 of 19 sit at or under this, the median is 46 (2026-09-17)' },
+  },
   mui: {
     kitColour: { value: 5, note: 'colours written onto MUI components per 100 kit files (theme fallbacks, theme folders, charts and maps not counted); 8 of the 19 MUI products sit at or under this, the median is 9 (2026-09-17)' },
     kitPx: { value: 8, note: 'padding, margin and gap written in pixels on MUI components per 100 kit files; 8 of 19 sit at or under this, the median is 12 (2026-09-17)' },

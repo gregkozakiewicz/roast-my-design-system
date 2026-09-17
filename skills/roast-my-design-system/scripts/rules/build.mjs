@@ -4,6 +4,7 @@
  * Output: { text, ruleCount } — paste-ready agent-rules markdown, every rule
  * with a receipt from the scanned repo.
  */
+import { KITS } from '../profiles/kit-common.mjs';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { nearColorPairs } from './../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
@@ -181,10 +182,10 @@ if (neverImported.length >= 3) {
     const k = P.kit;
     section(`${k.name}: the theme and the components`);
     rule(k.themeFiles.length
-      ? `This product is built on ${k.name} and its theme lives in \`${k.themeFiles[0]}\`. A colour, a spacing step or a radius is decided there. On a component, read it: sx paths (\`color: 'text.secondary'\`, \`p: 2\`) or \`theme.palette\` / \`theme.spacing()\` in styled().`
-      : `This product is built on ${k.name} with its default theme. Before adding a colour to a component, add it to a theme with createTheme() and read it from there.`);
+      ? `This product is built on ${k.name}. ${KITS[k.name]?.advice.rulesTheme(k.themeFiles[0]) ?? ''}`
+      : `This product is built on ${k.name} with its default theme. Before adding a colour to a component, add it to a theme with ${KITS[k.name]?.advice.themeCall ?? 'the kit\'s theme call'} and read it from there.`);
     if (k.colour.uses) rule(`The scan found ${k.colour.uses} colours written onto components (${k.colour.samples.slice(0, 3).map((x) => `\`${x.value}\``).join(', ')}). Do not add more; if a colour is missing from the theme, add it to the palette once.`);
-    if (k.px.uses) rule(`The scan found ${k.px.uses} pixel sizes written onto components (${k.px.samples.slice(0, 3).map((x) => `\`${x.value}\``).join(', ')}). Use spacing steps (\`p: 2\`), not pixels; a size between steps is a deliberate exception, left with a comment.`);
+    if (k.px.uses) rule(`The scan found ${k.px.uses} pixel sizes written onto components (${k.px.samples.slice(0, 3).map((x) => `\`${x.value}\``).join(', ')}). ${KITS[k.name]?.advice.rulesSpacing ?? 'Use the theme\'s spacing steps, not pixels'}; a size between steps is a deliberate exception, left with a comment.`);
   }
   if (P.isTailwind && P.tailwind) {
     const t = P.tailwind;

@@ -1,0 +1,24 @@
+# Candidates for the mantine slice: products built on Mantine, 14 well-known brands and 6 others,
+# chosen 2026-09-17 by imports (the kit is the main one). The engine decides membership.
+# One per line: github org/repo.
+
+prometheus/prometheus
+prometheus/alertmanager
+Stirling-Tools/Stirling-PDF
+metabase/metabase
+AykutSarac/jsoncrack.com
+docmost/docmost
+hyperdxio/hyperdx
+lightdash/lightdash
+inventree/InvenTree
+moghtech/komodo
+LibrePhotos/librephotos
+homarr-labs/homarr
+apache/apisix-dashboard
+likec4/likec4
+diced/zipline
+medplum/medplum
+Dispatcharr/Dispatcharr
+IgnisDa/ryot
+GZTimeWalker/GZCTF
+medama-io/medama

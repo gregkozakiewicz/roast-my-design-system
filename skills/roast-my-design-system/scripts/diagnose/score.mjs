@@ -120,6 +120,7 @@ PROFILE_TILES.mui = [
   ['kitColour', 'colours written on components per 100 kit files'],
   ['kitPx', 'pixel sizes written on components per 100 kit files'],
 ];
+PROFILE_TILES.mantine = PROFILE_TILES.mui;
 export const tilesFor = (kind) => [...TILES, ...(PROFILE_TILES[kind] ?? [])];
 
 /** The tiles, in report order: metric key, the label the report prints. */

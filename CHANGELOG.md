@@ -11,6 +11,10 @@ Copy only. No change to the scan, the score or the report.
   Tailwind, MUI, Mantine, Chakra and Ant Design groups. The README, landing
   page, npm description, plugin listing and skill description all said 34,
   and the plugin listing still said 29.
+- **The skill file knows all nine profiles.** It described four. It now tells
+  the agent what the Tailwind, MUI, Mantine, Chakra UI and Ant Design
+  readings put in the scan, which benchmark group each kind is compared
+  with, and to speak the kit's language when suggesting a fix.
 
 ## 8.0.0 — 2026-09-17
 

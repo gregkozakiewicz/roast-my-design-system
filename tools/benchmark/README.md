@@ -20,7 +20,7 @@ node tools/benchmark/build.mjs --clones ~/roast-clones
 node tools/benchmark/build-refs.mjs --clones ~/roast-clones
 ```
 
-The first writes the 34-repo statistics and the Ideal Design System norms; the
+The first writes the 34-repo core-fleet statistics and the Ideal Design System norms; the
 second scans the 10 reference systems (clone dirs named `org-repo`, see the
 SCOPES table inside) and merges them into the same file. Rebuilding moves
 scores for everyone, so it is a major release with a changelog entry that says

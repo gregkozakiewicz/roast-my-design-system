@@ -2,7 +2,7 @@
 /**
  * roast-my-design-system — npx entrypoint. Runs the same deterministic,
  * zero-dependency scanner the Claude Code skill uses: harvest the repo,
- * diagnose it against Ideal Design System norms and the 29-repo benchmark,
+ * diagnose it against Ideal Design System norms and the 112-repo benchmark,
  * write design-system-roast.html, open it, print the score.
  *
  *   npx roast-my-design-system@latest [path] [--theme dark|light] [--out report.html] [--no-open]

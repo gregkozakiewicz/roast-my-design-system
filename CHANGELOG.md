@@ -2,6 +2,16 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.0.1 — 2026-09-18
+
+Copy only. No change to the scan, the score or the report.
+
+- **The benchmark count is stated the same way everywhere: 112 public repos.**
+  That is the 34-repo core fleet plus the 78 repos scanned for the shadcn,
+  Tailwind, MUI, Mantine, Chakra and Ant Design groups. The README, landing
+  page, npm description, plugin listing and skill description all said 34,
+  and the plugin listing still said 29.
+
 ## 8.0.0 — 2026-09-17
 
 Support for the four big component kits, eleven counting fixes, and a rebuilt

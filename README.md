@@ -91,7 +91,7 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 - **Pre-refactor audit.** Run `/roast-my-design-system` before a design-system cleanup to get the measured baseline: every colour, spacing value, duplicated component and inline style, with real file paths.
 - **Diagnosing almost-right AI output.** When Claude keeps generating UI that looks slightly off, the report shows which duplicated components and stray values it is imitating, and where the canonical ones live.
-- **Making the case without a meeting.** Drop the self-contained HTML report in Slack: a health score and 3 benchmarks (ideal norms, the 34-repo median, 10 reputable systems) argue for the design system for you.
+- **Making the case without a meeting.** Drop the self-contained HTML report in Slack: a health score and 3 benchmarks (ideal norms, the median of 112 scanned repos, 10 reputable systems) argue for the design system for you.
 - **The fix loop.** Hand the report back to Claude as the punch list and work through the Where to start section, file by file.
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
@@ -112,7 +112,7 @@ The same report in light mode (one file, built-in toggle):
 - **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality. Your own exclusions (`.roastignore`, `--exclude`) are printed in the report header with file counts, so a scoped scan can never pass itself off as the whole repo.
 - **Intent-aware counting (v3).** Runtime-computed inline styles, compound-component APIs and wrapper components are not crimes and are not counted as ones. Token-led repos are judged on their hardcoded strays, not their token architecture. Repeated arbitrary values are read as decisions without names, not drift.
 - **The scoring code can be imported.** `scoreHarvest(harvest)` in `diagnose/score.mjs` returns the score, the nine tile results and the metrics as plain data. The report uses the same function. A CI check gets the same numbers as the page, and every `summary.json` records its schema version and the benchmark used.
-- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 34 public React repos (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…). Median: 115 colours, 23 greys, 21 duplicated components, 51 inline style blocks, 77 arbitrary Tailwind values. The builder and the repo list are in `tools/benchmark/`, so the ruler can be checked, not just quoted.
+- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 112 public React repos. A core fleet of 34 (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…) sets the medians for ordinary product repos: 115 colours, 23 greys, 21 duplicated components, 51 inline style blocks, 77 arbitrary Tailwind values. The other 78 were scanned for the kit profiles, so a repo built on shadcn, Tailwind, MUI, Mantine, Chakra or Ant Design is compared with repos built the same way. The builder and the repo list are in `tools/benchmark/`, so the ruler can be checked, not just quoted.
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
 
 ## Scoping the scan
@@ -240,7 +240,7 @@ You get the roast in chat plus `design-system-roast.html` at your repo root: a s
 
 - a **health score** computed from how your numbers sit against the ideal
 - **"What the numbers mean"**: Claude's read of your scan. Which findings actually matter, which good numbers are accidents, what to fix first. It is embedded in the same file you'll forward, labelled as written by Claude and kept apart from the measured numbers. The score alone can flatter; this section is what keeps a shared 85/100 honest
-- stat tiles comparing you to all 3 yardsticks: Ideal, the 34-repo average, and the reputable systems
+- stat tiles comparing you to all 3 yardsticks: Ideal, the benchmark median (112 scanned repos), and the reputable systems
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the off-scale spacing receipts, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger
 - a **Where to start** close: up to 3 moves derived from your repo's own numbers, each with a file-path receipt
@@ -262,7 +262,7 @@ After the roast, the skill also offers to write `design-system-rules.md` to disk
 
 ## What it measures
 
-| Metric | Ideal Design System | Median of 34 scanned repos | Median of 10 reputable systems |
+| Metric | Ideal Design System | Median of the 34-repo core fleet | Median of 10 reputable systems |
 |---|---|---|---|
 | Distinct colours | ~24 | 115 | 14 |
 | Shades of grey | up to 13 | 23 | 2 |

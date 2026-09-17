@@ -40,7 +40,7 @@ export function fixPrompt({ title, sub, deltaText, repoName, metric = null, kit 
 The finding: ${title}
 
 The detail: ${sub}
-${deltaText ? `\nExpected payoff: ${deltaText} on the report's 0-100 score.\n` : ''}
+${deltaText ? `\nExpected payoff on the report's 0-100 score: ${deltaText}.\n` : ''}
 How to fix it, calmly and with respect for intent:
 - A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
 - Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.

@@ -1194,7 +1194,7 @@ function whereToStartSection() {
     ? `${words} · <b class="proj">${healthScore} &rarr; ${after}</b>`
     : `${words} to increase your score.`;
   const chip = (item) => item.delta > 0
-    ? `<span class="delta">+${item.delta}</span>`
+    ? `<span class="delta" title="once all of them are done">+${item.delta}</span>`
     : item.target
       ? `<span class="delta delta-target">${item.target.target === 0 ? 'clear them all' : `under ${n(item.target.target)}`} · +${item.target.gain}</span>`
       : '';
@@ -1209,7 +1209,9 @@ function whereToStartSection() {
     kit: P.isKit ? P.kit?.name : null,
     title: unesc(item.title),
     sub: unesc(item.sub),
-    deltaText: item.delta > 0 ? `about +${item.delta} points` : (item.target ? `about +${item.target.gain} points once ${item.target.target === 0 ? 'they are all cleared' : `the count is under ${n(item.target.target)}`}` : ''),
+    // the points arrive when the whole finding is done; one file moves the count
+    // first (seen on every fix in the MUI fix loop, 2026-09-17)
+    deltaText: item.delta > 0 ? `about +${item.delta} points once all of them are done; fixing one file at a time lowers the count first and the score follows` : (item.target ? `about +${item.target.gain} points once ${item.target.target === 0 ? 'they are all cleared' : `the count is under ${n(item.target.target)}`}` : ''),
     repoName: h.repo ? String(h.repo).split('/').pop() : '',
   });
   startMoves = top3.map((item) => ({

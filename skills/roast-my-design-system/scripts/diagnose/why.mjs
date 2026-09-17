@@ -15,6 +15,17 @@ export const WHY = {
     'A palette class such as text-gray-500 or bg-blue-100 skips that file. It works on the day. It stops working at the first theme change: the variables move, the palette colour stays, and the page shows 2 designs at once. Dark mode is where it shows first. A variable carries both values; a palette class carries one, so someone adds dark:bg-gray-900 next to it, and now there are 2 places to keep in step. An AI agent reading that file copies the pair.',
     'The ideal is 25 per 100 files. That is where the tidiest third of 15 shadcn repos in the benchmark sit; the median is 62. shadcn\'s own rules for agents say it in 1 line: use semantic colours, never bg-blue-500.',
   ],
+  // DRAFT for Greg's approval (2026-09-17): the two kit tiles.
+  kitColour: [
+    'A component kit comes with a theme: one place where the brand blue, the muted text and the error red are decided. Components read it by name, like text.secondary, and a theme change reaches every screen at once.',
+    'A colour written onto a component, such as color: "#6b7280", skips the theme. It looks right on the day. At the next rebrand or dark-mode pass the theme moves and the written colour stays, so one screen shows two designs. An AI agent reading that file copies the written colour, because it is right there.',
+    'The ideal comes from the tidiest third of the repos on the same kit in the benchmark. A chart series or an illustration is not a mistake: give its colour a name in the theme once, and it stops counting.',
+  ],
+  kitPx: [
+    'A kit theme has a spacing scale: steps like 8, 16 and 24 pixels, written as p: 1, p: 2, p: 3. Components that use the steps line up with each other without anyone measuring.',
+    'A size written in pixels, such as padding: "13px", is a decision made once, in one place. The next screen gets 12px or 14px, and the layout drifts by a pixel at a time. An AI agent copies the number it sees.',
+    'The ideal comes from the tidiest third of the repos on the same kit in the benchmark. Widths and heights are not counted: they are often layout that another element depends on.',
+  ],
   // The same tile on a Tailwind repo (approved by Greg, 2026-09-16).
   paintTinTailwind: [
     'Your theme names each colour once: a line like --color-surface in the stylesheet, and the class bg-surface wherever it is used. Change the line and every screen follows, the way a price change at the till reaches every shelf.',

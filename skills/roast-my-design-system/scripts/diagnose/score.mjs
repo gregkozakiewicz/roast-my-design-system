@@ -114,6 +114,12 @@ PROFILE_TILES.registry = [...PROFILE_TILES.shadcn, ['themesIncomplete', 'publish
 // A Tailwind repo with its own theme gets the colour check and nothing that
 // needs a component catalogue (no restyled-component tile without one).
 PROFILE_TILES.tailwind = [['paintTin', 'off-theme colours per 100 files']];
+// A product built on a component kit: colours and pixel sizes written onto
+// the kit's components where its theme has one (2026-09-17).
+PROFILE_TILES.mui = [
+  ['kitColour', 'colours written on components per 100 kit files'],
+  ['kitPx', 'pixel sizes written on components per 100 kit files'],
+];
 export const tilesFor = (kind) => [...TILES, ...(PROFILE_TILES[kind] ?? [])];
 
 /** The tiles, in report order: metric key, the label the report prints. */
@@ -182,6 +188,8 @@ export function coreMetrics(h, opts = {}) {
     // the theme by design, so a palette class is not paint from a tin
     utilityPalette: profileOf(h).designSystem?.cssVariables === false,
     paintTin: paint?.tin?.per100 ?? 0,
+    kitColour: P.kit?.colour?.per100 ?? 0,
+    kitPx: P.kit?.px?.per100 ?? 0,
     doorOverrides: paint?.doors?.per100 ?? 0,
     // a registry's published themes, checked for every variable in both modes
     themesIncomplete: P.registry?.themes?.incomplete ?? 0,
@@ -216,7 +224,7 @@ export function tileHealths(m, healthOf) {
     colors: m.colors, greys: m.greys, spacing: m.spacing, exactDuplicates: m.exactDuplicates,
     inlineStyles: m.inlineStyles, nearPairs: m.nearPairs, important: m.important,
     neverImported: m.neverImported, arbitrary: m.arbitrary,
-    paintTin: m.paintTin ?? 0, doorOverrides: m.doorOverrides ?? 0, themesIncomplete: m.themesIncomplete ?? 0,
+    paintTin: m.paintTin ?? 0, kitColour: m.kitColour ?? 0, kitPx: m.kitPx ?? 0, doorOverrides: m.doorOverrides ?? 0, themesIncomplete: m.themesIncomplete ?? 0,
   };
   const judged = { ...shown, colors: m.tokenLed ? m.colorStrays : m.colors, greys: m.tokenLed ? m.greyStrays : m.greys };
   return tilesFor(m.kind ?? 'product').map(([metric, label]) => {

@@ -1,0 +1,24 @@
+# Candidates for the mui slice: products built on MUI, 14 well-known brands and 6 others,
+# chosen 2026-09-17 by imports (the kit is the main one). The engine decides membership.
+# One per line: github org/repo.
+
+backstage/backstage
+jitsi/jitsi-meet
+ente/ente
+Avaiga/taipy
+Unleash/unleash
+OpenCTI-Platform/opencti
+kubernetes-sigs/headlamp
+jellyfin/jellyfin-web
+pgadmin-org/pgadmin4
+linode/manager
+safe-global/safe-wallet-monorepo
+aave/interface
+percona/pmm
+qdrant/qdrant-web-ui
+bluewave-labs/Checkmate
+tolgee/tolgee-platform
+OpenAEV-Platform/openaev
+InseeFrLab/onyxia
+cloudreve/frontend
+openziti/zrok

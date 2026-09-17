@@ -41,6 +41,10 @@ export const IDEAL_2026 = {
 // Ideals that belong to one kind of repo and override the table above for it.
 // Written into benchmark.json under slices.<kind>.ideal2026 by build-slice.mjs.
 export const IDEAL_BY_KIND = {
+  mui: {
+    kitColour: { value: 7, note: 'colours written onto MUI components per 100 kit files; 7 of the 19 MUI products sit at or under this, the median is 12 (2026-09-17)' },
+    kitPx: { value: 10, note: 'spacing, type size and radius written in pixels on MUI components per 100 kit files; 7 of 19 sit at or under this, the median is 17 (2026-09-17)' },
+  },
   tailwind: {
     paintTin: { value: 3, note: 'palette colours in own code where a theme colour exists, per 100 files; 4 of the 11 Tailwind repos sit at or under this, the median is 10 (2026-09-16)' },
   },

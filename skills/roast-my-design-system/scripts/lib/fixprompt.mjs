@@ -19,6 +19,8 @@ const IMPORTANT_LINE = '- A utility class and an override of CSS a library ships
 const TRAP_LINES = {
   paintTin: `- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.\n${BRAND_LINE}`,
   colors: `- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.\n${BRAND_LINE}`,
+  kitColour: `- A chart series, an illustration or a status colour keeps its colour. Add it to the theme palette under a name rather than swapping it to a grey.\n- Read the theme where the kit reads it: sx paths ('text.secondary', 'primary.main'), theme.palette in styled() and makeStyles. Never import the theme file into a component just to read a hex.\n${BRAND_LINE}`,
+  kitPx: `- Convert a size only when it lands exactly on a spacing step (16px is 2 on an 8px theme). A size between steps is a decision: leave it and say so.\n- Never touch width, height or a size another element depends on.`,
   nearPairs: BRAND_LINE,
   important: IMPORTANT_LINE,
   arbitrary: '- Never round a width or height another element depends on: a preview panel, a skeleton that mirrors a chart, an editor pane. Name it if it repeats; leave it if it is one.',

@@ -317,7 +317,8 @@ const utilityPalette = ds.kind === 'shadcn' && ds.cssVariables === false && twCo
 // a repo with plenty of code whose colour system lives somewhere else (strapi:
 // 3,134 files, 1 colour, no stylesheet, @strapi/design-system installed).
 // Both get no score rather than a flattering one (2026-09-16).
-const systemElsewhere = colors.length < 5 && !h.tokens.tokenFile && twColorUtils < 5 && (h.files.code ?? 0) >= 200;
+// a kit product's colours sit on its components, read by its profile
+const systemElsewhere = !P.isKit && colors.length < 5 && !h.tokens.tokenFile && twColorUtils < 5 && (h.files.code ?? 0) >= 200;
 const noSystemLikely = !utilityPalette && !(P.isRegistry && P.registry?.themes?.total) && (colors.length === 0 || (colors.length < 3 && spacingTotal === 0) || systemElsewhere);
 // A scan that found almost no styling has not measured health: every tile
 // reads good because every count is zero. Withhold the number and say where
@@ -378,7 +379,7 @@ const FALLBACK_TARGET = {
   colors: 'a system needs ~24', greys: 'a scale has up to 13', spacing: 'a dozen deliberate exceptions',
   exactDuplicates: 'should be 0', inlineStyles: 'invisible to any system', nearPairs: '1 colour recorded twice',
   important: 'forces a style through', neverImported: 'the system nobody found', arbitrary: 'a handful of deliberate exceptions',
-  paintTin: 'the theme file already has a variable for it', doorOverrides: 'use a variant, or add one',
+  paintTin: 'the theme file already has a variable for it', kitColour: 'the theme has a colour for the job', kitPx: 'the theme has a spacing step for it', doorOverrides: 'use a variant, or add one',
 };
 // Dress one judged tile for the page: formatted number, comparison rows.
 // Accepts a judged tile from score.mjs, or the positional form the
@@ -1149,6 +1150,22 @@ function whereToStartSection() {
     }
   }
 
+  if (P.isKit && P.kit) {
+    const k = P.kit;
+    if (k.colour.uses >= 10) {
+      const s0 = k.colour.samples[0], f0 = k.colour.top[0];
+      c.push({ score: 20 + k.colour.per100 / 4, metric: 'kitColour', after: 0,
+        title: `Move the ${n(k.colour.uses)} colours written on components into the ${esc(k.name)} theme`,
+        sub: `${esc(s0.value)} is written ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with createTheme() and put the palette there`}. On the component, point at it: <code>color: 'text.secondary'</code> in sx, or <code>theme.palette.primary.main</code> in a styled() call.` });
+    }
+    if (k.px.uses >= 10) {
+      const s0 = k.px.samples[0], f0 = k.px.top[0];
+      c.push({ score: 15 + k.px.per100 / 4, metric: 'kitPx', after: 0,
+        title: `Put the ${n(k.px.uses)} pixel sizes on the theme's spacing steps`,
+        sub: `${esc(s0.value)} is written ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. ${esc(k.name)} spacing is a step count: <code>p: 2</code> is <code>theme.spacing(2)</code>, 16px on the default theme. A size that lands on a step becomes the step; one that does not stays and gets a comment.` });
+    }
+  }
+
   // What each move is actually worth, then rank by payoff for real.
   for (const item of c) {
     item.delta = 0; item.target = null;
@@ -1382,6 +1399,26 @@ function publishesRegistryLine() {
   return `<div class="excl">This repo also publishes a shadcn registry (${esc(publishesLine({ publishes: pr.publishes, items: 0 }))}) from ${esc(pr.dirs.slice(0, 2).join(', ') || pr.source)}. With ${n(pr.pagesOutside)} app pages beside it, the product is what this scan measures, and the published folders are read like the rest of the repo rather than on their own.</div>`;
 }
 
+function kitReceipt() {
+  if (!P.isKit || !P.kit) return '';
+  const k = P.kit;
+  return `<div class="excl fresh">Read as a product built on ${esc(k.name)}: imported in ${n(k.kitFiles)} files, ${k.themeFiles.length ? `theme defined in ${esc(k.themeFiles[0])}` : `no theme of its own, so the ${esc(k.name)} defaults are the theme`}. The kit's own code is installed from npm and not counted; what is counted is what the repo writes onto its components.</div><div class="excl">Evidence: ${esc(P.evidence.join(' · '))}</div>`;
+}
+
+// A kit product: the theme, how often components read it, and where a colour
+// or a pixel size was written onto a component instead.
+function kitSection() {
+  if (!P.isKit || !P.kit) return '';
+  const k = P.kit;
+  const chips = (list, cls) => list.slice(0, 8).map((x) => `<span class="vchip ${cls}">${esc(x.value)} ×${x.count}</span>`).join('');
+  const files = (list) => list.slice(0, 5).map((f) => `<span class="vchip dim" title="${esc(f.file)}">${esc(basename(f.file))} ×${f.count}</span>`).join('');
+  const parts = [`<div class="receipts">${eyebrow(k.themeFiles.length ? `Theme in ${esc(k.themeFiles[0])}${k.themeFiles.length > 1 ? ` and ${n(k.themeFiles.length - 1)} more` : ''} · read ${n(k.refs)} times from components` : `No theme of its own · the ${esc(k.name)} defaults`)}<p class="sub">${k.themeFiles.length ? `Components reach the theme ${n(k.refsPer100)} times per 100 kit files, through paths like <code>text.secondary</code> and <code>theme.spacing()</code>. That is the system working.` : `Without a theme of its own, every colour a component needs is either ${esc(k.name)}'s default or written by hand.`}</p></div>`];
+  parts.push(`<div class="receipts">${eyebrow(`${n(k.colour.uses)} colours written on components · ${n(k.colour.per100)} per 100 kit files`)}${k.colour.uses ? `<div class="chips-row">${chips(k.colour.samples, 'bad')}</div><div class="chips-row">${files(k.colour.top)}</div>` : '<p class="sub">Every colour on a component comes from the theme.</p>'}${whyToggle('kitColour')}</div>`);
+  parts.push(`<div class="receipts">${eyebrow(`${n(k.px.uses)} pixel sizes written on components · ${n(k.px.per100)} per 100 kit files`)}${k.px.uses ? `<div class="chips-row">${chips(k.px.samples, 'warn')}</div><div class="chips-row">${files(k.px.top)}</div>` : '<p class="sub">Spacing, type size and radius on components come from the theme.</p>'}${whyToggle('kitPx')}</div>`);
+  if (k.exempt?.length) parts.push(`<p class="sub">Not counted: ${n(k.exempt.length)} file${k.exempt.length === 1 ? '' : 's'} of colour data or artwork (${esc(k.exempt.slice(0, 3).map((e) => basename(e.file)).join(', '))}).</p>`);
+  return `<section class="glass pad">${sectionHead(`Your ${esc(k.name)} theme, and what is written around it`, 'the theme, and the places a colour or a pixel size was written onto a component instead')}${parts.join('')}</section>`;
+}
+
 function tailwindReceipt() {
   if (!P.isTailwind || !P.tailwind) return '';
   const t = P.tailwind;
@@ -1463,6 +1500,7 @@ function sidePanel() {
   const facts = [
     shadcnReceipt(),
     tailwindReceipt(),
+    kitReceipt(),
     publishesRegistryLine(),
     exclusionsLine(),
     commissionedBy ? `<div class="excl">Commissioned by <b>${esc(commissionedBy)}</b></div>` : '',
@@ -1539,7 +1577,7 @@ function addIndex(page) {
   const short = (t) => t.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().replace(/^[\d,]+ /, '')
     .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^You sat through the roast$/, 'Your present')
     .replace(/^The shadcn theme and the 2 shadcn checks$/, 'shadcn theme and checks')
-    .replace(/^Your Tailwind theme, and what goes around it$/, 'Your Tailwind theme').replace(/, declared .*$/, '')
+    .replace(/^Your Tailwind theme, and what goes around it$/, 'Your Tailwind theme').replace(/^Your (\w+) theme, and what is written around it$/, 'Your $1 theme').replace(/, declared .*$/, '')
     .replace(/^off-scale spacing values$/, 'Off-scale spacing').replace(/^inline style blocks?$/, 'Inline styles').replace(/^typefaces?$/, 'Typefaces');
   const entries = [];
   let i = 0;
@@ -2017,6 +2055,7 @@ ${packagesSection()}
 <section style="margin-top:16px">${paletteSection()}</section>
 ${sheetSection()}
 ${tailwindSection()}
+${kitSection()}
 
 ${spacingBars()}
 ${typographySection()}
@@ -2153,6 +2192,7 @@ if (summaryPath) {
     role: P.role,
     kind: P.kind,
     ...(P.publishesRegistry ? { publishesRegistry: { source: P.publishesRegistry.source, publishes: P.publishesRegistry.publishes } } : {}),
+    ...(P.isKit && P.kit ? { kit: { name: P.kit.name, kitFiles: P.kit.kitFiles, themeFiles: P.kit.themeFiles, refs: P.kit.refs, colours: P.kit.colour.uses, pixelSizes: P.kit.px.uses, evidence: P.evidence } } : {}),
     ...(P.isTailwind && P.tailwind ? { tailwind: { file: P.tailwind.file, names: P.tailwind.names.length, restated: P.tailwind.restated, retuned: P.tailwind.retuned?.length ?? 0, uses: P.tailwind.uses, usedIn: P.tailwind.usedIn, adopted: P.tailwind.adopted, evidence: P.evidence } } : {}),
     ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants, counted: P.registry.counted ?? null, showcase: P.registry.showcase ?? [], variantsDropped: P.registry.variantsDropped ?? [], themes: P.registry.themes ? { total: P.registry.themes.total, incomplete: P.registry.themes.incomplete } : null } } : {}),
     ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true, ...(P.shadcn.lint ? { lint: { file: P.shadcn.lint.file, kind: P.shadcn.lint.kind, rulesOn: lintRulesOn(P.shadcn.lint), readFully: P.shadcn.lint.readFully } } : {}) } } : {}),

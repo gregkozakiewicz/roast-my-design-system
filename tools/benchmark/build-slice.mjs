@@ -96,6 +96,7 @@ for (const full of wanted) {
         components: reusable.length,
         paintTin: paint.tin.per100,
         doorOverrides: paint.doors.per100,
+        ...(profile.kit ? { kitColour: profile.kit.colour.per100, kitPx: profile.kit.px.per100 } : {}),
       },
     });
     console.log(`  ✓ ${full} (${P.confidence}, ${files.code.length} files, ${Date.now() - t0}ms)`);
@@ -113,6 +114,8 @@ const quantile = (sorted, q) => {
 };
 const stats = {};
 if (kind === 'tailwind') for (const r of rows) delete r.metrics.doorOverrides;
+// a kit product measures neither shadcn tile
+if (!['shadcn', 'registry', 'tailwind'].includes(kind)) for (const r of rows) { delete r.metrics.doorOverrides; delete r.metrics.paintTin; }
 for (const m of Object.keys(rows[0].metrics)) {
   const values = rows.map((r) => r.metrics[m]).sort((a, b) => a - b);
   stats[m] = { values, p25: quantile(values, 0.25), median: quantile(values, 0.5), p75: quantile(values, 0.75), p90: quantile(values, 0.9) };
@@ -135,7 +138,7 @@ bench.slices[kind] = {
 };
 writeFileSync(outPath, JSON.stringify(bench, null, 2));
 console.log(`\n✓ ${kind} slice from ${rows.length} repos → ${outPath}`);
-for (const m of ['colors', 'exactDuplicates', 'arbitrary', 'paintTin', 'doorOverrides']) {
+for (const m of ['colors', 'exactDuplicates', 'arbitrary', 'paintTin', 'doorOverrides', 'kitColour', 'kitPx']) {
   if (!stats[m]) continue;
   console.log(`  ${m}: median ${stats[m].median} (p25 ${stats[m].p25} / p75 ${stats[m].p75})   ideal: ${(IDEAL_BY_KIND[kind]?.[m] ?? bench.ideal2026[m])?.value ?? '—'}`);
 }

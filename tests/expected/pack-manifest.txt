@@ -23,6 +23,7 @@ skills/roast-my-design-system/scripts/lib/exempt.mjs
 skills/roast-my-design-system/scripts/lib/feedback.mjs
 skills/roast-my-design-system/scripts/lib/fixprompt.mjs
 skills/roast-my-design-system/scripts/lib/guard-api.mjs
+skills/roast-my-design-system/scripts/lib/kitpaint.mjs
 skills/roast-my-design-system/scripts/lib/lasttouched.mjs
 skills/roast-my-design-system/scripts/lib/nearpairs.mjs
 skills/roast-my-design-system/scripts/lib/neverimported.mjs
@@ -36,6 +37,7 @@ skills/roast-my-design-system/scripts/mcp/server.mjs
 skills/roast-my-design-system/scripts/mcp/tools.mjs
 skills/roast-my-design-system/scripts/profiles/index.mjs
 skills/roast-my-design-system/scripts/profiles/library.mjs
+skills/roast-my-design-system/scripts/profiles/mui.mjs
 skills/roast-my-design-system/scripts/profiles/product.mjs
 skills/roast-my-design-system/scripts/profiles/registry.mjs
 skills/roast-my-design-system/scripts/profiles/shadcn-data.mjs

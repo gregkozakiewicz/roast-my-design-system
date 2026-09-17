@@ -3300,7 +3300,7 @@
       ]
     },
     "mui": {
-      "builtAt": "2026-09-17T16:30:03.962Z",
+      "builtAt": "2026-09-17T17:17:21.068Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mui; the \"cleaner than\" line on a mui repo reads against these",
       "ideal2026": {
@@ -3698,7 +3698,7 @@
             1,
             2,
             3,
-            4,
+            3,
             4,
             4,
             5,
@@ -3706,13 +3706,13 @@
             9,
             9,
             12,
-            15,
+            14,
             17,
-            21,
-            35,
+            20,
+            34,
             39,
             43,
-            303
+            293
           ],
           "p25": 4,
           "median": 9,
@@ -3825,7 +3825,7 @@
             "important": 1,
             "neverImported": 0,
             "components": 436,
-            "kitColour": 303,
+            "kitColour": 293,
             "kitPx": 231
           }
         },
@@ -3906,7 +3906,7 @@
             "important": 9,
             "neverImported": 0,
             "components": 2306,
-            "kitColour": 15,
+            "kitColour": 14,
             "kitPx": 19
           }
         },
@@ -4041,7 +4041,7 @@
             "important": 0,
             "neverImported": 0,
             "components": 614,
-            "kitColour": 35,
+            "kitColour": 34,
             "kitPx": 42
           }
         },
@@ -4095,7 +4095,7 @@
             "important": 0,
             "neverImported": 0,
             "components": 154,
-            "kitColour": 4,
+            "kitColour": 3,
             "kitPx": 12
           }
         },
@@ -4176,7 +4176,7 @@
             "important": 128,
             "neverImported": 0,
             "components": 1129,
-            "kitColour": 21,
+            "kitColour": 20,
             "kitPx": 8
           }
         },
@@ -4264,7 +4264,7 @@
       ]
     },
     "mantine": {
-      "builtAt": "2026-09-17T16:30:11.076Z",
+      "builtAt": "2026-09-17T17:17:31.330Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mantine; the \"cleaner than\" line on a mantine repo reads against these",
       "ideal2026": {
@@ -4676,7 +4676,7 @@
             22,
             39,
             87,
-            159
+            158
           ],
           "p25": 1,
           "median": 3,
@@ -5140,7 +5140,7 @@
             "important": 44,
             "neverImported": 0,
             "components": 122,
-            "kitColour": 159,
+            "kitColour": 158,
             "kitPx": 38
           }
         },
@@ -5228,7 +5228,7 @@
       ]
     },
     "chakra": {
-      "builtAt": "2026-09-17T17:14:05.032Z",
+      "builtAt": "2026-09-17T17:17:34.659Z",
       "repoCount": 14,
       "note": "every repo in the fleet the scanner reads as chakra; the \"cleaner than\" line on a chakra repo reads against these",
       "ideal2026": {
@@ -5553,24 +5553,24 @@
         "kitColour": {
           "values": [
             0,
+            0,
+            2,
             3,
             3,
             3,
             4,
-            5,
-            5,
             7,
             9,
             11,
             12,
-            20,
+            18,
             64,
-            84
+            81
           ],
           "p25": 3,
           "median": 6,
           "p75": 12,
-          "p90": 51
+          "p90": 50
         },
         "kitPx": {
           "values": [
@@ -5619,7 +5619,7 @@
             "important": 77,
             "neverImported": 0,
             "components": 330,
-            "kitColour": 5,
+            "kitColour": 0,
             "kitPx": 4
           }
         },
@@ -5673,7 +5673,7 @@
             "important": 48,
             "neverImported": 0,
             "components": 132,
-            "kitColour": 84,
+            "kitColour": 81,
             "kitPx": 1
           }
         },
@@ -5889,7 +5889,7 @@
             "important": 8,
             "neverImported": 0,
             "components": 391,
-            "kitColour": 20,
+            "kitColour": 18,
             "kitPx": 20
           }
         },
@@ -5916,7 +5916,7 @@
             "important": 0,
             "neverImported": 0,
             "components": 177,
-            "kitColour": 5,
+            "kitColour": 2,
             "kitPx": 5
           }
         },

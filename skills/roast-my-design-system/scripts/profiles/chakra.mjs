@@ -34,7 +34,7 @@ export const CHAKRA = {
     rulesTheme: (file) => `Colours, spacing and radius are decided in \`${file}\`. On a component, use style props by name: \`color="fg.muted"\`, \`bg="gray.100"\`, \`p={3}\`, \`gap={2}\`; a colour that changes with the mode is a semantic token or \`useColorModeValue\`.`,
     rulesSpacing: 'Use space steps as numbers (`p={3}`), not pixel strings (`p="12px"`)',
     promptColour: '- Read the theme where Chakra reads it: style props with token names (color="fg.muted", bg="gray.100"), token() in code. Never import the theme file into a component just to read a hex.',
-    promptSpacing: "- A number in a Chakra style prop is a space step, not pixels: 12px is p={3} only if the theme keeps Chakra's default space scale. Check the theme first.",
+    promptSpacing: "- A number in a Chakra style prop is a space step, not pixels: 12px is p={3} only if the theme keeps Chakra's default space scale. Check the theme first.\n- Inside style={{}} or on a plain element a bare number is pixels. To use a step there, make the element a Chakra one (<Box as=\"legend\" ml={2}>) rather than changing the number.",
     promptInline: '- Move a style to Chakra style props (p={3}, color="fg.muted") only on Chakra components or wrappers that pass their props to one. Your own wrappers that take a style prop keep style.',
   },
 };

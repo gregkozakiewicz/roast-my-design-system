@@ -125,3 +125,8 @@ test('a colour compared with the theme is a check, not paint', () => {
   const k = count({ 'src/Bar.tsx': card(`<Box sx={{ bgcolor: theme.bg === "#f2f3f5" ? 'grey.100' : 'grey.900', color: '#abcdef' }} />`) });
   assert.deepEqual(k.colour.samples.map((s) => s.value), ['#abcdef']);
 });
+
+test('SVG paint and a colour handed to setAttribute are not component paint', () => {
+  const k = count({ 'src/Flare.tsx': card(`<svg><path fill={blue ? "#0042DA" : "#FF8B1A"} stroke="#123123" /><Box sx={{ color: '#abcdef' }} onClick={() => meta.setAttribute('content', dark ? '#27272a' : '#ffffff')} /></svg>`) });
+  assert.deepEqual(k.colour.samples.map((s) => s.value), ['#abcdef']);
+});

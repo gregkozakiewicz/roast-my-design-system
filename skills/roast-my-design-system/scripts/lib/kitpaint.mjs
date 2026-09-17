@@ -24,6 +24,10 @@ const THEME_NAME_RE = /(^|\/)[\w.-]*(theme|palette|colou?rs?|tokens?)[\w.-]*(\/|
 // a literal compared with the theme is a check, not paint:
 // theme.BACKGROUND_SECONDARY === "#f2f3f5" (JSON Crack, 2026-09-17)
 const COMPARE_RE = /(?:[=!]==?\s*(['"`])[^'"`]*\1|(['"`])[^'"`]*\2\s*[=!]==?)/g;
+// SVG paint is the drawing (Quenti's landing flare), and a colour handed to
+// setAttribute is page metadata (Vemetric's theme-color meta), 2026-09-17
+const ARTWORK_ATTR_RE = /\b(?:fill|stroke|stopColor|floodColor|lightingColor)=\{?\s*(?:[^{}'"`]*\?\s*)?(['"`])[^'"`]*\1(?:\s*:\s*(['"`])[^'"`]*\2)?/g;
+const SET_ATTRIBUTE_RE = /\.setAttribute\([^)]*\)/g;
 const FALLBACK_RE = /\b(?:theme|vars)\.palette(?:\.|\[)[\w.[\]]+\s*(?:\|\||\?\?)\s*(['"`])[^'"`]*\1/g;
 // a file that drives a chart or a map renderer: its colours are the picture
 // (OpenCTI's maplibre style, Checkmate's recharts series, 2026-09-17)
@@ -122,7 +126,7 @@ export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe,
     // a theme call counts only where the kit is imported: CodeMirror has a
     // createTheme too (Onyxia, 2026-09-17); a Storybook preview is not the theme
     const isTheme = themeRe.test(code) && themeImportRe.test(code) && !/(^|\/)\.storybook\//.test(f);
-    const colours = [...dropPalettes(code.replace(FALLBACK_RE, ' ').replace(COMPARE_RE, ' ')).matchAll(COLOUR_RE)].map((m) => m[2].toLowerCase().replace(/\s+/g, ''));
+    const colours = [...dropPalettes(code.replace(FALLBACK_RE, ' ').replace(COMPARE_RE, ' ').replace(ARTWORK_ATTR_RE, ' ').replace(SET_ATTRIBUTE_RE, ' ')).matchAll(COLOUR_RE)].map((m) => m[2].toLowerCase().replace(/\s+/g, ''));
     if (isTheme) {
       themeFiles.push({ f, n: colours.length });
       themeColours += colours.length;

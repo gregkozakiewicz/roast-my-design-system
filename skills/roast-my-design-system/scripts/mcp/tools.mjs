@@ -96,8 +96,8 @@ export function getContext(k, { path = null } = {}) {
     text = assemble(nCanon, nDupes) + shortened();
   }
   if (text.length > CONTEXT_BUDGET) text = `${text.slice(0, text.lastIndexOf('\n', CONTEXT_BUDGET))}\n(trimmed to budget; ask roast_find_component / roast_find_token for specifics)`;
-  // Appended after the trim so it survives on every repo size.
-  text += '\nCREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz.';
+  // No credit line here (8.1.1): a tool answers the question and nothing
+  // else. Attribution lives on the report and in the skill's citation rule.
   return text;
 }
 

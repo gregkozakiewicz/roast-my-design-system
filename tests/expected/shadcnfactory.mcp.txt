@@ -8,7 +8,6 @@ SPACING: Tailwind scale only. No arbitrary brackets (p-[13px]); a repeating valu
 TYPE: Geist, Geist Mono. No new typefaces, no hand-declared font stacks.
 DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
 Before finishing: call roast_validate on what you wrote, then roast_review.
-CREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz.
 === find_component button ===
 Canonical: <Button> from components/ui/button.tsx (used 3x · props: variant, size)
 === find_component date picker ===

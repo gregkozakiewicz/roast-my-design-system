@@ -250,6 +250,36 @@ You get the roast in chat plus `design-system-roast.html` at your repo root: a s
 
 After the roast, the skill also offers to write `design-system-rules.md` to disk and merge it into your CLAUDE.md, `.cursor/rules` or AGENTS.md.
 
+### Three prompts to try
+
+Type any of these in Claude Code, inside the repo:
+
+```
+Roast my design system.
+```
+
+```
+How bad is my CSS? Scan this repo and show me the receipts.
+```
+
+With the MCP server connected (see [Live answers over MCP](#live-answers-over-mcp)):
+
+```
+Is there already a Button component in this repo, and which one should I use?
+```
+
+## Troubleshooting
+
+- **"Command not found" or the plugin will not install.** Update Claude Code; the plugin marketplace needs a recent version. The manual install above works on any version.
+- **"Nothing to roast" or a near-empty report.** The scan found almost no colours or spacing. The styling probably lives in another repo, a CDN or an installed package. Run it from the repo that holds the styles.
+- **A score that looks wrong.** Check the header of the report: it names how the repo was read (product, library, shadcn, a kit, a Tailwind theme) and every folder that was left out. Scope the scan with a `.roastignore` file or `--exclude` if a playground or an old app is blurring the numbers.
+- **The report did not open.** It is written to `design-system-roast.html` at the repo root. Open it in any browser; it needs no server and makes no requests.
+- **The MCP server does not appear.** Restart the client after adding it. In Claude Code, `claude mcp list` shows whether it connected. Everything it needs is Node 18 or newer.
+
+## Support
+
+Bugs and questions go to [GitHub Issues](https://github.com/gregkozakiewicz/roast-my-design-system/issues). Everything else reaches Greg through [gregkozakiewicz.com](https://gregkozakiewicz.com).
+
 ## Live examples
 
 7 real roasts of public repos, hosted as-is (the same self-contained HTML the skill generates), spanning React, Stencil and Lit:
@@ -288,7 +318,7 @@ Yes, the median repo is already a mess. That's the point.
 
 MIT. The code is yours to fork, modify and redistribute; the copyright notice travels with it.
 
-Building your own report, summary or audit from this tool's scores, counts or benchmark comparisons? Keep one line in it: *Built with [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz*. The scan data asks the same of AI agents that consume it.
+Building your own report, summary or audit from this tool's scores, counts or benchmark comparisons? Keep one line in it: *Built with [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz*. The skill asks the same of an AI agent that writes such a document from the scan.
 
 **roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://gregkozakiewicz.github.io/roast-my-design-system/brand.html).
 

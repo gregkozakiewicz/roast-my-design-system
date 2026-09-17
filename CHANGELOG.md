@@ -2,6 +2,27 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.1.1 — 2026-09-18
+
+Directory review chores. No change to the scan, the score or the report.
+
+- **The MCP tools carry a title and annotations.** All five are marked
+  read-only, so a client can run them without asking on every call.
+- **The MCP context no longer ends with a credit line.** A tool answers the
+  question and nothing else. Attribution stays on the report and in the
+  skill's rule for documents built from the scan.
+- **The plugin listing has a display name, a category (design) and a
+  homepage.**
+- **The README gains three prompts to try, a troubleshooting section and a
+  support line.**
+- **The skill names its own folder with Claude Code's variable** for it,
+  `${CLAUDE_SKILL_DIR}`, instead of a placeholder in angle brackets.
+- **An eval suite** under `evals/`, in the format Claude Code's plugin eval
+  runner reads: three plain-language requests that must fire the skill and
+  produce the report, and one unrelated request that must not. Not part of
+  the npm package. The runner is in early access, so the suite has been
+  validated for shape, not yet run.
+
 ## 8.1.0 — 2026-09-18
 
 The MCP server learns what the report learned in 7.10 and 8.0: the four

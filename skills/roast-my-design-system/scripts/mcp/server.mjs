@@ -28,29 +28,41 @@ const PROTOCOL = '2025-06-18';
 // ---------- tool + resource + prompt catalogue ----------
 // Descriptions are budgeted: every client loads them into every session, so
 // each one carries only what changes an agent's tool choice (5.0.1 trim).
+// Every tool is read-only and local: the annotations say so, so a client can
+// run them without a per-call prompt (directory policy, 2026-09-18).
 const TOOLS = [
   {
     name: 'roast_get_context',
+    title: 'Design system context',
+    annotations: { title: 'Design system context', readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     description: 'Design-system context before writing UI in this repo: tokens or the kit theme (MUI, Mantine, Chakra, Ant Design, shadcn, a Tailwind theme), canonical components, duplicates, spacing and type rules, from a real scan. Optional path ("packages/ui") narrows the slice.',
     inputSchema: { type: 'object', properties: { path: { type: 'string', description: 'Repo-relative folder (optional)' } } },
   },
   {
     name: 'roast_find_component',
+    title: 'Find the canonical component',
+    annotations: { title: 'Find the canonical component', readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     description: 'Find the canonical component for a name or intent ("icon button"). Returns import path, usage count and a real usage example, or an honest zero. Ties are reported, never guessed.',
     inputSchema: { type: 'object', properties: { query: { type: 'string', description: 'Component name or intent' } }, required: ['query'] },
   },
   {
     name: 'roast_find_token',
+    title: 'Snap a value to a token',
+    annotations: { title: 'Snap a value to a token', readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     description: 'Snap a raw value (#111111, 13px) to this repo\'s nearest token, theme colour or spacing step, in the kit\'s own terms on a kit repo. Says so when no scale exists.',
     inputSchema: { type: 'object', properties: { value: { type: 'string', description: 'Colour or length value' } }, required: ['value'] },
   },
   {
     name: 'roast_validate',
+    title: 'Validate code before saving',
+    annotations: { title: 'Validate code before saving', readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     description: 'Check code before saving: hardcoded colours, near-token twins, off-scale spacing, arbitrary brackets, inline styles, !important, duplicate components; on a kit repo, colours and pixel sizes written onto kit components where the theme has a value; on a Tailwind theme, palette classes. Findings name the fix.',
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to check' }, file: { type: 'string', description: 'Intended file path (optional)' } }, required: ['code'] },
   },
   {
     name: 'roast_review',
+    title: 'Review changed files',
+    annotations: { title: 'Review changed files', readOnlyHint: true, destructiveHint: false, openWorldHint: false },
     description: 'Review the working tree\'s changed files (git diff + untracked) against the design system. Reads the diff itself; send no code. Call before finishing UI work.',
     inputSchema: { type: 'object', properties: {} },
   },

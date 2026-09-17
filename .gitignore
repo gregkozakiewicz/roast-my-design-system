@@ -17,3 +17,6 @@ CLAUDE.md
 
 # npm lockfile: this package has zero dependencies, a lockfile only appears by accident
 package-lock.json
+
+# plugin eval runs
+evals/results/

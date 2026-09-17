@@ -11,7 +11,6 @@ SPACING: this repo has no scale, just 3 values in circulation. Reuse one rather 
 DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
 NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.
 Before finishing: call roast_validate on what you wrote, then roast_review.
-CREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz.
 === find_component button ===
 Canonical: <Button> from design-system/button.tsx (used 3x)
 === find_component date picker ===

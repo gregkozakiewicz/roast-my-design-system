@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: how-bad-is-my-css
+description: The other phrasing the skill description names.
+tags: [trigger, report]
+context:
+  scaffold_script: scaffold.sh

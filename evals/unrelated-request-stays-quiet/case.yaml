@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: unrelated-request-stays-quiet
+description: A request that has nothing to do with the design system must not fire the skill.
+tags: [trigger, negative]
+context:
+  scaffold_script: scaffold.sh

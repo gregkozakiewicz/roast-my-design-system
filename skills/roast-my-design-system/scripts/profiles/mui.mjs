@@ -16,6 +16,7 @@ export const MUI = {
   kind: 'mui',
   packages: ['@mui/material', '@material-ui/core'],
   importRe: /from\s+['"]@(?:mui|material-ui)\/|require\(\s*['"]@(?:mui|material-ui)\//,
+  reexportRe: /export\s+(?:\*|\{[^}]*\})\s+from\s+['"]@(?:mui|material-ui)\//,
   // createTheme(), or a theme handed straight to a provider: Headlamp wraps its
   // graph view in <ThemeProvider theme={(outer) => ({...})}> with its own greys
   themeRe: /\b(?:createTheme|createMuiTheme|extendTheme|experimental_extendTheme|unstable_createMuiStrictModeTheme)\s*\(|<ThemeProvider[^>]*\btheme=\{\s*(?:\(|\{)/,

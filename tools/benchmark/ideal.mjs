@@ -41,13 +41,15 @@ export const IDEAL_2026 = {
 // Ideals that belong to one kind of repo and override the table above for it.
 // Written into benchmark.json under slices.<kind>.ideal2026 by build-slice.mjs.
 export const IDEAL_BY_KIND = {
+  // kit targets: the value at the top of the tidiest third of the kit's slice
+  // (19 products each, 2026-09-17, after the fix-loop rounds)
   mantine: {
-    kitColour: { value: 3, note: 'colours written onto Mantine components per 100 kit files; 9 of the 19 Mantine products sit at or under this, the median is 4 (2026-09-17)' },
-    kitPx: { value: 28, note: 'spacing written as pixels on Mantine components (p={10}, rem(10), padding: "10px") per 100 kit files; 6 of 19 sit at or under this, the median is 46 (2026-09-17)' },
+    kitColour: { value: 1, note: 'colours written onto Mantine components per 100 kit files (palettes, charts, editors and theme fallbacks not counted; a team layer over Mantine counted as Mantine); 7 of the 19 Mantine products sit at or under this, the median is 3' },
+    kitPx: { value: 3, note: 'spacing written as pixels on Mantine components (p={16}, rem(16), padding: "16px"), 10px and up, per 100 kit files; 7 of 19 sit at or under this, the median is 6' },
   },
   mui: {
-    kitColour: { value: 5, note: 'colours written onto MUI components per 100 kit files (theme fallbacks, theme folders, charts and maps not counted); 8 of the 19 MUI products sit at or under this, the median is 9 (2026-09-17)' },
-    kitPx: { value: 8, note: 'padding, margin and gap written in pixels on MUI components per 100 kit files; 8 of 19 sit at or under this, the median is 12 (2026-09-17)' },
+    kitColour: { value: 4, note: 'colours written onto MUI components per 100 kit files (palettes, charts, editors, theme fallbacks and theme folders not counted; a team layer over MUI counted as MUI); 7 of the 19 MUI products sit at or under this, the median is 9' },
+    kitPx: { value: 4, note: 'padding, margin and gap written in pixels on MUI components per 100 kit files; 6 of 19 sit at or under this, the median is 10' },
   },
   tailwind: {
     paintTin: { value: 3, note: 'palette colours in own code where a theme colour exists, per 100 files; 4 of the 11 Tailwind repos sit at or under this, the median is 10 (2026-09-16)' },

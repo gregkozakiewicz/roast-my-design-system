@@ -58,6 +58,7 @@ export function kitProfile(def) {
           `${def.name} imported in ${paint.kitFiles} files`,
           paint.themeFiles.length ? `theme defined in ${paint.themeFiles[0]}${paint.themeFiles.length > 1 ? ` and ${paint.themeFiles.length - 1} more` : ''}` : `no ${def.advice.themeCall} found: the default ${def.name} theme`,
           `the theme is referenced ${paint.refs} times from components`,
+          ...(paint.layers.length ? [`the team's own layer over ${def.name} (${paint.layers.join(', ')}) counted as ${def.name}`] : []),
         ],
       };
     },

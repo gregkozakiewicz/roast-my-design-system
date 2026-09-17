@@ -3300,17 +3300,17 @@
       ]
     },
     "mui": {
-      "builtAt": "2026-09-17T16:18:36.932Z",
+      "builtAt": "2026-09-17T16:27:50.915Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mui; the \"cleaner than\" line on a mui repo reads against these",
       "ideal2026": {
         "kitColour": {
-          "value": 5,
-          "note": "colours written onto MUI components per 100 kit files (theme fallbacks, theme folders, charts and maps not counted); 8 of the 19 MUI products sit at or under this, the median is 9 (2026-09-17)"
+          "value": 4,
+          "note": "colours written onto MUI components per 100 kit files (palettes, charts, editors, theme fallbacks and theme folders not counted; a team layer over MUI counted as MUI); 7 of the 19 MUI products sit at or under this, the median is 9"
         },
         "kitPx": {
-          "value": 8,
-          "note": "padding, margin and gap written in pixels on MUI components per 100 kit files; 8 of 19 sit at or under this, the median is 12 (2026-09-17)"
+          "value": 4,
+          "note": "padding, margin and gap written in pixels on MUI components per 100 kit files; 6 of 19 sit at or under this, the median is 10"
         }
       },
       "stats": {
@@ -3704,19 +3704,19 @@
             5,
             6,
             9,
+            9,
             12,
             15,
             17,
             21,
-            22,
             35,
             39,
             43,
-            302
+            303
           ],
           "p25": 4,
           "median": 9,
-          "p75": 22,
+          "p75": 19,
           "p90": 40
         },
         "kitPx": {
@@ -3729,8 +3729,8 @@
             4,
             8,
             8,
+            8,
             10,
-            12,
             12,
             12,
             16,
@@ -3742,7 +3742,7 @@
             231
           ],
           "p25": 4,
-          "median": 12,
+          "median": 10,
           "p75": 24,
           "p90": 56
         }
@@ -3825,7 +3825,7 @@
             "important": 1,
             "neverImported": 0,
             "components": 436,
-            "kitColour": 302,
+            "kitColour": 303,
             "kitPx": 231
           }
         },
@@ -3987,7 +3987,7 @@
             "important": 138,
             "neverImported": 0,
             "components": 308,
-            "kitColour": 22,
+            "kitColour": 9,
             "kitPx": 111
           }
         },
@@ -4015,7 +4015,7 @@
             "neverImported": 2,
             "components": 1592,
             "kitColour": 1,
-            "kitPx": 12
+            "kitPx": 8
           }
         },
         {
@@ -4264,17 +4264,17 @@
       ]
     },
     "mantine": {
-      "builtAt": "2026-09-17T16:18:55.898Z",
+      "builtAt": "2026-09-17T16:27:58.147Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mantine; the \"cleaner than\" line on a mantine repo reads against these",
       "ideal2026": {
         "kitColour": {
-          "value": 3,
-          "note": "colours written onto Mantine components per 100 kit files; 9 of the 19 Mantine products sit at or under this, the median is 4 (2026-09-17)"
+          "value": 1,
+          "note": "colours written onto Mantine components per 100 kit files (palettes, charts, editors and theme fallbacks not counted; a team layer over Mantine counted as Mantine); 7 of the 19 Mantine products sit at or under this, the median is 3"
         },
         "kitPx": {
-          "value": 28,
-          "note": "spacing written as pixels on Mantine components (p={10}, rem(10), padding: \"10px\") per 100 kit files; 6 of 19 sit at or under this, the median is 46 (2026-09-17)"
+          "value": 3,
+          "note": "spacing written as pixels on Mantine components (p={16}, rem(16), padding: \"16px\"), 10px and up, per 100 kit files; 7 of 19 sit at or under this, the median is 6"
         }
       },
       "stats": {
@@ -4663,52 +4663,52 @@
             0,
             0,
             1,
+            1,
+            1,
+            2,
             3,
             3,
             3,
             3,
-            4,
-            5,
             7,
-            12,
+            7,
             13,
-            25,
-            59,
-            89,
-            143,
+            22,
+            39,
+            109,
             159
           ],
-          "p25": 2,
-          "median": 4,
-          "p75": 19,
-          "p90": 100
+          "p25": 1,
+          "median": 3,
+          "p75": 10,
+          "p90": 53
         },
         "kitPx": {
           "values": [
             0,
-            1,
+            0,
+            0,
             2,
-            18,
-            25,
+            2,
+            3,
+            3,
+            4,
+            5,
+            6,
+            6,
+            7,
+            7,
+            9,
+            10,
             28,
             38,
-            44,
-            46,
-            46,
-            47,
-            56,
-            62,
-            66,
-            74,
-            76,
-            85,
-            91,
-            224
+            40,
+            43
           ],
-          "p25": 27,
-          "median": 46,
-          "p75": 70,
-          "p90": 86
+          "p25": 3,
+          "median": 6,
+          "p75": 10,
+          "p90": 38
         }
       },
       "repos": [
@@ -4735,8 +4735,8 @@
             "important": 5,
             "neverImported": 0,
             "components": 28,
-            "kitColour": 89,
-            "kitPx": 46
+            "kitColour": 2,
+            "kitPx": 28
           }
         },
         {
@@ -4762,8 +4762,8 @@
             "important": 1653,
             "neverImported": 0,
             "components": 1122,
-            "kitColour": 25,
-            "kitPx": 56
+            "kitColour": 22,
+            "kitPx": 4
           }
         },
         {
@@ -4816,8 +4816,8 @@
             "important": 4,
             "neverImported": 0,
             "components": 51,
-            "kitColour": 143,
-            "kitPx": 74
+            "kitColour": 109,
+            "kitPx": 43
           }
         },
         {
@@ -4843,8 +4843,8 @@
             "important": 69,
             "neverImported": 0,
             "components": 488,
-            "kitColour": 4,
-            "kitPx": 47
+            "kitColour": 1,
+            "kitPx": 7
           }
         },
         {
@@ -4870,8 +4870,8 @@
             "important": 345,
             "neverImported": 0,
             "components": 407,
-            "kitColour": 12,
-            "kitPx": 91
+            "kitColour": 7,
+            "kitPx": 2
           }
         },
         {
@@ -4898,7 +4898,7 @@
             "neverImported": 0,
             "components": 1642,
             "kitColour": 3,
-            "kitPx": 62
+            "kitPx": 6
           }
         },
         {
@@ -4925,7 +4925,7 @@
             "neverImported": 0,
             "components": 445,
             "kitColour": 1,
-            "kitPx": 25
+            "kitPx": 6
           }
         },
         {
@@ -4951,8 +4951,8 @@
             "important": 5,
             "neverImported": 0,
             "components": 222,
-            "kitColour": 5,
-            "kitPx": 1
+            "kitColour": 1,
+            "kitPx": 0
           }
         },
         {
@@ -4978,8 +4978,8 @@
             "important": 14,
             "neverImported": 0,
             "components": 260,
-            "kitColour": 59,
-            "kitPx": 85
+            "kitColour": 39,
+            "kitPx": 40
           }
         },
         {
@@ -5006,7 +5006,7 @@
             "neverImported": 1,
             "components": 440,
             "kitColour": 7,
-            "kitPx": 66
+            "kitPx": 3
           }
         },
         {
@@ -5033,7 +5033,7 @@
             "neverImported": 0,
             "components": 127,
             "kitColour": 0,
-            "kitPx": 28
+            "kitPx": 9
           }
         },
         {
@@ -5060,7 +5060,7 @@
             "neverImported": 0,
             "components": 5424,
             "kitColour": 3,
-            "kitPx": 38
+            "kitPx": 3
           }
         },
         {
@@ -5087,7 +5087,7 @@
             "neverImported": 0,
             "components": 37,
             "kitColour": 3,
-            "kitPx": 18
+            "kitPx": 0
           }
         },
         {
@@ -5114,7 +5114,7 @@
             "neverImported": 0,
             "components": 317,
             "kitColour": 0,
-            "kitPx": 46
+            "kitPx": 7
           }
         },
         {
@@ -5141,7 +5141,7 @@
             "neverImported": 0,
             "components": 122,
             "kitColour": 159,
-            "kitPx": 224
+            "kitPx": 38
           }
         },
         {
@@ -5168,7 +5168,7 @@
             "neverImported": 0,
             "components": 148,
             "kitColour": 3,
-            "kitPx": 44
+            "kitPx": 5
           }
         },
         {
@@ -5195,7 +5195,7 @@
             "neverImported": 0,
             "components": 114,
             "kitColour": 0,
-            "kitPx": 76
+            "kitPx": 10
           }
         },
         {

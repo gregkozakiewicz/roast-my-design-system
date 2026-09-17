@@ -94,3 +94,29 @@ test('Mantine spacing written as a number or rem() is pixels; a theme size is no
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("a team's own layer over the kit counts as the kit", () => {
+  const files = {};
+  for (const n of ['Button', 'Text', 'Stack']) files[`src/app/ui/components/${n}/index.ts`] = `export { ${n} } from '@mui/material';\n`;
+  for (let i = 0; i < 3; i++) files[`src/pages/Page${i}.tsx`] = `import { Button } from 'app/ui';\nexport const P = () => <Button sx={{ color: '#123456' }} />;\n`;
+  const k = count(files);
+  assert.deepEqual(k.layers, ['app/ui']);
+  assert.equal(k.colour.uses, 3);
+});
+
+test('an array of eight or more colours is a palette, not paint', () => {
+  const eight = Array.from({ length: 8 }, (_, i) => `'#10101${i}'`).join(', ');
+  const k = count({ 'src/Swatches.tsx': card(`<ColorPicker swatches={[${eight}]} sx={{ color: '#999999' }} />`) });
+  assert.deepEqual(k.colour.samples.map((s) => s.value), ['#999999']);
+});
+
+test('Mantine spacing below its smallest step is not counted', async () => {
+  const { MANTINE } = await import('../../skills/roast-my-design-system/scripts/profiles/mantine.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'roast-kit-'));
+  try {
+    writeFileSync(join(root, 'Row.tsx'), `import { Group } from '@mantine/core';\nexport const R = () => <Group gap={4} p={16} mt={6} />;\n`);
+    assert.deepEqual(countKitPaint(root, ['Row.tsx'], MANTINE).px.samples.map((s) => s.value), ['p: 16px']);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

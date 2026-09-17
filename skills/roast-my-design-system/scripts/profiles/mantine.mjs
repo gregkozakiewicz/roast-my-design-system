@@ -19,6 +19,10 @@ export const MANTINE = {
   kind: 'mantine',
   packages: ['@mantine/core'],
   importRe: /from\s+['"]@mantine\/|require\(\s*['"]@mantine\//,
+  reexportRe: /export\s+(?:\*|\{[^}]*\})\s+from\s+['"]@mantine\//,
+  // below Mantine's smallest step (xs, 10px) no theme size can replace a
+  // spacing, so gap={4} is fine-grained layout, not drift (2026-09-17)
+  pxMin: 10,
   themeRe: /\b(?:createTheme|mergeMantineTheme)\s*\(|<MantineProvider[^>]*\btheme=\{|:\s*MantineThemeOverride\b/,
   themeImportRe: /from\s*['"]@mantine\/core['"]/,
   refRe: /var\(--mantine-(?:color|spacing|radius|font-size|shadow)-|theme\.colors\.|theme\.spacing\.|theme\.radius\.|theme\.other\.|(?<![\w-])(?:c|color|bg)=["'](?:dimmed|bright|[a-z]+(?:\.\d)?)["']|(?<![\w-])(?:p|m|px|py|pt|pb|pl|pr|mx|my|mt|mb|ml|mr|gap)=["'](?:xs|sm|md|lg|xl)["']/g,

@@ -24,7 +24,7 @@ const THEME_NAME_RE = /(^|\/)[\w.-]*(theme|palette|colou?rs?|tokens?)[\w.-]*(\/|
 const FALLBACK_RE = /\b(?:theme|vars)\.palette(?:\.|\[)[\w.[\]]+\s*(?:\|\||\?\?)\s*(['"`])[^'"`]*\1/g;
 // a file that drives a chart or a map renderer: its colours are the picture
 // (OpenCTI's maplibre style, Checkmate's recharts series, 2026-09-17)
-const RENDERER_IMPORT_RE = /from\s+['"](?:maplibre-gl|mapbox-gl|leaflet|react-leaflet|ol|deck\.gl|@deck\.gl\/[\w-]+|recharts|chart\.js|react-chartjs-2|echarts|echarts-for-react|d3|d3-[\w-]+|@nivo\/[\w-]+|victory|apexcharts|react-apexcharts|highcharts|highcharts-react-official|plotly\.js[\w-]*|react-plotly\.js|@visx\/[\w-]+|three|@react-three\/[\w-]+|pixi\.js|@antv\/[\w-]+|@mui\/x-charts)['"\/]/;
+const RENDERER_IMPORT_RE = /from\s+['"](?:xterm|@xterm\/[\w-]+|uplot|uplot-react|@codemirror\/[\w-]+|@uiw\/codemirror-[\w-]+|monaco-editor|@monaco-editor\/[\w-]+|maplibre-gl|mapbox-gl|leaflet|react-leaflet|ol|deck\.gl|@deck\.gl\/[\w-]+|recharts|chart\.js|react-chartjs-2|echarts|echarts-for-react|d3|d3-[\w-]+|@nivo\/[\w-]+|victory|apexcharts|react-apexcharts|highcharts|highcharts-react-official|plotly\.js[\w-]*|react-plotly\.js|@visx\/[\w-]+|three|@react-three\/[\w-]+|pixi\.js|@antv\/[\w-]+|@mui\/x-charts)['"\/]/;
 // quoted colour literals only: a hex in a comment or an id is not paint
 const COLOUR_RE = /(['"`])(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:rgba?|hsla?)\([^)'"`]*\))\1/g;
 // spacing written in pixels, and nothing else. Type size and line height
@@ -33,6 +33,43 @@ const COLOUR_RE = /(['"`])(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(
 // 2026-09-17). Widths and heights are layout, often deliberate.
 const PX_KEYS = 'p|m|px|py|pt|pb|pl|pr|mx|my|mt|mb|ml|mr|gap|rowGap|columnGap|padding|margin|paddingTop|paddingBottom|paddingLeft|paddingRight|paddingX|paddingY|paddingBlock|paddingInline|marginTop|marginBottom|marginLeft|marginRight|marginX|marginY|marginBlock|marginInline';
 const PX_RE = new RegExp(`\\b(${PX_KEYS})\\s*[:=]\\s*\\{?\\s*(['"\`])(\\d+(?:\\.\\d+)?px)\\2`, 'g');
+
+// An array of 8 or more colours is a palette handed to something (a chart's
+// series, a colour picker's swatches), data rather than paint (Prometheus,
+// JSON Crack, 2026-09-17).
+const ARRAY_RE = /\[[^[\]]*\]/g;
+const QUOTED_COLOUR_RE = /(['"`])(?:#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:rgba?|hsla?)\([^)'"`]*\))\1/g;
+const dropPalettes = (code) => code.replace(ARRAY_RE, (a) => ((a.match(QUOTED_COLOUR_RE) ?? []).length >= 8 ? ' ' : a));
+
+/**
+ * A team's own layer over the kit: a folder or package that re-exports it
+ * (Metabase's metabase/ui, 2,469 files; Linode's @linode/ui, 1,347 files).
+ * Files that import the layer are kit files too. Returns the import
+ * specifiers that reach the layer, or [] when there is none.
+ */
+function kitLayers(root, codeFiles, reexportRe) {
+  const roots = new Map();
+  for (const f of codeFiles) {
+    if (!/\.[jt]sx?$/.test(f) || !/(^|\/)(ui|design-system|ds|kit)\//.test(f)) continue;
+    let src; try { src = readFileSync(join(root, f), 'utf8'); } catch { continue; }
+    if (!reexportRe.test(src)) continue;
+    const parts = f.split('/');
+    const i = parts.lastIndexOf(parts.filter((p) => /^(ui|design-system|ds|kit)$/.test(p)).pop());
+    const dir = parts.slice(0, i + 1).join('/');
+    roots.set(dir, (roots.get(dir) ?? 0) + 1);
+  }
+  const specs = new Set();
+  for (const [dir, n] of roots) {
+    if (n < 3) continue;
+    const segs = dir.split('/');
+    // the folder path as an alias sees it (metabase/ui), and the package name
+    // when the folder is a workspace package (@linode/ui)
+    if (segs.length >= 2 && !['src', 'packages', 'apps', 'libs'].includes(segs.at(-2))) specs.add(segs.slice(-2).join('/'));
+    try { const name = JSON.parse(readFileSync(join(root, dir, 'package.json'), 'utf8')).name; if (name) specs.add(name); } catch { /* not a package */ }
+  }
+  return [...specs];
+}
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 
 const stripComments = (s) => s.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:'"`\\])\/\/[^\n]*/g, '$1');
 
@@ -55,7 +92,11 @@ export function colourTable(src, literals) {
 const SPACING_NUM_RE = /(?:^|[{,\n])\s*spacing\s*:\s*(\d+(?:\.\d+)?)\s*(?=[,}\n])/g;
 const SPACING_CUSTOM_RE = /\bspacing(?:Config)?\s*:\s*(?:\([^)]*\)\s*=>|\w+\s*=>|function\b|\[|\w+\()/;
 
-export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, themeImportRe = importRe, pxPropRes = [] }) {
+export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe, refRe, themeImportRe = kitImportRe, pxPropRes = [], pxMin = 0, reexportRe = null }) {
+  const layers = reexportRe ? kitLayers(root, codeFiles, reexportRe) : [];
+  const importRe = layers.length
+    ? new RegExp(`${kitImportRe.source}|from\\s+['"](?:[^'"]*\\/)?(?:${layers.map(escapeRe).join('|')})(?:['"]|\\/)`)
+    : kitImportRe;
   const themeFiles = [];
   const themeValues = new Set();
   const spacingUnits = new Set();
@@ -78,7 +119,7 @@ export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, theme
     // a theme call counts only where the kit is imported: CodeMirror has a
     // createTheme too (Onyxia, 2026-09-17); a Storybook preview is not the theme
     const isTheme = themeRe.test(code) && themeImportRe.test(code) && !/(^|\/)\.storybook\//.test(f);
-    const colours = [...code.replace(FALLBACK_RE, ' ').matchAll(COLOUR_RE)].map((m) => m[2].toLowerCase().replace(/\s+/g, ''));
+    const colours = [...dropPalettes(code.replace(FALLBACK_RE, ' ')).matchAll(COLOUR_RE)].map((m) => m[2].toLowerCase().replace(/\s+/g, ''));
     if (isTheme) {
       themeFiles.push({ f, n: colours.length });
       themeColours += colours.length;
@@ -103,7 +144,7 @@ export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, theme
     const pxHits = [
       ...[...code.matchAll(PX_RE)].map((m) => `${m[1]}: ${m[3]}`),
       ...pxPropRes.flatMap((re) => [...code.matchAll(re)].map((m) => `${m[1]}: ${m[2]}px`)),
-    ].filter((v) => !/: (0|1)px$/.test(v));
+    ].filter((v) => !/: (0|1)px$/.test(v) && parseFloat(v.split(': ')[1]) >= pxMin);
     if (pxHits.length) bump(px, f, pxHits);
   }
 
@@ -120,6 +161,8 @@ export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, theme
   for (const s of colourOut.samples) if (themeValues.has(s.value)) s.inTheme = true;
   return {
     kitFiles,
+    // the team's own layer over the kit, counted as the kit
+    layers,
     themeFiles: ranked.slice(0, 10),
     // the spacing step as the theme sets it: a number of pixels, 'custom'
     // (a function or a responsive config), or null for the kit default

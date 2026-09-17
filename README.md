@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=7.10.0" width="72" alt="roast-my-design-system">
+<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roaster_logo_300px.png?v=8.0.0" width="72" alt="roast-my-design-system">
 
 # roast-my-design-system
 
@@ -10,13 +10,32 @@
 
 A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
 
+> **New in 8.0: support for the four big component kits.**
+>
+> If your product is built on MUI, Mantine, Chakra UI or Ant Design, roast now reads it as such. It finds your theme in the repo, counts how often your components read it, and measures the two things that drift: colours and spacing written onto components when the theme already has a value.
+>
+> - **The kit's own code is not counted.** Nor are chart colours, colour pickers, artwork, editor themes or fallbacks.
+> - **Your own layer counts as the kit.** Metabase wraps Mantine and imports the wrapper in 2,469 files. The old reading covered 14% of the product.
+> - **A repo belongs to the kit it uses most,** shadcn included.
+> - **You are compared with products on the same kit:** 19 MUI, 19 Mantine, 16 Chakra and 16 Ant Design, 70 in all. Each target comes from the tidiest third of its group.
+> - **The fix prompts speak your kit:** MUI's `sx`, Mantine's props, Chakra's space steps, Ant Design's `theme.useToken()`.
+>
+> Repos that used to fall through now read properly. Open-Assistant scored a false 100 and now scores 75 as a Chakra product. InvenTree and the APISIX dashboard got no score at all and now score 75 and 84.
+
+> **Also in 8.0: eleven counting fixes.**
+>
+> The benchmark is rebuilt on them, so every score moves. Take a fresh one before you compare.
+>
+> - **One colour written two ways is one colour.** It was counted twice and reported as a near-identical pair.
+> - **A fallback inside `var(--x, #fefefe)` reads the theme.** It is no longer a stray colour. Primer goes from 308 colours to 8.
+> - **Stylesheets you did not write are left out.** So are apps you have replaced, such as a `web-old` folder. The report lists everything left out, with file counts.
+> - **Fix prompts start from a product file,** not from your docs site.
+>
+> Fleet medians are now 115 colours, 23 greys, 33 off-scale spacing values, 21 duplicated components, 51 inline style blocks, 77 bracket values, 7 near-identical pairs and 5 `!important`.
+
 > **New in 7.10: a fifth profile, `tailwind`, with its own benchmark.** A repo that uses Tailwind v4 and defines at least 3 colours of its own in an `@theme` block is read as a Tailwind repo. It gets one extra check: Tailwind palette classes such as `text-gray-500` written where the theme has a colour of that kind, per 100 files. A Tailwind name given a different colour counts as the repo's own. Tailwind repos are compared with a group of 11 Tailwind repos, and the target is 3 per 100 files (median 10). Three scores that were too high now show no score or a lower one: better-auth (100, its interface is in skipped folders), strapi (75, its colours are in an installed package) and supabase (100, now 28). Files that import an email kit are skipped as emails wherever they are. Svelte, Vue and Tailwind v3 configs are not read as Tailwind yet. `summary.json` gains `kind: "tailwind"` and a `tailwind` block, and `score` can be `null`.
 
 > **New in 7.7: four repo profiles, and the fourth is `registry`.** The scanner decides once what kind of repo it is reading, `product`, `library`, `shadcn` or `registry`, and every count, ideal and benchmark line reads that decision. `registry` is new: a repo that publishes a shadcn registry (a `registry.json` with typed items, or a route that builds one from a packages folder) is counted on what it publishes and nothing else. The docs site, demos and examples are kept out and named in the header with file counts; the same components kept in several variants count once; a name repeated only inside published blocks is the range, not a duplicate; published components are the project's own work, with no installed-code exemption. Published themes get their own tile: every shadcn colour variable present for light and for dark, ideal 0. For a registry that publishes themes and no code, that check is the score. Covers shadcn's own source (84), magicui (69), kibo-ui (78) and tweakcn (100, 36 themes, all complete). No other kind of repo moves. `summary.json`: `kind: "registry"` with a `registry` block (`publishes`, `counted`, `showcase`, `variantsDropped`, `themes`); tiles gain `themesIncomplete` on registries.
-
-> **New in 7.0.** The scoring code is now a separate file that other tools can import, so a CI check gets the same score as the report. Every `summary.json` now records its schema version and which benchmark it was scored against. Five counting bugs are fixed: a bracket spacing class like `p-[13px]` was counted twice, a hex colour inside a CSS comment was counted, and three smaller ones. Most repos lose a few counts. shadcn/ui goes from 325 colours to 323 and keeps its score of 65. Large monorepos scan about ten times faster. If you use the score as a CI threshold, run a fresh scan before comparing. If you read the JSON, a tile's `value` is now a number and the printed text is in `display`.
-
-> **New in 6.0: a dark mode is not sprawl, and the ruler has been rebuilt.** A system with a dark theme states most of its colours twice. One with a density switch states its spacing twice again. Every restatement was counted, so the systems doing the most work scored the worst. Now only a token's first statement counts. A factory-fresh shadcn install goes from 20 colours to 16, and Shoelace from 420 to 219. Two related faults went with it. `border-radius: var(--radius)` was counted as a radius value, so Polaris showed 49 radii of which 36 were references to its own tokens, and Telekom showed 52 font sizes of which 48 were. A new finding names one token holding two different colours in two packages of a monorepo, which fires 8 times across 19 real repos. The benchmark was rebuilt with all of it, so every score is measured against a ruler that counts the same way: cal.com 15 to 20, Cloudscape 35 to 40, MUI 50 to 55. If you have a score from 5.x, take a fresh one before you compare.
 
 Run it on your codebase and get, in about a second:
 
@@ -77,11 +96,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=7.10.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=8.0.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=7.10.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=8.0.0)
 
 ## What makes the numbers trustworthy
 
@@ -93,7 +112,7 @@ The same report in light mode (one file, built-in toggle):
 - **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality. Your own exclusions (`.roastignore`, `--exclude`) are printed in the report header with file counts, so a scoped scan can never pass itself off as the whole repo.
 - **Intent-aware counting (v3).** Runtime-computed inline styles, compound-component APIs and wrapper components are not crimes and are not counted as ones. Token-led repos are judged on their hardcoded strays, not their token architecture. Repeated arbitrary values are read as decisions without names, not drift.
 - **The scoring code can be imported.** `scoreHarvest(harvest)` in `diagnose/score.mjs` returns the score, the nine tile results and the metrics as plain data. The report uses the same function. A CI check gets the same numbers as the page, and every `summary.json` records its schema version and the benchmark used.
-- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 34 public React repos (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…). Median: 130 colours, 17 greys, 20 duplicated components, 49 inline style blocks, 70 arbitrary Tailwind values. The builder and the repo list are in `tools/benchmark/`, so the ruler can be checked, not just quoted.
+- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 34 public React repos (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…). Median: 115 colours, 23 greys, 21 duplicated components, 51 inline style blocks, 77 arbitrary Tailwind values. The builder and the repo list are in `tools/benchmark/`, so the ruler can be checked, not just quoted.
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
 
 ## Scoping the scan
@@ -245,16 +264,16 @@ After the roast, the skill also offers to write `design-system-rules.md` to disk
 
 | Metric | Ideal Design System | Median of 34 scanned repos | Median of 10 reputable systems |
 |---|---|---|---|
-| Distinct colours | ~24 | 127 | 20 |
-| Shades of grey | up to 13 | 26 | 5 |
+| Distinct colours | ~24 | 115 | 14 |
+| Shades of grey | up to 13 | 23 | 2 |
 | Off-scale spacing values | ~12 | 33 | 6 |
 | Typefaces | 2 to 3 | 3 | 1 |
 | Off-scale border radii | up to 10 | 14 | 0 |
-| Duplicated components | 0 | 21 | 12 |
+| Duplicated components | 0 | 21 | 9 |
 | Inline style blocks | 0 | 51 | 12 |
-| Arbitrary Tailwind values | ~20 | 82 | 0 |
-| Near-identical colour pairs | 0 | 11 | 1 |
-| !important declarations | 0 | 10 | 3 |
+| Arbitrary Tailwind values | ~20 | 77 | 0 |
+| Near-identical colour pairs | 0 | 7 | 1 |
+| !important declarations | 0 | 5 | 3 |
 | Components never imported | 0 | 0 | 0 |
 
 Yes, the median repo is already a mess. That's the point.

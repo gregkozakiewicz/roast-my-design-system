@@ -41,7 +41,7 @@ const SCOPES = [
   { name: 'shadcn/ui', repo: 'shadcn-ui/ui', scope: 'apps/v4/registry/new-york-v4/ui',
     note: 'zero raw values by design; tokens live in one theme file, components use semantic utilities' },
   { name: 'Primer', repo: 'primer/react', scope: 'packages/react/src',
-    note: 'colour count inflated by hex fallbacks in var() and vendored multi-theme palettes' },
+    note: 'var() fallbacks stopped being counted in 8.0, so the colour count is now the palette itself' },
   { name: 'Polaris', repo: 'Shopify/polaris', scope: 'polaris-react/src',
     note: 'tokens live in the separate polaris-tokens package outside this scope' },
   { name: 'Carbon', repo: 'carbon-design-system/carbon', scope: 'packages/react/src',

@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en" data-theme="dark"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Design-system diagnosis:​‌‌​​‌‌‌​‌‌‌​​‌​​‌‌​​‌​‌​‌‌​​‌‌‌​‌‌​‌​‌‌​‌‌​‌‌‌‌​‌‌‌‌​‌​​‌‌​​​​‌​‌‌​‌​‌‌​‌‌​‌​​‌​‌‌​​‌​‌​‌‌‌​‌‌‌​‌‌​‌​​‌​‌‌​​​‌‌​‌‌‌‌​‌​ excalidraw/excalidraw</title>
+<title>Design-system diagnosis:​‌‌​​‌‌‌​‌‌‌​​‌​​‌‌​​‌​‌​‌‌​​‌‌‌​‌‌​‌​‌‌​‌‌​‌‌‌‌​‌‌‌‌​‌​​‌‌​​​​‌​‌‌​‌​‌‌​‌‌​‌​​‌​‌‌​​‌​‌​‌‌‌​‌‌‌​‌‌​‌​​‌​‌‌​​​‌‌​‌‌‌‌​‌​ Unleash/unleash</title>
 <meta property="og:type" content="website">
-<meta property="og:title" content="excalidraw/excalidraw: 55/100 design-system health">
-<meta property="og:description" content="84 spacing values sit outside the scale. A tidy system needs about 12. 83 inline style blocks skip the design system. An agent that reads them learns to do the same. 90 !important declarations. Each o">
+<meta property="og:title" content="Unleash/unleash: 64/100 design-system health">
+<meta property="og:description" content="25 components exist in more than 1 version. An agent asked for a Button can not tell which one to use. 97 inline style blocks skip the design system. An agent that reads them learns to do the same. 22">
 <meta property="og:site_name" content="roast-my-design-system">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="excalidraw/excalidraw: 55/100 design-system health">
-<meta name="twitter:description" content="84 spacing values sit outside the scale. A tidy system needs about 12. 83 inline style blocks skip the design system. An agent that reads them learns to do the same. 90 !important declarations. Each o">
+<meta name="twitter:title" content="Unleash/unleash: 64/100 design-system health">
+<meta name="twitter:description" content="25 components exist in more than 1 version. An agent asked for a Button can not tell which one to use. 97 inline style blocks skip the design system. An agent that reads them learns to do the same. 22">
 <meta name="author" content="Greg Kozakiewicz · gregkozakiewicz.com">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==">
 <link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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">
@@ -453,7 +453,7 @@
   .author:hover { text-decoration:underline; }
 </style>
 <!-- rmds-schema: gregkozakiewicz/7.10.0 -->
-<!-- rmds-score: 55 -->
+<!-- rmds-score: 64 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
   <span class="tt-lab tt-day">Day</span>
@@ -467,14 +467,14 @@
 <div class="wrap">
 <aside class="side">
   <div class="eyebrow">Design-system diagnosis</div>
-  <div class="repo"><span class="mono">excalidraw/excalidraw</span></div>
-  <div class="scanned">Scanned 2026-09-17 · 509 code files · 246ms</div>
-  <div class="score"><div class="eyebrow">Health score</div><div class="val">55<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 85.</b></div></div>
-  <div class="chips"><span class="chip">vite-react</span><span class="chip">TypeScript</span><span class="chip">Sass</span><span class="chip">monorepo</span><span class="chip chip-dim">design system: unrecognised</span><span class="chip chip-agent">CLAUDE.md</span><span class="chip chip-agent">AGENTS.md</span><span class="chip chip-agent">.github/copilot-instructions.md</span></div>
-  <div class="facts"><div class="excl">Left out by design: <span class="mono">examples/</span> (13 UI files), <span class="mono">dev-docs/</span> (5 UI files). A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div></div>
+  <div class="repo"><span class="mono">Unleash/unleash</span></div>
+  <div class="scanned">Scanned 2026-09-17 · 5,223 code files · 1058ms</div>
+  <div class="score"><div class="eyebrow">Health score</div><div class="val">64<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 82.</b></div></div>
+  <div class="chips"><span class="chip">vite-react</span><span class="chip">TypeScript</span><span class="chip">Emotion</span><span class="chip">Emotion (styled)</span><span class="chip">Sass</span><span class="chip">custom design system</span><span class="chip">monorepo</span><span class="chip chip-agent">CLAUDE.md</span><span class="chip chip-agent">AGENTS.md</span></div>
+  <div class="facts"><div class="excl fresh">Read as a product built on MUI: imported in 1,109 files, theme defined in frontend/src/themes/dark-theme.ts. The kit's own code is installed from npm and not counted; what is counted is what the repo writes onto its components.</div><div class="excl">Evidence: MUI imported in 1109 files · theme defined in frontend/src/themes/dark-theme.ts and 1 more · the theme is referenced 6162 times from components</div><div class="excl">Left out by design: <span class="mono">playground/</span> (26 UI files), <span class="mono">demo/</span> (10 UI files), <span class="mono">archive/</span> (4 UI files). A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div></div>
   <div class="eyebrow idx-head">Index</div>
-  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>What your agent sees</a><a href="#s-3"><i>03</i>Your present</a><a href="#s-4"><i>04</i>Package by package</a><a href="#s-5"><i>05</i>Off-scale spacing</a><a href="#s-6"><i>06</i>Typography &amp; shape</a><a href="#s-7"><i>07</i>Where it hurts most</a><a href="#s-8"><i>08</i>The adoption map</a></nav>
-  <div class="excs"><b>Not yours, and not counted</b><p>16 files not judged (DebugCanvas.tsx, renderElement.ts, animation.ts and 13 more): a renderer draws pixels, so its colours are the picture rather than the interface. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>1 file not judged (ExcalidrawLogo.tsx): the colours belong to the artwork, not to the interface. Not counted, but your agent reads it like everything else, so what is in there is still an example it can copy.</p><p>1 file not judged (icons.tsx): the file is mostly drawing rather than styling. Not counted, but your agent reads it like everything else, so what is in there is still an example it can copy.</p></div>
+  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>What your agent sees</a><a href="#s-3"><i>03</i>Your present</a><a href="#s-4"><i>04</i>Your MUI theme</a><a href="#s-5"><i>05</i>Off-scale spacing</a><a href="#s-6"><i>06</i>Typography &amp; shape</a><a href="#s-7"><i>07</i>Where it hurts most</a><a href="#s-8"><i>08</i>The composition map</a></nav>
+  <div class="excs"><b>Not yours, and not counted</b><p>A library: unused components are internal-only, and downstream consumers are invisible from here.</p><p>25 files not judged (ConfirmUserAdded/ConfirmUserEmail/ConfirmUserEmail.tsx, LinkField/ConfirmUserEmail/ConfirmUserEmail.tsx, ProductivityEmailSubscription.tsx and 22 more): email and print styling has to be inline, because there is no cascade to inherit. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p></div>
   <div class="side-foot">roast-my-design-system 7.10.0</div>
 </aside>
 <main class="main">
@@ -482,7 +482,7 @@
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     <div class="eyebrow">Summary</div>
-    <div class="verdict">84 spacing values sit outside the scale. A tidy system needs about 12. 83 inline style blocks skip the design system. An agent that reads them learns to do the same. 90 !important declarations. Each one forces a style through instead of fixing the rule that blocked it.</div>
+    <div class="verdict">25 components exist in more than 1 version. An agent asked for a Button can not tell which one to use. 97 inline style blocks skip the design system. An agent that reads them learns to do the same. 22 spacing values sit outside the scale. A tidy system needs about 12.</div>
   </div>
 
 
@@ -490,26 +490,26 @@
 
 
 <section id="s-1" class="glass pad">
-    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks · <b class="proj">55 &rarr; 85</b></p></div>
+    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks · <b class="proj">64 &rarr; 82</b></p></div>
     <div class="ledger">
       <div class="ledger-row start-row">
         <span class="ledger-idx">01</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Unwind the 90 !important declarations</div><span class="delta" title="once all of them are done">+10</span></div><div class="sub">Each one is a selector losing an argument with another selector; Actions.scss alone carries 26. Fix the specificity at the source and they stop being necessary.</div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Fold 97 inline style blocks back into the system</div><span class="delta" title="once all of them are done">+9</span></div><div class="sub">These are static values written as style attributes; start with frontend/src/component/admin/auth/OidcAuth/OidcAuth.tsx (9 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="0">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="0">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the excalidraw repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-0">You are fixing one design-system finding in the Unleash-unleash repository, measured by roast-my-design-system.
 
-The finding: Unwind the 90 !important declarations
+The finding: Fold 97 inline style blocks back into the system
 
-The detail: Each one is a selector losing an argument with another selector; Actions.scss alone carries 26. Fix the specificity at the source and they stop being necessary.
+The detail: These are static values written as style attributes; start with frontend/src/component/admin/auth/OidcAuth/OidcAuth.tsx (9 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.
 
-Expected payoff on the report's 0-100 score: about +10 points once all of them are done; fixing one file at a time lowers the count first and the score follows.
+Expected payoff on the report's 0-100 score: about +9 points once all of them are done; fixing one file at a time lowers the count first and the score follows.
 
 How to fix it, calmly and with respect for intent:
 - A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
 - Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.
 - Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.
 - Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.
-- A utility class and an override of CSS a library ships both need !important to work at all. Fix the specificity only where the selector is your own; leave the ones aimed at a library, and the single-purpose classes that have to win.
+- Move a style to sx or a styled() component only on MUI components or on wrappers that pass their props to one MUI component. Your own wrappers that take a style prop keep style; web components ignore sx.
 
 Work through the files named in the finding. When you are done, re-run the scan to verify the payoff:
 
@@ -517,15 +517,15 @@ npx roast-my-design-system@latest</div></div>
       </div>
       <div class="ledger-row start-row">
         <span class="ledger-idx">02</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Collapse the 11 near-identical colours</div><span class="delta" title="once all of them are done">+10</span></div><div class="sub">#0fb884 and #12b886 are the same colour to any eye, and they are used 5 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.</div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Collapse the 3 near-identical colours</div><span class="delta" title="once all of them are done">+9</span></div><div class="sub">#635dc5 and #615bc2 are the same colour to any eye. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="1">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="1">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-1">You are fixing one design-system finding in the excalidraw repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-1">You are fixing one design-system finding in the Unleash-unleash repository, measured by roast-my-design-system.
 
-The finding: Collapse the 11 near-identical colours
+The finding: Collapse the 3 near-identical colours
 
-The detail: #0fb884 and #12b886 are the same colour to any eye, and they are used 5 times between them. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.
+The detail: #635dc5 and #615bc2 are the same colour to any eye. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.
 
-Expected payoff on the report's 0-100 score: about +10 points once all of them are done; fixing one file at a time lowers the count first and the score follows.
+Expected payoff on the report's 0-100 score: about +9 points once all of them are done; fixing one file at a time lowers the count first and the score follows.
 
 How to fix it, calmly and with respect for intent:
 - A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
@@ -543,15 +543,15 @@ npx roast-my-design-system@latest</div></div>
       </div>
       <div class="ledger-row start-row">
         <span class="ledger-idx">03</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Fold 83 inline style blocks back into the system</div><span class="delta" title="once all of them are done">+10</span></div><div class="sub">These are static values written as style attributes; start with packages/excalidraw/components/PublishLibrary.tsx (7 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.</div>
+        <div class="start-body"><div class="start-head"><div class="start-title">Crown the canonical &lt;DeleteUser&gt;</div><span class="delta delta-target">under 2 · +5</span></div><div class="sub">25 component names have competing implementations. Start with &lt;DeleteUser&gt;: frontend/src/component/admin/users/InactiveUsersList/DeleteUser/DeleteUser.tsx vs frontend/src/component/admin/users/UsersList/DeleteUser/DeleteUser.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.</div>
         <div class="start-actions"><button type="button" class="fixbtn" data-fix="2">Copy the fix prompt</button><span class="fixhint">paste it into your agent · <button type="button" class="fixview" data-fix="2">view it first</button></span></div>
-        <div class="fixprompt" hidden id="fixprompt-2">You are fixing one design-system finding in the excalidraw repository, measured by roast-my-design-system.
+        <div class="fixprompt" hidden id="fixprompt-2">You are fixing one design-system finding in the Unleash-unleash repository, measured by roast-my-design-system.
 
-The finding: Fold 83 inline style blocks back into the system
+The finding: Crown the canonical &lt;DeleteUser&gt;
 
-The detail: These are static values written as style attributes; start with packages/excalidraw/components/PublishLibrary.tsx (7 blocks). Dynamic positioning was already excluded, so all of these could be classes or tokens today.
+The detail: 25 component names have competing implementations. Start with &lt;DeleteUser&gt;: frontend/src/component/admin/users/InactiveUsersList/DeleteUser/DeleteUser.tsx vs frontend/src/component/admin/users/UsersList/DeleteUser/DeleteUser.tsx. Decide which one is canonical, re-export it from one home, and rename or fold in the other.
 
-Expected payoff on the report's 0-100 score: about +10 points once all of them are done; fixing one file at a time lowers the count first and the score follows.
+Expected payoff on the report's 0-100 score: about +5 points once the count is under 2.
 
 How to fix it, calmly and with respect for intent:
 - A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.
@@ -566,7 +566,28 @@ npx roast-my-design-system@latest</div></div>
 
 <section id="s-2" class="glass pad agent">
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
-    <p class="sub">Your agent reads <span class="mono">CLAUDE.md</span>, <span class="mono">AGENTS.md</span>, <span class="mono">.github/copilot-instructions.md</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">CLAUDE.md · Claude Code</span><span class="chip chip-agent">AGENTS.md · generic (AGENTS.md standard)</span><span class="chip chip-agent">.github/copilot-instructions.md · GitHub Copilot</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-yes">✓</b> · Codex <b class="cov-yes">✓</b> · Cursor <b class="cov-yes">✓</b></p></section>
+    <p class="sub">Your agent reads <span class="mono">CLAUDE.md</span>, <span class="mono">AGENTS.md</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">CLAUDE.md · Claude Code</span><span class="chip chip-agent">AGENTS.md · generic (AGENTS.md standard)</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-yes">✓</b> · Codex <b class="cov-yes">✓</b> · Cursor <b class="cov-yes">✓</b></p>
+    <div class="stale">
+      <div class="eyebrow">4 rule references gone stale · a rule your agent obeys is worse than no rule when the repo has moved on</div>
+      <div class="ledger">
+    <div class="ledger-row">
+      <span class="mono strong">unleash-enterprise/src/index.ts</span>
+      <span class="dim">named in CLAUDE.md, but the path no longer exists</span>
+    </div>
+    <div class="ledger-row">
+      <span class="mono strong">enterprise/src/util/setup-stores.ts</span>
+      <span class="dim">named in CLAUDE.md, but the path no longer exists</span>
+    </div>
+    <div class="ledger-row">
+      <span class="mono strong">enterprise/src/util/setup-services.ts</span>
+      <span class="dim">named in CLAUDE.md, but the path no longer exists</span>
+    </div>
+    <div class="ledger-row">
+      <span class="mono strong">enterprise/src/create-enterprise-routes.ts</span>
+      <span class="dim">named in CLAUDE.md, but the path no longer exists</span>
+    </div></div>
+      <p class="sub" style="margin-top:10px">Rules rot quietly: nobody edits them when a component is renamed or a file moves. Regenerate them from a fresh scan, or fix the lines by hand.</p>
+    </div></section>
 
 <section id="s-3" class="glass pad gift-sec">
     <div class="sec-head"><h2>You sat through the roast</h2><p class="sub">so you get a present.</p></div>
@@ -583,10 +604,10 @@ npx roast-my-design-system@latest</div></div>
       <div class="gift-pop" id="gift-pop" aria-hidden="true"></div>
       <div class="gift-reveal" id="gift-reveal" hidden>
         <div class="gift-head"><span class="mono strong">design-system-rules.md</span>
-          <span class="gift-count">13 rules generated from this scan, every one with a receipt</span></div>
+          <span class="gift-count">18 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of excalidraw/excalidraw on 2026-09-17.
+&lt;!-- Generated by roast-my-design-system from a scan of Unleash/unleash on 2026-09-17.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system@latest --rules
      Door note: Codex and Cursor read AGENTS.md; Claude Code reads CLAUDE.md only.
@@ -598,45 +619,57 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 ### Colours and tokens
 
-- Design tokens live in `packages/excalidraw/css/theme.scss`. Reach for an existing token before inventing any value.
-- Never hardcode colour values in components. The palette already has 136 tokens; the scan still found 38 hardcoded colours sitting next to them. Do not add more.
-- Never eyeball a colour from memory: the scan found 11 nearly identical pairs (like #0fb884 next to #12b886). Look the exact value up, or better, use its token.
+- Design tokens live in `frontend/src/themes/colors.ts`. Reach for an existing token before inventing any value.
+- Never hardcode colour values in components. The palette already has 193 tokens; the scan still found 10 hardcoded colours sitting next to them. Do not add more.
+- Never eyeball a colour from memory: the scan found 3 nearly identical pairs (like #635dc5 next to #615bc2). Look the exact value up, or better, use its token.
+- This repo uses MUI. Prefer extending it over building parallel pieces.
 
 ### Canonical components
 
 - Use these existing components instead of writing new ones, the way this repo already uses them:
-  - `&lt;IconButton&gt;` from `packages/excalidraw/components/IconButton.tsx` (used 44x · props: size, visible, IconButtonProps)
-  - `&lt;FilledButton&gt;` from `packages/excalidraw/components/FilledButton.tsx` (used 14x · props: icon, onClick, label, variant)
-  - `&lt;Trans&gt;` from `packages/excalidraw/components/Trans.tsx` (used 14x · props: i18nKey)
-  - `&lt;Dialog&gt;` from `packages/excalidraw/components/Dialog.tsx` (used 13x)
-    - most common usage, as in `packages/excalidraw/components/OverwriteConfirm/OverwriteConfirm.tsx` (matching 5 of 11 usages): `&lt;Dialog onCloseRequest={handleClose} title={false} size={916}&gt;…&lt;/Dialog&gt;`
-  - `&lt;Island&gt;` from `packages/excalidraw/components/Island.tsx` (used 13x · props: padding, style, viewportUI, viewportUIName)
-  - `&lt;Spinner&gt;` from `packages/excalidraw/components/Spinner.tsx` (used 12x · props: size, circleWidth, synchronized)
-    - most common usage, as in `excalidraw-app/share/QRCode.tsx` (matching 8 of 12 usages): `&lt;Spinner /&gt;`
-  - `&lt;DropdownMenuItem&gt;` from `packages/excalidraw/components/dropdownMenu/DropdownMenuItem.tsx` (used 11x · props: icon, badge, value, shortcut)
-  - `&lt;Tooltip&gt;` from `packages/excalidraw/components/Tooltip.tsx` (used 10x · props: label, long, style, disabled)
-    - most common usage, as in `packages/excalidraw/components/ImageExportDialog.tsx` (matching 4 of 9 usages): `&lt;Tooltip label={tooltip} long={true}&gt;…&lt;/Tooltip&gt;`
+  - `&lt;Dialogue&gt;` from `frontend/src/component/common/Dialogue/Dialogue.tsx` (used 97x)
+    - most common usage, as in `frontend/src/component/admin/users/ConfirmUserAdded/ConfirmUserEmail/ConfirmUserEmail.tsx` (matching 7 of 16 usages): `&lt;Dialogue open={open} title='Team member added' primaryButtonText='Close' onClick={closeConfirm} &gt;…&lt;/Dialogue&gt;`
+  - `&lt;TextCell&gt;` from `frontend/src/component/common/Table/cells/TextCell/TextCell.tsx` (used 96x)
+    - most common usage, as in `frontend/src/component/admin/apiToken/ProjectsList/ProjectsList.tsx` (matching 68 of 94 usages): `&lt;TextCell&gt;…&lt;/TextCell&gt;`
+  - `&lt;PageContent&gt;` from `frontend/src/component/common/PageContent/PageContent.tsx` (used 84x)
+    - most common usage, as in `frontend/src/component/common/PremiumFeature/PremiumFeature.tsx` (matching 17 of 40 usages): `&lt;PageContent header={&lt;PageHeader title={label} /&gt;}&gt;…&lt;/PageContent&gt;`
+  - `&lt;PageHeader&gt;` from `frontend/src/component/common/PageHeader/PageHeader.tsx` (used 76x)
+    - most common usage, as in `frontend/src/component/common/PremiumFeature/PremiumFeature.tsx` (matching 24 of 29 usages): `&lt;PageHeader title={label} /&gt;`
+  - `&lt;Badge&gt;` from `frontend/src/component/common/Badge/Badge.tsx` (used 67x)
+    - most common usage, as in `frontend/src/component/admin/billing/BillingInvoices/BillingInvoice/BillingInvoice.tsx` (matching 36 of 64 usages): `&lt;Badge color='info'&gt;…&lt;/Badge&gt;`
+  - `&lt;TablePlaceholder&gt;` from `frontend/src/component/common/Table/TablePlaceholder/TablePlaceholder.tsx` (used 61x)
+    - most common usage, as in `frontend/src/component/admin/banners/BannersTable/BannersTable.tsx` (matching 61 of 61 usages): `&lt;TablePlaceholder&gt;…&lt;/TablePlaceholder&gt;`
+  - `&lt;Search&gt;` from `frontend/src/component/common/Search/Search.tsx` (used 56x · props: initialValue, id, onChange, onFocus)
+    - most common usage, as in `frontend/src/component/admin/users/UsersList/UsersHeaderActions.tsx` (matching 31 of 40 usages): `&lt;Search initialValue={searchValue} onChange={onSearch} /&gt;`
+  - `&lt;PermissionButton&gt;` from `frontend/src/component/common/PermissionButton/PermissionButton.tsx` (used 55x)
 
 ### Known duplicates: do not make it worse
 
-- `&lt;CommandPalette&gt;` is defined twice and one wraps the other; do not create a third.
-- `&lt;LiveCollaborationTrigger&gt;` is defined twice and one wraps the other; do not create a third.
-- `&lt;SearchMenu&gt;` is defined twice and one wraps the other; do not create a third.
+- `&lt;StyledSuccessIcon&gt;` exists in 6 places (`frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx`, `frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;StyledContainer&gt;` exists in 4 places (`frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx`, `frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;StyledFailedIcon&gt;` exists in 4 places (`frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx`, `frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;StyledTitle&gt;` is defined twice and one wraps the other; do not create a third.
+- `&lt;StyledHeader&gt;` exists in 2 places (`frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx`, `frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;StyledForm&gt;` is defined twice and one wraps the other; do not create a third.
 
 ### Spacing and sizing
 
-- Stay on the Tailwind spacing scale. If a gap looks wrong on a scale step, flag it instead of nudging by a pixel.
-- Avoid new one-off CSS spacing values; 84 off-scale values are already in play.
+- Avoid new one-off CSS spacing values; 22 off-scale values are already in play.
 
 ### Typography
 
-- The repo uses 3 typefaces: Assistant, Cascadia, Excalifont. Do not introduce another, and do not re-declare font stacks by hand; use the existing setup.
+- The repo uses 1 typeface: Sen. Do not introduce another, and do not re-declare font stacks by hand; use the existing setup.
+
+### MUI: the theme and the components
+
+- This product is built on MUI. A colour, a spacing step or a radius is decided in `frontend/src/themes/dark-theme.ts`. On a component, read it: sx paths (`color: 'text.secondary'`, `p: 2`) or `theme.palette` / `theme.spacing()` in styled().
+- The scan found 43 colours written onto components (`#6c65e5`, `#f1f0fc`, `#302e42`). Do not add more; if a colour is missing from the theme, add it to the palette once.
+- The scan found 17 pixel sizes written onto components (`padding: 20px`, `paddingBlock: 7px`, `marginBottom: 4px`). Use spacing steps (`p: 2`), not pixels; a size between steps is a deliberate exception, left with a comment.
 
 ### Styling discipline
 
 - Never write `style={{ ... }}` for static values; styling belongs to classes and tokens where the system can see it.
-  (83 static inline blocks already exist; do not add to them.)
-- Never write !important; the scan found 90 declarations already. When a style does not apply, fix the selector or the source of the conflict instead of forcing the style through.
+  (97 static inline blocks already exist; do not add to them.)
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
@@ -651,68 +684,64 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     </div>
   </section>
 
-<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> 0.5rem appears 106 times. An agent looking for how this repo does spacing reads a repeated value as the rule, so it will write use number 107. The most copied value here is the one you least want copied.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> This palette holds 11 pairs of colours a screen can barely tell apart. An agent asked for the brand grey can not see the difference either, so it copies whichever twin is nearest, and when unsure it writes a third between them. 2 becomes 3.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> 83 inline styles live where the system should. An agent learns a codebase by example, and every inline style is an example that says the system is optional. Each one it copies becomes the example for the next.</span></div>
+<div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> &lt;StyledSuccessIcon&gt; alone has 6 implementations. An agent asked for one can not tell which is the real one, so it picks 1 at random or writes another. Every wrong pick becomes the example the next agent copies.</span></div><div class="trap"><svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg><span><b>Agent trap.</b> 97 inline styles live where the system should. An agent learns a codebase by example, and every inline style is an example that says the system is optional. Each one it copies becomes the example for the next.</span></div>
 
-<div class="stats"><div class="stat glass st-warn">
+<div class="stats"><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">203</div><div class="lab">distinct colours</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~24 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">141 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">14 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">19</div><div class="lab">shades of grey</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~13 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">31 · cleaner than 63% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-warn">
   <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>
-  <div class="num">174</div><div class="lab">distinct colours</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~24 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">115 · messier than 68% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">14 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
-  <div class="num">39</div><div class="lab">shades of grey</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~13 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">23 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">2 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">22</div><div class="lab">off-scale spacing values</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">22 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-  <div class="num">84</div><div class="lab">off-scale spacing values</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~12 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">33 · messier than 91% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">6 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
-  <div class="num">0</div><div class="lab">duplicated components</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">21 · cleaner than 85% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">9 <span class="dir d-down">▼</span></span></div></div>
+  <div class="num">25</div><div class="lab">duplicated components</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">12 · messier than 68% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">9 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-  <div class="num">83</div><div class="lab">inline style blocks</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">51 · messier than 68% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">97</div><div class="lab">inline style blocks</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">28 · messier than 63% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">12 <span class="dir d-up">▲</span></span></div></div>
 </div><div class="stat glass st-bad">
   <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-  <div class="num">11</div><div class="lab">near-identical colour pairs</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">7 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-  <div class="num">90</div><div class="lab">!important declarations</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">5 · messier than 94% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">3 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-good">
-  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">3</div><div class="lab">near-identical colour pairs</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
+</div><div class="stat glass st-warn">
+  <svg class="ic ic-warn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>
+  <div class="num">1</div><div class="lab">!important declarations</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">1 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">3 <span class="dir d-down">▼</span></span></div></div>
+</div><div class="stat glass st-info">
+  
   <div class="num">0</div><div class="lab">components never imported</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">14 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-eq">=</span></span></div></div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">library: internal use only, downstream consumers invisible</span><span class="rval"> </span></div></div>
 </div><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
   <div class="num">0</div><div class="lab">arbitrary bracket values</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">77 · cleaner than 71% <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-eq">=</span></span></div></div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-eq">=</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">4</div><div class="lab">colours written on components per 100 kit files</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~4 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">9 · cleaner than 63% <span class="dir d-down">▼</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">2</div><div class="lab">pixel sizes written on components per 100 kit files</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~4 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">10 · cleaner than 79% <span class="dir d-down">▼</span></span></div></div>
 </div></div>
 
-<section id="s-4" class="glass pad">
-    <div class="sec-head"><h2>Package by package</h2><p class="sub">2 packages with enough UI to judge · the repo score above is the whole thing blended, and 6 packages were too small or too backend to score</p></div>
-    <div class="tbl-wrap"><table><thead><tr><th>package</th><th>score</th><th>worst finding</th><th>size</th></tr></thead><tbody>
-    <tr><td class="mono strong">packages/excalidraw</td>
-    <td><span class="pkg-score pkg-warn">55</span></td>
-    <td>83 !important declarations</td>
-    <td class="dim">352 files</td></tr>
-    <tr><td class="mono strong">excalidraw-app</td>
-    <td><span class="pkg-score pkg-warn">80</span></td>
-    <td>7 !important declarations</td>
-    <td class="dim">40 files</td></tr></tbody></table></div>
-    
-    </section>
+
 
 <section style="margin-top:16px"><section class="palette-grid">
   <div class="glass pal-hero grad">
     <div class="blob b1"></div>
     <div class="eyebrow">Palette</div>
-    <div class="pal-num"><span class="huge">174</span><span class="huge-unit">colours</span></div>
+    <div class="pal-num"><span class="huge">203</span><span class="huge-unit">colours</span></div>
     <p class="sub">A healthy product palette is <b>up to ~24 colours</b>: one brand hue with a few tints, one accent, up to 13 greys, and status colours.</p>
-    <div class="split-track"><div class="split"><span class="sp-tok" style="width:78%"></span><span class="sp-stray" style="width:22%"></span></div></div>
-    <div class="split-legend"><span>136 tokens</span><span>38 strays</span></div>
+    <div class="split-track"><div class="split"><span class="sp-tok" style="width:95%"></span><span class="sp-stray" style="width:5%"></span></div></div>
+    <div class="split-legend"><span>193 tokens</span><span>10 strays</span></div>
     
     <div class="whywrap"><button type="button" class="whybtn" data-why="colors"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-colors"><p>Look, nobody consciously chooses 100 colours to start with. They were added with each change, and the change after that. No one was checking for the drift, because no one expected it. Then come the multipliers: a rebrand, a dark-mode pass, ad hoc files, each one multiplying the values again.</p><p>When an agent looks for Brand Blue it scans the repo, sees dozens of blues and logically picks the one used most often, which is how the most-used stray outvotes the actual token.</p><p>24 covers a whole product: a brand hue with its tints, an accent, the greys, the status colours. The median across 10 reputable design systems is exactly 24.</p></div></div>
   </div>
@@ -721,258 +750,168 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       <div><div class="eyebrow">Colour usage</div><div class="h3d">Sized by how often each is used</div></div>
       <div class="legend"><span><i class="lg lg-tok"></i> token</span><span><i class="lg lg-stray"></i> stray</span></div>
     </div>
-    <div class="usage-bar"><div class="uc" style="background:#ffffff;flex-grow:44" title="#ffffff ×44 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#000000;flex-grow:14" title="#000000 ×14 in packages/excalidraw/index-node.ts"></div><div class="uc" style="background:rgba(0, 0, 0, 0.05);flex-grow:7" title="rgba(0, 0, 0, 0.05) ×7 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:rgba(0, 0, 0, 0.08);flex-grow:6" title="rgba(0, 0, 0, 0.08) ×6 in packages/excalidraw/components/ColorPicker/ColorPicker.scss"></div><div class="uc" style="background:rgba(0, 0, 0, 0.0417275);flex-grow:6" title="rgba(0, 0, 0, 0.0417275) ×6 in packages/excalidraw/css/theme.scss"></div><div class="uc stray" style="background:#0fb884;flex-grow:4" title="#0fb884 ×4 in packages/excalidraw/components/live-collaboration/LiveCollaborationTrigger.scss"><i></i></div><div class="uc" style="background:#1971c2;flex-grow:4" title="#1971c2 ×4 in packages/excalidraw/components/hyperlink/helpers.ts"></div><div class="uc" style="background:#121212;flex-grow:3" title="#121212 ×3 in packages/excalidraw/components/Modal.scss"></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.5);flex-grow:3" title="rgba(0, 0, 0, 0.5) ×3 in packages/excalidraw/css/styles.scss"><i></i></div><div class="uc" style="background:#ced4da;flex-grow:3" title="#ced4da ×3 in packages/excalidraw/css/app.scss"></div><div class="uc" style="background:#1e1e1e;flex-grow:3" title="#1e1e1e ×3 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#1b1b1f;flex-grow:3" title="#1b1b1f ×3 in packages/excalidraw/components/App.cursor.ts"></div><div class="uc" style="background:rgba(0, 0, 0, 0.07);flex-grow:3" title="rgba(0, 0, 0, 0.07) ×3 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:rgba(0, 0, 0, 0.0282725);flex-grow:3" title="rgba(0, 0, 0, 0.0282725) ×3 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:rgba(0, 0, 0, 0.0196802);flex-grow:3" title="rgba(0, 0, 0, 0.0196802) ×3 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:rgba(0, 0, 0, 0.1);flex-grow:3" title="rgba(0, 0, 0, 0.1) ×3 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#868e96;flex-grow:3" title="#868e96 ×3 in packages/excalidraw/css/variables.module.scss"></div><div class="uc stray" style="background:#8b4000;flex-grow:3" title="#8b4000 ×3 in packages/common/src/utils.ts"><i></i></div><div class="uc stray" style="background:#ecfdf5;flex-grow:2" title="#ecfdf5 ×2 in excalidraw-app/index.scss"><i></i></div><div class="uc stray" style="background:#064e3c;flex-grow:2" title="#064e3c ×2 in excalidraw-app/index.scss"><i></i></div><div class="uc stray" style="background:rgb(0 0 0 / 30%);flex-grow:2" title="rgb(0 0 0 / 30%) ×2 in packages/excalidraw/components/ElementCanvasButtons.scss"><i></i></div><div class="uc stray" style="background:#aaaaaa;flex-grow:2" title="#aaaaaa ×2 in packages/excalidraw/components/IconPicker.scss"><i></i></div><div class="uc" style="background:#d6d6d6;flex-grow:2" title="#d6d6d6 ×2 in packages/excalidraw/components/ImageExportDialog.scss"></div><div class="uc stray" style="background:#a2f1a6;flex-grow:2" title="#a2f1a6 ×2 in packages/excalidraw/components/UserList.scss"><i></i></div><div class="uc" style="background:#6965db;flex-grow:2" title="#6965db ×2 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#5753d0;flex-grow:2" title="#5753d0 ×2 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#999999;flex-grow:2" title="#999999 ×2 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#7a7a7a;flex-grow:2" title="#7a7a7a ×2 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#db6965;flex-grow:2" title="#db6965 ×2 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#700000;flex-grow:2" title="#700000 ×2 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#222222;flex-grow:2" title="#222222 ×2 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:rgba(0, 0, 0, 0.17);flex-grow:2" title="rgba(0, 0, 0, 0.17) ×2 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#fa5252;flex-grow:2" title="#fa5252 ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#e03131;flex-grow:2" title="#e03131 ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#e9ecef;flex-grow:2" title="#e9ecef ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#343a40;flex-grow:2" title="#343a40 ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#ebfbee;flex-grow:2" title="#ebfbee ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#b2f2bb;flex-grow:2" title="#b2f2bb ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#69db7c;flex-grow:2" title="#69db7c ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#a5d8ff;flex-grow:2" title="#a5d8ff ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#4dabf7;flex-grow:2" title="#4dabf7 ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#228be6;flex-grow:2" title="#228be6 ×2 in packages/excalidraw/css/variables.module.scss"></div><div class="uc" style="background:#f8f9fa;flex-grow:2" title="#f8f9fa ×2 in packages/common/src/colors.ts"></div><div class="uc" style="background:#625ee0;flex-grow:1" title="#625ee0 ×1 in excalidraw-app/index.scss"></div><div class="uc stray" style="background:#e0e0e0;flex-grow:1" title="#e0e0e0 ×1 in excalidraw-app/share/ShareDialog.scss"><i></i></div><div class="uc" style="background:#363541;flex-grow:1" title="#363541 ×1 in packages/excalidraw/components/Actions.scss"></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.25);flex-grow:1" title="rgba(0, 0, 0, 0.25) ×1 in packages/excalidraw/components/ColorPicker/ColorPicker.scss"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.2);flex-grow:1" title="rgba(0, 0, 0, 0.2) ×1 in packages/excalidraw/components/ColorPicker/ColorPicker.scss"><i></i></div><div class="uc" style="background:#232329;flex-grow:1" title="#232329 ×1 in packages/excalidraw/components/CursorHint.scss"></div><div class="uc" style="background:#e3e3e8;flex-grow:1" title="#e3e3e8 ×1 in packages/excalidraw/components/CursorHint.scss"></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.28);flex-grow:1" title="rgba(0, 0, 0, 0.28) ×1 in packages/excalidraw/components/ExportDialog.scss"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.14);flex-grow:1" title="rgba(0, 0, 0, 0.14) ×1 in packages/excalidraw/components/ExportDialog.scss"><i></i></div><div class="uc stray" style="background:#4949497c;flex-grow:1" title="#4949497c ×1 in packages/excalidraw/components/EyeDropper.scss"><i></i></div><div class="uc stray" style="background:#d4d4d4;flex-grow:1" title="#d4d4d4 ×1 in packages/excalidraw/components/IconPicker.scss"><i></i></div><div class="uc stray" style="background:rgba(255, 255, 255, 0.9);flex-grow:1" title="rgba(255, 255, 255, 0.9) ×1 in packages/excalidraw/components/PublishLibrary.scss"><i></i></div><div class="uc stray" style="background:#f5f5f9;flex-grow:1" title="#f5f5f9 ×1 in packages/excalidraw/components/SearchMenu.scss"><i></i></div><div class="uc stray" style="background:#31303b;flex-grow:1" title="#31303b ×1 in packages/excalidraw/components/SearchMenu.scss"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.15);flex-grow:1" title="rgba(0, 0, 0, 0.15) ×1 in packages/excalidraw/components/dropdownMenu/DropdownMenu.scss"><i></i></div><div class="uc" style="background:#5b57d1;flex-grow:1" title="#5b57d1 ×1 in packages/excalidraw/css/theme.scss"></div><div class="uc" style="background:#4a47b1;flex-grow:1" title="#4a47b1 ×1 in packages/excalidraw/css/theme.scss"></div><div class="uc uc-rest" style="flex-grow:114" title="114 more colours">+114</div></div>
+    <div class="usage-bar"><div class="uc" style="background:#a6000e;flex-grow:23" title="#a6000e ×23 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#eeeefc;flex-grow:16" title="#eeeefc ×16 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#ffffff;flex-grow:9" title="#ffffff ×9 in frontend/src/component/user/user.module.scss"></div><div class="uc" style="background:#202021;flex-grow:7" title="#202021 ×7 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#9792ed;flex-grow:7" title="#9792ed ×7 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#4c4992;flex-grow:5" title="#4c4992 ×5 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#2b2a3c;flex-grow:5" title="#2b2a3c ×5 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#6c65e5;flex-grow:4" title="#6c65e5 ×4 in frontend/src/themes/app.css"></div><div class="uc" style="background:#a39eff;flex-grow:4" title="#a39eff ×4 in frontend/src/component/admin/network/NetworkTrafficUsage/chart-functions.ts"></div><div class="uc" style="background:#d76500;flex-grow:4" title="#d76500 ×4 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#68a611;flex-grow:4" title="#68a611 ×4 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#a0a0b1;flex-grow:4" title="#a0a0b1 ×4 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#a2bbe2;flex-grow:4" title="#a2bbe2 ×4 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#ff6472;flex-grow:4" title="#ff6472 ×4 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#f1f1f1;flex-grow:3" title="#f1f1f1 ×3 in frontend/src/themes/app.css"></div><div class="uc" style="background:#d8d6ff;flex-grow:3" title="#d8d6ff ×3 in frontend/src/component/admin/network/NetworkTrafficUsage/endpoint-info.ts"></div><div class="uc" style="background:#9d98ee;flex-grow:3" title="#9d98ee ×3 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#ceccf6;flex-grow:3" title="#ceccf6 ×3 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#f1f0fc;flex-grow:3" title="#f1f0fc ×3 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#1a4049;flex-grow:3" title="#1a4049 ×3 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#8fa2a6;flex-grow:3" title="#8fa2a6 ×3 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#94ae6f;flex-grow:3" title="#94ae6f ×3 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#bc7d21;flex-grow:3" title="#bc7d21 ×3 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:rgba(0, 0, 0, 0.12);flex-grow:2" title="rgba(0, 0, 0, 0.12) ×2 in frontend/src/component/strategies/strategies.module.scss"></div><div class="uc" style="background:#000000;flex-grow:2" title="#000000 ×2 in frontend/src/component/user/user.module.scss"></div><div class="uc stray" style="background:#6d66d9;flex-grow:2" title="#6d66d9 ×2 in frontend/src/component/admin/network/NetworkTrafficUsage/chart-functions.ts"><i></i></div><div class="uc" style="background:#34325e;flex-grow:2" title="#34325e ×2 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#4944a7;flex-grow:2" title="#4944a7 ×2 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#122d33;flex-grow:2" title="#122d33 ×2 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#31545c;flex-grow:2" title="#31545c ×2 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#a7b5b9;flex-grow:2" title="#a7b5b9 ×2 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#d93644;flex-grow:2" title="#d93644 ×2 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#e04c59;flex-grow:2" title="#e04c59 ×2 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#888799;flex-grow:2" title="#888799 ×2 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#8a3e45;flex-grow:2" title="#8a3e45 ×2 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#222130;flex-grow:2" title="#222130 ×2 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#302e42;flex-grow:2" title="#302e42 ×2 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#39384c;flex-grow:2" title="#39384c ×2 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#343348;flex-grow:2" title="#343348 ×2 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#1791ae;flex-grow:2" title="#1791ae ×2 in frontend/src/themes/dark-theme.ts"></div><div class="uc" style="background:#df416e;flex-grow:2" title="#df416e ×2 in frontend/src/themes/dark-theme.ts"></div><div class="uc stray" style="background:#37474f;flex-grow:1" title="#37474f ×1 in frontend/src/component/common/common.module.scss"><i></i></div><div class="uc stray" style="background:#d50000;flex-grow:1" title="#d50000 ×1 in frontend/src/component/common/common.module.scss"><i></i></div><div class="uc stray" style="background:#635dc5;flex-grow:1" title="#635dc5 ×1 in frontend/src/component/menu/Header/DrawerMenu/DrawerMenu.module.scss"><i></i></div><div class="uc stray" style="background:#757575;flex-grow:1" title="#757575 ×1 in frontend/src/component/strategies/strategies.module.scss"><i></i></div><div class="uc stray" style="background:#1d1818;flex-grow:1" title="#1d1818 ×1 in frontend/src/component/strategies/strategies.module.scss"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.04);flex-grow:1" title="rgba(0, 0, 0, 0.04) ×1 in frontend/src/component/strategies/strategies.module.scss"><i></i></div><div class="uc stray" style="background:rgba(0, 0, 0, 0.1);flex-grow:1" title="rgba(0, 0, 0, 0.1) ×1 in frontend/src/component/strategies/strategies.module.scss"><i></i></div><div class="uc" style="background:#3bd86e;flex-grow:1" title="#3bd86e ×1 in frontend/src/themes/app.css"></div><div class="uc" style="background:#d95e5e;flex-grow:1" title="#d95e5e ×1 in frontend/src/themes/app.css"></div><div class="uc" style="background:#d67c3d;flex-grow:1" title="#d67c3d ×1 in frontend/src/themes/app.css"></div><div class="uc" style="background:#424242;flex-grow:1" title="#424242 ×1 in frontend/src/themes/app.css"></div><div class="uc" style="background:#607d8b;flex-grow:1" title="#607d8b ×1 in frontend/src/themes/app.css"></div><div class="uc" style="background:rgba(0, 0, 0, 0.14);flex-grow:1" title="rgba(0, 0, 0, 0.14) ×1 in frontend/src/themes/app.css"></div><div class="uc" style="background:rgba(0, 0, 0, 0.2);flex-grow:1" title="rgba(0, 0, 0, 0.2) ×1 in frontend/src/themes/app.css"></div><div class="uc stray" style="background:#201e42;flex-grow:1" title="#201e42 ×1 in frontend/src/component/common/ToastRenderer/Toast/Toast.styles.ts"><i></i></div><div class="uc" style="background:#6e6e70;flex-grow:1" title="#6e6e70 ×1 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#78787a;flex-grow:1" title="#78787a ×1 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#9f9fa1;flex-grow:1" title="#9f9fa1 ×1 in frontend/src/themes/colors.ts"></div><div class="uc" style="background:#bdbdbf;flex-grow:1" title="#bdbdbf ×1 in frontend/src/themes/colors.ts"></div><div class="uc uc-rest" style="flex-grow:143" title="143 more colours">+143</div></div>
     
     <div class="ramp-head"><div class="eyebrow">Grey ramp · sorted dark → light · how many can you tell apart?</div></div>
     <div class="only-dark">
-    <div class="grey-strip"><div class="grey-cell" style="background:#000000" title="#000000 ×14"></div><div class="grey-cell" style="background:#111111" title="#111111 ×1"></div><div class="grey-cell" style="background:#121212" title="#121212 ×3"></div><div class="grey-cell" style="background:#181818" title="#181818 ×1"></div><div class="grey-cell" style="background:#1b1b1f" title="#1b1b1f ×3"></div><div class="grey-cell" style="background:#1e1e1e" title="#1e1e1e ×3"></div><div class="grey-cell" style="background:#222222" title="#222222 ×2"></div><div class="grey-cell" style="background:#232329" title="#232329 ×1"></div><div class="grey-cell" style="background:#242424" title="#242424 ×1"></div><div class="grey-cell" style="background:#272727" title="#272727 ×1"></div><div class="grey-cell" style="background:#2e2e2e" title="#2e2e2e ×1"></div><div class="grey-cell" style="background:#363636" title="#363636 ×1"></div><div class="grey-cell" style="background:#3d3d3d" title="#3d3d3d ×1"></div><div class="grey-cell" style="background:#5c5c5c" title="#5c5c5c ×1"></div><div class="grey-cell" style="background:#767680" title="#767680 ×1"></div><div class="grey-cell" style="background:#7a7a7a" title="#7a7a7a ×2"></div><div class="grey-cell" style="background:#999999" title="#999999 ×2"></div><div class="grey-cell" style="background:#aaaaaa" title="#aaaaaa ×2"></div><div class="grey-cell" style="background:#b8b8b8" title="#b8b8b8 ×1"></div><div class="grey-cell" style="background:#bbbbbb" title="#bbbbbb ×1"></div><div class="grey-cell" style="background:#d3d3d3" title="#d3d3d3 ×1"></div><div class="grey-cell" style="background:#d4d4d4" title="#d4d4d4 ×1"></div><div class="grey-cell" style="background:#d6d6d6" title="#d6d6d6 ×2"></div><div class="grey-cell" style="background:#e0e0e0" title="#e0e0e0 ×1"></div><div class="grey-cell" style="background:#e3e3e8" title="#e3e3e8 ×1"></div><div class="grey-cell" style="background:#ebebeb" title="#ebebeb ×1"></div><div class="grey-cell" style="background:#e9ecef" title="#e9ecef ×2"></div><div class="grey-cell" style="background:#ececf4" title="#ececf4 ×1"></div><div class="grey-cell" style="background:#f8f1ee" title="#f8f1ee ×1"></div><div class="grey-cell" style="background:#f1f3f5" title="#f1f3f5 ×1"></div><div class="grey-cell" style="background:#f4f4f6" title="#f4f4f6 ×1"></div><div class="grey-cell" style="background:#f5f5f5" title="#f5f5f5 ×1"></div><div class="grey-cell" style="background:#f5f5f9" title="#f5f5f9 ×1"></div><div class="grey-cell" style="background:#f6f6f9" title="#f6f6f9 ×1"></div><div class="grey-cell" style="background:#fff5f5" title="#fff5f5 ×1"></div><div class="grey-cell" style="background:#f8f9fa" title="#f8f9fa ×2"></div><div class="grey-cell" style="background:#fdf8f6" title="#fdf8f6 ×1"></div><div class="grey-cell" style="background:#f5faff" title="#f5faff ×1"></div><div class="grey-cell" style="background:#ffffff" title="#ffffff ×44"></div></div>
+    <div class="grey-strip"><div class="grey-cell" style="background:#000000" title="#000000 ×2"></div><div class="grey-cell" style="background:#1d1818" title="#1d1818 ×1"></div><div class="grey-cell" style="background:#202021" title="#202021 ×7"></div><div class="grey-cell" style="background:#424242" title="#424242 ×1"></div><div class="grey-cell" style="background:#585659" title="#585659 ×1"></div><div class="grey-cell" style="background:#6e6e70" title="#6e6e70 ×1"></div><div class="grey-cell" style="background:#757575" title="#757575 ×1"></div><div class="grey-cell" style="background:#78787a" title="#78787a ×1"></div><div class="grey-cell" style="background:#9f9fa1" title="#9f9fa1 ×1"></div><div class="grey-cell" style="background:#bdbdbf" title="#bdbdbf ×1"></div><div class="grey-cell" style="background:#d6dcde" title="#d6dcde ×1"></div><div class="grey-cell" style="background:#e1e1e3" title="#e1e1e3 ×1"></div><div class="grey-cell" style="background:#eaeaed" title="#eaeaed ×1"></div><div class="grey-cell" style="background:#edf0f1" title="#edf0f1 ×1"></div><div class="grey-cell" style="background:#f1f1f1" title="#f1f1f1 ×3"></div><div class="grey-cell" style="background:#f2f2f5" title="#f2f2f5 ×1"></div><div class="grey-cell" style="background:#f7f7fa" title="#f7f7fa ×1"></div><div class="grey-cell" style="background:#fffcf5" title="#fffcf5 ×1"></div><div class="grey-cell" style="background:#ffffff" title="#ffffff ×9"></div></div>
     </div>
     <div class="only-light">
-    <div class="grey-strip"><div class="grey-cell" style="background:#000000" title="#000000 ×14"></div><div class="grey-cell" style="background:#111111" title="#111111 ×1"></div><div class="grey-cell" style="background:#121212" title="#121212 ×3"></div><div class="grey-cell" style="background:#181818" title="#181818 ×1"></div><div class="grey-cell" style="background:#1b1b1f" title="#1b1b1f ×3"></div><div class="grey-cell" style="background:#1e1e1e" title="#1e1e1e ×3"></div><div class="grey-cell" style="background:#222222" title="#222222 ×2"></div><div class="grey-cell" style="background:#232329" title="#232329 ×1"></div><div class="grey-cell" style="background:#242424" title="#242424 ×1"></div><div class="grey-cell" style="background:#272727" title="#272727 ×1"></div><div class="grey-cell" style="background:#2e2e2e" title="#2e2e2e ×1"></div><div class="grey-cell" style="background:#363636" title="#363636 ×1"></div><div class="grey-cell" style="background:#3d3d3d" title="#3d3d3d ×1"></div><div class="grey-cell" style="background:#5c5c5c" title="#5c5c5c ×1"></div><div class="grey-cell" style="background:#767680" title="#767680 ×1"></div><div class="grey-cell" style="background:#7a7a7a" title="#7a7a7a ×2"></div><div class="grey-cell" style="background:#999999" title="#999999 ×2"></div><div class="grey-cell" style="background:#aaaaaa" title="#aaaaaa ×2"></div><div class="grey-cell" style="background:#b8b8b8" title="#b8b8b8 ×1"></div><div class="grey-cell" style="background:#bbbbbb" title="#bbbbbb ×1"></div><div class="grey-cell" style="background:#d3d3d3" title="#d3d3d3 ×1"></div><div class="grey-cell" style="background:#d4d4d4" title="#d4d4d4 ×1"></div><div class="grey-cell" style="background:#d6d6d6" title="#d6d6d6 ×2"></div><div class="grey-cell" style="background:#e0e0e0" title="#e0e0e0 ×1"></div><div class="grey-cell" style="background:#e3e3e8" title="#e3e3e8 ×1"></div><div class="grey-cell" style="background:#ebebeb" title="#ebebeb ×1"></div><div class="grey-cell" style="background:#e9ecef" title="#e9ecef ×2"></div><div class="grey-cell" style="background:#ececf4" title="#ececf4 ×1"></div><div class="grey-cell" style="background:#f8f1ee" title="#f8f1ee ×1"></div><div class="grey-cell" style="background:#f1f3f5" title="#f1f3f5 ×1"></div><div class="grey-cell" style="background:#f4f4f6" title="#f4f4f6 ×1"></div><div class="grey-cell" style="background:#f5f5f5" title="#f5f5f5 ×1"></div><div class="grey-cell" style="background:#f5f5f9" title="#f5f5f9 ×1"></div><div class="grey-cell" style="background:#f6f6f9" title="#f6f6f9 ×1"></div><div class="grey-cell" style="background:#fff5f5" title="#fff5f5 ×1"></div><div class="grey-cell" style="background:#f8f9fa" title="#f8f9fa ×2"></div><div class="grey-cell" style="background:#fdf8f6" title="#fdf8f6 ×1"></div><div class="grey-cell" style="background:#f5faff" title="#f5faff ×1"></div><div class="grey-cell" style="background:#ffffff" title="#ffffff ×44"></div></div>
+    <div class="grey-strip"><div class="grey-cell" style="background:#000000" title="#000000 ×2"></div><div class="grey-cell" style="background:#1d1818" title="#1d1818 ×1"></div><div class="grey-cell" style="background:#202021" title="#202021 ×7"></div><div class="grey-cell" style="background:#424242" title="#424242 ×1"></div><div class="grey-cell" style="background:#585659" title="#585659 ×1"></div><div class="grey-cell" style="background:#6e6e70" title="#6e6e70 ×1"></div><div class="grey-cell" style="background:#757575" title="#757575 ×1"></div><div class="grey-cell" style="background:#78787a" title="#78787a ×1"></div><div class="grey-cell" style="background:#9f9fa1" title="#9f9fa1 ×1"></div><div class="grey-cell" style="background:#bdbdbf" title="#bdbdbf ×1"></div><div class="grey-cell" style="background:#d6dcde" title="#d6dcde ×1"></div><div class="grey-cell" style="background:#e1e1e3" title="#e1e1e3 ×1"></div><div class="grey-cell" style="background:#eaeaed" title="#eaeaed ×1"></div><div class="grey-cell" style="background:#edf0f1" title="#edf0f1 ×1"></div><div class="grey-cell" style="background:#f1f1f1" title="#f1f1f1 ×3"></div><div class="grey-cell" style="background:#f2f2f5" title="#f2f2f5 ×1"></div><div class="grey-cell" style="background:#f7f7fa" title="#f7f7fa ×1"></div><div class="grey-cell" style="background:#fffcf5" title="#fffcf5 ×1"></div><div class="grey-cell" style="background:#ffffff" title="#ffffff ×9"></div></div>
     </div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="greys"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-greys"><p>A grey scale is a ladder: each step needs a job (background, border, muted text, disabled) and a visible gap to its neighbours. Around 12 rungs covers every job a real interface has; the reputable systems median is 5.</p><p>Past 13 the gaps close, steps stop being distinguishable, and each new grey is no longer a rung but a guess between rungs, which is exactly where twins come from.</p></div></div>
     
-    <div class="receipts"><div class="eyebrow">11 nearly identical pairs · each pair is 1 colour recorded twice</div>
-    <div class="chips-row"><span class="vchip" title="every channel within 3 of its twin"><i class="ndot" style="background:#0fb884"></i>#0fb884 ×4 <b class="nsim">≈</b> <i class="ndot" style="background:#12b886"></i>#12b886 ×1</span><span class="vchip" title="every channel within 1 of its twin"><i class="ndot" style="background:#121212"></i>#121212 ×3 <b class="nsim">≈</b> <i class="ndot" style="background:#111111"></i>#111111 ×1</span><span class="vchip" title="every channel within 6 of its twin"><i class="ndot" style="background:#ecfdf5"></i>#ecfdf5 ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#e6fcf5"></i>#e6fcf5 ×1</span><span class="vchip" title="every channel within 6 of its twin"><i class="ndot" style="background:#a2f1a6"></i>#a2f1a6 ×2 <b class="nsim">≈</b> <i class="ndot" style="background:#a5eba8"></i>#a5eba8 ×1</span><span class="vchip" title="every channel within 1 of its twin"><i class="ndot" style="background:#d4d4d4"></i>#d4d4d4 ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#d3d3d3"></i>#d3d3d3 ×1</span><span class="vchip" title="every channel within 3 of its twin"><i class="ndot" style="background:#f1f3f5"></i>#f1f3f5 ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#f4f4f6"></i>#f4f4f6 ×1</span><span class="vchip" title="every channel within 1 of its twin"><i class="ndot" style="background:#f5f5f9"></i>#f5f5f9 ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#f6f6f9"></i>#f6f6f9 ×1</span><span class="vchip" title="every channel within 1 of its twin"><i class="ndot" style="background:#f5f5f5"></i>#f5f5f5 ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#f4f4f6"></i>#f4f4f6 ×1</span><span class="vchip dim">+3 more</span></div>
+    <div class="receipts"><div class="eyebrow">3 nearly identical pairs · each pair is 1 colour recorded twice</div>
+    <div class="chips-row"><span class="vchip" title="every channel within 3 of its twin"><i class="ndot" style="background:#635dc5"></i>#635dc5 ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#615bc2"></i>#615bc2 ×1</span><span class="vchip" title="every channel within 5 of its twin"><i class="ndot" style="background:#757575"></i>#757575 ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#78787a"></i>#78787a ×1</span><span class="vchip" title="every channel within 8 of its twin"><i class="ndot" style="background:#201e42"></i>#201e42 ×1 <b class="nsim">≈</b> <i class="ndot" style="background:#1a2641"></i>#1a2641 ×1</span></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="nearPairs"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-nearPairs"><p>A palette is a set of decisions, and two colours a screen can not tell apart are one decision recorded twice. Nobody chooses to own both: someone could not find the first value quickly enough, made a twin by eye, and it stayed.</p><p>The cost is never tonight’s screen, which looks fine. It is every choice that comes after: colour pickers now offer both, a search for one misses the other, a dark-mode pass updates one twin and ships the other unchanged, and an agent asked for the dark surface copies whichever it happens to find, so the pair breeds.</p><p>The ideal is 0 because each pair collapses in minutes: keep the one that is already a token, point the stray at it, and the multiplication stops. Pound for pound, the cheapest credibility on this page.</p></div></div></div>
   </div>
 </section></section>
 
 
-
+<section id="s-4" class="glass pad"><div class="sec-head"><h2>Your MUI theme, and what is written around it</h2><p class="sub">the theme, and the places a colour or a pixel size was written onto a component instead</p></div><div class="receipts"><div class="eyebrow">Theme in frontend/src/themes/dark-theme.ts and 1 more · read 6,162 times from components</div><p class="sub">Components reach the theme 556 times per 100 kit files, through <code>text.secondary</code> and <code>theme.spacing()</code>. That is the system working.</p></div><div class="receipts"><div class="eyebrow">43 colours written on components · 4 per 100 kit files</div><div class="chips-row"><span class="vchip bad">#6c65e5 ×4</span><span class="vchip bad">#f1f0fc ×3</span><span class="vchip bad">#302e42 ×3</span><span class="vchip bad">#fff ×3</span><span class="vchip bad">#607b81 ×3</span><span class="vchip bad">rgba(0,0,0,0.5) ×3</span><span class="vchip bad">#201e42 ×2</span><span class="vchip bad">#546c71 ×2</span></div><div class="chips-row"><span class="vchip dim" title="frontend/src/component/project/Project/ProjectStatus/ProjectActivity.tsx">ProjectActivity.tsx ×6</span><span class="vchip dim" title="frontend/src/component/user/SignedOut/SnakeGame.tsx">SnakeGame.tsx ×6</span><span class="vchip dim" title="frontend/src/component/onboarding/intro/IntroShowcase.tsx">IntroShowcase.tsx ×5</span><span class="vchip dim" title="frontend/src/component/layout/MainLayout/AdminMenu/AdminListItem.tsx">AdminListItem.tsx ×4</span><span class="vchip dim" title="frontend/src/component/user/common/AuthPageLayout.tsx">AuthPageLayout.tsx ×4</span></div><div class="whywrap"><button type="button" class="whybtn" data-why="kitColour"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-kitColour"><p>A component kit comes with a theme: one place where the brand blue, the muted text and the error red are decided. Components read it by name, like text.secondary, and a theme change reaches every screen at once.</p><p>A colour written onto a component, such as color: "#6b7280", skips the theme. It looks right on the day. At the next rebrand or dark-mode pass the theme moves and the written colour stays, so one screen shows two designs. An AI agent reading that file copies the written colour, because it is right there.</p><p>The ideal comes from the tidiest third of the repos on the same kit in the benchmark. A chart series or an illustration is not a mistake: give its colour a name in the theme once, and it stops counting.</p></div></div></div><div class="receipts"><div class="eyebrow">17 pixel sizes written on components · 2 per 100 kit files</div><div class="chips-row"><span class="vchip warn">padding: 20px ×7</span><span class="vchip warn">paddingBlock: 7px ×2</span><span class="vchip warn">marginBottom: 4px ×2</span><span class="vchip warn">marginBottom: 2px ×2</span><span class="vchip warn">marginRight: 5px ×2</span><span class="vchip warn">gap: 8px ×1</span><span class="vchip warn">gap: 12px ×1</span></div><div class="chips-row"><span class="vchip dim" title="frontend/src/component/admin/auth/OidcAuth/OidcAuth.tsx">OidcAuth.tsx ×3</span><span class="vchip dim" title="frontend/src/component/admin/auth/SsoGroupSettings.tsx">SsoGroupSettings.tsx ×2</span><span class="vchip dim" title="frontend/src/component/user/common/ResetPasswordForm/PasswordMatcher.tsx">PasswordMatcher.tsx ×2</span><span class="vchip dim" title="frontend/src/component/admin/auth/AutoCreateForm/AutoCreateForm.tsx">AutoCreateForm.tsx ×1</span><span class="vchip dim" title="frontend/src/component/admin/auth/PasswordAuth/PasswordAuth.tsx">PasswordAuth.tsx ×1</span></div><div class="whywrap"><button type="button" class="whybtn" data-why="kitPx"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-kitPx"><p>A kit theme has a spacing scale: steps like 8, 16 and 24 pixels, written as p: 1, p: 2, p: 3. Components that use the steps line up with each other without anyone measuring.</p><p>A size written in pixels, such as padding: "13px", is a decision made once, in one place. The next screen gets 12px or 14px, and the layout drifts by a pixel at a time. An AI agent copies the number it sees.</p><p>The ideal comes from the tidiest third of the repos on the same kit in the benchmark. Widths and heights are not counted: they are often layout that another element depends on.</p></div></div></div><p class="sub">Not counted: 4 files of colour data or artwork (bar-chart-options.ts, PlausibleChart.tsx, LineChart.tsx).</p></section>
 
 <section id="s-5" class="glass pad">
-    <div class="sec-head"><h2>84 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
+    <div class="sec-head"><h2>22 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
     <div class="bars">
-    <div class="bar-row"><span class="bar-label off">0.5rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:100%"></div></div>
-    <span class="bar-count">106</span></div>
-    <div class="bar-row"><span class="bar-label off">1rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:53%"></div></div>
-    <span class="bar-count">56</span></div>
-    <div class="bar-row"><span class="bar-label off">0.75rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:47%"></div></div>
-    <span class="bar-count">50</span></div>
-    <div class="bar-row"><span class="bar-label off">0.25rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:45%"></div></div>
-    <span class="bar-count">48</span></div>
-    <div class="bar-row"><span class="bar-label off">2px</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:19%"></div></div>
-    <span class="bar-count">20</span></div>
-    <div class="bar-row"><span class="bar-label off">8px</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:17%"></div></div>
-    <span class="bar-count">18</span></div>
-    <div class="bar-row"><span class="bar-label off">1.5rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:16%"></div></div>
-    <span class="bar-count">17</span></div>
-    <div class="bar-row"><span class="bar-label off">4px</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:16%"></div></div>
-    <span class="bar-count">17</span></div>
-    <div class="bar-row"><span class="bar-label off">2rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:13%"></div></div>
-    <span class="bar-count">14</span></div>
-    <div class="bar-row"><span class="bar-label off">1em</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:12%"></div></div>
+    <div class="bar-row"><span class="bar-label">1rem</span>
+    <div class="bar-track"><div class="bar" style="width:100%"></div></div>
     <span class="bar-count">13</span></div>
-    <div class="bar-row"><span class="bar-label off">10px</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:11%"></div></div>
+    <div class="bar-row"><span class="bar-label">20px</span>
+    <div class="bar-track"><div class="bar" style="width:92%"></div></div>
     <span class="bar-count">12</span></div>
-    <div class="bar-row"><span class="bar-label off">1px</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:11%"></div></div>
-    <span class="bar-count">12</span></div>
-    <div class="bar-row"><span class="bar-label off">0.625rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:10%"></div></div>
+    <div class="bar-row"><span class="bar-label">400px</span>
+    <div class="bar-track"><div class="bar" style="width:85%"></div></div>
     <span class="bar-count">11</span></div>
-    <div class="bar-row"><span class="bar-label off">0.375rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:9%"></div></div>
-    <span class="bar-count">10</span></div>
-    <div class="bar-row"><span class="bar-label off">0.125rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:8%"></div></div>
-    <span class="bar-count">9</span></div>
-    <div class="bar-row"><span class="bar-label off">0.2rem</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:8%"></div></div>
-    <span class="bar-count">9</span></div>
-    <div class="bar-row"><span class="bar-label off">3px</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:8%"></div></div>
-    <span class="bar-count">9</span></div>
-    <div class="bar-row"><span class="bar-label off">0px</span>
-    <div class="bar-track"><div class="bar bar-off" style="width:8%"></div></div>
-    <span class="bar-count">8</span></div></div>
+    <div class="bar-row"><span class="bar-label">16px</span>
+    <div class="bar-track"><div class="bar" style="width:62%"></div></div>
+    <span class="bar-count">8</span></div>
+    <div class="bar-row"><span class="bar-label">0.5rem</span>
+    <div class="bar-track"><div class="bar" style="width:46%"></div></div>
+    <span class="bar-count">6</span></div>
+    <div class="bar-row"><span class="bar-label">8px</span>
+    <div class="bar-track"><div class="bar" style="width:31%"></div></div>
+    <span class="bar-count">4</span></div>
+    <div class="bar-row"><span class="bar-label">10px</span>
+    <div class="bar-track"><div class="bar" style="width:31%"></div></div>
+    <span class="bar-count">4</span></div>
+    <div class="bar-row"><span class="bar-label">24px</span>
+    <div class="bar-track"><div class="bar" style="width:23%"></div></div>
+    <span class="bar-count">3</span></div>
+    <div class="bar-row"><span class="bar-label">0.6rem</span>
+    <div class="bar-track"><div class="bar" style="width:23%"></div></div>
+    <span class="bar-count">3</span></div>
+    <div class="bar-row"><span class="bar-label">2rem</span>
+    <div class="bar-track"><div class="bar" style="width:15%"></div></div>
+    <span class="bar-count">2</span></div>
+    <div class="bar-row"><span class="bar-label">4px</span>
+    <div class="bar-track"><div class="bar" style="width:15%"></div></div>
+    <span class="bar-count">2</span></div>
+    <div class="bar-row"><span class="bar-label">56px</span>
+    <div class="bar-track"><div class="bar" style="width:8%"></div></div>
+    <span class="bar-count">1</span></div>
+    <div class="bar-row"><span class="bar-label">0.25rem</span>
+    <div class="bar-track"><div class="bar" style="width:8%"></div></div>
+    <span class="bar-count">1</span></div>
+    <div class="bar-row"><span class="bar-label">0.8rem</span>
+    <div class="bar-track"><div class="bar" style="width:8%"></div></div>
+    <span class="bar-count">1</span></div>
+    <div class="bar-row"><span class="bar-label">1.5rem</span>
+    <div class="bar-track"><div class="bar" style="width:8%"></div></div>
+    <span class="bar-count">1</span></div>
+    <div class="bar-row"><span class="bar-label">2px</span>
+    <div class="bar-track"><div class="bar" style="width:8%"></div></div>
+    <span class="bar-count">1</span></div>
+    <div class="bar-row"><span class="bar-label">32px</span>
+    <div class="bar-track"><div class="bar" style="width:8%"></div></div>
+    <span class="bar-count">1</span></div>
+    <div class="bar-row"><span class="bar-label">0px</span>
+    <div class="bar-track"><div class="bar" style="width:8%"></div></div>
+    <span class="bar-count">1</span></div></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="spacing"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-spacing"><p>Nobody starts a design system with 50 spacing values. A deadline, a last-minute change, and someone nudged a layout until it sat right, and 13px honestly sat better than 12px. The next person can not tell a deliberate exception from a new value, or honestly never noticed, and copies it either way.</p><p>That is how layout rhythm starts drifting. Two lists almost align, two cards almost match, and the page stops looking right. An agent copies nudge after nudge, because to an agent 13px looks as intentional as 12px. And once one page carries enough exceptions, the agent treats them as canonical, and the poison spreads to the other pages.</p><p>The 12 is a budget for values outside the scale, and it is a generous one: the 10 reputable design systems we scanned hold a median of 6. The average product repo carries 34, which is a second, unwritten scale.</p></div></div></section>
 <section id="s-6">
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
-  <div class="num">3</div><div class="lab">typefaces</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">3 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-  <div class="num">32</div><div class="lab">font sizes</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">18 · messier than 76% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">5 <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-  <div class="num">25</div><div class="lab">border radii</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">14 · messier than 79% <span class="dir d-up">▲</span></span></div></div>
-</div><div class="stat glass st-bad">
-  <svg class="ic ic-bad" viewBox="0 0 24 24"><line x1="18.5" y1="5.5" x2="5.5" y2="18.5"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
-  <div class="num">35</div><div class="lab">shadow styles</div>
-  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~6 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">2 · messier than 91% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
+  <div class="num">1</div><div class="lab">typefaces</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~3 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">1 <span class="dir d-eq">=</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-eq">=</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">4</div><div class="lab">font sizes</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">3 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">5 <span class="dir d-down">▼</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">2</div><div class="lab">border radii</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~10 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">2 <span class="dir d-eq">=</span></span></div></div>
+</div><div class="stat glass st-good">
+  <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
+  <div class="num">2</div><div class="lab">shadow styles</div>
+  <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~6 <span class="dir d-down">▼</span></span></div><div class="row"><span class="rlab">Avg mui repo</span><span class="rval">1 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">1 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="typefaces"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-typefaces"><p>One product should have a maximum of 3 font families. When they arrive on their own, it is usually one with a component library, one with a marketing page, one left over from an old logo. Bold and italic do not count; those are weights of one family. And no one will take the risk of removing a font, because nobody is sure what still uses it and what will break.</p><p>Every extra font makes pages heavier to load, adds a licence to track, and splits the product’s voice. An agent starting a new page scans the repo, sees several fonts in use, and may feel obligated to use all of them. The split grows on its own.</p><p>The ideal is 3, one for each real job: a sans for the interface, a serif if the brand wants an accent, a mono for code.</p></div></div>
     <div class="spec"><div class="eyebrow">the type scale, at its real sizes · how many of these are the same decision?</div>
       <div class="spec-rows">
         <div class="spec-type">
-          <span class="spec-val">2.8em ×1</span>
-          <span class="spec-sample" style="font-size:44.8px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">2.6em ×1</span>
-          <span class="spec-sample" style="font-size:41.6px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">2.25rem ×1</span>
-          <span class="spec-sample" style="font-size:36px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">1.8em ×1</span>
-          <span class="spec-sample" style="font-size:28.8px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">1.5em ×1</span>
-          <span class="spec-sample" style="font-size:24px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">1.313rem ×2</span>
-          <span class="spec-sample" style="font-size:21.008px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">1.3125rem ×2</span>
-          <span class="spec-sample" style="font-size:21px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">1.25rem ×5</span>
+          <span class="spec-val">20px ×1</span>
           <span class="spec-sample" style="font-size:20px">Almost but not quite</span>
         </div>
         <div class="spec-type">
-          <span class="spec-val">1.17em ×1</span>
-          <span class="spec-sample" style="font-size:18.72px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">1.125rem ×5</span>
-          <span class="spec-sample" style="font-size:18px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">1.1em ×1</span>
+          <span class="spec-val">1.1rem ×1</span>
           <span class="spec-sample" style="font-size:17.6px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">1rem ×11</span>
-          <span class="spec-sample" style="font-size:16px">Almost but not quite</span>
         </div>
         <div class="spec-type">
           <span class="spec-val">16px ×1</span>
           <span class="spec-sample" style="font-size:16px">Almost but not quite</span>
         </div>
         <div class="spec-type">
-          <span class="spec-val">0.96em ×1</span>
-          <span class="spec-sample" style="font-size:15.36px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">15px ×1</span>
-          <span class="spec-sample" style="font-size:15px">Almost but not quite</span>
-        </div>
-        <div class="spec-type">
-          <span class="spec-val">0.9rem ×4</span>
-          <span class="spec-sample" style="font-size:14.4px">Almost but not quite</span>
+          <span class="spec-val">12px ×1</span>
+          <span class="spec-sample" style="font-size:12px">Almost but not quite</span>
         </div></div>
-      <div class="spec-more">and 15 more</div></div>
-    <div class="spec"><div class="eyebrow">the corners, drawn · 25 radii in one interface</div>
-      <div class="spec-grid">
-        <div class="spec-cell"><div class="spec-box" style="border-radius:4px"></div>
-        <span class="spec-cap">4px ×14</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:0.5rem"></div>
-        <span class="spec-cap">0.5rem ×10</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:50%"></div>
-        <span class="spec-cap">50% ×8</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:12px"></div>
-        <span class="spec-cap">12px ×6</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:8px"></div>
-        <span class="spec-cap">8px ×4</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:100%"></div>
-        <span class="spec-cap">100% ×4</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:10px"></div>
-        <span class="spec-cap">10px ×3</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:0.6875rem"></div>
-        <span class="spec-cap">0.6875rem ×2</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:1rem"></div>
-        <span class="spec-cap">1rem ×1</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:0.75rem"></div>
-        <span class="spec-cap">0.75rem ×1</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:2.5rem"></div>
-        <span class="spec-cap">2.5rem ×1</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:0.2rem"></div>
-        <span class="spec-cap">0.2rem ×1</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:0.3em"></div>
-        <span class="spec-cap">0.3em ×1</span></div>
-        <div class="spec-cell"><div class="spec-box" style="border-radius:2px"></div>
-        <span class="spec-cap">2px ×1</span></div></div></div>
-    <div class="spec"><div class="eyebrow">the elevations, cast, 6 of 35 · on the light surface they were drawn for</div>
-      <div class="spec-grid spec-shadows">
-        <div class="spec-cell"><div class="spec-card" style="box-shadow:0 0 0 1px rgba(0, 0, 0, 0.08)"></div>
-        <span class="spec-cap" title="0 0 0 1px rgba(0, 0, 0, 0.08)">0 0 0 1px rgba(0, 0… ×2</span></div>
-        <div class="spec-cell"><div class="spec-card" style="box-shadow:0px 2px 4px 0 rgb(0 0 0 / 30%)"></div>
-        <span class="spec-cap" title="0px 2px 4px 0 rgb(0 0 0 / 30%)">0px 2px 4px 0 rgb(0… ×2</span></div>
-        <div class="spec-cell"><div class="spec-card" style="box-shadow:0 6px 16px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.08)"></div>
-        <span class="spec-cap" title="0 6px 16px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.08)">0 6px 16px rgba(0, … ×1</span></div>
-        <div class="spec-cell"><div class="spec-card" style="box-shadow:0 3px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08)"></div>
-        <span class="spec-cap" title="0 3px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08)">0 3px 8px rgba(0, 0… ×1</span></div>
-        <div class="spec-cell"><div class="spec-card" style="box-shadow:0 3px 5px -1px rgba(0, 0, 0, 0.28), 0 6px 10px 0 rgba(0, 0, 0, 0.14)"></div>
-        <span class="spec-cap" title="0 3px 5px -1px rgba(0, 0, 0, 0.28), 0 6px 10px 0 rgba(0, 0, 0, 0.14)">0 3px 5px -1px rgba… ×1</span></div>
-        <div class="spec-cell"><div class="spec-card" style="box-shadow:2px 2px 0 0 #4949497c"></div>
-        <span class="spec-cap" title="2px 2px 0 0 #4949497c">2px 2px 0 0 #494949… ×1</span></div></div></div>
-    <div class="glass pad" style="margin-top:16px"><div class="sec-head"><h2>3 typefaces, declared 5 different ways</h2><p class="sub">every distinct declaration is a chance for the next one to be wrong</p></div><div class="fam-rows"><div class="mini-card"><span class="mc-path">&quot;Assistant&quot;</span><span class="pill pill-coral">×16</span></div><div class="mini-card"><span class="mc-path">monospace</span><span class="pill pill-coral">×9</span></div><div class="mini-card"><span class="mc-path">&quot;Cascadia&quot;</span><span class="pill pill-mint">×2</span></div><div class="mini-card"><span class="mc-path">Cascadia</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">&quot;Excalifont&quot;, &quot;Xiaolai&quot;</span><span class="pill pill-mint">×1</span></div></div></div>
+      </div>
+    <div class="receipts"><div class="eyebrow">the radii, by use</div><div class="chips-row"><span class="vchip">2px ×2</span><span class="vchip">25px ×1</span></div></div>
+    
+    
   </section>
 <section id="s-7" class="glass pad">
     <div class="sec-head"><h2>Where it hurts most</h2><p class="sub">the 5 files carrying the most off-system styling</p></div>
     <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/css/variables.module.scss">packages/excalidraw/css/variables.module.scss</a>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/admin/auth/OidcAuth/OidcAuth.tsx">frontend/src/component/admin/auth/OidcAuth/OidcAuth.tsx</a>
       <span class="ledger-pills">
-        <span class="pill pill-amber">11 stray colours</span>
         
+        <span class="pill pill-coral">9 inline</span>
       </span>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/PublishLibrary.tsx">packages/excalidraw/components/PublishLibrary.tsx</a>
-      <span class="ledger-pills">
-        
-        <span class="pill pill-coral">7 inline</span>
-      </span>
-    </div>
-    <div class="ledger-row">
-      <span class="ledger-idx">03</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/Actions.tsx">packages/excalidraw/components/Actions.tsx</a>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/admin/auth/SamlAuth/SamlAuth.tsx">frontend/src/component/admin/auth/SamlAuth/SamlAuth.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">6 inline</span>
       </span>
     </div>
     <div class="ledger-row">
-      <span class="ledger-idx">04</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/excalidraw-app/App.tsx">excalidraw-app/App.tsx</a>
+      <span class="ledger-idx">03</span>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/admin/invoice/InvoiceList.tsx">frontend/src/component/admin/invoice/InvoiceList.tsx</a>
       <span class="ledger-pills">
         
         <span class="pill pill-coral">5 inline</span>
       </span>
     </div>
     <div class="ledger-row">
+      <span class="ledger-idx">04</span>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/strategies/strategies.module.scss">frontend/src/component/strategies/strategies.module.scss</a>
+      <span class="ledger-pills">
+        <span class="pill pill-amber">4 stray colours</span>
+        
+      </span>
+    </div>
+    <div class="ledger-row">
       <span class="ledger-idx">05</span>
-      <a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/LibraryMenuItems.tsx">packages/excalidraw/components/LibraryMenuItems.tsx</a>
+      <a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a>
       <span class="ledger-pills">
         
-        <span class="pill pill-coral">5 inline</span>
+        <span class="pill pill-coral">4 inline</span>
       </span>
     </div></div></section>
 <div class="two-up">
@@ -980,225 +919,260 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="sec-head"><h2>Duplicated components</h2><p class="sub">an agent asking which one is canonical gets several plausible answers. Paths open in VS Code</p></div>
     <div class="fams">
     <div class="fam">
-      <div class="eyebrow">&lt;CommandPalette&gt; · defined twice, one wraps the other</div>
+      <div class="eyebrow">&lt;StyledSuccessIcon&gt; · 6 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/CommandPalette/CommandPalette.tsx">packages/excalidraw/components/CommandPalette/CommandPalette.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx">frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx">frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;LiveCollaborationTrigger&gt; · defined twice, one wraps the other</div>
+      <div class="eyebrow">&lt;StyledContainer&gt; · 4 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/live-collaboration/LiveCollaborationTrigger.tsx">packages/excalidraw/components/live-collaboration/LiveCollaborationTrigger.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx">frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;SearchMenu&gt; · defined twice, one wraps the other</div>
+      <div class="eyebrow">&lt;StyledFailedIcon&gt; · 4 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/SearchMenu.tsx">packages/excalidraw/components/SearchMenu.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/main-menu/DefaultItems.tsx">packages/excalidraw/components/main-menu/DefaultItems.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx">frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">list family · 7 variants</div>
+      <div class="eyebrow">&lt;StyledTitle&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ScrollableList&gt;</div><div class="mc-path">packages/excalidraw/components/ScrollableList.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;UserList&gt;</div><div class="mc-path">packages/excalidraw/components/UserList.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CustomColorList&gt;</div><div class="mc-path">packages/excalidraw/components/ColorPicker/CustomColorList.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FontPickerList&gt;</div><div class="mc-path">packages/excalidraw/components/FontPicker/FontPickerList.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LanguageList&gt;</div><div class="mc-path">excalidraw-app/app-language/LanguageList.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PickerColorList&gt;</div><div class="mc-path">packages/excalidraw/components/ColorPicker/PickerColorList.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
-      <div class="mini-card dim">…and 1 more</div>
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">popover family · 5 variants</div>
-      <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PropertiesPopover&gt;</div><div class="mc-path">packages/excalidraw/components/PropertiesPopover.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ToolPopover&gt;</div><div class="mc-path">packages/excalidraw/components/ToolPopover.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FreedrawToolPopover&gt;</div><div class="mc-path">packages/excalidraw/components/Tools.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SelectionToolPopover&gt;</div><div class="mc-path">packages/excalidraw/components/Tools.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Popover&gt;</div><div class="mc-path">packages/excalidraw/components/Popover.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">input family · 4 variants</div>
+      <div class="eyebrow">&lt;StyledHeader&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StatsDragInput&gt;</div><div class="mc-path">packages/excalidraw/components/Stats/DragInput.tsx</div></div><span class="pill pill-mint">used 5×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ColorInput&gt;</div><div class="mc-path">packages/excalidraw/components/ColorPicker/ColorInput.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TTDDialogInput&gt;</div><div class="mc-path">packages/excalidraw/components/TTDDialog/TTDDialogInput.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DimensionDragInput&gt;</div><div class="mc-path">packages/excalidraw/components/Stats/Dimension.tsx</div></div></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx">frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">footer family · 4 variants</div>
+      <div class="eyebrow">&lt;StyledForm&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Footer&gt;</div><div class="mc-path">packages/excalidraw/components/footer/Footer.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;AppFooter&gt;</div><div class="mc-path">excalidraw-app/components/AppFooter.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DebugFooter&gt;</div><div class="mc-path">excalidraw-app/components/DebugCanvas.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FooterCenter&gt;</div><div class="mc-path">packages/excalidraw/components/footer/FooterCenter.tsx</div></div></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">toggle family · 4 variants</div>
+      <div class="eyebrow">&lt;TabPanel&gt; · 2 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DarkModeToggle&gt;</div><div class="mc-path">packages/excalidraw/components/DarkModeToggle.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PreferencesToggleGridModeItem&gt;</div><div class="mc-path">packages/excalidraw/components/main-menu/DefaultItems.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PreferencesToggleZenModeItem&gt;</div><div class="mc-path">packages/excalidraw/components/main-menu/DefaultItems.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ToggleTheme&gt;</div><div class="mc-path">packages/excalidraw/components/main-menu/DefaultItems.tsx</div></div></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequest/Changes/Change/ChangeTabComponents.tsx">frontend/src/component/changeRequest/ChangeRequest/Changes/Change/ChangeTabComponents.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/common/TabNav/TabPanel/TabPanel.tsx">frontend/src/component/common/TabNav/TabPanel/TabPanel.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">radio family · 2 variants</div>
+      <div class="eyebrow">&lt;StyledListItemIcon&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;RadioSelection&gt;</div><div class="mc-path">packages/excalidraw/components/RadioSelection.tsx</div></div><span class="pill pill-mint">used 6×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;RadioGroup&gt;</div><div class="mc-path">packages/excalidraw/components/RadioGroup.tsx</div></div><span class="pill pill-mint">used 2×</span></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feature/FeatureView/FeatureOverview/FeatureOverviewMetaData/FeatureOverviewMetaData.tsx">frontend/src/component/feature/FeatureView/FeatureOverview/FeatureOverviewMetaData/FeatureOverviewMetaData.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/commandBar/RecentlyVisited/CommandResultGroup.tsx">frontend/src/component/commandBar/RecentlyVisited/CommandResultGroup.tsx</a></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">label family · 8 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StyledLabel&gt;</div><div class="mc-path">frontend/src/component/feature/FeatureView/FeatureOverview/ReleasePlan/shared/SharedFormComponents.tsx</div></div><span class="pill pill-mint">used 37×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StyledMetaDataItemLabel&gt;</div><div class="mc-path">frontend/src/component/feature/FeatureView/FeatureOverview/FeatureOverviewMetaData/FeatureOverviewMetaData.tsx</div></div><span class="pill pill-mint">used 5×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LegalValueLabel&gt;</div><div class="mc-path">frontend/src/component/common/NewConstraintAccordion/LegalValueLabel/LegalValueLabel.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LabelFilterSection&gt;</div><div class="mc-path">frontend/src/component/impact-metrics/ImpactMetricModal/LabelFilter/LabelFilterSection/LabelFilterSection.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FeatureStatusLabel&gt;</div><div class="mc-path">frontend/src/component/feature/FeatureToggleList/StatusCell/FeatureStatusLabel.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LabelDiscoveryError&gt;</div><div class="mc-path">frontend/src/component/impact-metrics/ImpactMetricModal/LabelFilter/LabelDiscoveryStatus.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      <div class="mini-card dim">…and 2 more</div>
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">tag family · 8 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Tag&gt;</div><div class="mc-path">frontend/src/component/common/Tag/Tag.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TagRow&gt;</div><div class="mc-path">frontend/src/component/feature/FeatureView/FeatureOverview/FeatureOverviewMetaData/TagRow.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TagTypeColorPicker&gt;</div><div class="mc-path">frontend/src/component/tags/TagTypeForm/TagTypeColorPicker.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;TagTypeForm&gt;</div><div class="mc-path">frontend/src/component/tags/TagTypeForm/TagTypeForm.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CreateTagType&gt;</div><div class="mc-path">frontend/src/component/tags/CreateTagType/CreateTagType.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;EditTagType&gt;</div><div class="mc-path">frontend/src/component/tags/EditTagType/EditTagType.tsx</div></div></div>
+      <div class="mini-card dim">…and 2 more</div>
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">alert family · 8 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FeatureStrategyChangeRequestAlert&gt;</div><div class="mc-path">frontend/src/component/feature/FeatureStrategy/FeatureStrategyForm/FeatureStrategyChangeRequestAlert/FeatureStrategyChangeRequestAlert.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StrategyVariantsUpgradeAlert&gt;</div><div class="mc-path">frontend/src/component/common/StrategyVariantsUpgradeAlert/StrategyVariantsUpgradeAlert.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;CorsHelpAlert&gt;</div><div class="mc-path">frontend/src/component/admin/cors/CorsHelpAlert.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DependenciesUpgradeAlert&gt;</div><div class="mc-path">frontend/src/component/feature/Dependencies/DependenciesUpgradeAlert.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;EnterpriseEdgeDismissibleAlert&gt;</div><div class="mc-path">frontend/src/component/admin/enterprise-edge/EnterpriseEdgeDismissibleAlert.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SegmentProjectAlert&gt;</div><div class="mc-path">frontend/src/component/segments/SegmentProjectAlert.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      <div class="mini-card dim">…and 2 more</div>
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">switch family · 5 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;PermissionSwitch&gt;</div><div class="mc-path">frontend/src/component/common/PermissionSwitch/PermissionSwitch.tsx</div></div><span class="pill pill-mint">used 4×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FeatureToggleSwitch&gt;</div><div class="mc-path">frontend/src/component/project/Project/ProjectFeatureToggles/FeatureToggleSwitch/FeatureToggleSwitch.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;FormSwitch&gt;</div><div class="mc-path">frontend/src/component/common/FormSwitch/FormSwitch.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;IntegrationStateSwitch&gt;</div><div class="mc-path">frontend/src/component/integrations/IntegrationForm/IntegrationStateSwitch/IntegrationStateSwitch.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StrategySwitch&gt;</div><div class="mc-path">frontend/src/component/strategies/StrategiesList/StrategySwitch/StrategySwitch.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">sidebar family · 5 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ChangeRequestSidebar&gt;</div><div class="mc-path">frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;LicensedUsersSidebar&gt;</div><div class="mc-path">frontend/src/component/admin/users/UsersHeader/LicensedUsersSidebar.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MetricDefinitionSidebar&gt;</div><div class="mc-path">frontend/src/component/impact-metrics/RegisterMetricDialog/InfoSidebar.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MobileNavigationSidebar&gt;</div><div class="mc-path">frontend/src/component/layout/MainLayout/NavigationSidebar/MobileNavigationSidebar.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;NavigationSidebar&gt;</div><div class="mc-path">frontend/src/component/layout/MainLayout/NavigationSidebar/NavigationSidebar.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">dropdown family · 4 variants</div>
+      <div class="fam-rows">
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownList&gt;</div><div class="mc-path">frontend/src/component/common/DialogFormTemplate/ConfigButtons/DropdownList.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DropdownMenu&gt;</div><div class="mc-path">frontend/src/component/common/DropdownMenu/DropdownMenu.tsx</div></div><span class="pill pill-mint">used 1×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;MultiPillDropdown&gt;</div><div class="mc-path">frontend/src/component/common/DialogFormTemplate/NewDialogFormTemplate.tsx</div></div></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;SinglePillDropdown&gt;</div><div class="mc-path">frontend/src/component/common/DialogFormTemplate/NewDialogFormTemplate.tsx</div></div></div>
       
       </div>
     </div></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="duplicates"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-duplicates"><p>Nobody builds a second Button on purpose. The first one was hard to find, or almost right but easier to rewrite than to change. On the day, rewriting was the faster choice. And no one deletes the old one later, because nobody is sure what still uses it and what will break.</p><p>From then on, every fix reaches one copy and misses the other. Every search has a wrong answer on offer. An agent picks whichever version it happens to find, and every new page makes the more common copy stronger. Common wins over correct, and the drift only deepens.</p><p>The ideal is 0, because the fix is cheap: point one copy at the other and the multiplying stops. The average product repo carries 20 duplicated components.</p></div></div></div>
 <div class="glass pad half">
-    <div class="sec-head"><h2>83 inline style blocks</h2><p class="sub">styling no system can see</p></div>
+    <div class="sec-head"><h2>97 inline style blocks</h2><p class="sub">styling no system can see</p></div>
     <div class="fam-rows">
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/PublishLibrary.tsx">packages/excalidraw/components/PublishLibrary.tsx</a><span class="mc-count">×7</span></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/admin/auth/OidcAuth/OidcAuth.tsx">frontend/src/component/admin/auth/OidcAuth/OidcAuth.tsx</a><span class="mc-count">×9</span></div>
         <div class="mc-track"><div class="mc-bar" style="width:100%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/Actions.tsx">packages/excalidraw/components/Actions.tsx</a><span class="mc-count">×6</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:86%"></div></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/admin/auth/SamlAuth/SamlAuth.tsx">frontend/src/component/admin/auth/SamlAuth/SamlAuth.tsx</a><span class="mc-count">×6</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:67%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/excalidraw-app/App.tsx">excalidraw-app/App.tsx</a><span class="mc-count">×5</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:71%"></div></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/admin/invoice/InvoiceList.tsx">frontend/src/component/admin/invoice/InvoiceList.tsx</a><span class="mc-count">×5</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:56%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/LibraryMenuItems.tsx">packages/excalidraw/components/LibraryMenuItems.tsx</a><span class="mc-count">×5</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:71%"></div></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a><span class="mc-count">×4</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:44%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/Stats/index.tsx">packages/excalidraw/components/Stats/index.tsx</a><span class="mc-count">×4</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:57%"></div></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/admin/auth/AutoCreateForm/AutoCreateForm.tsx">frontend/src/component/admin/auth/AutoCreateForm/AutoCreateForm.tsx</a><span class="mc-count">×3</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:33%"></div></div>
       </div>
       <div class="mini-card col">
-        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/excalidraw/packages/excalidraw/components/Toolbar.tsx">packages/excalidraw/components/Toolbar.tsx</a><span class="mc-count">×3</span></div>
-        <div class="mc-track"><div class="mc-bar" style="width:43%"></div></div>
+        <div class="mc-row"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/admin/auth/SsoGroupSettings.tsx">frontend/src/component/admin/auth/SsoGroupSettings.tsx</a><span class="mc-count">×3</span></div>
+        <div class="mc-track"><div class="mc-bar" style="width:33%"></div></div>
       </div></div><div class="whywrap"><button type="button" class="whybtn" data-why="inline"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-inline"><p>An inline style is the fastest way to make one element behave. A deadline, one stubborn element, done. On the day, a fair trade.</p><p>The cost is that the design system can not see it. Theming misses it, dark mode misses it, a token change misses it. Every inline style is a private exception and requires someone to find it by hand. And agents like inline styles, because they always work and they need no knowledge of your system. Every block already in the repo teaches the agent that this is how styling is done here, so the habit spreads.</p><p>The ideal is 0, and the count is fair: only fully static blocks are counted, runtime positioning and canvas work are exempt. The average product repo carries 49 blocks. The 10 reputable systems hold a median of 12.</p></div></div>
-    <div class="receipts"><div class="eyebrow">90 !important declarations · each one forces a style through</div>
-    <div class="chips-row"><span class="vchip bad" title="packages/excalidraw/components/Actions.scss">Actions.scss ×26</span><span class="vchip bad" title="packages/excalidraw/css/styles.scss">styles.scss ×13</span><span class="vchip bad" title="packages/excalidraw/components/ColorPicker/ColorPicker.scss">ColorPicker.scss ×8</span><span class="vchip bad" title="packages/excalidraw/components/LayerUI.scss">LayerUI.scss ×5</span><span class="vchip bad" title="excalidraw-app/index.scss">index.scss ×4</span><span class="vchip bad" title="packages/excalidraw/components/QuickSearch.scss">QuickSearch.scss ×4</span></div>
+    <div class="receipts"><div class="eyebrow">1 !important declaration · each one forces a style through</div>
+    <div class="chips-row"><span class="vchip bad" title="frontend/src/component/common/common.module.scss">common.module.scss ×1</span></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="important"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-important"><p>Every !important marks a styling fight someone had to win by the end of the day. One is harmless. And no one removes it later, because nobody is sure what will break.</p><p>But each one raises the floor. The next override in that area has to shout at least as loud, so the count only climbs. An agent that loses a styling fight reaches for !important straight away, because it is the most common CSS fix it has ever seen.</p><p>The ideal is 0, because !important is CSS admitting defeat. Fix the rule that kept losing, and the next one is never needed. The average product repo carries 7.</p></div></div></div></div>
 </div>
 <section id="s-8" class="glass pad">
-    <div class="sec-head"><h2>The adoption map</h2><p class="sub">345 components defined · tile area is import count · the real system, drawn to scale</p></div>
-    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="211.9" height="438.0" class="atile">
-      <title>&lt;IconButton&gt; · used 44× · packages/excalidraw/components/IconButton.tsx</title></rect>
-    <text x="105.9" y="215.0" class="adot-n">IconButton</text>
-    <text x="105.9" y="233.0" class="adot-c">44×</text></g><g><rect x="211.9" y="0.0" width="197.4" height="149.6" class="atile">
-      <title>&lt;FilledButton&gt; · used 14× · packages/excalidraw/components/FilledButton.tsx</title></rect>
-    <text x="310.6" y="70.8" class="adot-n">FilledButton</text>
-    <text x="310.6" y="88.8" class="adot-c">14×</text></g><g><rect x="211.9" y="149.6" width="197.4" height="149.6" class="atile">
-      <title>&lt;Trans&gt; · used 14× · packages/excalidraw/components/Trans.tsx</title></rect>
-    <text x="310.6" y="220.3" class="adot-n">Trans</text>
-    <text x="310.6" y="238.3" class="adot-c">14×</text></g><g><rect x="211.9" y="299.1" width="197.4" height="138.9" class="atile">
-      <title>&lt;Dialog&gt; · used 13× · packages/excalidraw/components/Dialog.tsx</title></rect>
-    <text x="310.6" y="364.6" class="adot-n">Dialog</text>
-    <text x="310.6" y="382.6" class="adot-c">13×</text></g><g><rect x="409.3" y="0.0" width="173.3" height="158.2" class="atile">
-      <title>&lt;Island&gt; · used 13× · packages/excalidraw/components/Island.tsx</title></rect>
-    <text x="495.9" y="75.1" class="adot-n">Island</text>
-    <text x="495.9" y="93.1" class="adot-c">13×</text></g><g><rect x="409.3" y="158.2" width="173.3" height="146.0" class="atile">
-      <title>&lt;Spinner&gt; · used 12× · packages/excalidraw/components/Spinner.tsx</title></rect>
-    <text x="495.9" y="227.2" class="adot-n">Spinner</text>
-    <text x="495.9" y="245.2" class="adot-c">12×</text></g><g><rect x="409.3" y="304.2" width="173.3" height="133.8" class="atile">
-      <title>&lt;DropdownMenuItem&gt; · used 11× · packages/excalidraw/components/dropdownMenu/DropdownMenuItem.tsx</title></rect>
-    <text x="495.9" y="367.1" class="adot-n">DropdownMenuItem</text>
-    <text x="495.9" y="385.1" class="adot-c">11×</text></g><g><rect x="582.6" y="0.0" width="130.0" height="162.2" class="atile">
-      <title>&lt;Tooltip&gt; · used 10× · packages/excalidraw/components/Tooltip.tsx</title></rect>
-    <text x="647.6" y="77.1" class="adot-n">Tooltip</text>
-    <text x="647.6" y="95.1" class="adot-c">10×</text></g><g><rect x="582.6" y="162.2" width="130.0" height="146.0" class="atile">
-      <title>&lt;Button&gt; · used 9× · packages/excalidraw/components/Button.tsx</title></rect>
-    <text x="647.6" y="231.2" class="adot-n">Button</text>
-    <text x="647.6" y="249.2" class="adot-c">9×</text></g><g><rect x="582.6" y="308.2" width="130.0" height="129.8" class="atile">
-      <title>&lt;DropdownMenuItemCheckbox&gt; · used 8× · packages/excalidraw/components/dropdownMenu/DropdownMenuItemCheckbox.tsx</title></rect>
-    <text x="647.6" y="369.1" class="adot-n s">DropdownMenuItemCh…</text>
-    <text x="647.6" y="387.1" class="adot-c">8×</text></g><g><rect x="712.6" y="0.0" width="120.6" height="122.4" class="atile">
-      <title>&lt;TextField&gt; · used 7× · packages/excalidraw/components/TextField.tsx</title></rect>
-    <text x="772.9" y="57.2" class="adot-n">TextField</text>
-    <text x="772.9" y="75.2" class="adot-c">7×</text></g><g><rect x="833.2" y="0.0" width="103.4" height="122.4" class="atile">
-      <title>&lt;DialogActionButton&gt; · used 6× · packages/excalidraw/components/DialogActionButton.tsx</title></rect>
-    <text x="884.9" y="57.2" class="adot-n s">DialogActionBu…</text>
-    <text x="884.9" y="75.2" class="adot-c">6×</text></g><g><rect x="936.6" y="0.0" width="103.4" height="122.4" class="atile">
-      <title>&lt;PropertiesPopover&gt; · used 6× · packages/excalidraw/components/PropertiesPopover.tsx</title></rect>
-    <text x="988.3" y="57.2" class="adot-n s">PropertiesPopo…</text>
-    <text x="988.3" y="75.2" class="adot-c">6×</text></g><g><rect x="712.6" y="122.4" width="106.9" height="118.4" class="atile">
-      <title>&lt;RadioSelection&gt; · used 6× · packages/excalidraw/components/RadioSelection.tsx</title></rect>
-    <text x="766.0" y="177.6" class="adot-n s">RadioSelection</text>
-    <text x="766.0" y="195.6" class="adot-c">6×</text></g><g><rect x="712.6" y="240.7" width="106.9" height="98.6" class="atile">
-      <title>&lt;DropdownMenu&gt; · used 5× · packages/excalidraw/components/dropdownMenu/DropdownMenu.tsx</title></rect>
-    <text x="766.0" y="286.1" class="adot-n">DropdownMenu</text>
-    <text x="766.0" y="304.1" class="adot-c">5×</text></g><g><rect x="712.6" y="339.4" width="106.9" height="98.6" class="atile">
-      <title>&lt;InlineIcon&gt; · used 5× · packages/excalidraw/components/InlineIcon.tsx</title></rect>
-    <text x="766.0" y="384.7" class="adot-n">InlineIcon</text>
-    <text x="766.0" y="402.7" class="adot-c">5×</text></g><g><rect x="819.5" y="122.4" width="122.5" height="86.1" class="atile">
-      <title>&lt;StatsDragInput&gt; · used 5× · packages/excalidraw/components/Stats/DragInput.tsx</title></rect>
-    <text x="880.8" y="161.4" class="adot-n">StatsDragInput</text>
-    <text x="880.8" y="179.4" class="adot-c">5×</text></g><g><rect x="942.0" y="122.4" width="98.0" height="86.1" class="atile">
-      <title>&lt;ColorPicker&gt; · used 4× · packages/excalidraw/components/ColorPicker/ColorPicker.tsx</title></rect>
-    <text x="991.0" y="161.4" class="adot-n">ColorPicker</text>
-    <text x="991.0" y="179.4" class="adot-c">4×</text></g><g><rect x="819.5" y="208.5" width="110.2" height="76.5" class="atile">
-      <title>&lt;LibraryMenuSection&gt; · used 4× · packages/excalidraw/components/LibraryMenuSection.tsx</title></rect>
-    <text x="874.6" y="242.7" class="adot-n s">LibraryMenuSect…</text>
-    <text x="874.6" y="260.7" class="adot-c">4×</text></g><g><rect x="929.8" y="208.5" width="110.2" height="76.5" class="atile">
-      <title>&lt;MenuItemContent&gt; · used 4× · packages/excalidraw/components/dropdownMenu/DropdownMenuItemContent.tsx</title></rect>
-    <text x="984.9" y="242.7" class="adot-n s">MenuItemContent</text>
-    <text x="984.9" y="260.7" class="adot-c">4×</text></g><g><rect x="819.5" y="285.0" width="110.2" height="76.5" class="atile">
-      <title>&lt;PickerHeading&gt; · used 4× · packages/excalidraw/components/ColorPicker/PickerHeading.tsx</title></rect>
-    <text x="874.6" y="319.2" class="adot-n">PickerHeading</text>
-    <text x="874.6" y="337.2" class="adot-c">4×</text></g><g><rect x="819.5" y="361.5" width="110.2" height="76.5" class="atile">
-      <title>&lt;Section&gt; · used 4× · packages/excalidraw/components/Section.tsx</title></rect>
-    <text x="874.6" y="395.7" class="adot-n">Section</text>
-    <text x="874.6" y="413.7" class="adot-c">4×</text></g><g><rect x="929.8" y="285.0" width="110.2" height="76.5" class="atile">
-      <title>&lt;Switch&gt; · used 4× · packages/excalidraw/components/Switch.tsx</title></rect>
-    <text x="984.9" y="319.2" class="adot-n">Switch</text>
-    <text x="984.9" y="337.2" class="adot-c">4×</text></g><g><rect x="929.8" y="361.5" width="110.2" height="76.5" class="atile">
-      <title>&lt;ToolPopover&gt; · used 4× · packages/excalidraw/components/ToolPopover.tsx</title></rect>
-    <text x="984.9" y="395.7" class="adot-n">ToolPopover</text>
-    <text x="984.9" y="413.7" class="adot-c">4×</text></g></svg>
-    <p class="sub">49 more adopted components below the top 24, not drawn.</p>
+    <div class="sec-head"><h2>The composition map</h2><p class="sub">1,425 components defined · tile area is internal use: how the system builds from itself, downstream consumers invisible from here · the real system, drawn to scale</p></div>
+    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="206.0" height="146.0" class="atile">
+      <title>&lt;StyledContainer&gt; · used 112× · frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</title></rect>
+    <text x="103.0" y="69.0" class="adot-n">StyledContainer</text>
+    <text x="103.0" y="87.0" class="adot-c">112×</text></g><g><rect x="0.0" y="146.0" width="206.0" height="146.0" class="atile">
+      <title>&lt;StyledContainer&gt; · used 112× · frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx</title></rect>
+    <text x="103.0" y="215.0" class="adot-n">StyledContainer</text>
+    <text x="103.0" y="233.0" class="adot-c">112×</text></g><g><rect x="0.0" y="292.0" width="206.0" height="146.0" class="atile">
+      <title>&lt;StyledContainer&gt; · used 112× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
+    <text x="103.0" y="361.0" class="adot-n">StyledContainer</text>
+    <text x="103.0" y="379.0" class="adot-c">112×</text></g><g><rect x="206.0" y="0.0" width="186.4" height="159.9" class="atile">
+      <title>&lt;StyledContainer&gt; · used 111× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
+    <text x="299.2" y="76.0" class="adot-n">StyledContainer</text>
+    <text x="299.2" y="94.0" class="adot-c">111×</text></g><g><rect x="206.0" y="159.9" width="186.4" height="139.8" class="atile">
+      <title>&lt;Dialogue&gt; · used 97× · frontend/src/component/common/Dialogue/Dialogue.tsx</title></rect>
+    <text x="299.2" y="225.8" class="adot-n">Dialogue</text>
+    <text x="299.2" y="243.8" class="adot-c">97×</text></g><g><rect x="206.0" y="299.7" width="186.4" height="138.3" class="atile">
+      <title>&lt;TextCell&gt; · used 96× · frontend/src/component/common/Table/cells/TextCell/TextCell.tsx</title></rect>
+    <text x="299.2" y="364.8" class="adot-n">TextCell</text>
+    <text x="299.2" y="382.8" class="adot-c">96×</text></g><g><rect x="392.5" y="0.0" width="139.8" height="161.4" class="atile">
+      <title>&lt;PageContent&gt; · used 84× · frontend/src/component/common/PageContent/PageContent.tsx</title></rect>
+    <text x="462.4" y="76.7" class="adot-n">PageContent</text>
+    <text x="462.4" y="94.7" class="adot-c">84×</text></g><g><rect x="392.5" y="161.4" width="139.8" height="146.0" class="atile">
+      <title>&lt;PageHeader&gt; · used 76× · frontend/src/component/common/PageHeader/PageHeader.tsx</title></rect>
+    <text x="462.4" y="230.4" class="adot-n">PageHeader</text>
+    <text x="462.4" y="248.4" class="adot-c">76×</text></g><g><rect x="392.5" y="307.4" width="139.8" height="130.6" class="atile">
+      <title>&lt;StyledTitle&gt; · used 68× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
+    <text x="462.4" y="368.7" class="adot-n">StyledTitle</text>
+    <text x="462.4" y="386.7" class="adot-c">68×</text></g><g><rect x="532.3" y="0.0" width="123.3" height="146.0" class="atile">
+      <title>&lt;Badge&gt; · used 67× · frontend/src/component/common/Badge/Badge.tsx</title></rect>
+    <text x="593.9" y="69.0" class="adot-n">Badge</text>
+    <text x="593.9" y="87.0" class="adot-c">67×</text></g><g><rect x="532.3" y="146.0" width="123.3" height="146.0" class="atile">
+      <title>&lt;StyledHeader&gt; · used 67× · frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</title></rect>
+    <text x="593.9" y="215.0" class="adot-n">StyledHeader</text>
+    <text x="593.9" y="233.0" class="adot-c">67×</text></g><g><rect x="532.3" y="292.0" width="123.3" height="146.0" class="atile">
+      <title>&lt;StyledHeader&gt; · used 67× · frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx</title></rect>
+    <text x="593.9" y="361.0" class="adot-n">StyledHeader</text>
+    <text x="593.9" y="379.0" class="adot-c">67×</text></g><g><rect x="655.5" y="0.0" width="140.0" height="128.5" class="atile">
+      <title>&lt;StyledTitle&gt; · used 67× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
+    <text x="725.5" y="60.3" class="adot-n">StyledTitle</text>
+    <text x="725.5" y="78.3" class="adot-c">67×</text></g><g><rect x="795.5" y="0.0" width="127.5" height="128.5" class="atile">
+      <title>&lt;TablePlaceholder&gt; · used 61× · frontend/src/component/common/Table/TablePlaceholder/TablePlaceholder.tsx</title></rect>
+    <text x="859.3" y="60.3" class="adot-n s">TablePlaceholder</text>
+    <text x="859.3" y="78.3" class="adot-c">61×</text></g><g><rect x="923.0" y="0.0" width="117.0" height="128.5" class="atile">
+      <title>&lt;Search&gt; · used 56× · frontend/src/component/common/Search/Search.tsx</title></rect>
+    <text x="981.5" y="60.3" class="adot-n">Search</text>
+    <text x="981.5" y="78.3" class="adot-c">56×</text></g><g><rect x="655.5" y="128.5" width="139.7" height="105.7" class="atile">
+      <title>&lt;PermissionButton&gt; · used 55× · frontend/src/component/common/PermissionButton/PermissionButton.tsx</title></rect>
+    <text x="725.4" y="177.4" class="adot-n">PermissionButton</text>
+    <text x="725.4" y="195.4" class="adot-c">55×</text></g><g><rect x="655.5" y="234.3" width="139.7" height="101.9" class="atile">
+      <title>&lt;StyledBox&gt; · used 53× · frontend/src/component/admin/users/InviteLinkBar/InviteLinkBarContent.tsx</title></rect>
+    <text x="725.4" y="281.2" class="adot-n">StyledBox</text>
+    <text x="725.4" y="299.2" class="adot-c">53×</text></g><g><rect x="655.5" y="336.1" width="139.7" height="101.9" class="atile">
+      <title>&lt;StyledInput&gt; · used 53× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
+    <text x="725.4" y="383.1" class="adot-n">StyledInput</text>
+    <text x="725.4" y="401.1" class="adot-c">53×</text></g><g><rect x="795.3" y="128.5" width="123.6" height="106.4" class="atile">
+      <title>&lt;FormTemplate&gt; · used 49× · frontend/src/component/common/FormTemplate/FormTemplate.tsx</title></rect>
+    <text x="857.1" y="177.8" class="adot-n">FormTemplate</text>
+    <text x="857.1" y="195.8" class="adot-c">49×</text></g><g><rect x="918.9" y="128.5" width="121.1" height="106.4" class="atile">
+      <title>&lt;Input&gt; · used 48× · frontend/src/component/common/Input/Input.tsx</title></rect>
+    <text x="979.4" y="177.8" class="adot-n">Input</text>
+    <text x="979.4" y="195.8" class="adot-c">48×</text></g><g><rect x="795.3" y="235.0" width="124.4" height="101.5" class="atile">
+      <title>&lt;HelpIcon&gt; · used 47× · frontend/src/component/common/HelpIcon/HelpIcon.tsx</title></rect>
+    <text x="857.4" y="281.7" class="adot-n">HelpIcon</text>
+    <text x="857.4" y="299.7" class="adot-c">47×</text></g><g><rect x="795.3" y="336.5" width="124.4" height="101.5" class="atile">
+      <title>&lt;StyledForm&gt; · used 47× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
+    <text x="857.4" y="383.2" class="adot-n">StyledForm</text>
+    <text x="857.4" y="401.2" class="adot-c">47×</text></g><g><rect x="919.6" y="235.0" width="120.4" height="102.6" class="atile">
+      <title>&lt;StyledForm&gt; · used 46× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
+    <text x="979.8" y="282.3" class="adot-n">StyledForm</text>
+    <text x="979.8" y="300.3" class="adot-c">46×</text></g><g><rect x="919.6" y="337.6" width="120.4" height="100.4" class="atile">
+      <title>&lt;PermissionIconButton&gt; · used 45× · frontend/src/component/common/PermissionIconButton/PermissionIconButton.tsx</title></rect>
+    <text x="979.8" y="383.8" class="adot-n s">PermissionIconBu…</text>
+    <text x="979.8" y="401.8" class="adot-c">45×</text></g></svg>
+    <p class="sub">453 more adopted components below the top 24, not drawn.</p>
     
-    <p class="sub">141 components are imported exactly once: &lt;Actions&gt;, &lt;ActiveConfirmDialog&gt;, &lt;AIComponents&gt;, &lt;Angle&gt;, &lt;App&gt;, &lt;AppFooter&gt; and 135 more. Quiet corners, not yet a system.</p>
+    <p class="sub">787 components are imported exactly once: &lt;AccessOverviewAccordion&gt;, &lt;AccessProvider&gt;, &lt;AccessProviderMock&gt;, &lt;AccessRequestsNotifications&gt;, &lt;AccordionContent&gt;, &lt;ActionsCell&gt; and 781 more. Quiet corners, not yet a system.</p>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
-    <tr><td class="mono strong">&lt;IconButton&gt;</td>
-    <td><span class="pill pill-mint">44×</span></td>
-    <td class="path">packages/excalidraw/components/IconButton.tsx</td>
-    <td><span class="chip chip-xs">size</span> <span class="chip chip-xs">visible</span> <span class="chip chip-xs">IconButtonProps</span></td></tr>
-    <tr><td class="mono strong">&lt;FilledButton&gt;</td>
-    <td><span class="pill pill-mint">14×</span></td>
-    <td class="path">packages/excalidraw/components/FilledButton.tsx</td>
-    <td><span class="chip chip-xs">icon</span> <span class="chip chip-xs">onClick</span> <span class="chip chip-xs">label</span> <span class="chip chip-xs">variant</span> <span class="chip chip-xs">color</span></td></tr>
-    <tr><td class="mono strong">&lt;Trans&gt;</td>
-    <td><span class="pill pill-mint">14×</span></td>
-    <td class="path">packages/excalidraw/components/Trans.tsx</td>
-    <td><span class="chip chip-xs">i18nKey</span></td></tr>
-    <tr><td class="mono strong">&lt;Dialog&gt;</td>
-    <td><span class="pill pill-mint">13×</span></td>
-    <td class="path">packages/excalidraw/components/Dialog.tsx</td>
+    <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
+    <td><span class="pill pill-mint">112×</span></td>
+    <td class="path">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</td>
+    <td><span class="chip chip-xs">theme</span></td></tr>
+    <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
+    <td><span class="pill pill-mint">112×</span></td>
+    <td class="path">frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx</td>
     <td><span class="dim">none</span></td></tr>
-    <tr><td class="mono strong">&lt;Island&gt;</td>
-    <td><span class="pill pill-mint">13×</span></td>
-    <td class="path">packages/excalidraw/components/Island.tsx</td>
-    <td><span class="chip chip-xs">padding</span> <span class="chip chip-xs">style</span> <span class="chip chip-xs">viewportUI</span> <span class="chip chip-xs">viewportUIName</span></td></tr>
-    <tr><td class="mono strong">&lt;Spinner&gt;</td>
-    <td><span class="pill pill-mint">12×</span></td>
-    <td class="path">packages/excalidraw/components/Spinner.tsx</td>
-    <td><span class="chip chip-xs">size</span> <span class="chip chip-xs">circleWidth</span> <span class="chip chip-xs">synchronized</span></td></tr>
-    <tr><td class="mono strong">&lt;DropdownMenuItem&gt;</td>
-    <td><span class="pill pill-mint">11×</span></td>
-    <td class="path">packages/excalidraw/components/dropdownMenu/DropdownMenuItem.tsx</td>
-    <td><span class="chip chip-xs">icon</span> <span class="chip chip-xs">badge</span> <span class="chip chip-xs">value</span> <span class="chip chip-xs">shortcut</span> <span class="chip chip-xs">selected</span></td></tr>
-    <tr><td class="mono strong">&lt;Tooltip&gt;</td>
-    <td><span class="pill pill-mint">10×</span></td>
-    <td class="path">packages/excalidraw/components/Tooltip.tsx</td>
-    <td><span class="chip chip-xs">label</span> <span class="chip chip-xs">long</span> <span class="chip chip-xs">style</span> <span class="chip chip-xs">disabled</span></td></tr>
-    <tr><td class="mono strong">&lt;Button&gt;</td>
-    <td><span class="pill pill-mint">9×</span></td>
-    <td class="path">packages/excalidraw/components/Button.tsx</td>
-    <td><span class="chip chip-xs">type</span> <span class="chip chip-xs">onSelect</span> <span class="chip chip-xs">selected</span> <span class="chip chip-xs">rest</span></td></tr>
-    <tr><td class="mono strong">&lt;DropdownMenuItemCheckbox&gt;</td>
-    <td><span class="pill pill-mint">8×</span></td>
-    <td class="path">packages/excalidraw/components/dropdownMenu/DropdownMenuItemCheckbox.tsx</td>
+    <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
+    <td><span class="pill pill-mint">112×</span></td>
+    <td class="path">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</td>
+    <td><span class="chip chip-xs">theme</span></td></tr>
+    <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
+    <td><span class="pill pill-mint">111×</span></td>
+    <td class="path">frontend/src/component/feedbackNew/FeedbackComponent.tsx</td>
+    <td><span class="chip chip-xs">theme</span></td></tr>
+    <tr><td class="mono strong">&lt;Dialogue&gt;</td>
+    <td><span class="pill pill-mint">97×</span></td>
+    <td class="path">frontend/src/component/common/Dialogue/Dialogue.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;TextCell&gt;</td>
+    <td><span class="pill pill-mint">96×</span></td>
+    <td class="path">frontend/src/component/common/Table/cells/TextCell/TextCell.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;PageContent&gt;</td>
+    <td><span class="pill pill-mint">84×</span></td>
+    <td class="path">frontend/src/component/common/PageContent/PageContent.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;PageHeader&gt;</td>
+    <td><span class="pill pill-mint">76×</span></td>
+    <td class="path">frontend/src/component/common/PageHeader/PageHeader.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;StyledTitle&gt;</td>
+    <td><span class="pill pill-mint">68×</span></td>
+    <td class="path">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;Badge&gt;</td>
+    <td><span class="pill pill-mint">67×</span></td>
+    <td class="path">frontend/src/component/common/Badge/Badge.tsx</td>
     <td><span class="dim">none</span></td></tr></tbody></table></div>
     </section>
 
 <footer>
   <div class="foot-left">
     <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 7.10.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">cf7e520566be</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=7.10.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">f1590dec4200</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=7.10.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

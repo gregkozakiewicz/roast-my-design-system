@@ -62,3 +62,19 @@ Clone folders may be named `repo` or `org-repo`. The slice carries its own
 `paintTin` ideal (3 per 100 files, from `IDEAL_BY_KIND` in `ideal.mjs`) in
 place of the shadcn one (25): 4 of the 11 Tailwind repos sit at or under 3
 and the median is 10 (2026-09-16).
+
+## The kit slices
+
+A product built on MUI, Mantine, Chakra UI or Ant Design is compared with
+other products on the same kit. Each kind has its own candidate list
+(`mui-repos.txt`, `mantine-repos.txt`, `chakra-repos.txt`, `antd-repos.txt`),
+and the engine decides membership: a repo joins the slice for the kit it
+imports most, shadcn included.
+
+```bash
+node tools/benchmark/build-slice.mjs --clones ~/roast-clones --kind mui --repos tools/benchmark/mui-repos.txt
+```
+
+Each slice carries `kitColour` and `kitPx` and its own ideals for them, set
+in `IDEAL_BY_KIND` in `ideal.mjs` at the top of the tidiest third of the
+slice (2026-09-17: mui 4/4, mantine 1/3, chakra 3/4, antd 6/7).

@@ -2,6 +2,63 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.0.0 — 2026-09-17
+
+Support for the four big component kits, eleven counting fixes, and a rebuilt
+benchmark. Every score moves: take a fresh one before you compare.
+
+- **MUI, Mantine, Chakra UI and Ant Design each get a profile.** If your
+  product is built on one of them, the scan reads it as such. It finds your
+  theme in the repo (`createTheme`, a `MantineProvider` theme, `extendTheme`
+  or `createSystem`, a token object on `ConfigProvider`), counts how often
+  your components read it, and adds two tiles: colours and spacing written
+  onto components when the theme already has a value.
+- **What is not counted:** the kit's own installed code, chart series and
+  colour-picker lists, artwork, terminal and code-editor themes, a colour
+  that is only a fallback after a theme read, a colour compared with the
+  theme, SVG paint, browser metadata, and a fully transparent colour.
+  Spacing below a kit's smallest step is not counted either, because no
+  theme value can replace it.
+- **Your own layer over a kit counts as the kit.** Metabase imports its
+  Mantine wrapper in 2,469 files and Mantine directly in 392, so the old
+  reading covered 14% of the product.
+- **A repo belongs to the kit it imports most,** shadcn included. Agenta
+  imports Ant Design in 502 files and the shadcn catalogue in 101.
+- **Four new comparison groups:** 19 MUI, 19 Mantine, 16 Chakra and 16 Ant
+  Design products, 70 in all. Each target is the top of the tidiest third:
+  MUI 4 colours and 4 spacings per 100 kit files, Mantine 1 and 3, Chakra 3
+  and 4, Ant Design 6 and 7.
+- **The fix prompts speak your kit:** MUI's `sx`, Mantine's props, Chakra's
+  space steps, Ant Design's `theme.useToken()`. Each was tested by applying
+  it to real repos and scanning again; the advice that broke code in testing
+  is named in the prompt so an agent does not repeat it.
+- **Eleven counting fixes.** One colour written two ways is one colour, not
+  two and a near-identical pair. A hex that is only the fallback in
+  `var(--x, #fefefe)` is a theme read: Primer goes from 308 colours to 8. An
+  `!important` counts as aimed at a library when any class in its selector is
+  the library's. Stylesheets you did not write are named and left out: a
+  library's CSS kept in the repo, anything minified, code and markdown
+  themes, and CSS a browser extension injects. Framework route files and
+  stories are not competing components. Share images built with
+  `html-to-image` join the render-to-image exemption. An app you have
+  replaced (a `web-old` folder) is left out, and a `website/` folder that is
+  an app of its own and holds more interface than the rest is read as the
+  product. Fix prompts start from a product file, not your docs site.
+- **Everything left out is listed in the report,** with file counts, the way
+  your own exclusions already were.
+- **Repos that used to be read wrongly:** Open-Assistant scored a false 100
+  and now scores 75 as a Chakra product; InvenTree and the APISIX dashboard
+  had no score and now score 75 and 84; Casdoor is measured on its current
+  interface instead of the replaced one.
+- **The benchmark was rebuilt on all of it:** 34 fleet repos, 10 reputable
+  systems and six comparison groups. Fleet medians are now 115 colours, 23
+  greys, 33 off-scale spacing values, 21 duplicated components, 51 inline
+  style blocks, 77 bracket values, 7 near-identical pairs and 5 `!important`.
+  Published examples move: dub 25 to 20, magicui 69 to 78, Spectrum 66 to 72.
+- `summary.json`: `kind` can be `mui`, `mantine`, `chakra` or `antd`, with a
+  `kit` block (`name`, `kitFiles`, `themeFiles`, `spacingUnit`, `refs`,
+  `colours`, `pixelSizes`, `evidence`); tiles gain `kitColour` and `kitPx`.
+
 ## 7.10.0 — 2026-09-16
 
 A fifth profile, `tailwind`, with its own benchmark. Three fixes for scores

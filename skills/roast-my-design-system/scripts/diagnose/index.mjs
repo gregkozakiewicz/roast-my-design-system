@@ -1063,7 +1063,14 @@ function whereToStartSection() {
   }
   if (componentsMeasured && iconCollisions.length >= 5) c.push({ score: 20 + iconCollisions.length * 3, metric: null, title: 'Merge the two icon sets',
     sub: `${iconCollisions.length} icon names exist in both sets, so every import is a coin flip. Pick one home and rename or delete the rest. Receipt: ${esc(iconCollisions[0].files[0])} vs ${esc(iconCollisions[0].files[1])}.` });
-  const strayOffender = offenders.find((o) => o.strayColors > 0);
+  // A docs site or a microsite inside the repo is styled on its own terms, so
+  // it must not be the file a fix starts from while product files wait
+  // (Backstage's three top moves all pointed at docs-ui and microsite,
+  // 2026-09-17). Product files first; a docs file is used only when it is all
+  // there is.
+  const DOCS_PATH_RE = /(^|\/)(docs?|docs-ui|microsite|website|landing|marketing|www|site|storybook)(-\w+)?\//i;
+  const productFirst = (list) => (list ?? []).slice().sort((x, y) => DOCS_PATH_RE.test(x.file) - DOCS_PATH_RE.test(y.file));
+  const strayOffender = productFirst(offenders).find((o) => o.strayColors > 0);
   if (colorStrays > 12) {
     // When the top stray file lives beside the token definitions, say so:
     // otherwise "your variables file is the top offender" reads like a bug.
@@ -1076,7 +1083,7 @@ function whereToStartSection() {
         ? `, including ${strayOffender.strayColors} in ${esc(strayOffender.file)}, sitting right next to the token definitions. Those are the cheapest wins on this page`
         : `; ${esc(strayOffender.file)} alone carries ${strayOffender.strayColors}`) : ''}. Every one is a value your agent will happily copy.` });
   }
-  if (inline.count > 10) { const worst = inline.files[0];
+  if (inline.count > 10) { const worst = productFirst(inline.files)[0];
     c.push({ score: inline.count / 2, metric: 'inlineStyles', after: 0,
       title: `Fold ${n(inline.count)} inline style blocks back into the system`,
       sub: `These are static values written as style attributes${worst ? `; start with ${esc(worst.file)} (${worst.count} blocks)` : ''}. Dynamic positioning was already excluded, so all of these could be classes or tokens today.` }); }
@@ -1116,7 +1123,7 @@ function whereToStartSection() {
       sub: `${esc(p0.a.value)} and ${esc(p0.b.value)} are the same colour to any eye${p0.a.count + p0.b.count > 3 ? `, and they are used ${n(p0.a.count + p0.b.count)} times between them` : ''}. Nobody chose to have both. Pick the one that is already a token, point the other at it, and the pair stops multiplying.` });
   }
   if (important.count >= 10) {
-    const worst = important.files[0];
+    const worst = productFirst(important.files)[0];
     c.push({ score: 20 + important.count, metric: 'important', after: 0,
       title: `Unwind the ${n(important.count)} !important declarations`,
       sub: `Each one is a selector losing an argument with another selector${worst ? `; ${esc(basename(worst.file))} alone carries ${worst.count}` : ''}. Fix the specificity at the source and they stop being necessary.` });
@@ -1130,7 +1137,7 @@ function whereToStartSection() {
   if (P.isShadcn && P.shadcn?.paint) {
     const pt = P.shadcn.paint;
     if (pt.tin.uses >= 10) {
-      const s0 = pt.tin.samples[0], f0 = pt.tin.top[0];
+      const s0 = pt.tin.samples[0], f0 = productFirst(pt.tin.top)[0];
       // The swap only works when the theme file holds the variables. A
       // product whose sheet defines none of them (formbricks: brand rows
       // only, slate as the palette) needs a decision first, not a prompt:
@@ -1155,13 +1162,13 @@ function whereToStartSection() {
   if (P.isKit && P.kit) {
     const k = P.kit;
     if (k.colour.uses >= 10) {
-      const s0 = k.colour.samples[0], f0 = k.colour.top[0];
+      const s0 = k.colour.samples[0], f0 = productFirst(k.colour.top)[0];
       c.push({ score: 20 + k.colour.per100 / 4, metric: 'kitColour', after: 0,
         title: `Move the ${n(k.colour.uses)} colours written on components into the ${esc(k.name)} theme`,
         sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}.${s0.inTheme ? ` ${esc(s0.value)} is already in your theme: read it from there, from the entry that holds it in every mode.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with ${KITS[k.name]?.advice.themeCall ?? "the kit's theme call"} and put the palette there`}. ${KITS[k.name]?.advice.colourHow ?? ''}` });
     }
     if (k.px.uses >= 10) {
-      const s0 = k.px.samples[0], f0 = k.px.top[0];
+      const s0 = k.px.samples[0], f0 = productFirst(k.px.top)[0];
       c.push({ score: 15 + k.px.per100 / 4, metric: 'kitPx', after: 0,
         title: `Put the ${n(k.px.uses)} pixel spacings on the theme's spacing steps`,
         sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}. ${KITS[k.name]?.advice.spacingHow(k) ?? ''}` });
@@ -1446,6 +1453,27 @@ function tailwindSection() {
   return `<section class="glass pad">${sectionHead('Your Tailwind theme, and what goes around it', 'a theme of named colours, and the places a palette class was written instead')}${parts.join('')}</section>`;
 }
 
+// Folders the scan leaves out by design, and the stylesheets it does not read
+// as the product's own. Greg, 2026-09-17: whatever is left out is listed, the
+// way a user's own exclusions are.
+function skippedLine() {
+  const parts = [];
+  if (skippedDirs.length) {
+    const list = skippedDirs.slice(0, 6).map((e) => `<span class="mono">${esc(e.dir)}/</span> (${n(e.files)} UI file${e.files === 1 ? '' : 's'})`).join(', ');
+    parts.push(`<div class="excl">Left out by design: ${list}${skippedDirs.length > 6 ? ` and ${n(skippedDirs.length - 6)} more` : ''}. A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div>`);
+  }
+  const ra = h.files?.readAnyway;
+  if (ra) parts.push(`<div class="excl"><span class="mono">${esc(ra.dir)}/</span> is normally left out, but it holds ${n(ra.files)} UI files, more than the rest of the repo, so it was read as the product.</div>`);
+  const foreign = h.tokens?.foreignStyles ?? [];
+  if (foreign.length) {
+    const byReason = new Map();
+    for (const f of foreign) byReason.set(f.reason, [...(byReason.get(f.reason) ?? []), basename(f.file)]);
+    const list = [...byReason.entries()].map(([reason, files]) => `${files.slice(0, 3).map((x) => `<span class="mono">${esc(x)}</span>`).join(', ')}${files.length > 3 ? ` and ${n(files.length - 3)} more` : ''} · ${esc(reason)}`).join('; ');
+    parts.push(`<div class="excl">${n(foreign.length)} stylesheet${foreign.length === 1 ? '' : 's'} not read: ${list}.</div>`);
+  }
+  return parts.join('');
+}
+
 // User exclusions are printed in the header, never hidden: a scoped scan must
 // say it is scoped, or the score could be quietly gamed. Grouped by source
 // (.roastignore vs --exclude), with the total number of files kept out.
@@ -1507,6 +1535,7 @@ function sidePanel() {
     tailwindReceipt(),
     kitReceipt(),
     publishesRegistryLine(),
+    skippedLine(),
     exclusionsLine(),
     commissionedBy ? `<div class="excl">Commissioned by <b>${esc(commissionedBy)}</b></div>` : '',
   ].join('');

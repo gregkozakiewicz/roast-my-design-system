@@ -49,6 +49,13 @@ const NOT_DUPLICATES = new Set(['Route', 'Layout', 'App', 'Providers', 'Provider
 // Route-colocated page fragments (app/**/form.tsx, header.tsx…) share names by
 // Next.js convention, not by duplication.
 const ROUTE_FRAGMENT_RE = /(^|\/)app\/.*\/(form|header|footer|nav|page|layout|loading|error|route)\.[jt]sx?$/;
+// A framework's route file is a page under another name: Remix and TanStack
+// put one default export per route in routes/ (ryot's _dashboard._index.tsx
+// and _dashboard.analytics.tsx both export Page, 2026-09-17). A story is a
+// demo of a component, not a second implementation of it (medplum keeps a
+// MockDateWrapper in two stories folders).
+const ROUTE_FILE_RE = /(^|\/)routes\/[^/]+\.[jt]sx?$|(^|\/)(page|layout|route|loading|error|not-found|template|default)\.[jt]sx?$/;
+const STORY_FILE_RE = /(^|\/)(stories|__stories__|\.storybook)\/|\.stories\.[jt]sx?$/;
 
 /**
  * @param components output of harvestComponents (non-page components matter most)
@@ -63,7 +70,8 @@ export function findDuplicates(components, uiDir = null, root = null, uiDirs = n
   // web Footer); cross-matching them manufactures duplicates.
   const EMAIL_PATH_RE = /(^|\/)emails?(\/|-)/i;
   const comps = components.filter((c) => !c.isPage && !NOT_DUPLICATES.has(c.name)
-    && !ROUTE_FRAGMENT_RE.test(c.file) && !EMAIL_PATH_RE.test(c.file));
+    && !ROUTE_FRAGMENT_RE.test(c.file) && !ROUTE_FILE_RE.test(c.file)
+    && !STORY_FILE_RE.test(c.file) && !EMAIL_PATH_RE.test(c.file));
 
   // 1. exact same component name defined in >1 file
   const byName = new Map();

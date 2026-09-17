@@ -256,6 +256,7 @@ const harvest = {
     // folders the walk skips on purpose, with the UI inside them: a scan that
     // saw almost nothing can say where the UI actually lives
     ...(files.skipped?.length ? { skippedDirs: files.skipped } : {}),
+    ...(files.readAnyway ? { readAnyway: files.readAnyway } : {}),
   },
   components,
   tokens,

@@ -72,7 +72,12 @@ const STYLE_EXTS = new Set(['.css', '.scss', '.sass', '.less']);
  * twenty and formbricks. Measured across the fleet, file counts stop growing at
  * 12; 14 leaves headroom. Single-package repos are unaffected either way.
  */
-export function walkRepo(root, maxDepth = 14, exclusions = null) {
+// A replaced app kept beside the current one is not the product: casdoor
+// keeps its old interface in web-old, and every count came from there
+// (2026-09-17). Named in the report like any other skipped folder.
+const LEGACY_DIR_RE = /^(?:old|legacy|deprecated|archive|archived)$|[-_](?:old|legacy|deprecated)$|^(?:old|legacy)[-_]/i;
+
+export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = new Set()) {
   const files = { code: [], styles: [], other: [] };
   const excluded = exclusions?.match ?? (() => null);
   // An excluded directory is still walked once, just to count what the scan
@@ -117,7 +122,10 @@ export function walkRepo(root, maxDepth = 14, exclusions = null) {
     try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
     for (const e of entries) {
       if (e.name.startsWith('.') && e.name !== '.cursorrules') continue;
-      if (SKIP_DIRS.has(e.name)) { if (e.isDirectory() && !BUILD_ONLY.has(e.name)) countSkipped(join(dir, e.name), e.name); continue; }
+      if ((SKIP_DIRS.has(e.name) && !readAnyway.has(e.name)) || LEGACY_DIR_RE.test(e.name)) {
+        if (e.isDirectory() && !BUILD_ONLY.has(e.name)) countSkipped(join(dir, e.name), e.name);
+        continue;
+      }
       // A symlink is followed nowhere: a linked directory was already skipped
       // (isDirectory is false for it), and a linked FILE could point anywhere
       // on the machine, `leak.css -> ~/.ssh/id_rsa` included. The repo's own
@@ -145,6 +153,21 @@ export function walkRepo(root, maxDepth = 14, exclusions = null) {
   // files inside them: a repo whose only UI lives there measures as empty,
   // and the report has to say why rather than call it healthy.
   files.skipped = [...skippedByDir.entries()].sort((a, b) => b[1] - a[1]).map(([dir, n]) => ({ dir, files: n }));
+  // A folder the walk skips by name sometimes holds the product itself:
+  // Open-Assistant keeps its app in website/ and scored a false 100 on the
+  // 34 files left outside it (2026-09-17). When a skipped folder holds more
+  // UI than everything read, read it and say so.
+  // Only a site-shaped folder, and only when it is an app of its own: demos,
+  // examples and docs stay out however big they are (medplum keeps 413 UI
+  // files in examples/, which is not the product).
+  const SITE_DIR = new Set(['website', 'www', 'site']);
+  const biggest = files.skipped.find((e) => SITE_DIR.has(e.dir) && existsSync(join(root, e.dir, 'package.json')));
+  const uiRead = files.code.filter((f) => /\.(tsx|jsx|vue|svelte|astro)$/.test(f)).length + files.styles.length;
+  if (!readAnyway.size && biggest && biggest.files > Math.max(uiRead, 20)) {
+    const again = walkRepo(root, maxDepth, exclusions, new Set([biggest.dir]));
+    again.readAnyway = { dir: biggest.dir, files: biggest.files };
+    return again;
+  }
   return files;
 }
 

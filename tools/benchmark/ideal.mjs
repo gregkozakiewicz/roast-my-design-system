@@ -44,20 +44,20 @@ export const IDEAL_BY_KIND = {
   // kit targets: the value at the top of the tidiest third of the kit's slice
   // (19 products each, 2026-09-17, after the fix-loop rounds)
   antd: {
-    kitColour: { value: 6, note: 'colours written onto Ant Design components per 100 kit files; 6 of the 17 Ant Design products sit at or under this, the median is 15' },
-    kitPx: { value: 7, note: 'spacing written as numbers or pixel strings in style objects on Ant Design components (marginBottom: 16) per 100 kit files, 4px and up; 5 of 17 sit at or under this, the median is 26' },
+    kitColour: { value: 6, note: 'colours written onto Ant Design components per 100 kit files; 6 of the 16 Ant Design products sit at or under this, the median is 13 (2026-09-17)' },
+    kitPx: { value: 7, note: 'spacing written as numbers or pixel strings in style objects on Ant Design components (marginBottom: 16), 4px and up, per 100 kit files; 5 of 16 sit at or under this, the median is 22 (2026-09-17)' },
   },
   chakra: {
-    kitColour: { value: 3, note: 'colours written onto Chakra components per 100 kit files; 6 of the 15 Chakra products sit at or under this, the median is 7' },
-    kitPx: { value: 5, note: 'spacing written as pixel strings on Chakra components (p="12px") per 100 kit files; numbers are space steps and not counted; 5 of 15 sit at or under this, the median is 14' },
+    kitColour: { value: 3, note: 'colours written onto Chakra components per 100 kit files; 6 of the 16 Chakra products sit at or under this, the median is 6 (2026-09-17)' },
+    kitPx: { value: 4, note: 'spacing written as pixel strings on Chakra components (p="12px") per 100 kit files; numbers are space steps and not counted; 7 of 16 sit at or under this, the median is 11 (2026-09-17)' },
   },
   mantine: {
-    kitColour: { value: 1, note: 'colours written onto Mantine components per 100 kit files (palettes, charts, editors and theme fallbacks not counted; a team layer over Mantine counted as Mantine); 7 of the 19 Mantine products sit at or under this, the median is 3' },
-    kitPx: { value: 3, note: 'spacing written as pixels on Mantine components (p={16}, rem(16), padding: "16px"), 10px and up, per 100 kit files; 7 of 19 sit at or under this, the median is 6' },
+    kitColour: { value: 1, note: 'colours written onto Mantine components per 100 kit files; 7 of the 19 Mantine products sit at or under this, the median is 3 (2026-09-17)' },
+    kitPx: { value: 3, note: 'spacing written as pixels on Mantine components (p={16}, rem(16)), 10px and up, per 100 kit files; 7 of 19 sit at or under this, the median is 6 (2026-09-17)' },
   },
   mui: {
-    kitColour: { value: 4, note: 'colours written onto MUI components per 100 kit files (palettes, charts, editors, theme fallbacks and theme folders not counted; a team layer over MUI counted as MUI); 7 of the 19 MUI products sit at or under this, the median is 9' },
-    kitPx: { value: 4, note: 'padding, margin and gap written in pixels on MUI components per 100 kit files; 6 of 19 sit at or under this, the median is 10' },
+    kitColour: { value: 4, note: 'colours written onto MUI components per 100 kit files (palettes, charts, editors, theme fallbacks and theme folders not counted; a team layer over MUI counted as MUI); 7 of the 19 MUI products sit at or under this, the median is 9 (2026-09-17)' },
+    kitPx: { value: 4, note: 'padding, margin and gap written in pixels on MUI components per 100 kit files; 6 of 19 sit at or under this, the median is 10 (2026-09-17)' },
   },
   tailwind: {
     paintTin: { value: 3, note: 'palette colours in own code where a theme colour exists, per 100 files; 4 of the 11 Tailwind repos sit at or under this, the median is 10 (2026-09-16)' },

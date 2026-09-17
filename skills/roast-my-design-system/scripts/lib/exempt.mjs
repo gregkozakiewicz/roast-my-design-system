@@ -33,7 +33,9 @@ export const EMAIL_KIT_RE = /from\s+['"](?:react-email|@react-email\/[\w-]+|jsx-
 export const CRASH_PAGE_RE = /(^|\/)global-error\.(tsx|jsx)$/;
 export const ARTWORK_NAME_RE = /(^|\/)[\w.-]*(icon|logo|badge|illustration|shield|artwork|graphic|background)[\w.-]*\.(tsx|jsx)$/i;
 export const SVG_MARKUP_RE = /<(svg|path|rect|circle|ellipse|polygon|defs|mask)\b/i;
-export const RENDER_TO_IMAGE_RE = /ImageResponse|from ['"]satori['"]|from ['"]@react-pdf|next\/og/;
+// A picture drawn from the DOM (a shareable card, a receipt) is the same
+// medium: the tool reads the styling off the element (2026-09-17).
+export const RENDER_TO_IMAGE_RE = /ImageResponse|from ['"]satori['"]|from ['"]@react-pdf|next\/og|from ['"](?:html-to-image|html2canvas(?:-pro)?|dom-to-image(?:-more)?|modern-screenshot)['"]/;
 export const OG_ROUTE_RE = /(^|\/)api\/og\//;
 export const RENDERER_PATH_RE = /(^|\/)(renderers?|scene|canvas)\/|renderElement|DebugCanvas/i;
 
@@ -58,6 +60,30 @@ export function exemptReason(file, text = '') {
 }
 
 /**
+ * A stylesheet the team did not write: a library's CSS copied into the repo
+ * (Percona keeps Swagger UI's, Stirling-PDF and HyperDX keep Bootstrap's), CSS
+ * a browser extension injects into other people's pages, and a code or
+ * markdown theme, which styles content rather than the product's interface.
+ * Named in the report and left out of the counts (2026-09-17).
+ */
+export const VENDOR_CSS_NAME_RE = /(^|\/)_?(?:swagger-ui|bootstrap(?:-theme|-utilities|-grid|-reboot)?|normalize|font-?awesome|semantic(?:-ui)?|foundation|bulma|materialize|quill(?:\.\w+)?|katex|leaflet|mapbox-gl|maplibre-gl|photoswipe|slick(?:-theme)?|flatpickr|tippy|swiper)(?:\.min)?\.(?:css|scss|less)$/i;
+export const CONTENT_CSS_NAME_RE = /(^|\/)_?(?:highlight(?:-\w+)?|hljs(?:-theme)?|prism(?:-\w+)?|shiki|github-markdown|markdown-body|code-theme|atom-one-\w+|monokai)(?:\.min)?\.(?:css|scss|less)$/i;
+export const EXTENSION_CSS_PATH_RE = /(^|\/)(?:chrome-extension|browser-extension|webextension)\/[\s\S]*\/(?:content|inject)[\w-]*\.(?:css|scss|less)$|(^|\/)content[_-]?script[\w-]*\.(?:css|scss|less)$/i;
+// minified: one very long line, whoever shipped it
+export const minifiedCss = (text) => text.split('\n').some((l) => l.length > 2000);
+
+/** Why this stylesheet is not the product's own, or null. */
+export function foreignStylesheet(file, text = '') {
+  // a CSS module is the team's own component styling, whatever it is called
+  if (/\.module\.(?:css|scss|less)$/i.test(file)) return null;
+  if (VENDOR_CSS_NAME_RE.test(file)) return "a library's stylesheet kept in the repo";
+  if (minifiedCss(text)) return 'a minified stylesheet, shipped rather than written here';
+  if (CONTENT_CSS_NAME_RE.test(file)) return 'a code or markdown theme: it styles content, not the interface';
+  if (EXTENSION_CSS_PATH_RE.test(file)) return "CSS injected into other people's pages by a browser extension";
+  return null;
+}
+
+/**
  * Class names a library ships and the team can only shout over: a code
  * editor, a date picker, a grid, an emoji picker, a docs theme. An !important
  * on a selector made only of these, none of which the team writes in its own
@@ -65,7 +91,7 @@ export function exemptReason(file, text = '') {
  * all !important, the tile keeps its spread). Prefix match, by name, so the
  * report can say which library. Extend as the fleet shows new ones.
  */
-export const LIBRARY_CLASS_RE = /^(cm-|ͼ|ProseMirror|monaco-|sp-|react-datepicker|react-tel-input|DateInput_|DayPicker|react-grid-|react-resizable|react-flow|react-select|react-toastify|Toastify|select2|EmojiPickerReact|epr-|notion-|fc-|fc$|tippy-|hljs|language-|ps__|ace_|ng-|docsearch|DocSearch|grecaptcha|rr-|sbdocs|docs-story|mapboxgl-|leaflet-|swiper-|slick-|rc-|ant-|Mui|ck-|ql-|tox-|mce-|DraftEditor|public-Draft|w-md-editor|rdp-|recharts-|apexcharts-|intercom-|crisp-|hubspot|shiki|katex|mermaid|prism-)/;
+export const LIBRARY_CLASS_RE = /^(ck$|cm-|ͼ|ProseMirror|monaco-|sp-|react-datepicker|react-tel-input|DateInput_|DayPicker|react-grid-|react-resizable|react-flow|react-select|react-toastify|Toastify|select2|EmojiPickerReact|epr-|notion-|fc-|fc$|tippy-|hljs|language-|ps__|ace_|ng-|docsearch|DocSearch|grecaptcha|rr-|sbdocs|docs-story|mapboxgl-|leaflet-|swiper-|slick-|rc-|ant-|Mui|ck-|ql-|tox-|mce-|DraftEditor|public-Draft|w-md-editor|rdp-|recharts-|apexcharts-|intercom-|crisp-|hubspot|shiki|katex|mermaid|prism-)/;
 export const isLibraryClass = (c) => LIBRARY_CLASS_RE.test(c);
 
 /**

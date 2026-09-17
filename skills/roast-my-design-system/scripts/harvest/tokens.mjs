@@ -8,7 +8,7 @@
  */
 import { existsSync } from 'node:fs';
 import {
-  EMAIL_PRINT_RE, EMAIL_KIT_RE, ARTWORK_NAME_RE, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
+  EMAIL_PRINT_RE, EMAIL_KIT_RE, ARTWORK_NAME_RE, foreignStylesheet, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
 import { canonical, parseColor } from '../lib/color.mjs';
@@ -356,7 +356,11 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     // A comment is not a stylesheet: `/* the old brand was #123456 */` kept a
     // retired colour in the palette until 6.0.1. Blanked to spaces, so every
     // character offset below still points at the same place in the file.
-    const text = raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length));
+    const text = raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length))
+      // The fallback in var(--x, #fefefe) is what shows if the variable is
+      // missing: the declaration reads the theme, so the hex is not a stray
+      // (Lightdash's chart colours, 2026-09-17). Blanked, offsets kept.
+      .replace(/var\(\s*--[\w-]+\s*,([^()]*)\)/g, (m, fb) => m.replace(fb, ' '.repeat(fb.length)));
     const imp = (text.match(/!\s*important/gi) ?? []).length;
     const widget = WIDGET_CSS_RE.test(text) || widgetDirs.some((d) => file.startsWith(d));
     if (imp && widget) mediumFiles.push({ file, reason: WIDGET_REASON, count: imp });
@@ -435,10 +439,14 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     for (const m of text.matchAll(SHADOW_PROPS)) shadows.add(m[1].trim().replace(/\s+/g, ' '), file);
   };
 
+  // stylesheets the team did not write, named in the report and not counted
+  const foreignStyles = [];
   for (const f of styleFiles) {
     if (/email|(^|[/.])print([/.]|$)/i.test(f)) continue;
     const text = readSource(join(root, f));
     if (text === null) continue;
+    const foreign = foreignStylesheet(f, text);
+    if (foreign) { foreignStyles.push({ file: f, reason: foreign }); continue; }
     scanCssText(text, f);
   }
 
@@ -580,7 +588,28 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     }
   }
 
-  const colorList = colors.toJSON().map((c) => ({ ...c, isToken: tokenDefined.has(c.value) }));
+  // One colour written two ways is one colour: #000000 and rgb(0, 0, 0) were
+  // counted twice and reported as a near-identical pair (Backstage), and
+  // #fcfdff / #fcfdffff likewise (Qdrant, 2026-09-17). Entries are merged by
+  // what they resolve to; the spelling used most often is the one shown, and
+  // the merged entry is a token when any of its spellings is one.
+  const byCanon = new Map();
+  for (const e of [...colors.map.values()].sort((x, y) => y.count - x.count)) {
+    const key = canonical(e.value) ?? `raw:${e.value}`;
+    const head = byCanon.get(key);
+    if (!head) { byCanon.set(key, { value: e.value, count: e.count, files: new Map(e.files), spellings: [e.value] }); continue; }
+    head.count += e.count;
+    head.spellings.push(e.value);
+    for (const [f, n] of e.files) head.files.set(f, (head.files.get(f) ?? 0) + n);
+  }
+  const mergedColors = [...byCanon.values()].sort((a, b) => b.count - a.count);
+  const colorList = mergedColors.map((e) => ({
+    value: e.value,
+    count: e.count,
+    files: [...e.files.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([file, count]) => ({ file, count })),
+    isToken: e.spellings.some((v) => tokenDefined.has(v)),
+    ...(e.spellings.length > 1 ? { spellings: e.spellings } : {}),
+  }));
 
   // Worst offenders: files carrying the most stray styling (hardcoded colours
   // that never appear in a --var definition, plus inline style blocks).
@@ -590,8 +619,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     e[key] += by;
     offenders.set(file, e);
   };
-  for (const e of colors.map.values()) {
-    if (tokenDefined.has(e.value)) continue;
+  for (const e of mergedColors) {
+    if (e.spellings.some((v) => tokenDefined.has(v))) continue;
     for (const [file, count] of e.files) bump(file, 'strayColors', count);
   }
   for (const [file, count] of inlineStyleFiles) bump(file, 'inlineBlocks', count);
@@ -664,9 +693,11 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // Resolve the !important blocks now that every class the team writes is known.
   const libraryImportant = { count: 0, classes: new Map(), files: new Map() };
   for (const b of importantBlocks) {
-    // a known library's class names, none of which the team writes in code:
-    // both conditions, so a team class used only from CSS still counts
-    const library = b.classes.length > 0 && !b.classes.some((c) => ownClasses.has(c)) && b.classes.some(isLibraryClass);
+    // A selector that names a library's class anywhere is aimed at that
+    // library, even when the team's own class sits beside it: pgAdmin paints
+    // its node icons over CodeMirror's completion icon with
+    // `.icon-x, .cm-autocomplete-option-x .cm-completionIcon` (2026-09-17).
+    const library = b.classes.length > 0 && b.classes.some(isLibraryClass);
     if (!library) { importantFiles.set(b.file, (importantFiles.get(b.file) ?? 0) + b.count); continue; }
     libraryImportant.count += b.count;
     libraryImportant.classes.set(b.classes[0], (libraryImportant.classes.get(b.classes[0]) ?? 0) + b.count);
@@ -674,6 +705,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   }
   return {
     tokenFile,
+    foreignStyles,
     namespaces,
     colors: colorList,
     // Every colour the system names ANYWHERE, theme and density variants

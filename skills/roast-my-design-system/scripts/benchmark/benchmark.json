@@ -3300,13 +3300,13 @@
       ]
     },
     "mui": {
-      "builtAt": "2026-09-17T14:04:39.139Z",
+      "builtAt": "2026-09-17T14:10:02.647Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mui; the \"cleaner than\" line on a mui repo reads against these",
       "ideal2026": {
         "kitColour": {
           "value": 5,
-          "note": "colours written onto MUI components per 100 kit files (theme fallbacks and theme folders not counted); 7 of the 19 MUI products sit at or under this, the median is 12 (2026-09-17)"
+          "note": "colours written onto MUI components per 100 kit files (theme fallbacks, theme folders, charts and maps not counted); 8 of the 19 MUI products sit at or under this, the median is 9 (2026-09-17)"
         },
         "kitPx": {
           "value": 8,
@@ -3697,26 +3697,26 @@
             1,
             1,
             2,
+            3,
             4,
             4,
-            5,
+            4,
             5,
             6,
-            7,
+            9,
             12,
-            12,
+            15,
             17,
-            18,
+            21,
             22,
-            24,
-            39,
+            35,
             39,
             43,
             302
           ],
-          "p25": 5,
-          "median": 12,
-          "p75": 23,
+          "p25": 4,
+          "median": 9,
+          "p75": 22,
           "p90": 40
         },
         "kitPx": {
@@ -3852,7 +3852,7 @@
             "important": 0,
             "neverImported": 0,
             "components": 84,
-            "kitColour": 7,
+            "kitColour": 3,
             "kitPx": 0
           }
         },
@@ -3879,7 +3879,7 @@
             "important": 1,
             "neverImported": 0,
             "components": 1429,
-            "kitColour": 5,
+            "kitColour": 4,
             "kitPx": 2
           }
         },
@@ -3906,7 +3906,7 @@
             "important": 9,
             "neverImported": 0,
             "components": 2306,
-            "kitColour": 18,
+            "kitColour": 15,
             "kitPx": 19
           }
         },
@@ -3987,7 +3987,7 @@
             "important": 138,
             "neverImported": 0,
             "components": 308,
-            "kitColour": 24,
+            "kitColour": 22,
             "kitPx": 111
           }
         },
@@ -4041,7 +4041,7 @@
             "important": 0,
             "neverImported": 0,
             "components": 614,
-            "kitColour": 39,
+            "kitColour": 35,
             "kitPx": 42
           }
         },
@@ -4122,7 +4122,7 @@
             "important": 0,
             "neverImported": 0,
             "components": 238,
-            "kitColour": 12,
+            "kitColour": 9,
             "kitPx": 4
           }
         },
@@ -4176,7 +4176,7 @@
             "important": 128,
             "neverImported": 0,
             "components": 1129,
-            "kitColour": 22,
+            "kitColour": 21,
             "kitPx": 8
           }
         },

@@ -21,7 +21,10 @@ const SKIP_PATH_RE = /(^|\/)(__tests__|__mocks__|e2e|cypress|stories|storybook|\
 const THEME_NAME_RE = /(^|\/)[\w.-]*(theme|palette|colou?rs?|tokens?)[\w.-]*(\/|\.[jt]sx?$)/i;
 // a literal after a theme read is a fallback, not paint:
 // theme.palette.common.white || '#ffffff' (OpenCTI, 2026-09-17)
-const FALLBACK_RE = /\b(?:theme|vars)\.palette\.[\w.[\]]+\s*(?:\|\||\?\?)\s*(['"`])[^'"`]*\1/g;
+const FALLBACK_RE = /\b(?:theme|vars)\.palette(?:\.|\[)[\w.[\]]+\s*(?:\|\||\?\?)\s*(['"`])[^'"`]*\1/g;
+// a file that drives a chart or a map renderer: its colours are the picture
+// (OpenCTI's maplibre style, Checkmate's recharts series, 2026-09-17)
+const RENDERER_IMPORT_RE = /from\s+['"](?:maplibre-gl|mapbox-gl|leaflet|react-leaflet|ol|deck\.gl|@deck\.gl\/[\w-]+|recharts|chart\.js|react-chartjs-2|echarts|echarts-for-react|d3|d3-[\w-]+|@nivo\/[\w-]+|victory|apexcharts|react-apexcharts|highcharts|highcharts-react-official|plotly\.js[\w-]*|react-plotly\.js|@visx\/[\w-]+|three|@react-three\/[\w-]+|pixi\.js|@antv\/[\w-]+|@mui\/x-charts)['"\/]/;
 // quoted colour literals only: a hex in a comment or an id is not paint
 const COLOUR_RE = /(['"`])(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:rgba?|hsla?)\([^)'"`]*\))\1/g;
 // spacing written in pixels, and nothing else. Type size and line height
@@ -91,7 +94,9 @@ export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, theme
     kitFiles += 1;
     refs += (code.match(refRe) ?? []).length;
     if (isTheme || THEME_NAME_RE.test(f)) { if (!isTheme) for (const c of colours) themeValues.add(c); continue; }
-    const why = exemptReason(f, src) ?? (colourTable(code, colours.length) ? 'the file is a colour table, data rather than styling' : null);
+    const why = exemptReason(f, src)
+      ?? (colourTable(code, colours.length) ? 'the file is a colour table, data rather than styling' : null)
+      ?? (colours.length && RENDERER_IMPORT_RE.test(code) ? 'the file drives a chart or a map, so its colours are the picture' : null);
     if (why) { if (colours.length) exempt.push({ file: f, reason: why }); continue; }
     if (colours.length) bump(colour, f, colours);
     const pxHits = [...code.matchAll(PX_RE)].map((m) => `${m[1]}: ${m[3]}`).filter((v) => !/: (0|1)px$/.test(v));

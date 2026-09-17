@@ -1156,13 +1156,13 @@ function whereToStartSection() {
       const s0 = k.colour.samples[0], f0 = k.colour.top[0];
       c.push({ score: 20 + k.colour.per100 / 4, metric: 'kitColour', after: 0,
         title: `Move the ${n(k.colour.uses)} colours written on components into the ${esc(k.name)} theme`,
-        sub: `${esc(s0.value)} is written ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}.${s0.inTheme ? ` That value is already in your theme: read it from there instead of writing it again.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with createTheme() and put the palette there`}. On an MUI component, point at it: <code>color: 'text.secondary'</code> in sx, or <code>theme.palette.primary.main</code> in a styled() call.` });
+        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}.${s0.inTheme ? ` ${esc(s0.value)} is already in your theme: read it from there, from the entry that holds it in every mode.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with createTheme() and put the palette there`}. On an MUI component, point at it: <code>color: 'text.secondary'</code> in sx, or <code>theme.palette.primary.main</code> in a styled() call.` });
     }
     if (k.px.uses >= 10) {
       const s0 = k.px.samples[0], f0 = k.px.top[0];
       c.push({ score: 15 + k.px.per100 / 4, metric: 'kitPx', after: 0,
         title: `Put the ${n(k.px.uses)} pixel spacings on the theme's spacing steps`,
-        sub: `${esc(s0.value)} is written ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. ${k.spacingUnit === 'custom'
+        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}. ${k.spacingUnit === 'custom'
           ? `This theme's spacing is custom (a function or a responsive config), so a step is not a fixed number of pixels: convert only after checking what <code>theme.spacing(1)</code> is here, and leave the rest.`
           : `${esc(k.name)} spacing is a step count: <code>p: 2</code> is <code>theme.spacing(2)</code>, which is ${k.spacingUnit ? `${2 * Number(k.spacingUnit)}px on this theme (one step is ${esc(k.spacingUnit)}px)` : '16px on the default theme'}. A spacing that lands exactly on a step becomes the step; one that does not stays.`}` });
     }

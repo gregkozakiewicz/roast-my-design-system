@@ -43,6 +43,10 @@ export const IDEAL_2026 = {
 export const IDEAL_BY_KIND = {
   // kit targets: the value at the top of the tidiest third of the kit's slice
   // (19 products each, 2026-09-17, after the fix-loop rounds)
+  chakra: {
+    kitColour: { value: 3, note: 'colours written onto Chakra components per 100 kit files; 4 of the 14 Chakra products sit at or under this, the median is 6' },
+    kitPx: { value: 4, note: 'spacing written as pixel strings on Chakra components (p="12px") per 100 kit files; numbers are space steps and not counted; 4 of 14 sit at or under this, the median is 11' },
+  },
   mantine: {
     kitColour: { value: 1, note: 'colours written onto Mantine components per 100 kit files (palettes, charts, editors and theme fallbacks not counted; a team layer over Mantine counted as Mantine); 7 of the 19 Mantine products sit at or under this, the median is 3' },
     kitPx: { value: 3, note: 'spacing written as pixels on Mantine components (p={16}, rem(16), padding: "16px"), 10px and up, per 100 kit files; 7 of 19 sit at or under this, the median is 6' },

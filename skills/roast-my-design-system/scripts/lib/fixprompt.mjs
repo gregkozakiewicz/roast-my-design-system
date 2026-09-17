@@ -10,6 +10,7 @@
 import { KITS } from '../profiles/kit-common.mjs';
 import '../profiles/mui.mjs';
 import '../profiles/mantine.mjs';
+import '../profiles/chakra.mjs';
 
 // The two mistakes an agent chasing points makes (three repos, 2026-09-13):
 // repainting a picture to a grey, and rounding a width another element

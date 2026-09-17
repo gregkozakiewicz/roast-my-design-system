@@ -95,7 +95,7 @@ export function colourTable(src, literals) {
 const SPACING_NUM_RE = /(?:^|[{,\n])\s*spacing\s*:\s*(\d+(?:\.\d+)?)\s*(?=[,}\n])/g;
 const SPACING_CUSTOM_RE = /\bspacing(?:Config)?\s*:\s*(?:\([^)]*\)\s*=>|\w+\s*=>|function\b|\[|\w+\()/;
 
-export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe, refRe, themeImportRe = kitImportRe, pxPropRes = [], pxMin = 0, reexportRe = null }) {
+export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe, refRe, themeImportRe = kitImportRe, pxPropRes = [], pxMin = 0, reexportRe = null, spacingCustomRe = null }) {
   const layers = reexportRe ? kitLayers(root, codeFiles, reexportRe) : [];
   const importRe = layers.length
     ? new RegExp(`${kitImportRe.source}|from\\s+['"](?:[^'"]*\\/)?(?:${layers.map(escapeRe).join('|')})(?:['"]|\\/)`)
@@ -129,7 +129,7 @@ export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe,
       for (const c of colours) themeValues.add(c);
     }
     if (isTheme || THEME_NAME_RE.test(f)) {
-      if (SPACING_CUSTOM_RE.test(code)) spacingUnits.add('custom');
+      if (SPACING_CUSTOM_RE.test(code) || (spacingCustomRe && isTheme && spacingCustomRe.test(code))) spacingUnits.add('custom');
       // a numeric unit counts from the theme call itself, where component
       // defaults (a Stack's spacing: 2) are rare enough to take the first
       else if (isTheme) { const m = SPACING_NUM_RE.exec(code); SPACING_NUM_RE.lastIndex = 0; if (m) spacingUnits.add(m[1]); }

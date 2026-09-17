@@ -1,0 +1,24 @@
+# Candidates for the chakra slice: products built on Chakra UI (v2 and v3), 14 well-known
+# names and 6 others, chosen 2026-09-17 by imports. The engine decides membership.
+# One per line: github org/repo.
+
+apache/airflow
+LAION-AI/Open-Assistant
+labring/FastGPT
+risingwavelabs/risingwave
+labring/laf
+MaterializeInc/materialize
+ArroyoSystems/arroyo
+line/centraldogma
+blockscout/frontend
+kurtosis-tech/kurtosis
+MetaMask/snaps
+semaphore-protocol/semaphore
+BlueBubblesApp/bluebubbles-server
+zu1k/book-searcher
+Multiwoven/multiwoven
+quenti-io/quenti
+vemetric/vemetric
+netshot-net/Netshot
+proofcarryingdata/zupass
+Left-on-Read/leftonread

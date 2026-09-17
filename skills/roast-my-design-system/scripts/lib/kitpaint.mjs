@@ -146,7 +146,10 @@ export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe,
       ?? (colourTable(code, colours.length) ? 'the file is a colour table, data rather than styling' : null)
       ?? (colours.length && RENDERER_IMPORT_RE.test(code) ? 'the file drives a chart or a map, so its colours are the picture' : null);
     if (why) { if (colours.length) exempt.push({ file: f, reason: why }); continue; }
-    if (colours.length) bump(colour, f, colours);
+    // a fully transparent colour is not paint (react-design-editor's
+    // rgba(255,255,255,0), 2026-09-17)
+    const painted = colours.filter((c) => !/,\s*0(?:\.0+)?\)$/.test(c) && c !== 'transparent');
+    if (painted.length) bump(colour, f, painted);
     // a kit whose numbers are pixels (Mantine's p={10}, rem(10)) adds its own patterns
     const pxHits = [
       ...[...code.matchAll(PX_RE)].map((m) => `${m[1]}: ${m[3]}`),

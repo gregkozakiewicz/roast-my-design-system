@@ -3300,7 +3300,7 @@
       ]
     },
     "mui": {
-      "builtAt": "2026-09-17T17:22:04.028Z",
+      "builtAt": "2026-09-17T18:03:41.604Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mui; the \"cleaner than\" line on a mui repo reads against these",
       "ideal2026": {
@@ -3705,9 +3705,9 @@
             6,
             9,
             9,
-            12,
+            11,
             14,
-            17,
+            15,
             20,
             34,
             39,
@@ -3716,7 +3716,7 @@
           ],
           "p25": 4,
           "median": 9,
-          "p75": 19,
+          "p75": 18,
           "p90": 40
         },
         "kitPx": {
@@ -3933,7 +3933,7 @@
             "important": 2,
             "neverImported": 0,
             "components": 395,
-            "kitColour": 17,
+            "kitColour": 15,
             "kitPx": 29
           }
         },
@@ -4230,7 +4230,7 @@
             "important": 21,
             "neverImported": 0,
             "components": 798,
-            "kitColour": 12,
+            "kitColour": 11,
             "kitPx": 10
           }
         },
@@ -4264,7 +4264,7 @@
       ]
     },
     "mantine": {
-      "builtAt": "2026-09-17T17:22:14.610Z",
+      "builtAt": "2026-09-17T18:03:51.994Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mantine; the \"cleaner than\" line on a mantine repo reads against these",
       "ideal2026": {
@@ -5228,7 +5228,7 @@
       ]
     },
     "chakra": {
-      "builtAt": "2026-09-17T17:22:52.104Z",
+      "builtAt": "2026-09-17T18:03:56.808Z",
       "repoCount": 15,
       "note": "every repo in the fleet the scanner reads as chakra; the \"cleaner than\" line on a chakra repo reads against these",
       "ideal2026": {
@@ -5578,14 +5578,14 @@
             9,
             11,
             12,
-            18,
-            64,
+            17,
+            63,
             81
           ],
           "p25": 3,
           "median": 7,
           "p75": 12,
-          "p90": 46
+          "p90": 45
         },
         "kitPx": {
           "values": [
@@ -5662,7 +5662,7 @@
             "important": 38,
             "neverImported": 0,
             "components": 385,
-            "kitColour": 64,
+            "kitColour": 63,
             "kitPx": 73
           }
         },
@@ -5905,7 +5905,7 @@
             "important": 8,
             "neverImported": 0,
             "components": 391,
-            "kitColour": 18,
+            "kitColour": 17,
             "kitPx": 20
           }
         },
@@ -6020,7 +6020,7 @@
       ]
     },
     "antd": {
-      "builtAt": "2026-09-17T17:22:48.602Z",
+      "builtAt": "2026-09-17T18:03:10.933Z",
       "repoCount": 17,
       "note": "every repo in the fleet the scanner reads as antd; the \"cleaner than\" line on a antd repo reads against these",
       "ideal2026": {
@@ -6397,16 +6397,16 @@
             15,
             16,
             19,
+            21,
             23,
             30,
-            31,
             33,
             54,
             97
           ],
           "p25": 6,
           "median": 15,
-          "p75": 30,
+          "p75": 23,
           "p90": 41
         },
         "kitPx": {
@@ -6891,7 +6891,7 @@
             "important": 22,
             "neverImported": 0,
             "components": 71,
-            "kitColour": 31,
+            "kitColour": 21,
             "kitPx": 26
           }
         }

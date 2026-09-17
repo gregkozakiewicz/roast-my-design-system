@@ -130,3 +130,8 @@ test('SVG paint and a colour handed to setAttribute are not component paint', ()
   const k = count({ 'src/Flare.tsx': card(`<svg><path fill={blue ? "#0042DA" : "#FF8B1A"} stroke="#123123" /><Box sx={{ color: '#abcdef' }} onClick={() => meta.setAttribute('content', dark ? '#27272a' : '#ffffff')} /></svg>`) });
   assert.deepEqual(k.colour.samples.map((s) => s.value), ['#abcdef']);
 });
+
+test('a fully transparent colour is not paint', () => {
+  const k = count({ 'src/Fade.tsx': card(`<Box sx={{ from: 'rgba(255,255,255,0)', to: 'rgba(0, 0, 0, 0.4)' }} />`) });
+  assert.deepEqual(k.colour.samples.map((s) => s.value), ['rgba(0,0,0,0.4)']);
+});

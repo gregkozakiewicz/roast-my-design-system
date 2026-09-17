@@ -3300,7 +3300,7 @@
       ]
     },
     "mui": {
-      "builtAt": "2026-09-17T16:27:50.915Z",
+      "builtAt": "2026-09-17T16:30:03.962Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mui; the \"cleaner than\" line on a mui repo reads against these",
       "ideal2026": {
@@ -4264,7 +4264,7 @@
       ]
     },
     "mantine": {
-      "builtAt": "2026-09-17T16:27:58.147Z",
+      "builtAt": "2026-09-17T16:30:11.076Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mantine; the \"cleaner than\" line on a mantine repo reads against these",
       "ideal2026": {
@@ -4675,13 +4675,13 @@
             13,
             22,
             39,
-            109,
+            87,
             159
           ],
           "p25": 1,
           "median": 3,
           "p75": 10,
-          "p90": 53
+          "p90": 49
         },
         "kitPx": {
           "values": [
@@ -4816,7 +4816,7 @@
             "important": 4,
             "neverImported": 0,
             "components": 51,
-            "kitColour": 109,
+            "kitColour": 87,
             "kitPx": 43
           }
         },

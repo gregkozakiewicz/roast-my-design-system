@@ -21,6 +21,9 @@ const SKIP_PATH_RE = /(^|\/)(__tests__|__mocks__|e2e|cypress|stories|storybook|\
 const THEME_NAME_RE = /(^|\/)[\w.-]*(theme|palette|colou?rs?|tokens?)[\w.-]*(\/|\.[jt]sx?$)/i;
 // a literal after a theme read is a fallback, not paint:
 // theme.palette.common.white || '#ffffff' (OpenCTI, 2026-09-17)
+// a literal compared with the theme is a check, not paint:
+// theme.BACKGROUND_SECONDARY === "#f2f3f5" (JSON Crack, 2026-09-17)
+const COMPARE_RE = /(?:[=!]==?\s*(['"`])[^'"`]*\1|(['"`])[^'"`]*\2\s*[=!]==?)/g;
 const FALLBACK_RE = /\b(?:theme|vars)\.palette(?:\.|\[)[\w.[\]]+\s*(?:\|\||\?\?)\s*(['"`])[^'"`]*\1/g;
 // a file that drives a chart or a map renderer: its colours are the picture
 // (OpenCTI's maplibre style, Checkmate's recharts series, 2026-09-17)
@@ -119,7 +122,7 @@ export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe,
     // a theme call counts only where the kit is imported: CodeMirror has a
     // createTheme too (Onyxia, 2026-09-17); a Storybook preview is not the theme
     const isTheme = themeRe.test(code) && themeImportRe.test(code) && !/(^|\/)\.storybook\//.test(f);
-    const colours = [...dropPalettes(code.replace(FALLBACK_RE, ' ')).matchAll(COLOUR_RE)].map((m) => m[2].toLowerCase().replace(/\s+/g, ''));
+    const colours = [...dropPalettes(code.replace(FALLBACK_RE, ' ').replace(COMPARE_RE, ' ')).matchAll(COLOUR_RE)].map((m) => m[2].toLowerCase().replace(/\s+/g, ''));
     if (isTheme) {
       themeFiles.push({ f, n: colours.length });
       themeColours += colours.length;

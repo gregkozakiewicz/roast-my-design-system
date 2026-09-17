@@ -120,3 +120,8 @@ test('Mantine spacing below its smallest step is not counted', async () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test('a colour compared with the theme is a check, not paint', () => {
+  const k = count({ 'src/Bar.tsx': card(`<Box sx={{ bgcolor: theme.bg === "#f2f3f5" ? 'grey.100' : 'grey.900', color: '#abcdef' }} />`) });
+  assert.deepEqual(k.colour.samples.map((s) => s.value), ['#abcdef']);
+});

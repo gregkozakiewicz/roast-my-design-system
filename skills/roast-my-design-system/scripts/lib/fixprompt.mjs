@@ -20,15 +20,21 @@ const TRAP_LINES = {
   paintTin: `- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.\n${BRAND_LINE}`,
   colors: `- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.\n${BRAND_LINE}`,
   kitColour: `- A chart series, an illustration or a status colour keeps its colour. Add it to the theme palette under a name rather than swapping it to a grey.\n- Read the theme where the kit reads it: sx paths ('text.secondary', 'primary.main'), theme.palette in styled() and makeStyles. Never import the theme file into a component just to read a hex.\n${BRAND_LINE}`,
-  kitPx: `- Convert a size only when it lands exactly on a spacing step (16px is 2 on an 8px theme). A size between steps is a decision: leave it and say so.\n- Never touch width, height or a size another element depends on.`,
-  nearPairs: BRAND_LINE,
+  kitPx: `- Convert a spacing only when it lands exactly on a step of this theme's spacing unit. A size between steps is a decision: leave it and say so.\n- Only padding, margin and gap. Font size and line height belong to typography variants, radius to the theme's shape; a bare number for lineHeight is a multiplier, not pixels.\n- Never touch width, height or a size another element depends on.`,
+  nearPairs: `- A near-white surface next to white, or a near-black next to black, is usually a deliberate layer (an input's fill on a dialog). Check where each is used before merging.\n- Only merge colours that do the same job in the same mode: a text colour and a border colour, or a light-mode and a dark-mode value, are not twins even when they look alike.\n- If one side is already a theme value, point the other at the theme, not at the hex.\n${BRAND_LINE}`,
   important: IMPORTANT_LINE,
   arbitrary: '- Never round a width or height another element depends on: a preview panel, a skeleton that mirrors a chart, an editor pane. Name it if it repeats; leave it if it is one.',
   spacing: '- Never round a width or height another element depends on: a preview panel, a skeleton that mirrors a chart, an editor pane. Name it if it repeats; leave it if it is one.',
 };
 
-export function fixPrompt({ title, sub, deltaText, repoName, metric = null }) {
-  const trap = TRAP_LINES[metric] ? `\n${TRAP_LINES[metric]}` : '';
+// On a kit product, moving style={{}} to sx is only safe where the component
+// takes sx: Linode's Akamai web components and OpenAEV's own field wrappers
+// dropped it silently (2026-09-17).
+const KIT_INLINE_LINE = "- Move a style to the kit's own styling (sx, a styled() component) only on the kit's components or on wrappers that pass their props to one kit component. Your own wrappers that take a style prop keep style; web components ignore sx.";
+
+export function fixPrompt({ title, sub, deltaText, repoName, metric = null, kit = null }) {
+  const lines = [TRAP_LINES[metric], kit && metric === 'inlineStyles' ? KIT_INLINE_LINE : null].filter(Boolean);
+  const trap = lines.length ? `\n${lines.join('\n')}` : '';
   return `You are fixing one design-system finding in ${repoName ? `the ${repoName} repository` : 'this repository'}, measured by roast-my-design-system.
 
 The finding: ${title}

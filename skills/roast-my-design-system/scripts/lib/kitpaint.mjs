@@ -15,13 +15,20 @@ import { join } from 'node:path';
 import { exemptReason } from './exempt.mjs';
 
 const SKIP_PATH_RE = /(^|\/)(__tests__|__mocks__|e2e|cypress|stories|storybook|\.storybook|fixtures?|examples?|demos?|tests?|mocks?)\/|\.(test|spec|stories)\.[jt]sx?$|\.d\.ts$/;
-// a file whose job is to hold the palette: the theme, not paint on it
-const THEME_NAME_RE = /(^|\/)[\w.-]*(theme|palette|colou?rs?|tokens?)[\w.-]*\.[jt]sx?$/i;
+// a file whose job is to hold the palette: the theme, not paint on it. A folder
+// counts too (Checkmate keeps three status-page themes in themes/, Qdrant its
+// colour scales in theme/colors/, 2026-09-17).
+const THEME_NAME_RE = /(^|\/)[\w.-]*(theme|palette|colou?rs?|tokens?)[\w.-]*(\/|\.[jt]sx?$)/i;
+// a literal after a theme read is a fallback, not paint:
+// theme.palette.common.white || '#ffffff' (OpenCTI, 2026-09-17)
+const FALLBACK_RE = /\b(?:theme|vars)\.palette\.[\w.[\]]+\s*(?:\|\||\?\?)\s*(['"`])[^'"`]*\1/g;
 // quoted colour literals only: a hex in a comment or an id is not paint
 const COLOUR_RE = /(['"`])(#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:rgba?|hsla?)\([^)'"`]*\))\1/g;
-// spacing, type size and radius written in pixels; widths and heights are
-// layout and often deliberate, so they are left alone
-const PX_KEYS = 'p|m|px|py|pt|pb|pl|pr|mx|my|mt|mb|ml|mr|gap|rowGap|columnGap|padding|margin|paddingTop|paddingBottom|paddingLeft|paddingRight|paddingX|paddingY|marginTop|marginBottom|marginLeft|marginRight|marginX|marginY|fontSize|borderRadius|letterSpacing|lineHeight';
+// spacing written in pixels, and nothing else. Type size and line height
+// belong to typography variants, radius to the theme's shape; the spacing
+// advice turned lineHeight "16px" into lineHeight: 2, a multiplier (Ente,
+// 2026-09-17). Widths and heights are layout, often deliberate.
+const PX_KEYS = 'p|m|px|py|pt|pb|pl|pr|mx|my|mt|mb|ml|mr|gap|rowGap|columnGap|padding|margin|paddingTop|paddingBottom|paddingLeft|paddingRight|paddingX|paddingY|paddingBlock|paddingInline|marginTop|marginBottom|marginLeft|marginRight|marginX|marginY|marginBlock|marginInline';
 const PX_RE = new RegExp(`\\b(${PX_KEYS})\\s*[:=]\\s*\\{?\\s*(['"\`])(\\d+(?:\\.\\d+)?px)\\2`, 'g');
 
 const stripComments = (s) => s.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:'"`\\])\/\/[^\n]*/g, '$1');
@@ -39,8 +46,16 @@ export function colourTable(src, literals) {
  * @param kit { importRe, themeRe, refRe } — what this kit's import, theme
  *   definition and theme reference look like
  */
-export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe }) {
+// The theme's spacing unit: createTheme({ spacing: 2 }) sets 2px steps
+// (Checkmate); a function or a responsive config (Onyxia's spacingConfig)
+// means a step is not a fixed number of pixels.
+const SPACING_NUM_RE = /(?:^|[{,\n])\s*spacing\s*:\s*(\d+(?:\.\d+)?)\s*(?=[,}\n])/g;
+const SPACING_CUSTOM_RE = /\bspacing(?:Config)?\s*:\s*(?:\([^)]*\)\s*=>|\w+\s*=>|function\b|\[|\w+\()/;
+
+export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe, themeImportRe = importRe }) {
   const themeFiles = [];
+  const themeValues = new Set();
+  const spacingUnits = new Set();
   let kitFiles = 0, refs = 0, themeColours = 0;
   const colour = { uses: 0, files: 0, top: [], samples: new Map() };
   const px = { uses: 0, files: 0, top: [], samples: new Map() };
@@ -57,13 +72,25 @@ export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe }) {
     let src;
     try { if (statSync(join(root, f)).size > 1e6) continue; src = readFileSync(join(root, f), 'utf8'); } catch { continue; }
     const code = stripComments(src);
-    const isTheme = themeRe.test(code);
-    const colours = [...code.matchAll(COLOUR_RE)].map((m) => m[2].toLowerCase().replace(/\s+/g, ''));
-    if (isTheme) { themeFiles.push(f); themeColours += colours.length; }
+    // a theme call counts only where the kit is imported: CodeMirror has a
+    // createTheme too (Onyxia, 2026-09-17); a Storybook preview is not the theme
+    const isTheme = themeRe.test(code) && themeImportRe.test(code) && !/(^|\/)\.storybook\//.test(f);
+    const colours = [...code.replace(FALLBACK_RE, ' ').matchAll(COLOUR_RE)].map((m) => m[2].toLowerCase().replace(/\s+/g, ''));
+    if (isTheme) {
+      themeFiles.push({ f, n: colours.length });
+      themeColours += colours.length;
+      for (const c of colours) themeValues.add(c);
+    }
+    if (isTheme || THEME_NAME_RE.test(f)) {
+      if (SPACING_CUSTOM_RE.test(code)) spacingUnits.add('custom');
+      // a numeric unit counts from the theme call itself, where component
+      // defaults (a Stack's spacing: 2) are rare enough to take the first
+      else if (isTheme) { const m = SPACING_NUM_RE.exec(code); SPACING_NUM_RE.lastIndex = 0; if (m) spacingUnits.add(m[1]); }
+    }
     if (!importRe.test(code)) continue;
     kitFiles += 1;
     refs += (code.match(refRe) ?? []).length;
-    if (isTheme || THEME_NAME_RE.test(f)) continue;
+    if (isTheme || THEME_NAME_RE.test(f)) { if (!isTheme) for (const c of colours) themeValues.add(c); continue; }
     const why = exemptReason(f, src) ?? (colourTable(code, colours.length) ? 'the file is a colour table, data rather than styling' : null);
     if (why) { if (colours.length) exempt.push({ file: f, reason: why }); continue; }
     if (colours.length) bump(colour, f, colours);
@@ -77,13 +104,21 @@ export function countKitPaint(root, codeFiles, { importRe, themeRe, refRe }) {
     top: b.top.sort((a, c) => c.count - a.count).slice(0, 10),
     samples: [...b.samples.entries()].sort((a, c) => c[1] - a[1]).slice(0, 12).map(([value, count]) => ({ value, count })),
   });
+  // the theme a reader should open first: a theme-named path, then the most colours
+  const ranked = themeFiles.sort((a, b) => (THEME_NAME_RE.test(b.f) - THEME_NAME_RE.test(a.f)) || b.n - a.n).map((t) => t.f);
+  const colourOut = finish(colour);
+  // a written colour the theme already holds: the move can say where it lives
+  for (const s of colourOut.samples) if (themeValues.has(s.value)) s.inTheme = true;
   return {
     kitFiles,
-    themeFiles: themeFiles.slice(0, 10),
+    themeFiles: ranked.slice(0, 10),
+    // the spacing step as the theme sets it: a number of pixels, 'custom'
+    // (a function or a responsive config), or null for the kit default
+    spacingUnit: spacingUnits.has('custom') || spacingUnits.size > 1 ? 'custom' : spacingUnits.size ? [...spacingUnits][0] : null,
     themeColours,
     refs,
     refsPer100: per100(refs),
-    colour: finish(colour),
+    colour: colourOut,
     px: finish(px),
     exempt: exempt.slice(0, 20),
   };

@@ -1156,13 +1156,15 @@ function whereToStartSection() {
       const s0 = k.colour.samples[0], f0 = k.colour.top[0];
       c.push({ score: 20 + k.colour.per100 / 4, metric: 'kitColour', after: 0,
         title: `Move the ${n(k.colour.uses)} colours written on components into the ${esc(k.name)} theme`,
-        sub: `${esc(s0.value)} is written ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with createTheme() and put the palette there`}. On the component, point at it: <code>color: 'text.secondary'</code> in sx, or <code>theme.palette.primary.main</code> in a styled() call.` });
+        sub: `${esc(s0.value)} is written ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}.${s0.inTheme ? ` That value is already in your theme: read it from there instead of writing it again.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with createTheme() and put the palette there`}. On an MUI component, point at it: <code>color: 'text.secondary'</code> in sx, or <code>theme.palette.primary.main</code> in a styled() call.` });
     }
     if (k.px.uses >= 10) {
       const s0 = k.px.samples[0], f0 = k.px.top[0];
       c.push({ score: 15 + k.px.per100 / 4, metric: 'kitPx', after: 0,
-        title: `Put the ${n(k.px.uses)} pixel sizes on the theme's spacing steps`,
-        sub: `${esc(s0.value)} is written ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. ${esc(k.name)} spacing is a step count: <code>p: 2</code> is <code>theme.spacing(2)</code>, 16px on the default theme. A size that lands on a step becomes the step; one that does not stays and gets a comment.` });
+        title: `Put the ${n(k.px.uses)} pixel spacings on the theme's spacing steps`,
+        sub: `${esc(s0.value)} is written ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. ${k.spacingUnit === 'custom'
+          ? `This theme's spacing is custom (a function or a responsive config), so a step is not a fixed number of pixels: convert only after checking what <code>theme.spacing(1)</code> is here, and leave the rest.`
+          : `${esc(k.name)} spacing is a step count: <code>p: 2</code> is <code>theme.spacing(2)</code>, which is ${k.spacingUnit ? `${2 * Number(k.spacingUnit)}px on this theme (one step is ${esc(k.spacingUnit)}px)` : '16px on the default theme'}. A spacing that lands exactly on a step becomes the step; one that does not stays.`}` });
     }
   }
 
@@ -1204,6 +1206,7 @@ function whereToStartSection() {
   const unesc = (s) => s.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&rarr;/g, '->').replace(/&amp;/g, '&');
   const promptFor = (item) => fixPrompt({
     metric: item.metric,
+    kit: P.isKit ? P.kit?.name : null,
     title: unesc(item.title),
     sub: unesc(item.sub),
     deltaText: item.delta > 0 ? `about +${item.delta} points` : (item.target ? `about +${item.target.gain} points once ${item.target.target === 0 ? 'they are all cleared' : `the count is under ${n(item.target.target)}`}` : ''),
@@ -2192,7 +2195,7 @@ if (summaryPath) {
     role: P.role,
     kind: P.kind,
     ...(P.publishesRegistry ? { publishesRegistry: { source: P.publishesRegistry.source, publishes: P.publishesRegistry.publishes } } : {}),
-    ...(P.isKit && P.kit ? { kit: { name: P.kit.name, kitFiles: P.kit.kitFiles, themeFiles: P.kit.themeFiles, refs: P.kit.refs, colours: P.kit.colour.uses, pixelSizes: P.kit.px.uses, evidence: P.evidence } } : {}),
+    ...(P.isKit && P.kit ? { kit: { name: P.kit.name, kitFiles: P.kit.kitFiles, themeFiles: P.kit.themeFiles, spacingUnit: P.kit.spacingUnit ?? null, refs: P.kit.refs, colours: P.kit.colour.uses, pixelSizes: P.kit.px.uses, evidence: P.evidence } } : {}),
     ...(P.isTailwind && P.tailwind ? { tailwind: { file: P.tailwind.file, names: P.tailwind.names.length, restated: P.tailwind.restated, retuned: P.tailwind.retuned?.length ?? 0, uses: P.tailwind.uses, usedIn: P.tailwind.usedIn, adopted: P.tailwind.adopted, evidence: P.evidence } } : {}),
     ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants, counted: P.registry.counted ?? null, showcase: P.registry.showcase ?? [], variantsDropped: P.registry.variantsDropped ?? [], themes: P.registry.themes ? { total: P.registry.themes.total, incomplete: P.registry.themes.incomplete } : null } } : {}),
     ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true, ...(P.shadcn.lint ? { lint: { file: P.shadcn.lint.file, kind: P.shadcn.lint.kind, rulesOn: lintRulesOn(P.shadcn.lint), readFully: P.shadcn.lint.readFully } } : {}) } } : {}),

@@ -16,7 +16,11 @@ import { join } from 'node:path';
 export const MUI = {
   name: 'MUI',
   importRe: /from\s+['"]@(?:mui|material-ui)\/|require\(\s*['"]@(?:mui|material-ui)\//,
-  themeRe: /\b(?:createTheme|createMuiTheme|extendTheme|experimental_extendTheme|unstable_createMuiStrictModeTheme)\s*\(/,
+  // createTheme(), or a theme handed straight to a provider: Headlamp wraps its
+  // graph view in <ThemeProvider theme={(outer) => ({...})}> with its own greys
+  themeRe: /\b(?:createTheme|createMuiTheme|extendTheme|experimental_extendTheme|unstable_createMuiStrictModeTheme)\s*\(|<ThemeProvider[^>]*\btheme=\{\s*(?:\(|\{)/,
+  // the theme call has to come from MUI: CodeMirror exports a createTheme too
+  themeImportRe: /import\s*(?:\{[^}]*\b(?:createTheme|createMuiTheme|extendTheme|experimental_extendTheme|ThemeProvider)\b[^}]*\}|ThemeProvider|createTheme)\s*from\s*['"]@(?:mui|material-ui)\//,
   refRe: /theme\.palette\.|theme\.spacing\(|theme\.typography\.|theme\.shape\.|\bvars\.palette\.|['"](?:primary|secondary|error|warning|info|success|text|background|grey|divider|action|common)\.(?:main|light|dark|contrastText|primary|secondary|disabled|paper|default|hover|selected|black|white|\d{2,3})['"]/g,
 };
 

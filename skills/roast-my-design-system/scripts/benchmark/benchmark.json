@@ -3300,17 +3300,17 @@
       ]
     },
     "mui": {
-      "builtAt": "2026-09-17T13:46:22.246Z",
+      "builtAt": "2026-09-17T14:04:39.139Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mui; the \"cleaner than\" line on a mui repo reads against these",
       "ideal2026": {
         "kitColour": {
-          "value": 7,
-          "note": "colours written onto MUI components per 100 kit files; 7 of the 19 MUI products sit at or under this, the median is 12 (2026-09-17)"
+          "value": 5,
+          "note": "colours written onto MUI components per 100 kit files (theme fallbacks and theme folders not counted); 7 of the 19 MUI products sit at or under this, the median is 12 (2026-09-17)"
         },
         "kitPx": {
-          "value": 10,
-          "note": "spacing, type size and radius written in pixels on MUI components per 100 kit files; 7 of 19 sit at or under this, the median is 17 (2026-09-17)"
+          "value": 8,
+          "note": "padding, margin and gap written in pixels on MUI components per 100 kit files; 8 of 19 sit at or under this, the median is 12 (2026-09-17)"
         }
       },
       "stats": {
@@ -3698,15 +3698,15 @@
             1,
             2,
             4,
+            4,
+            5,
             5,
             6,
             7,
-            11,
-            11,
+            12,
             12,
             17,
-            19,
-            21,
+            18,
             22,
             24,
             39,
@@ -3714,37 +3714,37 @@
             43,
             302
           ],
-          "p25": 6,
+          "p25": 5,
           "median": 12,
           "p75": 23,
           "p90": 40
         },
         "kitPx": {
           "values": [
+            0,
+            1,
+            1,
             2,
             3,
-            3,
-            5,
-            5,
-            10,
+            4,
+            8,
+            8,
             10,
             12,
-            14,
-            17,
-            24,
-            33,
-            40,
+            12,
+            12,
+            16,
+            19,
+            29,
             42,
-            69,
-            76,
-            115,
-            127,
-            457
+            42,
+            111,
+            231
           ],
-          "p25": 8,
-          "median": 17,
-          "p75": 56,
-          "p90": 117
+          "p25": 4,
+          "median": 12,
+          "p75": 24,
+          "p90": 56
         }
       },
       "repos": [
@@ -3771,8 +3771,8 @@
             "important": 21,
             "neverImported": 0,
             "components": 1227,
-            "kitColour": 7,
-            "kitPx": 5
+            "kitColour": 5,
+            "kitPx": 3
           }
         },
         {
@@ -3799,7 +3799,7 @@
             "neverImported": 0,
             "components": 663,
             "kitColour": 39,
-            "kitPx": 76
+            "kitPx": 42
           }
         },
         {
@@ -3826,7 +3826,7 @@
             "neverImported": 0,
             "components": 436,
             "kitColour": 302,
-            "kitPx": 457
+            "kitPx": 231
           }
         },
         {
@@ -3852,8 +3852,8 @@
             "important": 0,
             "neverImported": 0,
             "components": 84,
-            "kitColour": 11,
-            "kitPx": 3
+            "kitColour": 7,
+            "kitPx": 0
           }
         },
         {
@@ -3880,7 +3880,7 @@
             "neverImported": 0,
             "components": 1429,
             "kitColour": 5,
-            "kitPx": 3
+            "kitPx": 2
           }
         },
         {
@@ -3906,8 +3906,8 @@
             "important": 9,
             "neverImported": 0,
             "components": 2306,
-            "kitColour": 19,
-            "kitPx": 24
+            "kitColour": 18,
+            "kitPx": 19
           }
         },
         {
@@ -3933,8 +3933,8 @@
             "important": 2,
             "neverImported": 0,
             "components": 395,
-            "kitColour": 21,
-            "kitPx": 40
+            "kitColour": 17,
+            "kitPx": 29
           }
         },
         {
@@ -3960,8 +3960,8 @@
             "important": 361,
             "neverImported": 0,
             "components": 307,
-            "kitColour": 11,
-            "kitPx": 2
+            "kitColour": 4,
+            "kitPx": 1
           }
         },
         {
@@ -3988,7 +3988,7 @@
             "neverImported": 0,
             "components": 308,
             "kitColour": 24,
-            "kitPx": 127
+            "kitPx": 111
           }
         },
         {
@@ -4015,7 +4015,7 @@
             "neverImported": 2,
             "components": 1592,
             "kitColour": 1,
-            "kitPx": 17
+            "kitPx": 12
           }
         },
         {
@@ -4042,7 +4042,7 @@
             "neverImported": 0,
             "components": 614,
             "kitColour": 39,
-            "kitPx": 115
+            "kitPx": 42
           }
         },
         {
@@ -4069,7 +4069,7 @@
             "neverImported": 0,
             "components": 122,
             "kitColour": 6,
-            "kitPx": 5
+            "kitPx": 1
           }
         },
         {
@@ -4096,7 +4096,7 @@
             "neverImported": 0,
             "components": 154,
             "kitColour": 4,
-            "kitPx": 33
+            "kitPx": 12
           }
         },
         {
@@ -4122,8 +4122,8 @@
             "important": 0,
             "neverImported": 0,
             "components": 238,
-            "kitColour": 17,
-            "kitPx": 69
+            "kitColour": 12,
+            "kitPx": 4
           }
         },
         {
@@ -4150,7 +4150,7 @@
             "neverImported": 0,
             "components": 980,
             "kitColour": 1,
-            "kitPx": 10
+            "kitPx": 8
           }
         },
         {
@@ -4177,12 +4177,12 @@
             "neverImported": 0,
             "components": 1129,
             "kitColour": 22,
-            "kitPx": 10
+            "kitPx": 8
           }
         },
         {
           "repo": "InseeFrLab/onyxia",
-          "confidence": "high",
+          "confidence": "medium",
           "style": null,
           "baseColor": null,
           "tailwind": null,
@@ -4204,7 +4204,7 @@
             "neverImported": 0,
             "components": 211,
             "kitColour": 2,
-            "kitPx": 42
+            "kitPx": 16
           }
         },
         {
@@ -4231,7 +4231,7 @@
             "neverImported": 0,
             "components": 798,
             "kitColour": 12,
-            "kitPx": 14
+            "kitPx": 10
           }
         },
         {

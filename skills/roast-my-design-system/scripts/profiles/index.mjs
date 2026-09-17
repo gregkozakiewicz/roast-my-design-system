@@ -26,6 +26,7 @@ import tailwind from './tailwind.mjs';
 import mui from './mui.mjs';
 import mantine from './mantine.mjs';
 import chakra from './chakra.mjs';
+import antd from './antd.mjs';
 import { readRegistry, publishesLine, variantsFromDirs, scopeFiles } from './registry.mjs';
 import { readShadcnLint } from './shadcn-lint.mjs';
 export { scopeFiles };
@@ -42,7 +43,10 @@ import product from './product.mjs';
 // A component kit installed from npm (mui) is read after shadcn, so a shadcn
 // repo keeps its reading, and before tailwind: a kit product is judged on
 // the kit's theme, not on a Tailwind theme it may also carry.
-export const PROFILES = [shadcn, mui, mantine, chakra, tailwind, library, product];
+// Kits installed from npm are asked before shadcn: each only claims a repo
+// where it is imported more than any other kit, shadcn's components/ui
+// included (Agenta: Ant Design in 502 files, shadcn in 101, 2026-09-17).
+export const PROFILES = [mui, mantine, chakra, antd, shadcn, tailwind, library, product];
 
 /**
  * Decide the repo's kind from the profiler's facts and what the scan found.

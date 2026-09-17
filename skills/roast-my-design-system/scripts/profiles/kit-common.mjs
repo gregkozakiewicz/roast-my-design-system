@@ -22,14 +22,17 @@ export const KITS = {};
 // belongs to the kit it imports most: Stirling-PDF imports MUI in 85 files
 // and Mantine in 641 (2026-09-17).
 const importCache = new Map();
+const SHADCN_IMPORT_RE = /from\s+['"][@~./\w-]*components\/ui\/[\w-]+['"]/;
 function importCounts(root, codeFiles) {
   const key = `${root}\0${codeFiles.length}`;
   if (importCache.has(key)) return importCache.get(key);
-  const counts = Object.fromEntries(Object.keys(KITS).map((k) => [k, 0]));
+  const counts = Object.fromEntries([...Object.keys(KITS), 'shadcn'].map((k) => [k, 0]));
   for (const f of codeFiles) {
     if (!/\.[jt]sx?$/.test(f)) continue;
     const src = readSafe(join(root, f));
     for (const [k, d] of Object.entries(KITS)) if (d.importRe.test(src)) counts[k] += 1;
+    // a shadcn catalogue is a kit too: components/ui imports
+    if (SHADCN_IMPORT_RE.test(src)) counts.shadcn += 1;
   }
   importCache.set(key, counts);
   return counts;

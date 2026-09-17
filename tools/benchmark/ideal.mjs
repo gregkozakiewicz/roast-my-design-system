@@ -43,9 +43,13 @@ export const IDEAL_2026 = {
 export const IDEAL_BY_KIND = {
   // kit targets: the value at the top of the tidiest third of the kit's slice
   // (19 products each, 2026-09-17, after the fix-loop rounds)
+  antd: {
+    kitColour: { value: 6, note: 'colours written onto Ant Design components per 100 kit files; 6 of the 17 Ant Design products sit at or under this, the median is 15' },
+    kitPx: { value: 7, note: 'spacing written as numbers or pixel strings in style objects on Ant Design components (marginBottom: 16) per 100 kit files, 4px and up; 5 of 17 sit at or under this, the median is 26' },
+  },
   chakra: {
-    kitColour: { value: 3, note: 'colours written onto Chakra components per 100 kit files; 4 of the 14 Chakra products sit at or under this, the median is 6' },
-    kitPx: { value: 4, note: 'spacing written as pixel strings on Chakra components (p="12px") per 100 kit files; numbers are space steps and not counted; 4 of 14 sit at or under this, the median is 11' },
+    kitColour: { value: 3, note: 'colours written onto Chakra components per 100 kit files; 6 of the 15 Chakra products sit at or under this, the median is 7' },
+    kitPx: { value: 5, note: 'spacing written as pixel strings on Chakra components (p="12px") per 100 kit files; numbers are space steps and not counted; 5 of 15 sit at or under this, the median is 14' },
   },
   mantine: {
     kitColour: { value: 1, note: 'colours written onto Mantine components per 100 kit files (palettes, charts, editors and theme fallbacks not counted; a team layer over Mantine counted as Mantine); 7 of the 19 Mantine products sit at or under this, the median is 3' },

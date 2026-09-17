@@ -3300,7 +3300,7 @@
       ]
     },
     "mui": {
-      "builtAt": "2026-09-17T17:17:21.068Z",
+      "builtAt": "2026-09-17T17:22:04.028Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mui; the \"cleaner than\" line on a mui repo reads against these",
       "ideal2026": {
@@ -4264,7 +4264,7 @@
       ]
     },
     "mantine": {
-      "builtAt": "2026-09-17T17:17:31.330Z",
+      "builtAt": "2026-09-17T17:22:14.610Z",
       "repoCount": 19,
       "note": "every repo in the fleet the scanner reads as mantine; the \"cleaner than\" line on a mantine repo reads against these",
       "ideal2026": {
@@ -5228,17 +5228,17 @@
       ]
     },
     "chakra": {
-      "builtAt": "2026-09-17T17:17:34.659Z",
-      "repoCount": 14,
+      "builtAt": "2026-09-17T17:22:52.104Z",
+      "repoCount": 15,
       "note": "every repo in the fleet the scanner reads as chakra; the \"cleaner than\" line on a chakra repo reads against these",
       "ideal2026": {
         "kitColour": {
           "value": 3,
-          "note": "colours written onto Chakra components per 100 kit files; 4 of the 14 Chakra products sit at or under this, the median is 6"
+          "note": "colours written onto Chakra components per 100 kit files; 6 of the 15 Chakra products sit at or under this, the median is 7"
         },
         "kitPx": {
-          "value": 4,
-          "note": "spacing written as pixel strings on Chakra components (p=\"12px\") per 100 kit files; numbers are space steps and not counted; 4 of 14 sit at or under this, the median is 11"
+          "value": 5,
+          "note": "spacing written as pixel strings on Chakra components (p=\"12px\") per 100 kit files; numbers are space steps and not counted; 5 of 15 sit at or under this, the median is 14"
         }
       },
       "stats": {
@@ -5250,6 +5250,7 @@
             27,
             37,
             42,
+            47,
             50,
             60,
             85,
@@ -5259,10 +5260,10 @@
             254,
             271
           ],
-          "p25": 30,
-          "median": 55,
+          "p25": 32,
+          "median": 50,
           "p75": 151,
-          "p90": 231
+          "p90": 223
         },
         "greys": {
           "values": [
@@ -5273,6 +5274,7 @@
             5,
             8,
             10,
+            10,
             12,
             12,
             21,
@@ -5281,9 +5283,9 @@
             45,
             49
           ],
-          "p25": 4,
-          "median": 11,
-          "p75": 37,
+          "p25": 5,
+          "median": 10,
+          "p75": 32,
           "p90": 45
         },
         "spacing": {
@@ -5295,6 +5297,7 @@
             7,
             9,
             19,
+            24,
             25,
             28,
             34,
@@ -5304,8 +5307,8 @@
             86
           ],
           "p25": 6,
-          "median": 22,
-          "p75": 41,
+          "median": 24,
+          "p75": 39,
           "p90": 71
         },
         "typefaces": {
@@ -5322,12 +5325,13 @@
             3,
             3,
             5,
+            5,
             6,
             7
           ],
           "p25": 0,
           "median": 1,
-          "p75": 3,
+          "p75": 4,
           "p90": 6
         },
         "fontSizes": {
@@ -5344,12 +5348,13 @@
             10,
             13,
             17,
+            22,
             31,
             36
           ],
           "p25": 0,
           "median": 2,
-          "p75": 12,
+          "p75": 15,
           "p90": 27
         },
         "radii": {
@@ -5367,12 +5372,13 @@
             11,
             14,
             16,
+            16,
             22
           ],
           "p25": 1,
           "median": 2,
-          "p75": 11,
-          "p90": 15
+          "p75": 13,
+          "p90": 16
         },
         "shadows": {
           "values": [
@@ -5383,6 +5389,7 @@
             0,
             0,
             0,
+            1,
             2,
             2,
             3,
@@ -5393,8 +5400,8 @@
           ],
           "p25": 0,
           "median": 1,
-          "p75": 5,
-          "p90": 12
+          "p75": 4,
+          "p90": 11
         },
         "exactDuplicates": {
           "values": [
@@ -5411,12 +5418,13 @@
             7,
             8,
             10,
+            18,
             18
           ],
           "p25": 0,
           "median": 3,
-          "p75": 7,
-          "p90": 9
+          "p75": 8,
+          "p90": 15
         },
         "inlineStyles": {
           "values": [
@@ -5433,12 +5441,13 @@
             57,
             68,
             128,
+            136,
             492
           ],
           "p25": 9,
           "median": 19,
-          "p75": 54,
-          "p90": 110
+          "p75": 63,
+          "p90": 133
         },
         "arbitrary": {
           "values": [
@@ -5455,12 +5464,13 @@
             0,
             2,
             5,
+            11,
             212
           ],
           "p25": 0,
           "median": 0,
-          "p75": 0,
-          "p90": 4
+          "p75": 1,
+          "p90": 9
         },
         "nearPairs": {
           "values": [
@@ -5474,6 +5484,7 @@
             2,
             4,
             5,
+            5,
             7,
             21,
             25,
@@ -5481,8 +5492,8 @@
           ],
           "p25": 1,
           "median": 2,
-          "p75": 7,
-          "p90": 24
+          "p75": 6,
+          "p90": 23
         },
         "important": {
           "values": [
@@ -5492,6 +5503,7 @@
             0,
             0,
             1,
+            3,
             4,
             8,
             10,
@@ -5502,9 +5514,9 @@
             77
           ],
           "p25": 0,
-          "median": 6,
-          "p75": 28,
-          "p90": 45
+          "median": 4,
+          "p75": 26,
+          "p90": 44
         },
         "neverImported": {
           "values": [
@@ -5521,12 +5533,13 @@
             0,
             0,
             0,
+            5,
             11
           ],
           "p25": 0,
           "median": 0,
           "p75": 0,
-          "p90": 0
+          "p90": 3
         },
         "components": {
           "values": [
@@ -5540,15 +5553,16 @@
             177,
             303,
             330,
+            382,
             385,
             391,
             550,
             732
           ],
-          "p25": 124,
-          "median": 165,
-          "p75": 371,
-          "p90": 502
+          "p25": 127,
+          "median": 177,
+          "p75": 384,
+          "p90": 486
         },
         "kitColour": {
           "values": [
@@ -5561,6 +5575,7 @@
             4,
             7,
             9,
+            9,
             11,
             12,
             18,
@@ -5568,9 +5583,9 @@
             81
           ],
           "p25": 3,
-          "median": 6,
+          "median": 7,
           "p75": 12,
-          "p90": 50
+          "p90": 46
         },
         "kitPx": {
           "values": [
@@ -5583,16 +5598,17 @@
             8,
             14,
             20,
+            22,
             40,
             43,
             73,
             132,
             174
           ],
-          "p25": 4,
-          "median": 11,
+          "p25": 5,
+          "median": 14,
           "p75": 42,
-          "p90": 114
+          "p90": 108
         }
       },
       "repos": [
@@ -5948,6 +5964,33 @@
           }
         },
         {
+          "repo": "proofcarryingdata/zupass",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 1112,
+          "ownFiles": 348,
+          "metrics": {
+            "colors": 47,
+            "greys": 10,
+            "spacing": 24,
+            "typefaces": 5,
+            "fontSizes": 22,
+            "radii": 16,
+            "shadows": 1,
+            "exactDuplicates": 18,
+            "inlineStyles": 136,
+            "arbitrary": 11,
+            "nearPairs": 5,
+            "important": 3,
+            "neverImported": 5,
+            "components": 382,
+            "kitColour": 9,
+            "kitPx": 22
+          }
+        },
+        {
           "repo": "Left-on-Read/leftonread",
           "confidence": "high",
           "style": null,
@@ -5972,6 +6015,884 @@
             "components": 100,
             "kitColour": 9,
             "kitPx": 43
+          }
+        }
+      ]
+    },
+    "antd": {
+      "builtAt": "2026-09-17T17:22:48.602Z",
+      "repoCount": 17,
+      "note": "every repo in the fleet the scanner reads as antd; the \"cleaner than\" line on a antd repo reads against these",
+      "ideal2026": {
+        "kitColour": {
+          "value": 6,
+          "note": "colours written onto Ant Design components per 100 kit files; 6 of the 17 Ant Design products sit at or under this, the median is 15"
+        },
+        "kitPx": {
+          "value": 7,
+          "note": "spacing written as numbers or pixel strings in style objects on Ant Design components (marginBottom: 16) per 100 kit files, 4px and up; 5 of 17 sit at or under this, the median is 26"
+        }
+      },
+      "stats": {
+        "colors": {
+          "values": [
+            25,
+            43,
+            95,
+            95,
+            96,
+            195,
+            217,
+            315,
+            355,
+            422,
+            465,
+            496,
+            523,
+            623,
+            657,
+            999,
+            1897
+          ],
+          "p25": 96,
+          "median": 355,
+          "p75": 523,
+          "p90": 794
+        },
+        "greys": {
+          "values": [
+            7,
+            12,
+            17,
+            17,
+            38,
+            40,
+            41,
+            46,
+            49,
+            64,
+            69,
+            71,
+            75,
+            105,
+            118,
+            181,
+            233
+          ],
+          "p25": 38,
+          "median": 49,
+          "p75": 75,
+          "p90": 143
+        },
+        "spacing": {
+          "values": [
+            11,
+            14,
+            31,
+            34,
+            40,
+            89,
+            94,
+            99,
+            106,
+            106,
+            120,
+            130,
+            150,
+            153,
+            172,
+            176,
+            217
+          ],
+          "p25": 40,
+          "median": 106,
+          "p75": 150,
+          "p90": 174
+        },
+        "typefaces": {
+          "values": [
+            0,
+            0,
+            1,
+            1,
+            2,
+            2,
+            3,
+            7,
+            8,
+            9,
+            10,
+            12,
+            13,
+            14,
+            14,
+            23,
+            24
+          ],
+          "p25": 2,
+          "median": 8,
+          "p75": 13,
+          "p90": 18
+        },
+        "fontSizes": {
+          "values": [
+            1,
+            4,
+            6,
+            10,
+            11,
+            19,
+            28,
+            34,
+            40,
+            42,
+            43,
+            43,
+            54,
+            66,
+            81,
+            125,
+            206
+          ],
+          "p25": 11,
+          "median": 40,
+          "p75": 54,
+          "p90": 99
+        },
+        "radii": {
+          "values": [
+            0,
+            0,
+            6,
+            7,
+            14,
+            15,
+            15,
+            16,
+            21,
+            28,
+            28,
+            31,
+            59,
+            59,
+            64,
+            77,
+            96
+          ],
+          "p25": 14,
+          "median": 21,
+          "p75": 59,
+          "p90": 69
+        },
+        "shadows": {
+          "values": [
+            0,
+            1,
+            5,
+            6,
+            10,
+            12,
+            17,
+            18,
+            20,
+            27,
+            28,
+            54,
+            69,
+            83,
+            98,
+            119,
+            129
+          ],
+          "p25": 10,
+          "median": 20,
+          "p75": 69,
+          "p90": 106
+        },
+        "exactDuplicates": {
+          "values": [
+            0,
+            2,
+            3,
+            4,
+            8,
+            9,
+            10,
+            12,
+            29,
+            38,
+            45,
+            56,
+            58,
+            59,
+            69,
+            86,
+            227
+          ],
+          "p25": 8,
+          "median": 29,
+          "p75": 58,
+          "p90": 76
+        },
+        "inlineStyles": {
+          "values": [
+            39,
+            50,
+            51,
+            89,
+            135,
+            166,
+            180,
+            185,
+            234,
+            250,
+            267,
+            403,
+            514,
+            1143,
+            1395,
+            1832,
+            2504
+          ],
+          "p25": 135,
+          "median": 234,
+          "p75": 514,
+          "p90": 1570
+        },
+        "arbitrary": {
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            37,
+            161,
+            493,
+            524,
+            1259
+          ],
+          "p25": 0,
+          "median": 0,
+          "p75": 37,
+          "p90": 505
+        },
+        "nearPairs": {
+          "values": [
+            1,
+            5,
+            5,
+            6,
+            18,
+            20,
+            23,
+            26,
+            35,
+            43,
+            52,
+            53,
+            111,
+            128,
+            132,
+            150,
+            183
+          ],
+          "p25": 18,
+          "median": 35,
+          "p75": 111,
+          "p90": 139
+        },
+        "important": {
+          "values": [
+            0,
+            2,
+            8,
+            21,
+            22,
+            35,
+            38,
+            60,
+            82,
+            163,
+            178,
+            195,
+            293,
+            387,
+            1131,
+            1695,
+            3785
+          ],
+          "p25": 22,
+          "median": 82,
+          "p75": 293,
+          "p90": 1357
+        },
+        "neverImported": {
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p25": 0,
+          "median": 0,
+          "p75": 0,
+          "p90": 0
+        },
+        "components": {
+          "values": [
+            71,
+            92,
+            122,
+            160,
+            170,
+            171,
+            222,
+            227,
+            384,
+            487,
+            697,
+            829,
+            952,
+            1530,
+            1608,
+            2020,
+            3668
+          ],
+          "p25": 170,
+          "median": 384,
+          "p75": 952,
+          "p90": 1773
+        },
+        "kitColour": {
+          "values": [
+            0,
+            2,
+            3,
+            3,
+            6,
+            6,
+            11,
+            11,
+            15,
+            16,
+            19,
+            23,
+            30,
+            31,
+            33,
+            54,
+            97
+          ],
+          "p25": 6,
+          "median": 15,
+          "p75": 30,
+          "p90": 41
+        },
+        "kitPx": {
+          "values": [
+            1,
+            5,
+            5,
+            7,
+            7,
+            16,
+            16,
+            18,
+            26,
+            29,
+            35,
+            36,
+            66,
+            67,
+            129,
+            137,
+            889
+          ],
+          "p25": 7,
+          "median": 26,
+          "p75": 66,
+          "p90": 132
+        }
+      },
+      "repos": [
+        {
+          "repo": "apache/superset",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 2427,
+          "ownFiles": 940,
+          "metrics": {
+            "colors": 623,
+            "greys": 40,
+            "spacing": 31,
+            "typefaces": 0,
+            "fontSizes": 4,
+            "radii": 7,
+            "shadows": 12,
+            "exactDuplicates": 29,
+            "inlineStyles": 89,
+            "arbitrary": 0,
+            "nearPairs": 26,
+            "important": 35,
+            "neverImported": 0,
+            "components": 829,
+            "kitColour": 0,
+            "kitPx": 1
+          }
+        },
+        {
+          "repo": "SigNoz/signoz",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 3322,
+          "ownFiles": 1428,
+          "metrics": {
+            "colors": 422,
+            "greys": 49,
+            "spacing": 130,
+            "typefaces": 10,
+            "fontSizes": 34,
+            "radii": 59,
+            "shadows": 69,
+            "exactDuplicates": 38,
+            "inlineStyles": 250,
+            "arbitrary": 0,
+            "nearPairs": 35,
+            "important": 1131,
+            "neverImported": 0,
+            "components": 952,
+            "kitColour": 2,
+            "kitPx": 7
+          }
+        },
+        {
+          "repo": "getredash/redash",
+          "confidence": "medium",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 467,
+          "ownFiles": 270,
+          "metrics": {
+            "colors": 217,
+            "greys": 64,
+            "spacing": 89,
+            "typefaces": 9,
+            "fontSizes": 43,
+            "radii": 21,
+            "shadows": 28,
+            "exactDuplicates": 10,
+            "inlineStyles": 39,
+            "arbitrary": 0,
+            "nearPairs": 53,
+            "important": 178,
+            "neverImported": 0,
+            "components": 222,
+            "kitColour": 3,
+            "kitPx": 5
+          }
+        },
+        {
+          "repo": "YMFE/yapi",
+          "confidence": "medium",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 227,
+          "ownFiles": 0,
+          "metrics": {
+            "colors": 523,
+            "greys": 75,
+            "spacing": 172,
+            "typefaces": 14,
+            "fontSizes": 54,
+            "radii": 28,
+            "shadows": 54,
+            "exactDuplicates": 3,
+            "inlineStyles": 180,
+            "arbitrary": 0,
+            "nearPairs": 128,
+            "important": 60,
+            "neverImported": 0,
+            "components": 92,
+            "kitColour": 23,
+            "kitPx": 67
+          }
+        },
+        {
+          "repo": "nocobase/nocobase",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 7989,
+          "ownFiles": 2884,
+          "metrics": {
+            "colors": 315,
+            "greys": 46,
+            "spacing": 120,
+            "typefaces": 2,
+            "fontSizes": 19,
+            "radii": 15,
+            "shadows": 10,
+            "exactDuplicates": 227,
+            "inlineStyles": 1832,
+            "arbitrary": 0,
+            "nearPairs": 23,
+            "important": 163,
+            "neverImported": 0,
+            "components": 2020,
+            "kitColour": 15,
+            "kitPx": 35
+          }
+        },
+        {
+          "repo": "cube-js/cube",
+          "confidence": "medium",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 905,
+          "ownFiles": 188,
+          "metrics": {
+            "colors": 25,
+            "greys": 7,
+            "spacing": 14,
+            "typefaces": 1,
+            "fontSizes": 1,
+            "radii": 0,
+            "shadows": 1,
+            "exactDuplicates": 8,
+            "inlineStyles": 135,
+            "arbitrary": 0,
+            "nearPairs": 5,
+            "important": 2,
+            "neverImported": 0,
+            "components": 160,
+            "kitColour": 33,
+            "kitPx": 66
+          }
+        },
+        {
+          "repo": "eosphoros-ai/DB-GPT",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 804,
+          "ownFiles": 275,
+          "metrics": {
+            "colors": 1897,
+            "greys": 233,
+            "spacing": 150,
+            "typefaces": 23,
+            "fontSizes": 206,
+            "radii": 64,
+            "shadows": 83,
+            "exactDuplicates": 9,
+            "inlineStyles": 166,
+            "arbitrary": 524,
+            "nearPairs": 183,
+            "important": 3785,
+            "neverImported": 0,
+            "components": 227,
+            "kitColour": 54,
+            "kitPx": 7
+          }
+        },
+        {
+          "repo": "casdoor/casdoor",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 631,
+          "ownFiles": 234,
+          "metrics": {
+            "colors": 355,
+            "greys": 71,
+            "spacing": 106,
+            "typefaces": 14,
+            "fontSizes": 42,
+            "radii": 28,
+            "shadows": 20,
+            "exactDuplicates": 45,
+            "inlineStyles": 2504,
+            "arbitrary": 161,
+            "nearPairs": 52,
+            "important": 38,
+            "neverImported": 0,
+            "components": 487,
+            "kitColour": 30,
+            "kitPx": 889
+          }
+        },
+        {
+          "repo": "openreplay/openreplay",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 2609,
+          "ownFiles": 1335,
+          "metrics": {
+            "colors": 496,
+            "greys": 105,
+            "spacing": 217,
+            "typefaces": 8,
+            "fontSizes": 81,
+            "radii": 96,
+            "shadows": 98,
+            "exactDuplicates": 69,
+            "inlineStyles": 514,
+            "arbitrary": 37,
+            "nearPairs": 132,
+            "important": 1695,
+            "neverImported": 0,
+            "components": 1530,
+            "kitColour": 16,
+            "kitPx": 5
+          }
+        },
+        {
+          "repo": "plasmicapp/plasmic",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 4599,
+          "ownFiles": 1817,
+          "metrics": {
+            "colors": 999,
+            "greys": 181,
+            "spacing": 153,
+            "typefaces": 13,
+            "fontSizes": 40,
+            "radii": 77,
+            "shadows": 129,
+            "exactDuplicates": 86,
+            "inlineStyles": 403,
+            "arbitrary": 0,
+            "nearPairs": 150,
+            "important": 293,
+            "neverImported": 0,
+            "components": 3668,
+            "kitColour": 6,
+            "kitPx": 16
+          }
+        },
+        {
+          "repo": "jaegertracing/jaeger-ui",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 420,
+          "ownFiles": 161,
+          "metrics": {
+            "colors": 96,
+            "greys": 12,
+            "spacing": 94,
+            "typefaces": 1,
+            "fontSizes": 43,
+            "radii": 14,
+            "shadows": 18,
+            "exactDuplicates": 2,
+            "inlineStyles": 51,
+            "arbitrary": 0,
+            "nearPairs": 5,
+            "important": 21,
+            "neverImported": 0,
+            "components": 170,
+            "kitColour": 19,
+            "kitPx": 18
+          }
+        },
+        {
+          "repo": "apache/devlake",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 320,
+          "ownFiles": 156,
+          "metrics": {
+            "colors": 43,
+            "greys": 17,
+            "spacing": 11,
+            "typefaces": 0,
+            "fontSizes": 6,
+            "radii": 0,
+            "shadows": 0,
+            "exactDuplicates": 4,
+            "inlineStyles": 267,
+            "arbitrary": 0,
+            "nearPairs": 1,
+            "important": 0,
+            "neverImported": 0,
+            "components": 122,
+            "kitColour": 3,
+            "kitPx": 137
+          }
+        },
+        {
+          "repo": "pingcap/tidb-dashboard",
+          "confidence": "medium",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 964,
+          "ownFiles": 351,
+          "metrics": {
+            "colors": 95,
+            "greys": 41,
+            "spacing": 34,
+            "typefaces": 2,
+            "fontSizes": 11,
+            "radii": 6,
+            "shadows": 6,
+            "exactDuplicates": 12,
+            "inlineStyles": 185,
+            "arbitrary": 0,
+            "nearPairs": 18,
+            "important": 8,
+            "neverImported": 0,
+            "components": 171,
+            "kitColour": 11,
+            "kitPx": 36
+          }
+        },
+        {
+          "repo": "Agenta-AI/agenta",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 5363,
+          "ownFiles": 1619,
+          "metrics": {
+            "colors": 465,
+            "greys": 118,
+            "spacing": 99,
+            "typefaces": 7,
+            "fontSizes": 125,
+            "radii": 31,
+            "shadows": 27,
+            "exactDuplicates": 59,
+            "inlineStyles": 234,
+            "arbitrary": 1259,
+            "nearPairs": 43,
+            "important": 195,
+            "neverImported": 0,
+            "components": 1608,
+            "kitColour": 6,
+            "kitPx": 16
+          }
+        },
+        {
+          "repo": "lowcoder-org/lowcoder",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 1498,
+          "ownFiles": 992,
+          "metrics": {
+            "colors": 195,
+            "greys": 38,
+            "spacing": 106,
+            "typefaces": 3,
+            "fontSizes": 10,
+            "radii": 16,
+            "shadows": 5,
+            "exactDuplicates": 56,
+            "inlineStyles": 1143,
+            "arbitrary": 0,
+            "nearPairs": 20,
+            "important": 82,
+            "neverImported": 0,
+            "components": 697,
+            "kitColour": 97,
+            "kitPx": 129
+          }
+        },
+        {
+          "repo": "n9e/fe",
+          "confidence": "medium",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 2939,
+          "ownFiles": 1262,
+          "metrics": {
+            "colors": 657,
+            "greys": 69,
+            "spacing": 176,
+            "typefaces": 12,
+            "fontSizes": 66,
+            "radii": 59,
+            "shadows": 119,
+            "exactDuplicates": 58,
+            "inlineStyles": 1395,
+            "arbitrary": 493,
+            "nearPairs": 111,
+            "important": 387,
+            "neverImported": 0,
+            "components": 384,
+            "kitColour": 11,
+            "kitPx": 29
+          }
+        },
+        {
+          "repo": "salgum1114/react-design-editor",
+          "confidence": "high",
+          "style": null,
+          "baseColor": null,
+          "tailwind": null,
+          "codeFiles": 218,
+          "ownFiles": 95,
+          "metrics": {
+            "colors": 95,
+            "greys": 17,
+            "spacing": 40,
+            "typefaces": 24,
+            "fontSizes": 28,
+            "radii": 15,
+            "shadows": 17,
+            "exactDuplicates": 0,
+            "inlineStyles": 50,
+            "arbitrary": 0,
+            "nearPairs": 6,
+            "important": 22,
+            "neverImported": 0,
+            "components": 71,
+            "kitColour": 31,
+            "kitPx": 26
           }
         }
       ]

@@ -32,6 +32,14 @@ export const ANTD = {
   // paddingXXS is 4px; nothing smaller has a token
   pxMin: 4,
   advice: {
+    // plain text for the MCP server: what to write instead of a pixel size
+    step: (k, px) => {
+      const tokens = { 4: 'XXS', 8: 'XS', 12: 'SM', 16: '', 20: 'MD', 24: 'LG', 32: 'XL', 48: 'XXL' };
+      const t = tokens[px];
+      return t !== undefined
+        ? `${px}px is the spacing token margin${t} / padding${t} on Ant Design's default theme: read it with const { token } = theme.useToken() and write token.margin${t}, not ${px}.`
+        : `${px}px matches no Ant Design spacing token (XXS 4, XS 8, SM 12, base 16, MD 20, LG 24, XL 32, XXL 48). A bare number in a style object is pixels, off the theme; if the design needs it exactly, keep it with a comment.`;
+    },
     themeCall: 'a theme object on ConfigProvider',
     refExamples: '<code>token.colorTextSecondary</code> and <code>token.margin</code> from <code>theme.useToken()</code>',
     colourHow: 'On an Ant Design component, read the token: <code>const { token } = theme.useToken()</code>, then <code>color: token.colorTextSecondary</code>, or <code>var(--ant-color-text-secondary)</code> in a stylesheet when CSS variables are on. A brand colour belongs in <code>ConfigProvider</code>\'s <code>token.colorPrimary</code>.',

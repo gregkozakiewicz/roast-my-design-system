@@ -147,6 +147,8 @@ The report and the rules file describe the repo as it was at scan time. `--mcp` 
 
 The loop: context before building, find while building, validate before saving, review before finishing.
 
+The server reads the repo the way the report does. On a product built on MUI, Mantine, Chakra UI or Ant Design, the context names the theme file and the kit's own way of reading it, `roast_find_token` answers in spacing steps (`12px` is `p: 3` on a 4px MUI theme), and `roast_validate` and `roast_review` flag a colour or a pixel size written onto a kit component where the theme has a value. On a Tailwind theme they flag a palette class such as `text-gray-500` where the theme names a colour of that kind.
+
 When the goal is fixing the system rather than building on it, the `roast-fix` prompt serves the top Where-to-start move from a fresh scan. It is a ready-made fix prompt, byte-identical to the report's copy buttons. Fix it, ask again, and the next move has risen to the top: the scan is the progress bar. Pass `move: 2` to jump the queue.
 
 To use it in Claude Code, type `/mcp__roast__roast-fix` in the chat. MCP prompts appear as slash commands, named after whatever you registered the server as, and the `/` autocomplete menu lists them too. Add the move number to jump the queue: `/mcp__roast__roast-fix 2`. Other clients list server prompts in their own prompt picker; wherever `roast-build-ui` and `roast-review-ui` show up, `roast-fix` sits beside them.

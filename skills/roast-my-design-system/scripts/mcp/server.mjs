@@ -31,7 +31,7 @@ const PROTOCOL = '2025-06-18';
 const TOOLS = [
   {
     name: 'roast_get_context',
-    description: 'Design-system context before writing UI in this repo: tokens, canonical components, duplicates, spacing and type rules, from a real scan. Optional path ("packages/ui") narrows the slice.',
+    description: 'Design-system context before writing UI in this repo: tokens or the kit theme (MUI, Mantine, Chakra, Ant Design, shadcn, a Tailwind theme), canonical components, duplicates, spacing and type rules, from a real scan. Optional path ("packages/ui") narrows the slice.',
     inputSchema: { type: 'object', properties: { path: { type: 'string', description: 'Repo-relative folder (optional)' } } },
   },
   {
@@ -41,12 +41,12 @@ const TOOLS = [
   },
   {
     name: 'roast_find_token',
-    description: 'Snap a raw value (#111111, 13px) to this repo\'s nearest token or scale step. Says so when no scale exists.',
+    description: 'Snap a raw value (#111111, 13px) to this repo\'s nearest token, theme colour or spacing step, in the kit\'s own terms on a kit repo. Says so when no scale exists.',
     inputSchema: { type: 'object', properties: { value: { type: 'string', description: 'Colour or length value' } }, required: ['value'] },
   },
   {
     name: 'roast_validate',
-    description: 'Check code before saving: hardcoded colours, near-token twins, off-scale spacing, arbitrary brackets, inline styles, !important, duplicate components. Findings name the fix.',
+    description: 'Check code before saving: hardcoded colours, near-token twins, off-scale spacing, arbitrary brackets, inline styles, !important, duplicate components; on a kit repo, colours and pixel sizes written onto kit components where the theme has a value; on a Tailwind theme, palette classes. Findings name the fix.',
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to check' }, file: { type: 'string', description: 'Intended file path (optional)' } }, required: ['code'] },
   },
   {

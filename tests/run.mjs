@@ -695,6 +695,51 @@ export function GET() { return new ImageResponse(<div style={{ background: '#c0f
 }
 
 // the server end to end: initialize → tools/list → one call, over real stdio
+// ---------- the kits, through the MCP door ----------
+// 8.0 taught the report to read MUI, Mantine, Chakra, Ant Design and a
+// Tailwind theme; the MCP server was not taught the same and told an MUI
+// repo it had no tokens (Greg caught it from the folder dates, 2026-09-18).
+// Every profile the report reads, the server must read too.
+console.log('kits in the mcp:');
+{
+  const { validateContent } = await import(pathToFileURL(join(ENGINE, 'mcp/engine.mjs')).href);
+  const mk = loadKnowledge(join(FIXTURES, 'muikit'));
+  const ctx = mcpTools.getContext(mk, {});
+  ctx.includes('KIT: MUI') && ctx.includes('src/theme/theme.ts') ? ok('context names the kit and its theme file')
+    : bad('kit context', ctx.split('\n')[1]);
+  !ctx.includes('TOKENS: none defined') ? ok('a kit repo is never told it has no tokens') : bad('kit tokens', ctx.split('\n')[1]);
+  const inTheme = mcpTools.findToken(mk, { value: '#667085' });
+  inTheme.includes('MUI theme') && inTheme.includes('sx') ? ok('find_token reads a theme colour through the theme') : bad('kit find_token colour', inTheme);
+  const step = mcpTools.findToken(mk, { value: '12px' });
+  step.includes('p: 3') ? ok('find_token turns 12px into a spacing step on a 4px theme') : bad('kit find_token step', step);
+  const between = mcpTools.findToken(mk, { value: '13px' });
+  between.includes('between steps') ? ok('find_token says when a size is between steps') : bad('kit find_token between', between);
+  const kitCode = `import Box from '@mui/material/Box';\nexport const X = () => <Box sx={{ color: '#667085', p: '12px', bgcolor: '#ff0000' }} />;`;
+  const { findings } = validateContent({ text: kitCode, file: 'src/components/New.tsx' }, mk);
+  const rules = findings.map((f) => f.rule);
+  rules.filter((r) => r === 'kit-colour').length === 2 ? ok('a colour on a kit component is a kit finding') : bad('kit-colour', JSON.stringify(rules));
+  rules.includes('kit-px') ? ok('a pixel size on a kit component is a kit finding') : bad('kit-px', JSON.stringify(rules));
+  !rules.includes('hardcoded-colour') && !rules.includes('off-scale-spacing') ? ok('the kit finding replaces the generic one, not doubles it') : bad('kit double report', JSON.stringify(rules));
+  findings.find((f) => f.rule === 'kit-colour' && f.message.includes('#667085'))?.message.includes('already holds it') ? ok('a theme colour is told the theme already holds it') : bad('kit theme colour message', JSON.stringify(findings[0]));
+  findings.find((f) => f.rule === 'kit-colour' && f.message.includes('#ff0000'))?.fix.startsWith('Add it to the theme once') ? ok('a colour the theme lacks is told to add it once') : bad('kit new colour fix', JSON.stringify(findings));
+  const clean = mcpTools.validate(mk, { code: `import Box from '@mui/material/Box';\nexport const X = () => <Box sx={{ color: 'text.secondary', p: 3 }} />;` });
+  clean.startsWith('No measured violations') && clean.includes('kit components') ? ok('a kit file that reads the theme is clean, and the kit check is listed') : bad('kit clean', clean.slice(0, 120));
+  const comment = validateContent({ text: `import Box from '@mui/material/Box';\n// #ffffff\nexport const X = () => <Box sx={{ color: theme.palette.x || '#fff' }} />;`, file: 'src/a.tsx' }, mk);
+  comment.findings.length === 0 ? ok('a comment and a fallback are not kit paint') : bad('kit comment/fallback', JSON.stringify(comment.findings));
+  const plain = validateContent({ text: `export const X = () => <div style={{ color: '#ff0000' }} />;`, file: 'src/b.tsx' }, mk);
+  !plain.findings.some((f) => f.rule.startsWith('kit-')) ? ok('a file that does not import the kit gets no kit finding') : bad('kit scope', JSON.stringify(plain.findings));
+
+  const tk = loadKnowledge(join(FIXTURES, 'tailwindtheme'));
+  const tctx = mcpTools.getContext(tk, {});
+  tctx.includes('TAILWIND THEME: app/globals.css') && tctx.includes('blue-500 is retuned') ? ok('context names the Tailwind theme and its retuned names') : bad('tailwind context', tctx);
+  const pal = validateContent({ text: `export const X = () => <span className="text-emerald-600 bg-blue-500 hover:text-gray-500">x</span>;` }, tk);
+  const cls = pal.findings.filter((f) => f.rule === 'palette-class').map((f) => f.message.split(' ')[2]);
+  JSON.stringify(cls) === JSON.stringify(['text-emerald-600', 'hover:text-gray-500']) ? ok('palette classes are flagged, a retuned name is not') : bad('palette-class', JSON.stringify(pal.findings));
+  pal.findings[0].fix.includes('text-ink') ? ok('the fix names a theme class that fits the utility') : bad('palette fix', pal.findings[0].fix);
+  const own = mcpTools.validate(tk, { code: `export const X = () => <span className="text-ink bg-surface border-edge">x</span>;` });
+  own.startsWith('No measured violations') && own.includes('palette classes') ? ok('theme names as classes are clean, and the palette check is listed') : bad('tailwind clean', own.slice(0, 120));
+}
+
 console.log('mcp server:');
 {
   const msgs = [

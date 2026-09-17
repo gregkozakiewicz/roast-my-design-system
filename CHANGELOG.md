@@ -2,6 +2,42 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.1.0 — 2026-09-18
+
+The MCP server learns what the report learned in 7.10 and 8.0: the four
+component kits and the Tailwind theme.
+
+- **The server reads a kit repo as a kit repo.** On a product built on MUI,
+  Mantine, Chakra UI or Ant Design, `roast_get_context` used to say the repo
+  had no tokens. It now names the kit, the theme file, how much of the
+  product imports the kit and how often the theme is read, and states the
+  rule in the kit's own terms (sx paths on MUI, `p="md"` on Mantine,
+  `p={3}` on Chakra, `theme.useToken()` on Ant Design).
+- **`roast_find_token` answers in the kit's terms.** A colour that is in the
+  theme is pointed back at the theme. A length becomes a spacing step where
+  the theme has one (`12px` is `p: 3` on a 4px MUI theme, `p="sm"` on
+  Mantine, `token.marginSM` on Ant Design), and says when a size falls
+  between steps.
+- **`roast_validate`, `roast_review` and `--check` run the kit check.** A
+  colour or a pixel size written onto a kit component is a finding in the
+  kit's words, with the theme file named, and replaces the generic finding
+  for the same value rather than doubling it. What the report does not count
+  (a colour in a comment, a fallback after a theme read, a compare, SVG
+  paint, a colour table, a chart file) is not counted here either: the
+  server and the report share one judge.
+- **A Tailwind theme gets the palette check.** On a repo that names its
+  colours in an `@theme` block, the context says so and the checks flag a
+  palette class such as `text-gray-500` where the theme has a colour of that
+  kind. A Tailwind name the theme retunes is the theme, not a stray.
+- **The context keeps its closing line on big repos.** When the context runs
+  over its budget it now shortens the component lists first, which the find
+  tools cover, instead of cutting the "validate, then review" instruction off
+  the end.
+- **`roast_review` finds the diff when the folder is spelled in a different
+  case** from the one on disk, on a case-insensitive disk (macOS).
+- Every clean result lists the extra check it ran, so a clean result on an
+  MUI repo says the kit check happened.
+
 ## 8.0.1 — 2026-09-18
 
 Copy only. No change to the scan, the score or the report.

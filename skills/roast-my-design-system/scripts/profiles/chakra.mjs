@@ -25,6 +25,12 @@ export const CHAKRA = {
   spacingCustomRe: /\b(?:space|spacing)\s*:\s*\{/,
   refRe: /['"`](?:gray|red|orange|yellow|green|teal|blue|cyan|purple|pink|brand|primary|secondary|accent|whiteAlpha|blackAlpha)\.\d{2,3}['"`]|['"`](?:fg|bg|border|colorPalette)(?:\.[a-z]+)?['"`]|\buseColorModeValue\(|\btoken\(\s*['"`]|var\(--chakra-/g,
   advice: {
+    // plain text for the MCP server: what to write instead of a pixel size
+    step: (k, px) => {
+      if (k.spacingUnit === 'custom') return "This theme replaces Chakra's space scale, so a number is not the default step size. Check the theme's space tokens before converting.";
+      if (px % 4 === 0) return `${px}px is space step ${px / 4} on Chakra's default scale: write p={${px / 4}} (or gap={${px / 4}}), not p="${px}px".`;
+      return `${px}px is between space steps ${Math.floor(px / 4)} (${Math.floor(px / 4) * 4}px) and ${Math.floor(px / 4) + 1} (${(Math.floor(px / 4) + 1) * 4}px). If the design needs ${px}px exactly, keep it with a comment; otherwise use the nearest step as a number.`;
+    },
     themeCall: 'extendTheme() (v2) or createSystem() (v3)',
     refExamples: '<code>color="fg.muted"</code>, <code>bg="gray.100"</code> and <code>p={3}</code>',
     colourHow: 'On a Chakra component, point at it: <code>color="fg.muted"</code> or <code>bg="gray.100"</code> as a prop, <code>token("colors.gray.100")</code> in code. A colour that changes with the mode is a semantic token (v3) or <code>useColorModeValue</code> (v2), never a ternary on the mode.',

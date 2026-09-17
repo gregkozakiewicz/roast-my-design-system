@@ -99,6 +99,48 @@ export function colourTable(src, literals) {
 const SPACING_NUM_RE = /(?:^|[{,\n])\s*spacing\s*:\s*(\d+(?:\.\d+)?)\s*(?=[,}\n])/g;
 const SPACING_CUSTOM_RE = /\bspacing(?:Config)?\s*:\s*(?:\([^)]*\)\s*=>|\w+\s*=>|function\b|\[|\w+\()/;
 
+// Blank a match in place so every index still points at the source text:
+// the MCP needs a line number, the count does not.
+const blank = (s, re) => s.replace(re, (m) => ' '.repeat(m.length));
+const blankPalettes = (code) => code.replace(ARRAY_RE, (a) => ((a.match(QUOTED_COLOUR_RE) ?? []).length >= 8 ? ' '.repeat(a.length) : a));
+
+/** The import test a kit's files pass, the team's own layer included. */
+export function kitImportRe(def, layers = []) {
+  return layers.length
+    ? new RegExp(`${def.importRe.source}|from\s+['"](?:[^'"]*\/)?(?:${layers.map(escapeRe).join('|')})(?:['"]|\/)`)
+    : def.importRe;
+}
+
+/**
+ * One file's kit paint, with positions: the colours and pixel sizes written
+ * onto the kit's components, judged by the same rules as the count above.
+ * The MCP validate and review read this so the server and the report never
+ * disagree about a line. Returns null when the file is not a kit file or is
+ * the theme itself; { exempt } when the file is not judged, and why.
+ */
+export function kitPaintInSource(src, def, { file = null, layers = [] } = {}) {
+  const importRe = kitImportRe(def, layers);
+  const code = src.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length)).replace(/(^|[^:'"`\\])\/\/[^\n]*/g, (m, pre) => pre + ' '.repeat(m.length - pre.length));
+  if (!importRe.test(code)) return null;
+  if (file && SKIP_PATH_RE.test(file)) return null;
+  const isTheme = def.themeRe.test(code) && (def.themeImportRe ?? def.importRe).test(code);
+  if (isTheme || (file && THEME_NAME_RE.test(file))) return null;
+  const cleaned = blankPalettes(blank(blank(blank(blank(code, FALLBACK_RE), COMPARE_RE), ARTWORK_ATTR_RE), SET_ATTRIBUTE_RE));
+  const colours = [...cleaned.matchAll(COLOUR_RE)]
+    .map((m) => ({ value: m[2].toLowerCase().replace(/\s+/g, ''), index: m.index }))
+    .filter((c) => !/,\s*0(?:\.0+)?\)$/.test(c.value) && c.value !== 'transparent');
+  const why = exemptReason(file, src)
+    ?? (colourTable(code, colours.length) ? 'the file is a colour table, data rather than styling' : null)
+    ?? (colours.length && RENDERER_IMPORT_RE.test(code) ? 'the file drives a chart or a map, so its colours are the picture' : null);
+  if (why) return { exempt: why, colours: [], px: [] };
+  const pxMin = def.pxMin ?? 0;
+  const px = [
+    ...[...code.matchAll(PX_RE)].map((m) => ({ value: `${m[1]}: ${m[3]}`, index: m.index })),
+    ...(def.pxPropRes ?? []).flatMap((re) => [...code.matchAll(re)].map((m) => ({ value: `${m[1]}: ${m[2]}px`, index: m.index }))),
+  ].filter((h) => !/: (0|1)px$/.test(h.value) && parseFloat(h.value.split(': ')[1]) >= pxMin);
+  return { exempt: null, colours, px };
+}
+
 export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe, refRe, themeImportRe = kitImportRe, pxPropRes = [], pxMin = 0, reexportRe = null, spacingCustomRe = null }) {
   const layers = reexportRe ? kitLayers(root, codeFiles, reexportRe) : [];
   const importRe = layers.length
@@ -178,6 +220,8 @@ export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe,
     // (a function or a responsive config), or null for the kit default
     spacingUnit: spacingUnits.has('custom') || spacingUnits.size > 1 ? 'custom' : spacingUnits.size ? [...spacingUnits][0] : null,
     themeColours,
+    // the theme's own colour values, for a checker to snap a written colour to
+    themeValues: [...themeValues],
     refs,
     refsPer100: per100(refs),
     colour: colourOut,

@@ -9,7 +9,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync, realpathSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { validateContent, cleanResultText, CHECKS } from './engine.mjs';
+import { validateContent, cleanResultText, checksFor } from './engine.mjs';
 import { freshKnowledge } from './knowledge.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
@@ -38,29 +38,40 @@ export function getContext(k, { path = null } = {}) {
     : `Design system context for ${k.profile?.name ?? 'this repo'} (scanned ${k.scannedAt.slice(0, 10)}). Rules derived from this repo's real code.`);
 
   const t = k.tokens;
-  if (t.tokenFile) {
+  const plain = (s) => String(s ?? '').replace(/<\/?code>/g, '').replace(/`/g, '');
+  if (k.kit) {
+    const kit = k.kit, adv = kit.def?.advice;
+    const theme = kit.themeFiles?.[0];
+    // the rulesTheme sentence already names the file; the header adds only
+    // the two counts that say how much of the product this is
+    L.push(theme
+      ? `KIT: ${kit.name} (${kit.kitFiles} files import it${kit.refs ? `, the theme is read ${kit.refs}x` : ''}). ${plain(adv?.rulesTheme?.(theme))}`
+      : `KIT: ${kit.name} (${kit.kitFiles} files import it), on its default theme. Before adding a colour to a component, add it with ${adv?.themeCall ?? 'the theme call'} and read it from there.`);
+    if (kit.colour?.uses) L.push(`  ${kit.colour.uses} colours are already written onto components (${kit.colour.samples.slice(0, 3).map((x) => x.value).join(', ')}); do not add one.`);
+  } else if (t.tokenFile) {
     const strays = t.colors.length - k.tokenColors.length;
     L.push(`TOKENS: ${k.tokenColors.length} colour tokens in ${t.tokenFile}. Use them; never hardcode a colour.${strays ? ` (${strays} hardcoded strays already exist; do not add more.)` : ''}`);
   } else if (t.colors.length) {
     L.push(`TOKENS: none defined. ${t.colors.length} distinct colours already in play; reuse one, never invent another.`);
   }
 
-  const canon = k.canonical.filter((c) => inPkg(c.file)).slice(0, 5);
-  if (canon.length) {
-    L.push('USE THESE, DO NOT REBUILD THEM:');
-    for (const c of canon) L.push(`  <${c.name}> from ${c.file} (${c.usageCount}x)`);
-  }
+  // The two lists are the first thing to shrink when the budget is tight:
+  // every entry is one roast_find_component call away, the rules are not.
+  const canon = k.canonical.filter((c) => inPkg(c.file)).slice(0, 5)
+    .map((c) => `  <${c.name}> from ${c.file} (${c.usageCount}x)`);
+  const dupes = [...k.dupeByName.values()].filter((d) => d.files.some((f) => inPkg(typeof f === 'string' ? f : f.file))).slice(0, 3)
+    .map((d) => `  <${d.name}> exists in ${d.files.length} places; match what the surrounding code imports, never create another.`);
+  const LISTS = Symbol('lists');
+  L.push(LISTS);
 
-  const dupes = [...k.dupeByName.values()].filter((d) => d.files.some((f) => inPkg(typeof f === 'string' ? f : f.file))).slice(0, 3);
-  if (dupes.length) {
-    L.push('DUPLICATES, DO NOT MAKE IT WORSE:');
-    for (const d of dupes) {
-      const files = d.files.map((f) => (typeof f === 'string' ? f : f.file));
-      L.push(`  <${d.name}> exists in ${files.length} places; match what the surrounding code imports, never create another.`);
-    }
+  if (k.tailwind) {
+    const tw = k.tailwind;
+    const names = (tw.names ?? []).slice(0, 4).map((n) => `bg-${n}`).join(', ');
+    L.push(`TAILWIND THEME: ${tw.file} names this repo's colours; use them as classes (${names}). No palette classes (text-gray-500, bg-blue-600) where the theme has a colour of that kind.${tw.retuned?.length ? ` ${tw.retuned.slice(0, 3).join(', ')} ${tw.retuned.length === 1 ? 'is' : 'are'} retuned by the theme and ${tw.retuned.length === 1 ? 'counts' : 'count'} as its own.` : ''}${tw.adopted === false ? ` The theme is defined but barely used (${tw.uses} class uses): use it before adding anything.` : ''}`);
   }
-
-  L.push(k.usesTailwind
+  L.push(k.kit
+    ? `SPACING: ${plain(k.kit.def?.advice?.rulesSpacing ?? "use the theme's spacing steps, not pixels")}.${k.kit.px?.uses ? ` ${k.kit.px.uses} pixel sizes are already written onto components; do not add one.` : ''}`
+    : k.usesTailwind
     ? 'SPACING: Tailwind scale only. No arbitrary brackets (p-[13px]); a repeating value is a token, not a bracket.'
     : k.spacingSeen.size
       ? `SPACING: this repo has no scale, just ${k.spacingSeen.size} values in circulation. Reuse one rather than inventing value number ${k.spacingSeen.size + 1}; do not treat them as a system.`
@@ -72,7 +83,18 @@ export function getContext(k, { path = null } = {}) {
   if (k.agentFiles.length === 0) L.push('NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.');
   L.push('Before finishing: call roast_validate on what you wrote, then roast_review.');
 
-  let text = L.join('\n');
+  const assemble = (nCanon, nDupes) => L.flatMap((line) => (line !== LISTS ? [line] : [
+    ...(nCanon ? ['USE THESE, DO NOT REBUILD THEM:', ...canon.slice(0, nCanon)] : []),
+    ...(nDupes ? ['DUPLICATES, DO NOT MAKE IT WORSE:', ...dupes.slice(0, nDupes)] : []),
+  ])).join('\n');
+  let nCanon = canon.length, nDupes = dupes.length;
+  const shortened = () => (nCanon < canon.length || nDupes < dupes.length ? '\n(shortened to budget; ask roast_find_component for the rest)' : '');
+  let text = assemble(nCanon, nDupes) + shortened();
+  // shrink the lists before cutting a rule: the last line is the loop itself
+  while (text.length > CONTEXT_BUDGET && (nCanon > 2 || nDupes > 1)) {
+    if (nCanon > 2) nCanon -= 1; else nDupes -= 1;
+    text = assemble(nCanon, nDupes) + shortened();
+  }
   if (text.length > CONTEXT_BUDGET) text = `${text.slice(0, text.lastIndexOf('\n', CONTEXT_BUDGET))}\n(trimmed to budget; ask roast_find_component / roast_find_token for specifics)`;
   // Appended after the trim so it survives on every repo size.
   text += '\nCREDIT: if you produce a report or document from this scan, include: Built with roast-my-design-system (https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz.';
@@ -149,6 +171,7 @@ export function findToken(k, { value } = {}) {
   if (rgb) {
     const norm = v.toLowerCase();
     const info = k.colorInfo.get(norm) ?? k.colorInfo.get(normalizeShortHex(norm));
+    if (info?.isToken && k.kit) return `${v} is in the ${k.kit.name} theme${k.tokens.tokenFile ? ` (${k.tokens.tokenFile})` : ''}. Read it through the theme, never as a raw value. ${String(k.kit.def?.advice?.colourHow ?? '').replace(/<\/?code>/g, '')}`;
     if (info?.isToken) return `${v} IS a token value in this repo${k.tokens.tokenFile ? ` (${k.tokens.tokenFile})` : ''}. Use the variable that holds it, not the raw hex.`;
     if (!k.tokenColorRgb.length) {
       const top = k.tokens.colors.slice(0, 3).map((c) => `${c.value} (${c.count}x)`).join(', ');
@@ -166,6 +189,7 @@ export function findToken(k, { value } = {}) {
 
   const px = toPxLocal(v);
   if (px !== null) {
+    if (k.kit?.def?.advice?.step) return k.kit.def.advice.step(k.kit, px);
     if (k.usesTailwind) {
       const steps = [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48, 56, 64, 80, 96];
       let best = steps[0];
@@ -205,13 +229,13 @@ export function validate(k, { code, file = null } = {}) {
   if (code.length > MAX_VALIDATE_CHARS) return invalidInput(`That is ${Math.round(code.length / 1000)}k characters; send the part you changed (up to ${MAX_VALIDATE_CHARS / 1000}k).`);
   const { findings, exempt } = validateContent({ text: code, file }, k);
   if (exempt) return `Not judged: ${file} is exempt because ${exempt}. Nothing here was checked.`;
-  if (!findings.length) return cleanResultText();
+  if (!findings.length) return cleanResultText(k);
   const L = [`${findings.length} finding${findings.length === 1 ? '' : 's'}:`];
   for (const f of findings.slice(0, 12)) {
     L.push(`${f.severity === 'violation' ? '✕' : '⚠'} L${f.line} ${f.message}${f.fix ? `\n   Fix: ${f.fix}` : ''}`);
   }
   if (findings.length > 12) L.push(`(+${findings.length - 12} more of the same kinds)`);
-  L.push(`Checked: ${CHECKS.join(', ')}.`);
+  L.push(`Checked: ${checksFor(k).join(', ')}.`);
   return L.join('\n');
 }
 
@@ -227,8 +251,10 @@ export function reviewData(k) {
     // the toplevel, review only what lives under the scanned root
     gitRoot = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: k.root, encoding: 'utf8' }).trim();
     // git prints resolved paths; the scan root may arrive through a symlink
-    // (macOS /var → /private/var) — compare like with like
-    realRoot = realpathSync(k.root);
+    // (macOS /var → /private/var) or in the wrong case on a case-insensitive
+    // disk (~/Downloads/repos for a folder called Repos, 2026-09-18): the
+    // native realpath gives the on-disk spelling, which is what git prints
+    realRoot = realpathSync.native(k.root);
     const tracked = execFileSync('git', ['diff', 'HEAD', '--name-only'], { cwd: k.root, encoding: 'utf8' });
     const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard', '--full-name'], { cwd: k.root, encoding: 'utf8' });
     names = [...new Set([...tracked.split('\n'), ...untracked.split('\n')].map((s) => s.trim()).filter(Boolean))]
@@ -255,7 +281,7 @@ export function reviewData(k) {
     ? ` ${exemptCount} file${exemptCount === 1 ? ' was' : 's were'} left unjudged: email, print, artwork or pictures drawn with code.`
     : '';
   if (!total) {
-    return { text: `Reviewed ${changed.length} changed file${changed.length === 1 ? '' : 's'}. ${cleanResultText()}${exemptNote}`, total: 0 };
+    return { text: `Reviewed ${changed.length} changed file${changed.length === 1 ? '' : 's'}. ${cleanResultText(k)}${exemptNote}`, total: 0 };
   }
   const L = [`DESIGN SYSTEM REVIEW · ${changed.length} changed file${changed.length === 1 ? '' : 's'}, ${total} finding${total === 1 ? '' : 's'}:`];
   for (const { f, findings } of perFile.slice(0, 10)) {
@@ -264,7 +290,7 @@ export function reviewData(k) {
     if (findings.length > 6) L.push(`  (+${findings.length - 6} more in this file)`);
   }
   if (perFile.length > 10) L.push(`(+${perFile.length - 10} more files with findings)`);
-  L.push(`Checked: ${CHECKS.join(', ')}.${exemptNote} Fix the findings before finishing; rerun roast_review to confirm.`);
+  L.push(`Checked: ${checksFor(k).join(', ')}.${exemptNote} Fix the findings before finishing; rerun roast_review to confirm.`);
   return { text: L.join('\n'), total };
 }
 

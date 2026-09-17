@@ -23,6 +23,7 @@ import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { typefaceOf } from '../lib/typefaces.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
 import { decideProfile, profileOf } from '../profiles/index.mjs';
+import { KITS } from '../profiles/kit-common.mjs';
 
 const MAX_DEPTH = 14; // same ruler as the harvest CLI
 
@@ -49,7 +50,21 @@ export function loadKnowledge(root) {
   // The MCP path used to skip the kind decision the CLI harvest makes, so a
   // library read as a product here. Same call, same answer, both doors.
   decideProfile(profile, components, files, root);
-  const tokens = harvestTokens(root, files.styles, files.code);
+  const P = profileOf(profile);
+  let tokens = harvestTokens(root, files.styles, files.code);
+  // A product built on a kit (MUI, Mantine, Chakra, Ant Design): the theme
+  // file is where colours are decided, and its values are the token set the
+  // tools snap to. The report reads the same profile; see profiles/kit-common.
+  const kit = P.isKit && profile.kit ? { ...profile.kit, def: KITS[profile.kit.name] ?? null } : null;
+  if (kit) {
+    const themeSet = new Set(kit.themeValues ?? []);
+    tokens = {
+      ...tokens,
+      tokenFile: tokens.tokenFile ?? kit.themeFiles[0] ?? null,
+      colors: tokens.colors.map((c) => (themeSet.has(c.value) ? { ...c, isToken: true } : c)),
+    };
+    for (const v of themeSet) if (!tokens.colors.some((c) => c.value === v)) tokens.colors.push({ value: v, count: 1, isToken: true });
+  }
   const duplicates = findDuplicates(components, profile.uiDir, root);
   const context = harvestContext(root);
   const workspaces = resolveWorkspaces(root);
@@ -75,7 +90,8 @@ export function loadKnowledge(root) {
     if (face) faceCounts.set(face, (faceCounts.get(face) ?? 0) + f.count);
   }
   const twSpacingUse = (tokens.tailwind?.spacing ?? []).reduce((sum, s) => sum + s.count, 0);
-  const usesTailwind = twSpacingUse >= 20;
+  // a repo with a Tailwind theme of its own is a Tailwind repo, however small
+  const usesTailwind = twSpacingUse >= 20 || P.isTailwind;
 
   // component ledger: name → [ {file, usageCount, isPage, props, usageExample} ]
   const byName = new Map();
@@ -125,7 +141,11 @@ export function loadKnowledge(root) {
     dupeByName,
     neverImported,
     // stock, not debt: see profiles/index.mjs
-    vendoredUi: profileOf(profile).vendoredUi,
+    vendoredUi: P.vendoredUi,
+    // the kit the product is built on, and the Tailwind theme it names its
+    // colours in: null when the repo is neither (see profiles/)
+    kit,
+    tailwind: P.isTailwind && profile.tailwind ? profile.tailwind : null,
     agentFiles: (context ?? []).filter((c) => c.kind === 'agent-rules'),
   };
 }

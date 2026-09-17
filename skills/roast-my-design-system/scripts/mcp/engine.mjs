@@ -16,6 +16,8 @@ import { hexRgb } from '../lib/nearpairs.mjs';
 import { exemptReason } from '../lib/exempt.mjs';
 import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
 import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
+import { kitPaintInSource } from '../lib/kitpaint.mjs';
+import { PALETTE_CLASS_RE, GREY_HUE_RE } from '../harvest/paint.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
 export const CHECKS = [
@@ -29,6 +31,18 @@ export const CHECKS = [
   '!important',
   'duplicate component definitions',
 ];
+// What a kit or a Tailwind theme adds to the list, so a clean result on an
+// MUI repo says the kit check ran.
+export const KIT_CHECK = 'colours and pixel sizes written onto kit components where the theme has a value';
+export const PALETTE_CHECK = 'palette classes where the theme names a colour';
+export function checksFor(k) {
+  if (k?.kit) return [...CHECKS, KIT_CHECK];
+  if (k?.tailwind) return [...CHECKS, PALETTE_CHECK];
+  return CHECKS;
+}
+// "an MUI component", "an Ant Design component", "a Mantine component"
+const aKit = (name) => (/^(?:[AEIOU]|MUI)/.test(name) ? `an ${name}` : `a ${name}`);
+const plain = (html) => String(html ?? '').replace(/<\/?code>/g, '').replace(/&quot;/g, '"');
 
 const CSS_FILE_RE = /\.(css|scss|sass|less|styl)$/i;
 const lineOf = (text, index) => text.slice(0, index).split('\n').length;
@@ -74,7 +88,7 @@ export function validateContent(content, k) {
   // checker earns its reputation for crying wolf, and a checker people
   // distrust gets switched off. Say nothing, and say why nothing was said.
   const exempt = exemptReason(file, text);
-  if (exempt) return { findings: [], checked: CHECKS, exempt };
+  if (exempt) return { findings: [], checked: checksFor(k), exempt };
   const css = file ? CSS_FILE_RE.test(file) : looksLikeCss(text);
   const got = extractStyling(text, { css });
   const findings = [];
@@ -91,11 +105,74 @@ export function validateContent(content, k) {
   for (const s of got.spacing) localSpacing.set(s.value, (localSpacing.get(s.value) ?? 0) + 1);
   const discount = (repoCount, map, value) => Math.max(0, (repoCount ?? 0) - (file ? (map.get(value) ?? 0) : 0));
 
+  // ---------- the kit's components ----------
+  // On a kit file the kit's own rule comes first and says it in the kit's
+  // words; the generic colour and spacing checks then stay quiet about the
+  // same values, so one line is not reported twice.
+  const kitPx = new Set();
+  // On a kit file the kit judge owns colours: it sees every quoted colour and
+  // knows which are not paint (a comment, a fallback after a theme read, a
+  // compare, SVG artwork), so the generic check stays out of its way.
+  let kitOwnsColours = false;
+  if (k.kit?.def && !css) {
+    const paint = kitPaintInSource(text, k.kit.def, { file, layers: k.kit.layers ?? [] });
+    if (paint && !paint.exempt) {
+      kitOwnsColours = true;
+      const kitName = k.kit.name, adv = k.kit.def.advice, themeFile = k.kit.themeFiles?.[0] ?? null;
+      const themeSet = new Set(k.kit.themeValues ?? []);
+      for (const c of paint.colours) {
+        if (themeSet.has(c.value)) {
+          add('kit-colour', 'violation', c.index,
+            `Colour ${c.value} written onto ${aKit(kitName)} component. The theme already holds it${themeFile ? ` (${themeFile})` : ''}.`,
+            plain(adv.colourHow));
+        } else {
+          add('kit-colour', 'violation', c.index,
+            `Colour ${c.value} written onto ${aKit(kitName)} component, and the theme has no such colour.`,
+            `Add it to the theme once${themeFile ? ` (${themeFile})` : ` with ${adv.themeCall}`}, then read it there. ${plain(adv.colourHow)}`);
+        }
+      }
+      for (const h of paint.px) {
+        const [prop, raw] = h.value.split(': ');
+        kitPx.add(raw);
+        add('kit-px', 'violation', h.index,
+          `Pixel size ${h.value} on ${aKit(kitName)} component.`,
+          adv.step ? adv.step(k.kit, parseFloat(raw)) : plain(adv.spacingHow?.(k.kit)));
+        void prop;
+      }
+    }
+  }
+
+  // ---------- a Tailwind theme's palette classes ----------
+  // The theme names its colours (bg-surface, text-ink); a palette class
+  // (text-gray-500) where the theme has a colour of that kind is paint from
+  // the tin. Same rule as the report's tile, from harvest/paint.mjs.
+  if (k.tailwind && !css) {
+    const tw = k.tailwind;
+    const retuned = new Set(tw.retuned ?? []);
+    const fam = tw.families ?? null;
+    const hasFamily = (cls) => !fam || (GREY_HUE_RE.test(cls) ? fam.grey : fam.colour);
+    // the example name follows the utility: a text- class wants an ink or
+    // foreground name, a bg- class a surface or background name
+    const names = tw.names ?? [];
+    const pick = (re) => names.find((n) => re.test(n)) ?? names[0] ?? 'brand';
+    for (const m of text.matchAll(PALETTE_CLASS_RE)) {
+      const cls = m[0];
+      const util = cls.replace(/^((?:[\w-]+:)*[a-z]+)-.*$/, '$1');
+      const example = /(^|:)(?:text|placeholder|caret|decoration)$/.test(util) ? pick(/ink|text|fg|foreground/) : /(^|:)bg$/.test(util) ? pick(/surface|bg|background|canvas/) : pick(/border|edge|line|ring/) ;
+      if (retuned.has(cls.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, ''))) continue;
+      if (!hasFamily(cls)) continue;
+      add('palette-class', 'violation', m.index,
+        `Palette class ${cls} where the theme names its colours (${tw.file}).`,
+        `Use a theme name as the class (${util}-${example}); if the colour is missing, add it to the theme once.`);
+    }
+  }
+
   // ---------- colours ----------
   const seenHere = new Set();
   for (const c of got.colors) {
     if (seenHere.has(`${c.value}:${c.index}`)) continue;
     seenHere.add(`${c.value}:${c.index}`);
+    if (kitOwnsColours) continue; // the kit judge said it, or judged it not paint
     const info = k.colorInfo.get(c.value);
     if (info?.isToken) continue; // it IS the token's value — the system can see it
     const near = nearestToken(c.value, k);
@@ -121,6 +198,7 @@ export function validateContent(content, k) {
 
   // ---------- spacing ----------
   for (const s of got.spacing) {
+    if (kitPx.has(s.value)) continue; // the kit line above said it
     const px = toPx(s.value);
     const prior = discount(k.spacingSeen.get(s.value), localSpacing, s.value);
     if (k.usesTailwind) {
@@ -228,7 +306,7 @@ export function validateContent(content, k) {
     }
   }
 
-  return { findings, checked: CHECKS };
+  return { findings, checked: checksFor(k) };
 }
 
 function looksLikeCss(text) {
@@ -271,6 +349,6 @@ function nearestRepoSpacing(value, k) {
 }
 
 /** The one-line honesty footer every clean result carries. */
-export function cleanResultText() {
-  return `No measured violations found. Checked: ${CHECKS.join(', ')}.`;
+export function cleanResultText(k = null) {
+  return `No measured violations found. Checked: ${checksFor(k).join(', ')}.`;
 }

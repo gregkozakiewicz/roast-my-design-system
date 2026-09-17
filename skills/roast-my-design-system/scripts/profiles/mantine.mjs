@@ -32,6 +32,14 @@ export const MANTINE = {
     /\b(padding|margin|gap|paddingTop|paddingBottom|paddingLeft|paddingRight|paddingInline|paddingBlock|marginTop|marginBottom|marginLeft|marginRight|marginInline|marginBlock|rowGap|columnGap)\s*:\s*rem\(\s*(\d+(?:\.\d+)?)\s*\)/g,
   ],
   advice: {
+    // plain text for the MCP server: what to write instead of a pixel size
+    step: (k, px) => {
+      const steps = { 10: 'xs', 12: 'sm', 16: 'md', 20: 'lg', 32: 'xl' };
+      const name = steps[px];
+      return name
+        ? `${px}px is the theme step "${name}" on Mantine's default sizes: write p="${name}" (or gap="${name}"), not p={${px}}. A theme can change the sizes, so check createTheme() first.`
+        : `${px}px matches no Mantine spacing step (xs 10px, sm 12px, md 16px, lg 20px, xl 32px by default). p={${px}} is pixels, off the theme; if the design needs it exactly, keep it with a comment.`;
+    },
     themeCall: 'createTheme()',
     refExamples: '<code>c="dimmed"</code>, <code>p="md"</code> and <code>var(--mantine-color-…)</code>',
     colourHow: 'On a Mantine component, point at it: <code>c="dimmed"</code> or <code>color="blue.6"</code> as a prop, <code>theme.colors.blue[6]</code> in code, <code>var(--mantine-color-blue-6)</code> in a CSS module.',

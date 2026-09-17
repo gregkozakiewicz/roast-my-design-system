@@ -34,7 +34,7 @@ import { PALETTE } from '../profiles/shadcn-data.mjs';
 export const PALETTE_CLASS_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border|ring|outline|from|to|via|fill|stroke|divide|decoration|placeholder|caret|accent|shadow)-(?:${PALETTE})-(?:50|[1-9]00|950)(?:/\\d+)?(?![\\w-])`, 'g');
 // Evening overrides painted by hand with white or black (the palette shades
 // are already caught above with their dark: prefix).
-const GREY_HUE_RE = /-(?:slate|gray|zinc|neutral|stone|mauve|olive|mist|taupe|white|black)(?:-|\/|$)/;
+export const GREY_HUE_RE = /-(?:slate|gray|zinc|neutral|stone|mauve|olive|mist|taupe|white|black)(?:-|\/|$)/;
 const DARK_WB_RE = /(?<![\w-])dark:(?:bg|text|border)-(?:white|black)(?:\/\d+)?(?![\w-])/g;
 // Colour passed into a kit door: palette colour, black, white, any variant prefix.
 const DOOR_COLOR_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border)-(?:${PALETTE}|white|black)(?:-(?:50|[1-9]00|950))?(?:/\\d+)?(?![\\w-])`, 'g');

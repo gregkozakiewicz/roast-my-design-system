@@ -24,6 +24,15 @@ export const MUI = {
   themeImportRe: /import\s*(?:\{[^}]*\b(?:createTheme|createMuiTheme|extendTheme|experimental_extendTheme|ThemeProvider)\b[^}]*\}|ThemeProvider|createTheme)\s*from\s*['"]@(?:mui|material-ui)\//,
   refRe: /theme\.palette\.|theme\.spacing\(|theme\.typography\.|theme\.shape\.|\bvars\.palette\.|['"](?:primary|secondary|error|warning|info|success|text|background|grey|divider|action|common)\.(?:main|light|dark|contrastText|primary|secondary|disabled|paper|default|hover|selected|black|white|\d{2,3})['"]/g,
   advice: {
+    // plain text for the MCP server: what to write instead of a pixel size
+    step: (k, px) => {
+      if (k.spacingUnit === 'custom') return "This theme's spacing is custom (a function or a responsive config), so a step is not a fixed number of pixels. Check what theme.spacing(1) is here before converting.";
+      const unit = k.spacingUnit ? Number(k.spacingUnit) : 8;
+      const on = k.spacingUnit ? 'on this theme' : 'on the default theme';
+      if (px % unit === 0) return `${px}px is step ${px / unit} ${on} (one step is ${unit}px): write p: ${px / unit} in sx, or theme.spacing(${px / unit}) in styled(), not '${px}px'.`;
+      const lo = Math.floor(px / unit), hi = lo + 1;
+      return `${px}px is between steps ${lo} (${lo * unit}px) and ${hi} (${hi * unit}px) ${on}. If the design needs ${px}px exactly, keep it with a comment; otherwise use the nearest step in sx.`;
+    },
     themeCall: 'createTheme()',
     refExamples: '<code>text.secondary</code> and <code>theme.spacing()</code>',
     colourHow: "On an MUI component, point at it: <code>color: 'text.secondary'</code> in sx, or <code>theme.palette.primary.main</code> in a styled() call.",

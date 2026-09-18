@@ -2,6 +2,18 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.3.2 — 2026-09-18
+
+- **The bundled MCP server is back in the root `.mcp.json`.** 8.3.1 moved it
+  into the manifest, which runs but is invisible: the plugin inventory, the
+  desktop app's Connectors tab and a reviewer's "will install" list only
+  count a root `.mcp.json`. Tested on a throwaway plugin: the manifest form
+  shows zero servers, the root file shows one. The declaration uses the
+  plugin variable as before, which is the only form the plugin loader
+  substitutes. Anyone working on this repository itself can ignore the
+  project-config reading of the file with the `disabledMcpjsonServers`
+  setting in their local settings; plugin users need nothing.
+
 ## 8.3.1 — 2026-09-18
 
 - **The bundled MCP server is declared in the plugin manifest,** not in a

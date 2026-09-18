@@ -8,7 +8,7 @@
 
 ## Your AI can write the UI. This makes sure it writes *your* UI.
 
-A free CLI tool (and Claude Code skill) that roasts your repo's design system with real data, then generates the rules that keep your AI agent on-system.
+A free CLI tool, and a Claude Code plugin with two skills and a bundled local MCP server, that roasts your repo's design system with real data, reviews what you change against it, and generates the rules that keep your AI agent on-system.
 
 > **New in 8.0: support for the four big component kits.**
 >
@@ -269,6 +269,8 @@ Run it inside any repo. Same scanner, same report, straight from npm. The Claude
 /plugin marketplace add gregkozakiewicz/roast-my-design-system
 /plugin install roast-my-design-system@roast-my-design-system
 ```
+
+What it installs: two skills and one local MCP server, nothing else. **roast** (`/roast-my-design-system`, or "roast my design system") scans the whole repo and writes the report with Claude's read of the numbers inside it, then walks the fixes with you. **review** (`/roast-my-design-system:review`, or "review my UI changes") checks only what changed, in about a second. The bundled server gives your agent five read-only tools while it writes UI. Local, no network, no telemetry.
 
 If those commands error, your Claude Code is likely older than the plugin marketplace feature. Update Claude Code and retry, or use the manual route below: it works everywhere and installs the same skill.
 

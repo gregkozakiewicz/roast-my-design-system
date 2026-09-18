@@ -83,6 +83,7 @@ Type these in a terminal and you get a result.
 | `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
 | `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
+| `/roast-my-design-system:review` (in Claude Code) | The same check in chat, from the plugin's second skill: each changed file's findings with the fix named, then the fixes applied and the check re-run |
 | <code>...&nbsp;--exclude&nbsp;lab/</code> | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header; see [Scoping the scan](#scoping-the-scan) |
 | `... --json` | The scan summary as JSON on stdout, for scripts and pipelines. Includes `schemaVersion`, the benchmark used, and every metric as a number, so two scans can be compared |
 | <code>...&nbsp;--by&nbsp;"Dwayne&nbsp;Hicks"</code> | Puts a name in the report header, for when you ran it for someone else |
@@ -275,10 +276,10 @@ If those commands error, your Claude Code is likely older than the plugin market
 
 ```bash
 git clone https://github.com/gregkozakiewicz/roast-my-design-system.git
-cp -r roast-my-design-system/skills/roast-my-design-system ~/.claude/skills/
+cp -r roast-my-design-system/skills/roast-my-design-system roast-my-design-system/skills/review ~/.claude/skills/
 ```
 
-(Use `.claude/skills/` inside a repo instead to share it with your team.)
+(Use `.claude/skills/` inside a repo instead to share it with your team. The `review` skill needs the `roast-my-design-system` folder beside it; it runs the engine from there.)
 
 **OpenAI Codex CLI** (same SKILL.md, same folder):
 
@@ -300,6 +301,14 @@ Open Claude Code in the repo you want roasted and type:
 ```
 /roast-my-design-system
 ```
+
+And once you have a design system worth protecting, the second skill checks only what you changed, in about a second:
+
+```
+/roast-my-design-system:review
+```
+
+It runs the same check as `--check` on the files in your git diff and lists each finding with its fix, in the kit's own vocabulary on a MUI, Mantine, Chakra, Ant Design or Tailwind-theme repo. No score, no report: the small check for Tuesday afternoons. Claude also picks it up from plain words such as "review my UI changes" or "did I break the design system".
 
 You get the roast in chat plus `design-system-roast.html` at your repo root: a self-contained page (open it, Slack it, email it, no external requests) with:
 
@@ -329,6 +338,12 @@ With the MCP server connected (see [Live answers over MCP](#live-answers-over-mc
 
 ```
 Is there already a Button component in this repo, and which one should I use?
+```
+
+And the everyday one, after you have changed some UI:
+
+```
+Review my UI changes against the design system.
 ```
 
 ## Troubleshooting

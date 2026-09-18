@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: review-my-changes
+description: The everyday request: review what changed, not the whole repo.
+tags: [trigger, review]
+context:
+  scaffold_script: scaffold.sh

@@ -585,6 +585,20 @@ compare('review snapshot', stripDates(reviewText), 'messy.review.txt');
 const cleanReview = mcpTools.reviewData(loadKnowledge(join(FIXTURES, 'messy')));
 cleanReview.total === 0 ? ok('review outside git degrades honestly')
   : bad('review outside git', `expected 0 findings, got ${cleanReview.total}`);
+// The review skill runs the standalone script (8.4.0): same text as the MCP
+// tool, exit 1 on findings, --json for scripts.
+{
+  const script = join(ENGINE, 'review/index.mjs');
+  const r = spawnSync(process.execPath, [script, gitFix], { encoding: 'utf8' });
+  r.status === 1 && r.stdout.trim() === reviewText.trim() ? ok('review script prints the MCP review and exits 1 on findings')
+    : bad('review script', `status ${r.status}; same text: ${r.stdout.trim() === reviewText.trim()}`);
+  const j = spawnSync(process.execPath, [script, gitFix, '--json'], { encoding: 'utf8' });
+  let parsed = null; try { parsed = JSON.parse(j.stdout); } catch { /* not json */ }
+  parsed && parsed.findings > 0 && typeof parsed.text === 'string' ? ok('review script --json carries the count and the text')
+    : bad('review script --json', j.stdout.slice(0, 120));
+  const c = spawnSync(process.execPath, [script, join(FIXTURES, 'messy')], { encoding: 'utf8' });
+  c.status === 0 ? ok('review script exits 0 with nothing to review') : bad('review script clean exit', `status ${c.status}`);
+}
 
 // ---------- the scales the engine used to ignore ----------
 // The other half of the drift (2026-09-08): guard flagged a new radius, font

@@ -2,6 +2,26 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.4.0 — 2026-09-18
+
+A second skill for the Claude Code plugin: review what changed.
+
+- **`/roast-my-design-system:review` checks the files in your git diff** against
+  the design system the scan found, and lists each finding with its fix. It
+  is the same check as `--check` on the CLI and `roast_review` over MCP, now
+  typeable in chat and picked up from plain words such as "review my UI
+  changes" or "did I break the design system". It runs in about a second,
+  gives no score and writes no report; for those, the roast skill is
+  unchanged. On request it applies the fixes in the kit's or the repo's own
+  vocabulary and re-runs the check.
+- **A standalone review script** in the engine, `scripts/review/index.mjs`,
+  which the skill runs. It prints the review and exits 1 on findings, with
+  `--json` for scripts. Part of the npm package, so it is also available to
+  anyone who wants the check without the launcher.
+- **Manual installs copy both skill folders.** The review skill runs the
+  engine from the roast skill's folder beside it.
+- An eval case for the new skill, and the README and landing page name it.
+
 ## 8.3.3 — 2026-09-18
 
 - **The skill's credit rule is a citation of the data source.** When Claude

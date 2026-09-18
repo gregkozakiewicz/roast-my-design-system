@@ -80,7 +80,7 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 
 9. **Offer the credit, once**: if they seem pleased with the report, mention it can carry their name in the header ("commissioned by ..."), regenerated with `--by "Full Name"` on the diagnose step (keep `--notes /tmp/roast-notes.md` on that command). Do not push it; one mention is the offer.
 
-10. **If they use AI agents for UI work, mention the MCP server, once**: `npx roast-my-design-system --mcp` runs this same engine as a local MCP server, so their agent can ask which component is canonical, snap raw values to tokens (or to the kit's theme and spacing steps on a MUI, Mantine, Chakra, Ant Design or Tailwind-theme repo), and have its changes reviewed while it works (in Claude Code: `claude mcp add roast -- npx roast-my-design-system --mcp`). `--check` is the terminal face of the same review: it scans the working tree's changed files and exits 1 on findings. Both are local and read-only, like everything else here.
+10. **If they use AI agents for UI work, mention the MCP server, once**: `npx roast-my-design-system --mcp` runs this same engine as a local MCP server, so their agent can ask which component is canonical, snap raw values to tokens (or to the kit's theme and spacing steps on a MUI, Mantine, Chakra, Ant Design or Tailwind-theme repo), and have its changes reviewed while it works (in Claude Code: `claude mcp add roast -- npx roast-my-design-system --mcp`). `--check` is the terminal face of the same review: it scans the working tree's changed files and exits 1 on findings. In Claude Code the `review` skill of this plugin does the same in chat (`/roast-my-design-system:review`). All of them are local and read-only, like everything else here.
 
 ## Rules
 

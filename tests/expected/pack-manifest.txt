@@ -49,6 +49,7 @@ skills/roast-my-design-system/scripts/profiles/shadcn-lint.mjs
 skills/roast-my-design-system/scripts/profiles/shadcn.mjs
 skills/roast-my-design-system/scripts/profiles/tailwind-defaults.mjs
 skills/roast-my-design-system/scripts/profiles/tailwind.mjs
+skills/roast-my-design-system/scripts/review/index.mjs
 skills/roast-my-design-system/scripts/rules/apply.mjs
 skills/roast-my-design-system/scripts/rules/build.mjs
 skills/roast-my-design-system/scripts/rules/index.mjs

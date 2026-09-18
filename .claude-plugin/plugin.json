@@ -19,5 +19,13 @@
     "ui-consistency",
     "tailwind",
     "react"
-  ]
+  ],
+  "mcpServers": {
+    "roast": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/skills/roast-my-design-system/scripts/mcp/server.mjs"
+      ]
+    }
+  }
 }

@@ -2,6 +2,15 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.3.1 — 2026-09-18
+
+- **The bundled MCP server is declared in the plugin manifest,** not in a
+  root-level `.mcp.json`. Claude Code also reads a root `.mcp.json` as project
+  configuration when a session runs inside this repository, where the plugin
+  variable is unset, so that copy could never start and showed as failed.
+  Plugin users saw no difference; this removes the failing entry for anyone
+  working on the repository itself.
+
 ## 8.3.0 — 2026-09-18
 
 The plugin now bundles the MCP server, and the package is brought in line with Anthropic's plugin rules. No change to the scan, the score or the report.

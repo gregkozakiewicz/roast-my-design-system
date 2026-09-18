@@ -149,6 +149,51 @@ The loop: context before building, find while building, validate before saving, 
 
 The server reads the repo the way the report does. On a product built on MUI, Mantine, Chakra UI or Ant Design, the context names the theme file and the kit's own way of reading it, `roast_find_token` answers in spacing steps (`12px` is `p: 3` on a 4px MUI theme), and `roast_validate` and `roast_review` flag a colour or a pixel size written onto a kit component where the theme has a value. On a Tailwind theme they flag a palette class such as `text-gray-500` where the theme names a colour of that kind.
 
+### What a session looks like
+
+A real exchange against [Unleash](https://github.com/Unleash/unleash), an MUI product that scores 64/100. The agent was asked to add a small usage hint to a feature page. Every answer is the server's own text, unedited.
+
+Before writing anything, the agent calls `roast_get_context`:
+
+```
+KIT: MUI (1109 files import it, the theme is read 6162x). A colour, a spacing step or a radius is decided in frontend/src/themes/dark-theme.ts. On a component, read it: sx paths (color: 'text.secondary', p: 2) or theme.palette / theme.spacing() in styled().
+  43 colours are already written onto components (#6c65e5, #f1f0fc, #302e42); do not add one.
+USE THESE, DO NOT REBUILD THEM:
+  <Dialogue> from frontend/src/component/common/Dialogue/Dialogue.tsx (97x)
+  <TextCell> from frontend/src/component/common/Table/cells/TextCell/TextCell.tsx (96x)
+  <PageContent> from frontend/src/component/common/PageContent/PageContent.tsx (84x)
+DUPLICATES, DO NOT MAKE IT WORSE:
+  <StyledSuccessIcon> exists in 6 places; match what the surrounding code imports, never create another.
+SPACING: Use spacing steps (p: 2), not pixels. 17 pixel sizes are already written onto components; do not add one.
+TYPE: Sen. No new typefaces, no hand-declared font stacks.
+Before finishing: call roast_validate on what you wrote, then roast_review.
+```
+
+It has a grey in hand and a padding in mind, so `roast_find_token` twice:
+
+```
+#6b7280 → Nearest token: #607d8b, 11 channel steps from #6b7280. Unless the difference is a deliberate decision, use the token.
+12px    → 12px is between steps 1 (8px) and 2 (16px) on the default theme. If the design needs 12px exactly, keep it with a comment; otherwise use the nearest step in sx.
+```
+
+It writes a first draft anyway and runs `roast_validate` before saving:
+
+```
+2 findings:
+✕ L5 Colour #6b7280 written onto an MUI component, and the theme has no such colour.
+   Fix: Add it to the theme once (frontend/src/themes/dark-theme.ts), then read it there. On an MUI component, point at it: color: 'text.secondary' in sx, or theme.palette.primary.main in a styled() call.
+✕ L5 Pixel size p: 12px on an MUI component.
+   Fix: 12px is between steps 1 (8px) and 2 (16px) on the default theme. If the design needs 12px exactly, keep it with a comment; otherwise use the nearest step in sx.
+```
+
+Second draft: `color: 'text.secondary'`, `p: 1.5`, the radius read from the theme. `roast_validate` again:
+
+```
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, colours and pixel sizes written onto kit components where the theme has a value.
+```
+
+Four calls, under 800 tokens in total, and the new component reads the theme instead of adding colour number 44. `roast_review` then checks the whole diff the same way before the agent says it is done.
+
 When the goal is fixing the system rather than building on it, the `roast-fix` prompt serves the top Where-to-start move from a fresh scan. It is a ready-made fix prompt, byte-identical to the report's copy buttons. Fix it, ask again, and the next move has risen to the top: the scan is the progress bar. Pass `move: 2` to jump the queue.
 
 To use it in Claude Code, type `/mcp__roast__roast-fix` in the chat. MCP prompts appear as slash commands, named after whatever you registered the server as, and the `/` autocomplete menu lists them too. Add the move number to jump the queue: `/mcp__roast__roast-fix 2`. Other clients list server prompts in their own prompt picker; wherever `roast-build-ui` and `roast-review-ui` show up, `roast-fix` sits beside them.

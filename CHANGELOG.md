@@ -2,6 +2,14 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.3.3 — 2026-09-18
+
+- **The skill's credit rule is a citation of the data source.** When Claude
+  writes a separate document from the scan's numbers, it cites "Scores and
+  benchmarks from roast-my-design-system by Greg Kozakiewicz" rather than
+  adding a "Built with" line. Same name, same link, framed as where the
+  numbers came from.
+
 ## 8.3.2 — 2026-09-18
 
 - **The bundled MCP server is back in the root `.mcp.json`.** 8.3.1 moved it

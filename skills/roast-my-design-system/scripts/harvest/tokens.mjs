@@ -51,9 +51,18 @@ const FUNC_COLOR_RE = /\b(?:rgba?|hsla?|oklch|oklab|lab|lch)\(\s*[^)]{1,80}\)|\b
 // scanned as 0 tokens until 5.10.0. Recognised here and normalised to hsl()
 // so it flows through greys, twins and the rest like any other colour.
 const HSL_TRIPLET_RE = /^\s*(-?\d+(?:\.\d+)?)(?:deg)?\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*$/;
+// The same convention with RGB channels: --bg-default: 255 255 255, wrapped
+// later as rgb(var(--bg-default) / <alpha-value>). dub keeps its whole theme
+// this way, and until 8.2.0 it scanned as a repo without a token file, so an
+// avatar colour list took the title (2026-09-18). Three integers 0-255, and
+// nothing else, so a bare "16px" or "1 2" never reads as a colour.
+const RGB_TRIPLET_RE = /^\s*(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*$/;
 export const tripletToHsl = (v) => {
   const m = HSL_TRIPLET_RE.exec(v);
-  return m ? `hsl(${m[1]} ${m[2]}% ${m[3]}%${m[4] ? ` / ${m[4]}` : ''})` : null;
+  if (m) return `hsl(${m[1]} ${m[2]}% ${m[3]}%${m[4] ? ` / ${m[4]}` : ''})`;
+  const r = RGB_TRIPLET_RE.exec(v);
+  if (r && [r[1], r[2], r[3]].every((n) => Number(n) <= 255)) return `rgb(${r[1]} ${r[2]} ${r[3]}${r[4] ? ` / ${r[4]}` : ''})`;
+  return null;
 };
 // Loose hex in CODE (not in a style block, a class string or a stylesheet) is
 // ambiguous: #RGBA shorthand is legal CSS but vanishingly rare in code, while
@@ -284,6 +293,16 @@ export function extractStyling(src, { css = false } = {}) {
  * Returns { colors, greys, spacing, radii, fontSizes, fontFamilies, shadows,
  *           tailwind: {...same buckets from tw classes...}, inlineStyleCount }
  */
+/** Share of a code file's quoted colours that sit inside an array holding 8 or more of them. */
+export function colourListShare(src) {
+  const QUOTED = /(['"`])(?:#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:rgba?|hsla?)\([^)'"`]*\))\1/g;
+  const all = (src.match(QUOTED) ?? []).length;
+  if (!all) return 0;
+  let inLists = 0;
+  for (const a of src.match(/\[[^[\]]*\]/g) ?? []) { const n = (a.match(QUOTED) ?? []).length; if (n >= 8) inLists += n; }
+  return inLists / all;
+}
+
 export function harvestTokens(root, styleFiles, codeFiles) {
   const colors = new Tally(), spacing = new Tally(), radii = new Tally(),
         fontSizes = new Tally(), fontFamilies = new Tally(), shadows = new Tally();
@@ -349,6 +368,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     return owner;
   };
   const paletteFiles = new Set();
+  const listShare = new Map();   // code file → share of its colour literals inside 8+ colour arrays
   const nsDefs = new Map();  // --telekom-x: value  → 'telekom' (definitions)
   const nsRefs = new Map();  // var(--telekom-x)    → 'telekom' (references)
 
@@ -468,6 +488,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     let src = readSource(join(root, f));
     if (src === null) continue;
     for (const m of src.matchAll(/[A-Za-z_][\w-]+/g)) ownClasses.add(m[0]);
+    listShare.set(f, colourListShare(src));
 
     // CSS-in-tagged-templates (Lit css``, styled-components css``) IS the
     // stylesheet in those worlds: Shoelace keeps its entire component styling
@@ -639,11 +660,19 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       else straysIn.set(f, (straysIn.get(f) ?? 0) + 1);
     }
   }
+  // A code palette whose colours sit mostly inside arrays is a list handed to
+  // something (dub's avatar pairs, plane's chart series), not the vocabulary
+  // an agent should add a colour to. It keeps its palette status for the
+  // counts, but it does not take the token-file title while any other
+  // candidate qualifies. Probe, 72 repos with a code token file (2026-09-18):
+  // 10 switch, 4 have nothing else and keep it. A Tailwind config or a
+  // stylesheet is never a list, whatever shape its values take.
+  const isList = (f) => /\.[jt]sx?$/.test(f) && !/(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f) && (listShare.get(f) ?? 0) >= 0.5;
   const candidates = new Set([...tokenColorDefsPerFile.keys(), ...paletteFiles]);
   const tokenFile = [...candidates]
-    .map((f) => ({ f, tokens: tokenColoursIn.get(f) ?? 0, strays: straysIn.get(f) ?? 0 }))
+    .map((f) => ({ f, tokens: tokenColoursIn.get(f) ?? 0, strays: straysIn.get(f) ?? 0, list: isList(f) ? 1 : 0 }))
     .filter((c) => c.tokens >= 3)
-    .sort((a, b) => b.tokens - a.tokens || a.strays - b.strays)[0]?.f
+    .sort((a, b) => a.list - b.list || b.tokens - a.tokens || a.strays - b.strays)[0]?.f
     ?? [...tokenDefsPerFile.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 
   // Token namespace: the brand stem the repo's custom properties answer to

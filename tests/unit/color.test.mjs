@@ -60,6 +60,8 @@ test('canonical: one identity for every spelling', () => {
   assert.equal(canonical('#111'), canonical('#111111'));
   assert.equal(canonical('#111111'), canonical('hsla(0, 0%, 6.7%, 1)'));
   assert.equal(canonical('222.2 47.4% 11.2%'), canonical('hsl(222.2 47.4% 11.2%)'), 'bare shadcn triplet');
+  assert.equal(canonical('255 255 255'), canonical('#ffffff'), 'bare RGB triplet (dub)');
+  assert.equal(canonical('300 0 0'), null, 'a channel over 255 is not a colour');
   assert.equal(canonical('var(--x)'), null);
   assert.equal(canonical('calc(1px + 2px)'), null);
 });

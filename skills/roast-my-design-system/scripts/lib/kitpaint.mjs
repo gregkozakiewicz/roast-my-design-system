@@ -206,8 +206,13 @@ export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe,
     top: b.top.sort((a, c) => c.count - a.count).slice(0, 10),
     samples: [...b.samples.entries()].sort((a, c) => c[1] - a[1]).slice(0, 12).map(([value, count]) => ({ value, count })),
   });
-  // the theme a reader should open first: a theme-named path, then the most colours
-  const ranked = themeFiles.sort((a, b) => (THEME_NAME_RE.test(b.f) - THEME_NAME_RE.test(a.f)) || b.n - a.n).map((t) => t.f);
+  // the theme a reader should open first: not a component's own theme or a
+  // provider (Open-Assistant's Theme/components/Badge.ts and Metabase's
+  // ThemeProvider.tsx both outranked the root theme, 2026-09-18), then a
+  // theme-named path, then the most colours
+  const componentLevel = (f) => /(^|\/)(components?|providers?)\//i.test(f);
+  const ranked = themeFiles.sort((a, b) => (componentLevel(a.f) - componentLevel(b.f))
+    || (THEME_NAME_RE.test(b.f) - THEME_NAME_RE.test(a.f)) || b.n - a.n).map((t) => t.f);
   const colourOut = finish(colour);
   // a written colour the theme already holds: the move can say where it lives
   for (const s of colourOut.samples) if (themeValues.has(s.value)) s.inTheme = true;

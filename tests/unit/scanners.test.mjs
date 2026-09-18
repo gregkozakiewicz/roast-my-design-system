@@ -3,7 +3,7 @@
 // somebody once put in a fixture.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { extractStyling, arbitraryLengths, tripletToHsl, isTransparent, normalizeHex } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
+import { extractStyling, arbitraryLengths, tripletToHsl, isTransparent, normalizeHex, colourListShare } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
 import { definedComponents, webComponentDefs, sliceObject } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
 import { extraValue, EXTRA_KINDS, BENIGN_VALUE_RE } from '../../skills/roast-my-design-system/scripts/lib/declarations.mjs';
 import { typefaceOf, distinctTypefaces } from '../../skills/roast-my-design-system/scripts/lib/typefaces.mjs';
@@ -52,6 +52,11 @@ test('shadcn triplets, transparency and hex normalisation', () => {
   assert.equal(tripletToHsl('222.2 47.4% 11.2%'), 'hsl(222.2 47.4% 11.2%)');
   assert.equal(tripletToHsl('0 0% 100% / 0.5'), 'hsl(0 0% 100% / 0.5)');
   assert.equal(tripletToHsl('16px'), null);
+  // dub's convention: RGB channels, wrapped later as rgb(var(--x) / <alpha-value>)
+  assert.equal(tripletToHsl('255 255 255'), 'rgb(255 255 255)');
+  assert.equal(tripletToHsl('23 23 23 / 0.5'), 'rgb(23 23 23 / 0.5)');
+  assert.equal(tripletToHsl('300 0 0'), null, 'a channel over 255 is not a colour');
+  assert.equal(tripletToHsl('1 2'), null, 'two numbers are not a colour');
   assert.equal(isTransparent('rgba(0,0,0,0)'), true);
   assert.equal(isTransparent('rgb(0 0 0 / 0%)'), true);
   assert.equal(isTransparent('rgba(0,0,0,.5)'), false);
@@ -100,4 +105,14 @@ test('typefaces: the face, not the fallback stack', () => {
   assert.equal(typefaceOf('var(--font-cal), "Cal Sans", sans-serif'), 'Cal Sans');
   assert.equal(typefaceOf('inherit'), null);
   assert.deepEqual(distinctTypefaces([{ value: 'Inter, sans-serif' }, { value: '"Inter"' }, { value: 'monospace' }]), ['Inter']);
+});
+
+// A code palette shaped as a list (dub's avatar pairs, a chart series) is
+// not the vocabulary an agent adds a colour to; a named object is.
+test('a list-shaped palette is told apart from a named one', () => {
+  const list = 'const THEMES = [' + Array.from({ length: 12 }, (_, i) => `{ bg: "#${String(i).padStart(6, '0')}", fg: "#ffffff" }`).join(', ') + '];';
+  assert.ok(colourListShare(list) >= 0.5, 'an array of colour pairs is a list');
+  const named = Array.from({ length: 12 }, (_, i) => `export const c${i} = "#${String(i).padStart(6, '0')}";`).join('\n');
+  assert.equal(colourListShare(named), 0, 'named exports are a vocabulary');
+  assert.equal(colourListShare('const x = 1;'), 0, 'no colours, no share');
 });

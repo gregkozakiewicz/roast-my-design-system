@@ -135,3 +135,21 @@ test('a fully transparent colour is not paint', () => {
   const k = count({ 'src/Fade.tsx': card(`<Box sx={{ from: 'rgba(255,255,255,0)', to: 'rgba(0, 0, 0, 0.4)' }} />`) });
   assert.deepEqual(k.colour.samples.map((s) => s.value), ['rgba(0,0,0,0.4)']);
 });
+
+// The theme a reader opens first is the root theme, not a component's own
+// theme file or a provider, however many colours those hold (Open-Assistant's
+// Theme/components/Badge.ts, Metabase's ThemeProvider.tsx, 2026-09-18).
+test('a component-level theme file ranks after the root theme', () => {
+  const k = count({
+    'src/theme/index.ts': THEME,
+    'src/theme/components/Badge.ts': `import { createTheme } from '@mui/material/styles';
+export const badge = createTheme({ palette: { a: { main: '#111111' }, b: { main: '#222222' }, c: { main: '#333333' } } });
+`,
+    'src/providers/ThemeProvider.tsx': `import { createTheme } from '@mui/material/styles';
+export const t = createTheme({ palette: { x: { main: '#444444' }, y: { main: '#555555' } } });
+`,
+    ...Object.fromEntries(Array.from({ length: 30 }, (_, i) => [`src/c/Card${i}.tsx`, card('p: 2')])),
+  });
+  assert.equal(k.themeFiles[0], 'src/theme/index.ts');
+  assert.equal(k.themeFiles.length, 3);
+});

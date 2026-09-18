@@ -184,10 +184,15 @@ export function canonical(raw) {
   const v = String(raw).trim();
   if (!v || /var\(|\$\{|calc\(/.test(v)) return null;
   const t = HSL_TRIPLET.exec(v);
-  const c = parseColor(t ? `hsl(${t[1]} ${t[2]}% ${t[3]}%)` : v.replace(/\s+/g, ' ').toLowerCase());
+  const r = t ? null : RGB_TRIPLET.exec(v);
+  const c = parseColor(t ? `hsl(${t[1]} ${t[2]}% ${t[3]}%)`
+    : r && [r[1], r[2], r[3]].every((n) => Number(n) <= 255) ? `rgb(${r[1]} ${r[2]} ${r[3]})`
+      : v.replace(/\s+/g, ' ').toLowerCase());
   if (!c) return null;
   return [c.r, c.g, c.b].map((x) => Math.round(x)).join(',') + ',' + Math.round(c.a * 100);
 }
 
 const HSL_TRIPLET =
   /^\s*(-?\d+(?:\.\d+)?)(?:deg)?\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*$/;
+// bare RGB channels (dub: --bg-default: 255 255 255), see harvest/tokens.mjs
+const RGB_TRIPLET = /^\s*(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})(?:\s*\/\s*\d+(?:\.\d+)?%?)?\s*$/;

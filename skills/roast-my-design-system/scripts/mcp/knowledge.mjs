@@ -60,10 +60,13 @@ export function loadKnowledge(root) {
     const themeSet = new Set(kit.themeValues ?? []);
     tokens = {
       ...tokens,
-      tokenFile: tokens.tokenFile ?? kit.themeFiles[0] ?? null,
+      // the theme first: on a kit repo it is where a colour is decided, whatever
+      // stylesheet or palette file holds the most literals
+      tokenFile: kit.themeFiles[0] ?? tokens.tokenFile ?? null,
       colors: tokens.colors.map((c) => (themeSet.has(c.value) ? { ...c, isToken: true } : c)),
     };
-    for (const v of themeSet) if (!tokens.colors.some((c) => c.value === v)) tokens.colors.push({ value: v, count: 1, isToken: true });
+    // same shape as a harvested colour, so every reader of `files` keeps working
+    for (const v of themeSet) if (!tokens.colors.some((c) => c.value === v)) tokens.colors.push({ value: v, count: 1, files: [{ file: kit.themeFiles[0] ?? '', count: 1 }], isToken: true });
   }
   const duplicates = findDuplicates(components, profile.uiDir, root);
   const context = harvestContext(root);

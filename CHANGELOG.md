@@ -2,6 +2,34 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.2.0 — 2026-09-18
+
+Two ranking fixes and one reading fix, found while teaching the MCP server the kits.
+
+- **Colour tokens stored as red, green and blue channels are read.** A custom
+  property such as `--bg-default: 255 255 255`, used later as
+  `rgb(var(--bg-default) / <alpha-value>)`, is a colour token, the same as
+  the HSL form shadcn uses. dub keeps its whole theme this way and scanned
+  as a repo without one. 9 of 157 probed repos use the form; dub's colour
+  count moves from 117 to 127 and its score stays at 20.
+- **A list of colours no longer takes the token-file title.** A code file
+  whose colours sit mostly inside arrays of eight or more (dub's avatar
+  pairs, plane's chart series) still counts as a palette, but the report and
+  the MCP server name the next candidate as the place a colour is decided.
+  A Tailwind config or a stylesheet is never treated as a list. Across the
+  72 probed repos whose token file is a code file, 10 change and 4 have
+  nothing else and keep theirs.
+- **On a kit repo the theme file is the root theme,** not a component's own
+  theme or a provider. Open-Assistant's theme was named as its Badge theme
+  and Metabase's as its provider; both now open on the root theme. The MCP
+  server names the kit theme as the token file on every kit repo.
+- The MCP server's colour entries for a kit theme carry the same fields as
+  every other colour, so a reader that lists a colour's files no longer
+  fails on a kit repo.
+- The benchmark is not rebuilt. Two of the 34 core repos (dub, LibreChat)
+  gain a few colours under the first fix; the medians are unchanged at the
+  precision the report shows.
+
 ## 8.1.1 — 2026-09-18
 
 Directory review chores. No change to the scan, the score or the report.

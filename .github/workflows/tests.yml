@@ -1,0 +1,30 @@
+# Runs the test suite on every push and pull request. Publishing is a separate
+# workflow that only a version tag starts; this one never publishes anything.
+name: tests
+
+on:
+  push:
+    branches: ['**']
+    tags-ignore: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Smoke test
+        run: |
+          node cli/roast.mjs . --no-open --out /tmp/self-roast.html
+          test -s /tmp/self-roast.html
+      - name: Snapshot and unit tests
+        run: node tests/run.mjs

@@ -58,7 +58,8 @@ const CARRIERS = [
   { file: 'package.json', find: /("version":\s*")[^"]+(")/, label: 'npm package' },
   { file: 'skills/roast-my-design-system/scripts/lib/version.mjs', find: /(export const VERSION = ')[^']+(')/, label: 'engine constant (report footer, rules header)' },
   { file: '.claude-plugin/plugin.json', find: /("version":\s*")[^"]+(")/, label: 'Claude Code plugin manifest' },
-  { file: '.claude-plugin/marketplace.json', find: /("version":\s*")[^"]+(")/, label: 'plugin marketplace manifest (was stale 5.0.2→5.8.0 for months before joining this list)' },
+  // .claude-plugin/marketplace.json carries no version since 8.3.0: the docs say
+  // the manifest silently wins when both are set, so only the manifest has one
 ];
 
 const PKG = () => JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
@@ -143,7 +144,7 @@ ok(`"## ${version}" section present`);
 
 step('Tests (the same ones the publish workflow runs)');
 
-if (!run('node bin/roast.mjs . --no-open --out /tmp/self-roast.html')) die('smoke test failed: the CLI cannot roast its own repo');
+if (!run('node cli/roast.mjs . --no-open --out /tmp/self-roast.html')) die('smoke test failed: the CLI cannot roast its own repo');
 ok('smoke test');
 
 if (!run('node tests/run.mjs')) die('snapshot suite failed. A score, tile, verdict, rule or exclusion moved. Read the diff before you touch the expected files.');

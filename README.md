@@ -214,7 +214,9 @@ When the goal is fixing the system rather than building on it, the `roast-fix` p
 
 To use it in Claude Code, type `/mcp__roast__roast-fix` in the chat. MCP prompts appear as slash commands, named after whatever you registered the server as, and the `/` autocomplete menu lists them too. Add the move number to jump the queue: `/mcp__roast__roast-fix 2`. Other clients list server prompts in their own prompt picker; wherever `roast-build-ui` and `roast-review-ui` show up, `roast-fix` sits beside them.
 
-Add it to Claude Code:
+**Installed the Claude Code plugin?** The server is already there: the plugin bundles it, so the five tools appear as soon as the plugin is enabled. Nothing to add.
+
+Otherwise, add it to Claude Code by hand:
 
 ```bash
 claude mcp add roast -- npx roast-my-design-system --mcp
@@ -339,7 +341,11 @@ Is there already a Button component in this repo, and which one should I use?
 
 ## Support
 
-Bugs and questions go to [GitHub Issues](https://github.com/gregkozakiewicz/roast-my-design-system/issues). Everything else reaches Greg through [gregkozakiewicz.com](https://gregkozakiewicz.com).
+Bugs and questions go to [GitHub Issues](https://github.com/gregkozakiewicz/roast-my-design-system/issues). Everything else reaches Greg through [gregkozakiewicz.com](https://gregkozakiewicz.com). Security problems: see [SECURITY.md](SECURITY.md).
+
+## Privacy
+
+The tool reads the repository you point it at and writes its output next to it. It makes no network requests, collects no data, and has no telemetry. The MCP server answers from the same local scan and never leaves the machine. Nothing about your code, your prompts or your conversation is sent to anyone, including the author.
 
 ## What it measures
 

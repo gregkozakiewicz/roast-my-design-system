@@ -60,7 +60,7 @@ jobs:
       # Smoke test: the CLI must run on a real directory before we ship it
       - name: Smoke test
         run: |
-          node bin/roast.mjs . --no-open --out /tmp/self-roast.html
+          node cli/roast.mjs . --no-open --out /tmp/self-roast.html
           test -s /tmp/self-roast.html
 
       # Snapshot suite: five fixture repos with frozen expected outputs.

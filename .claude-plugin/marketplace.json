@@ -10,13 +10,38 @@
       "name": "roast-my-design-system",
       "displayName": "Roast my design system",
       "description": "Roast your repo's design system with real data: a health score, the receipts, and the first fixes ranked by payoff. Deterministic scan, 112-repo benchmark, 10 reputable systems, shareable light/dark HTML report.",
-      "version": "8.2.2",
       "author": {
         "name": "Greg Kozakiewicz",
         "url": "https://github.com/gregkozakiewicz"
       },
       "category": "design",
+      "tags": [
+        "design-system",
+        "design-tokens",
+        "ui-consistency",
+        "tailwind",
+        "shadcn",
+        "mui",
+        "mantine",
+        "chakra",
+        "ant-design",
+        "mcp"
+      ],
+      "keywords": [
+        "design-system",
+        "design-tokens",
+        "css",
+        "audit",
+        "lint",
+        "ui-consistency",
+        "tailwind",
+        "react",
+        "mcp",
+        "ai-agents"
+      ],
       "homepage": "https://github.com/gregkozakiewicz/roast-my-design-system",
+      "repository": "https://github.com/gregkozakiewicz/roast-my-design-system",
+      "license": "MIT",
       "source": "./"
     }
   ]

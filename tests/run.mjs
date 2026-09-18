@@ -789,7 +789,7 @@ same ? ok('two harvests of messy are identical') : bad('two harvests of messy ar
 
 // End-to-end through the npx wrapper, when it exists next to this engine
 // (guarded so the suite also runs from a bare engine checkout).
-const bin = resolve(ENGINE, '../../../bin/roast.mjs');
+const bin = resolve(ENGINE, '../../../cli/roast.mjs');
 if (existsSync(bin)) {
   console.log('npx wrapper:');
   // Zero dependencies is enforced, not aspirational: a stray `npm install`

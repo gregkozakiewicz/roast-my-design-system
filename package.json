@@ -39,10 +39,10 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "roast-my-design-system": "bin/roast.mjs"
+    "roast-my-design-system": "cli/roast.mjs"
   },
   "files": [
-    "bin/",
+    "cli/",
     "skills/roast-my-design-system/scripts/"
   ],
   "engines": {

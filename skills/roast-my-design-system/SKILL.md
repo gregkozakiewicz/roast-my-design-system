@@ -1,6 +1,7 @@
 ---
 name: roast-my-design-system
-description: Roast the current repo's design system with real data. Runs a deterministic scanner (no tokens, ~1s) that counts everything that betrays a design system, from colours and their near-identical twins to greys, spacing values, typefaces, duplicated and never-imported components, inline styles, !important and arbitrary Tailwind values, and compares them against Ideal Design System norms, a benchmark of 112 public repos (a 34-repo core fleet plus groups for shadcn, Tailwind, MUI, Mantine, Chakra and Ant Design) and 10 reputable design systems, generates a shareable HTML diagnosis, and can generate design-system-rules.md, the agent rules file that stops the mess regrowing. Use when the user asks to roast, check, audit, or diagnose their design system, design tokens, styling consistency, or asks "how bad is my CSS/design system".
+description: Roast the current repo's design system with real data. Runs a deterministic scanner (no tokens, ~1s) that counts everything that betrays a design system, from colours and their near-identical twins to greys, spacing values, typefaces, duplicated and never-imported components, inline styles, !important and arbitrary Tailwind values, and compares them against Ideal Design System norms, a benchmark of 112 public repos (a 34-repo core fleet plus groups for shadcn, Tailwind, MUI, Mantine, Chakra and Ant Design) and 10 reputable design systems, generates a shareable HTML diagnosis, and can generate design-system-rules.md, the agent rules file that stops the mess regrowing.
+when_to_use: Use when the user asks to roast, check, audit, or diagnose their design system, design tokens, styling consistency, or asks "how bad is my CSS/design system".
 ---
 
 # Roast my design system

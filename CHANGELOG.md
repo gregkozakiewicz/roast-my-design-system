@@ -2,6 +2,27 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.3.0 — 2026-09-18
+
+The plugin now bundles the MCP server, and the package is brought in line with Anthropic's plugin rules. No change to the scan, the score or the report.
+
+- **The Claude Code plugin bundles the MCP server.** Enabling the plugin
+  starts the local server from the plugin's own folder, so the five tools
+  appear without a separate command. Anyone who added the server by hand
+  can keep it or remove it; the two would otherwise both answer.
+- **The launcher folder is renamed from `bin` to `cli`.** A plugin must not
+  carry a top-level `bin` folder: Claude Code adds it to the shell path and
+  the plugin cannot be distributed through claude.ai organisation settings.
+  The npm command is unchanged.
+- **The marketplace entry no longer carries a version.** The plugin manifest
+  is the one place it lives. The entry gains tags, keywords, licence and
+  repository.
+- **Tests run on every push and pull request,** on Node 18, 20 and 22. Until
+  now they ran only when a version tag was pushed.
+- **A Privacy section in the README and a SECURITY.md** say plainly that
+  nothing leaves the machine and how to report a problem.
+- **The skill's trigger phrases move to the `when_to_use` field.**
+
 ## 8.2.2 — 2026-09-18
 
 Examples and screenshots. No change to the scan, the score or the report.

@@ -2,6 +2,19 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.2.1 — 2026-09-18
+
+README only. No change to the scan, the score or the report.
+
+- **All eleven hosted examples are listed,** the same set as the landing
+  page, each with its score and how the repo was read. The README listed
+  seven.
+- **The examples sit under "Why this exists"** so a reader sees real reports
+  before the command reference.
+- **The two report screenshots are reshot on 8.2.0.** The report itself has
+  not changed since 8.0.0; the images are refreshed so the README and the
+  report agree to the pixel.
+
 ## 8.2.0 — 2026-09-18
 
 Two ranking fixes and one reading fix, found while teaching the MCP server the kits.

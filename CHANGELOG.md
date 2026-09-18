@@ -2,6 +2,19 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.2.2 — 2026-09-18
+
+Examples and screenshots. No change to the scan, the score or the report.
+
+- **All eleven hosted example reports are regenerated on this engine.** They
+  were generated on 7.9 and 7.10 and still said so in their footers. Every
+  score is unchanged; the pages now match the tool they advertise.
+- **The README screenshots are taken from the regenerated vercel/ai-chatbot
+  report,** so the footer in the picture says the current version. 8.2.1
+  reshot them from the old page, which was the mistake this release corrects.
+- **The fresh shadcn example is a new install,** made today with every
+  component, the way the original was.
+
 ## 8.2.1 — 2026-09-18
 
 README only. No change to the scan, the score or the report.

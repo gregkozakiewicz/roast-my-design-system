@@ -119,6 +119,21 @@ The same report in light mode (one file, built-in toggle):
 
 ![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=8.2.2)
 
+## What it works on
+
+**Works, with a report you can defend**
+
+- React repos: Next, Remix, Vite and plain React.
+- Web-component repos: Stencil and Lit.
+- 4 kinds of repo: product, library, shadcn, registry.
+- 5 kit profiles: Tailwind theme, MUI, Mantine, Chakra, Ant Design.
+- Any styling on top: Tailwind, styled-components, Emotion, Sass, Less, vanilla-extract, Stitches, CVA, CSS Modules.
+
+**Recognised, not supported yet but on the roadmap**
+
+- Vue, Angular and Svelte: named in the header, colours and spacing still counted, but components are not measured and the report says so.
+- HeroUI, NextUI, Radix Themes, Fluent UI, React Bootstrap and Grommet: named in the header, no kit rules.
+
 ## What makes the numbers trustworthy
 
 - **Deterministic scanner, not AI sampling.** A zero-dependency Node script reads *every* file (about a second on a normal repo, a few on a large monorepo) and returns the same numbers every run. Claude narrates; it never counts.

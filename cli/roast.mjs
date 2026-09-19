@@ -106,7 +106,7 @@ For your agent (a plain terminal has no agent to write these)
   --mcp           run as a local MCP server (stdio) so your agent can query
                   the design system live: context, canonical components,
                   tokens, validation. Add to your client, e.g. Claude Code:
-                  claude mcp add roast -- npx roast-my-design-system --mcp
+                  claude mcp add roast -- npx roast-my-design-system@latest --mcp
 
 Read-only scan (--apply and --rules write only the files they name).
 No network, no telemetry, nothing leaves your machine.`);

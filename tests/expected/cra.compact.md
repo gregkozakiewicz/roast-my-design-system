@@ -26,4 +26,4 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
   (1 static inline block already exist; do not add to them.)
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
-*Compact rules by roast-my-design-system ver. X; the full set with receipts: npx roast-my-design-system --rules*
+*Compact rules by roast-my-design-system ver. X; the full set with receipts: npx roast-my-design-system@latest --rules*

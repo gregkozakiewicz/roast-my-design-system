@@ -220,7 +220,7 @@ To use it in Claude Code, type `/mcp__roast__roast-fix` in the chat. MCP prompts
 Otherwise, add it to Claude Code by hand:
 
 ```bash
-claude mcp add roast -- npx roast-my-design-system --mcp
+claude mcp add roast -- npx roast-my-design-system@latest --mcp
 ```
 
 **Verified in Claude Code, Cursor, and Windsurf (now Devin Desktop).** Each was tested end to end: server connected, all 5 tools listed, real answers in the editor's own chat. Same promise as the scan: local, read-only, one scan at startup, no port, no account, nothing about your code leaves your machine. A clean answer reads "no measured violations found" with the list of checks attached, because a scanner can only certify what it can count.

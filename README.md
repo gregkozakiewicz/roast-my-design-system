@@ -121,7 +121,7 @@ The same report in light mode (one file, built-in toggle):
 
 ## What it works on
 
-**Works, with a report you can defend**
+**Supported**
 
 - React repos: Next, Remix, Vite and plain React.
 - Web-component repos: Stencil and Lit.

@@ -2,6 +2,14 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.4.1 — 2026-09-19
+
+- **Every `npx` command now reads `npx roast-my-design-system@latest`**, in the
+  README, the skill text, the CLI help and the footer of the generated rules
+  file. The plain form can pick up an older copy left in a folder above the
+  repo, and then run that instead of the current release. The `@latest` form
+  always resolves to the newest version on npm.
+
 ## 8.4.0 — 2026-09-18
 
 A second skill for the Claude Code plugin: review what changed.

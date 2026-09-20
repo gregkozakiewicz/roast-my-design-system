@@ -43,6 +43,13 @@ const DOOR_COLOR_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border)-(?:
 const DOOR_TYPO_RE = /(?<![\w-])(?:[\w-]+:)*(?:font-(?:thin|extralight|light|normal|medium|semibold|bold|extrabold|black)|text-(?:xs|sm|base|lg|xl|[2-9]xl))(?![\w-])/g;
 
 // exported for the checkers: a demo folder is not own code there either
+// A comment is not paint (2026-09-20: an agent's note `{/* border-green-500
+// is deliberate */}` counted as a second use). Block and line comments are
+// blanked to spaces, never cut, so every index still points at its line.
+// The `//` guard keeps `https://` inside a string intact, as kitpaint does.
+export const blankComments = (s) => s
+  .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+  .replace(/(^|[^:'"`\\])(\/\/[^\n]*)/g, (m, pre, c) => pre + ' '.repeat(c.length));
 export const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demos?|templates?|playground|fixtures?|__tests__|__mocks__|e2e|cypress)\//i;
 
 /**
@@ -71,9 +78,10 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(),
 
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx)$/.test(f) || inCatalogue(f) || DEMO_PATH_RE.test(f)) continue;
-    const src = readSource(join(root, f));
-    if (src === null || exemptReason(f, src)) continue;
+    const raw = readSource(join(root, f));
+    if (raw === null || exemptReason(f, raw)) continue;
     ownFiles += 1;
+    const src = blankComments(raw);
 
     // a palette name the theme gave its own colour is the theme, not drift
     // and a palette grey is only drift where the theme has a grey of its own

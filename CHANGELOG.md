@@ -2,6 +2,24 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.4.4 — 2026-09-20
+
+- **A palette class named in a comment is no longer counted.** The report's
+  "off-theme colours" tile and the live checks (`roast_validate`,
+  `roast_review`, `--check`, the review skill) matched Tailwind palette
+  classes in the raw file, so a note such as `{/* border-green-500 is
+  deliberate */}` counted as a second use of the class. Block and line
+  comments are now blanked before matching, on the report and the checks
+  alike, and line numbers in findings are unchanged. On nine public shadcn
+  repos this removed 36 hits out of about 5,400, all of them in comments;
+  the report and the checks still agree exactly on every repo.
+- **The palette finding's fix now says token.** It read "use a theme name as
+  the class; if the colour is missing, add it to the theme once". It now
+  reads "use a theme token as the class (`border-border`). If no token fits,
+  add one to the theme once, for example `success`, and use
+  `border-success`." The rest of the product says token; this line now does
+  too, and it shows the class that results.
+
 ## 8.4.3 — 2026-09-20
 
 - **`roast_get_context` names the files of every duplicated component.** The

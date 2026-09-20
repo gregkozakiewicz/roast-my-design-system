@@ -772,6 +772,18 @@ console.log('kits in the mcp:');
   // re-checks in src/ alone, then disputes. The receipt travels with it.
   const mctx = mcpTools.getContext(loadKnowledge(join(FIXTURES, 'messy')), {});
   /<Button> exists in 2 places \([^)]*\.(tsx|jsx)[^)]*, [^)]*\.(tsx|jsx)[^)]*\)/.test(mctx) ? ok('context names both files of a duplicate') : bad('duplicate paths in context', mctx.split('\n').find((l) => l.includes('exists in')) ?? mctx);
+
+
+  // 2026-09-20: a palette class named in a comment is not paint, on either door
+  const noted = `import { Card } from '@/components/ui/card';
+{/* border-green-500 is deliberate: no green token yet */}
+// see also text-gray-500 in the old design
+export const X = () => <Card className="border-green-500">x</Card>; // https://example.com/text-red-500`;
+  const nf = validateContent({ text: noted, file: 'src/app/y.tsx' }, sk).findings.filter((f) => f.rule === 'palette-class');
+  nf.length === 1 && nf[0].line === 4 ? ok('shadcn: a class in a comment is not paint, the real one keeps its line number') : bad('comment palette', JSON.stringify(nf));
+  nf[0]?.fix.includes('theme token') && nf[0].fix.includes('border-success') ? ok('the palette fix says token and shows the class that results') : bad('palette fix wording', nf[0]?.fix);
+  const tnf = validateContent({ text: `// text-emerald-600 was the old accent\nexport const X = () => <span className="text-ink">x</span>;` }, tk).findings.filter((f) => f.rule === 'palette-class');
+  tnf.length === 0 ? ok('tailwind theme: a class in a comment is not paint') : bad('tailwind comment palette', JSON.stringify(tnf));
 }
 
 console.log('mcp server:');

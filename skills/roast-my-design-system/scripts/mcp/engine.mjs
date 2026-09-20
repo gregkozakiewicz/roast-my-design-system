@@ -17,7 +17,7 @@ import { exemptReason } from '../lib/exempt.mjs';
 import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
 import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
 import { kitPaintInSource } from '../lib/kitpaint.mjs';
-import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE } from '../harvest/paint.mjs';
+import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
 export const CHECKS = [
@@ -164,10 +164,13 @@ export function validateContent(content, k) {
     // foreground name, a bg- class a surface or background name
     const names = paletteRule === 'tailwind' ? (tw.names ?? []) : ['primary', 'foreground', 'muted-foreground', 'background', 'border'];
     const pick = (re) => names.find((n) => re.test(n)) ?? names[0] ?? 'brand';
-    const hits = [...text.matchAll(PALETTE_CLASS_RE)];
+    // a class named in a comment paints nothing; blanked, not cut, so the
+    // line numbers below still hold
+    const code = blankComments(text);
+    const hits = [...code.matchAll(PALETTE_CLASS_RE)];
     // the evening override painted by hand (dark:bg-black) is the same sin
     // on a shadcn sheet, which always has a dark row of its own
-    if (paletteRule === 'shadcn') hits.push(...text.matchAll(DARK_WB_RE));
+    if (paletteRule === 'shadcn') hits.push(...code.matchAll(DARK_WB_RE));
     for (const m of hits.sort((a, b) => a.index - b.index)) {
       const cls = m[0];
       const util = cls.replace(/^((?:[\w-]+:)*[a-z]+)-.*$/, '$1');
@@ -176,7 +179,7 @@ export function validateContent(content, k) {
       if (!hasFamily(cls)) continue;
       add('palette-class', 'violation', m.index,
         `Palette class ${cls} where the theme names its colours (${themeFile}).`,
-        `Use a theme name as the class (${util}-${example}); if the colour is missing, add it to the theme once.`);
+        `Use a theme token as the class (${util}-${example}). If no token fits, add one to the theme once, for example success, and use ${util}-success.`);
     }
   }
 

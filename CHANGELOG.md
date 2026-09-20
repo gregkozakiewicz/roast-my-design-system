@@ -2,6 +2,23 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.4.2 — 2026-09-20
+
+- **`roast_validate`, `roast_review`, `--check` and the review skill now flag
+  Tailwind palette classes on shadcn repos.** A class such as `ring-green-500`
+  or `dark:bg-black` written in your own code, where the theme sheet names a
+  colour of that kind, is reported with the sheet's path and a theme class to
+  use instead. The report has counted these since 7.2 under "off-theme
+  colours per 100 files"; the live checks only ran the rule on Tailwind
+  themes, so an agent could write a colour the report would count and be told
+  the review was clean. The rule now runs on the same files as the tile: your
+  own code and installed registries, never the shadcn catalogue, kit blocks
+  or demo folders. Checked on nine public shadcn repos: the tile's count and
+  the review's findings match exactly on every one.
+- **`roast_get_context` on a shadcn repo** now says to use the theme's classes
+  (`bg-primary`, `text-muted-foreground`) and never a palette class, in the
+  same line that names the token file.
+
 ## 8.4.1 — 2026-09-19
 
 - **Every `npx` command now reads `npx roast-my-design-system@latest`**, in the

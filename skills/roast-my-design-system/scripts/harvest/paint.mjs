@@ -35,13 +35,15 @@ export const PALETTE_CLASS_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|b
 // Evening overrides painted by hand with white or black (the palette shades
 // are already caught above with their dark: prefix).
 export const GREY_HUE_RE = /-(?:slate|gray|zinc|neutral|stone|mauve|olive|mist|taupe|white|black)(?:-|\/|$)/;
-const DARK_WB_RE = /(?<![\w-])dark:(?:bg|text|border)-(?:white|black)(?:\/\d+)?(?![\w-])/g;
+// exported for the checkers: the same override judged on a file under review
+export const DARK_WB_RE = /(?<![\w-])dark:(?:bg|text|border)-(?:white|black)(?:\/\d+)?(?![\w-])/g;
 // Colour passed into a kit door: palette colour, black, white, any variant prefix.
 const DOOR_COLOR_RE = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border)-(?:${PALETTE}|white|black)(?:-(?:50|[1-9]00|950))?(?:/\\d+)?(?![\\w-])`, 'g');
 // Typography passed into a kit door: weight or size. A receipt, not a score.
 const DOOR_TYPO_RE = /(?<![\w-])(?:[\w-]+:)*(?:font-(?:thin|extralight|light|normal|medium|semibold|bold|extrabold|black)|text-(?:xs|sm|base|lg|xl|[2-9]xl))(?![\w-])/g;
 
-const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demos?|templates?|playground|fixtures?|__tests__|__mocks__|e2e|cypress)\//i;
+// exported for the checkers: a demo folder is not own code there either
+export const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demos?|templates?|playground|fixtures?|__tests__|__mocks__|e2e|cypress)\//i;
 
 /**
  * @param root repo root

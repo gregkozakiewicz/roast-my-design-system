@@ -50,7 +50,7 @@ export function getContext(k, { path = null } = {}) {
     if (kit.colour?.uses) L.push(`  ${kit.colour.uses} colours are already written onto components (${kit.colour.samples.slice(0, 3).map((x) => x.value).join(', ')}); do not add one.`);
   } else if (t.tokenFile) {
     const strays = t.colors.length - k.tokenColors.length;
-    L.push(`TOKENS: ${k.tokenColors.length} colour tokens in ${t.tokenFile}. Use them; never hardcode a colour.${strays ? ` (${strays} hardcoded strays already exist; do not add more.)` : ''}`);
+    L.push(`TOKENS: ${k.tokenColors.length} colour tokens in ${t.tokenFile}. Use them${k.shadcn ? ' as classes (bg-primary, text-muted-foreground); never a palette class (text-gray-500, ring-green-500) and' : ';'} never hardcode a colour.${strays ? ` (${strays} hardcoded strays already exist; do not add more.)` : ''}`);
   } else if (t.colors.length) {
     L.push(`TOKENS: none defined. ${t.colors.length} distinct colours already in play; reuse one, never invent another.`);
   }

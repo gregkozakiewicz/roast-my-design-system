@@ -17,7 +17,7 @@ import { exemptReason } from '../lib/exempt.mjs';
 import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
 import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
 import { kitPaintInSource } from '../lib/kitpaint.mjs';
-import { PALETTE_CLASS_RE, GREY_HUE_RE } from '../harvest/paint.mjs';
+import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE } from '../harvest/paint.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
 export const CHECKS = [
@@ -37,7 +37,7 @@ export const KIT_CHECK = 'colours and pixel sizes written onto kit components wh
 export const PALETTE_CHECK = 'palette classes where the theme names a colour';
 export function checksFor(k) {
   if (k?.kit) return [...CHECKS, KIT_CHECK];
-  if (k?.tailwind) return [...CHECKS, PALETTE_CHECK];
+  if (k?.tailwind || k?.shadcn) return [...CHECKS, PALETTE_CHECK];
   return CHECKS;
 }
 // "an MUI component", "an Ant Design component", "a Mantine component"
@@ -142,27 +142,40 @@ export function validateContent(content, k) {
     }
   }
 
-  // ---------- a Tailwind theme's palette classes ----------
-  // The theme names its colours (bg-surface, text-ink); a palette class
-  // (text-gray-500) where the theme has a colour of that kind is paint from
-  // the tin. Same rule as the report's tile, from harvest/paint.mjs.
-  if (k.tailwind && !css) {
-    const tw = k.tailwind;
+  // ---------- palette classes where the theme names its colours ----------
+  // A Tailwind theme names its colours (bg-surface, text-ink); a shadcn sheet
+  // names them too (bg-primary, text-muted-foreground). A palette class
+  // (text-gray-500, ring-green-500) where a name of that kind exists is paint
+  // from the tin. Same rule as the report's tile, from harvest/paint.mjs.
+  // On a shadcn repo the catalogue and kit blocks are the kit's own doors
+  // (editing them is the intended use) and a demo folder is not own code,
+  // exactly the files the tile leaves out.
+  const inShadcnDoors = (f) => !!f && k.shadcn.doors.some((d) => f === d || f.startsWith(`${d}/`));
+  const paletteRule = k.tailwind ? 'tailwind'
+    : k.shadcn && !(file && (inShadcnDoors(file) || DEMO_PATH_RE.test(file))) ? 'shadcn'
+    : null;
+  if (paletteRule && !css) {
+    const tw = k.tailwind ?? {};
     const retuned = new Set(tw.retuned ?? []);
     const fam = tw.families ?? null;
     const hasFamily = (cls) => !fam || (GREY_HUE_RE.test(cls) ? fam.grey : fam.colour);
+    const themeFile = paletteRule === 'tailwind' ? tw.file : (k.shadcn.sheet ?? 'the theme sheet');
     // the example name follows the utility: a text- class wants an ink or
     // foreground name, a bg- class a surface or background name
-    const names = tw.names ?? [];
+    const names = paletteRule === 'tailwind' ? (tw.names ?? []) : ['primary', 'foreground', 'muted-foreground', 'background', 'border'];
     const pick = (re) => names.find((n) => re.test(n)) ?? names[0] ?? 'brand';
-    for (const m of text.matchAll(PALETTE_CLASS_RE)) {
+    const hits = [...text.matchAll(PALETTE_CLASS_RE)];
+    // the evening override painted by hand (dark:bg-black) is the same sin
+    // on a shadcn sheet, which always has a dark row of its own
+    if (paletteRule === 'shadcn') hits.push(...text.matchAll(DARK_WB_RE));
+    for (const m of hits.sort((a, b) => a.index - b.index)) {
       const cls = m[0];
       const util = cls.replace(/^((?:[\w-]+:)*[a-z]+)-.*$/, '$1');
       const example = /(^|:)(?:text|placeholder|caret|decoration)$/.test(util) ? pick(/ink|text|fg|foreground/) : /(^|:)bg$/.test(util) ? pick(/surface|bg|background|canvas/) : pick(/border|edge|line|ring/) ;
       if (retuned.has(cls.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, ''))) continue;
       if (!hasFamily(cls)) continue;
       add('palette-class', 'violation', m.index,
-        `Palette class ${cls} where the theme names its colours (${tw.file}).`,
+        `Palette class ${cls} where the theme names its colours (${themeFile}).`,
         `Use a theme name as the class (${util}-${example}); if the colour is missing, add it to the theme once.`);
     }
   }

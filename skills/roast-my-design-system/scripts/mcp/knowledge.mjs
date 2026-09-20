@@ -149,6 +149,17 @@ export function loadKnowledge(root) {
     // colours in: null when the repo is neither (see profiles/)
     kit,
     tailwind: P.isTailwind && profile.tailwind ? profile.tailwind : null,
+    // A shadcn kitchen: the sheet names the colours, so a palette class in
+    // own code is paint from a tin (shadcn's own rule: semantic colours,
+    // never bg-blue-500). The report's tile counts it over own code plus
+    // installed registries, never inside the catalogue or a kit block; the
+    // checkers judge a file under review by the same line (2026-09-20: the
+    // report counted a ring-green-500 that validate, review and --check let
+    // through, because the rule was switched on for Tailwind themes only).
+    shadcn: P.isShadcn && profile.shadcn ? {
+      sheet: profile.shadcn.sheet?.found ? profile.shadcn.sheet.file : null,
+      doors: [...P.uiDirs, ...(profile.shadcn.blockFiles ?? [])],
+    } : null,
     agentFiles: (context ?? []).filter((c) => c.kind === 'agent-rules'),
   };
 }

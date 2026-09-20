@@ -752,6 +752,21 @@ console.log('kits in the mcp:');
   pal.findings[0].fix.includes('text-ink') ? ok('the fix names a theme class that fits the utility') : bad('palette fix', pal.findings[0].fix);
   const own = mcpTools.validate(tk, { code: `export const X = () => <span className="text-ink bg-surface border-edge">x</span>;` });
   own.startsWith('No measured violations') && own.includes('palette classes') ? ok('theme names as classes are clean, and the palette check is listed') : bad('tailwind clean', own.slice(0, 120));
+
+  // 2026-09-20: the report's shadcn tile counted a ring-green-500 that
+  // validate, review and --check let through; the palette rule ran on
+  // Tailwind themes only. Same rule, same files, both doors.
+  const sk = loadKnowledge(join(FIXTURES, 'shadcncustom'));
+  mcpTools.getContext(sk, {}).includes('never a palette class') ? ok('shadcn context says no palette classes') : bad('shadcn context palette', mcpTools.getContext(sk, {}));
+  const tin = `import { Card } from '@/components/ui/card';\nexport const X = () => <Card className="ring-green-500 dark:bg-black bg-primary">x</Card>;`;
+  const sp = validateContent({ text: tin, file: 'src/app/x.tsx' }, sk);
+  const spc = sp.findings.filter((f) => f.rule === 'palette-class').map((f) => f.message.split(' ')[2]);
+  JSON.stringify(spc) === JSON.stringify(['ring-green-500', 'dark:bg-black']) ? ok('shadcn: palette classes and a hand-painted dark override are flagged, a theme class is not') : bad('shadcn palette-class', JSON.stringify(sp.findings));
+  sp.findings[0].message.includes('src/styles/globals.css') && sp.findings[0].fix.includes('ring-border') ? ok('shadcn: the finding names the sheet and a theme class for the utility') : bad('shadcn palette fix', JSON.stringify(sp.findings[0]));
+  validateContent({ text: tin, file: 'src/components/ui/x.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? bad('shadcn catalogue palette', 'flagged inside the catalogue') : ok('shadcn: the catalogue is the kit\'s own door, not judged for palette');
+  validateContent({ text: tin, file: 'src/stories/x.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? bad('shadcn demo palette', 'flagged in a stories folder') : ok('shadcn: a demo folder is not own code');
+  const sclean = mcpTools.validate(sk, { code: `export const X = () => <span className="text-muted-foreground bg-card">x</span>;` });
+  sclean.startsWith('No measured violations') && sclean.includes('palette classes') ? ok('shadcn: theme classes are clean, and the palette check is listed') : bad('shadcn clean', sclean.slice(0, 160));
 }
 
 console.log('mcp server:');

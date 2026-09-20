@@ -179,7 +179,7 @@ The report and the rules file describe the repo as it was at scan time. `--mcp` 
 
 The loop: context before building, find while building, validate before saving, review before finishing.
 
-The server reads the repo the way the report does. On a product built on MUI, Mantine, Chakra UI or Ant Design, the context names the theme file and the kit's own way of reading it, `roast_find_token` answers in spacing steps (`12px` is `p: 3` on a 4px MUI theme), and `roast_validate` and `roast_review` flag a colour or a pixel size written onto a kit component where the theme has a value. On a Tailwind theme they flag a palette class such as `text-gray-500` where the theme names a colour of that kind.
+The server reads the repo the way the report does. On a product built on MUI, Mantine, Chakra UI or Ant Design, the context names the theme file and the kit's own way of reading it, `roast_find_token` answers in spacing steps (`12px` is `p: 3` on a 4px MUI theme), and `roast_validate` and `roast_review` flag a colour or a pixel size written onto a kit component where the theme has a value. On a Tailwind theme or a shadcn repo they flag a palette class such as `text-gray-500` or `ring-green-500` where the theme names a colour of that kind.
 
 ### What a session looks like
 

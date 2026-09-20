@@ -4,7 +4,7 @@ TOKENS: 2 colour tokens in styles/main.css. Use them; never hardcode a colour. (
 USE THESE, DO NOT REBUILD THEM:
   <Card> from components/Card.tsx (7x)
 DUPLICATES, DO NOT MAKE IT WORSE:
-  <Button> exists in 2 places; match what the surrounding code imports, never create another.
+  <Button> exists in 2 places (components/Button.tsx, widgets/Button.tsx); match what the surrounding code imports, never create another.
 SPACING: this repo has no scale, just 4 values in circulation. Reuse one rather than inventing value number 5; do not treat them as a system.
 TYPE: Georgia, Inter. No new typefaces, no hand-declared font stacks.
 DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.

@@ -767,6 +767,11 @@ console.log('kits in the mcp:');
   validateContent({ text: tin, file: 'src/stories/x.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? bad('shadcn demo palette', 'flagged in a stories folder') : ok('shadcn: a demo folder is not own code');
   const sclean = mcpTools.validate(sk, { code: `export const X = () => <span className="text-muted-foreground bg-card">x</span>;` });
   sclean.startsWith('No measured violations') && sclean.includes('palette classes') ? ok('shadcn: theme classes are clean, and the palette check is listed') : bad('shadcn clean', sclean.slice(0, 160));
+
+  // 2026-09-20: a duplicate named without its paths is a claim the agent
+  // re-checks in src/ alone, then disputes. The receipt travels with it.
+  const mctx = mcpTools.getContext(loadKnowledge(join(FIXTURES, 'messy')), {});
+  /<Button> exists in 2 places \([^)]*\.(tsx|jsx)[^)]*, [^)]*\.(tsx|jsx)[^)]*\)/.test(mctx) ? ok('context names both files of a duplicate') : bad('duplicate paths in context', mctx.split('\n').find((l) => l.includes('exists in')) ?? mctx);
 }
 
 console.log('mcp server:');

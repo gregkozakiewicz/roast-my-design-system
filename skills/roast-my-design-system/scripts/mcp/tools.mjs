@@ -60,7 +60,15 @@ export function getContext(k, { path = null } = {}) {
   const canon = k.canonical.filter((c) => inPkg(c.file)).slice(0, 5)
     .map((c) => `  <${c.name}> from ${c.file} (${c.usageCount}x)`);
   const dupes = [...k.dupeByName.values()].filter((d) => d.files.some((f) => inPkg(typeof f === 'string' ? f : f.file))).slice(0, 3)
-    .map((d) => `  <${d.name}> exists in ${d.files.length} places; match what the surrounding code imports, never create another.`);
+    // Name the places (2026-09-20): an agent given a count and no paths goes
+    // looking in src/, finds one copy and calls the scan wrong; the second
+    // copy was under a templates folder it never opened. A receipt ends the
+    // argument and tells the agent which copy not to import.
+    .map((d) => {
+      const paths = d.files.map((f) => (typeof f === 'string' ? f : f.file));
+      const shown = paths.slice(0, 3).join(', ') + (paths.length > 3 ? `, +${paths.length - 3} more` : '');
+      return `  <${d.name}> exists in ${d.files.length} places (${shown}); match what the surrounding code imports, never create another.`;
+    });
   const LISTS = Symbol('lists');
   L.push(LISTS);
 

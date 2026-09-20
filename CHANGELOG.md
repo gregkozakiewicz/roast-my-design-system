@@ -2,6 +2,16 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.4.3 — 2026-09-20
+
+- **`roast_get_context` names the files of every duplicated component.** The
+  line used to read "`<AppSidebar>` exists in 2 places"; it now lists the
+  places, up to three, with a count for the rest. Without the paths an agent
+  would look in `src/`, find one copy and report the scan as wrong, when the
+  second copy sat in a templates folder it had not opened. With the paths
+  there is nothing to check, and the agent can see which copy not to import
+  from. The answer stays inside the 400-token budget on every fixture.
+
 ## 8.4.2 — 2026-09-20
 
 - **`roast_validate`, `roast_review`, `--check` and the review skill now flag

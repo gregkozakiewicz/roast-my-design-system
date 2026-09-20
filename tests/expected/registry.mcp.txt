@@ -4,9 +4,9 @@ TOKENS: 13 colour tokens in app/globals.css. Use them as classes (bg-primary, te
 USE THESE, DO NOT REBUILD THEM:
   <Button> from components/ui/button.tsx (1x)
 DUPLICATES, DO NOT MAKE IT WORSE:
-  <Ubadge> exists in 2 places; match what the surrounding code imports, never create another.
-  <Ucard> exists in 2 places; match what the surrounding code imports, never create another.
-  <Ukbd> exists in 2 places; match what the surrounding code imports, never create another.
+  <Ubadge> exists in 2 places (registry/base/ui/badge.tsx, registry/radix/ui/badge.tsx); match what the surrounding code imports, never create another.
+  <Ucard> exists in 2 places (registry/base/ui/card.tsx, registry/radix/ui/card.tsx); match what the surrounding code imports, never create another.
+  <Ukbd> exists in 2 places (registry/base/ui/kbd.tsx, registry/radix/ui/kbd.tsx); match what the surrounding code imports, never create another.
 SPACING: nothing on record yet. Whatever you pick, the next agent will copy; pick something divisible by 4.
 DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
 NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.

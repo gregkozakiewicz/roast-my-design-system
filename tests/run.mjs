@@ -911,6 +911,22 @@ if (existsSync(bin)) {
     ? ok('--no-open stays silent and opens nothing') : bad('--no-open', `opened ${opens()} times`);
 }
 
+// The guard doorway (8.4.5): the comment blanker the report and the live
+// checks run before matching palette classes is exposed, so a guard that
+// reads the same doorway stops counting a class named in a comment.
+{
+  console.log('\nguard doorway:');
+  const api = await import(pathToFileURL(join(ENGINE, 'lib/guard-api.mjs')).href);
+  const src = '{/* border-green-500 is deliberate */}\nconst a = "bg-blue-500"; // text-red-500\n';
+  const named = (t) => [...t.matchAll(new RegExp(api.PALETTE_CLASS_RE.source, 'g'))].map((m) => m[0]);
+  typeof api.blankComments === 'function'
+    ? ok('the doorway exposes blankComments') : bad('doorway', 'blankComments is not exported');
+  const blanked = api.blankComments(src);
+  named(blanked).join(',') === 'bg-blue-500' && blanked.split('\n').length === src.split('\n').length
+    ? ok('a palette class in a comment paints nothing, and line numbers hold')
+    : bad('blankComments', `got ${named(blanked).join(',') || 'nothing'}`);
+}
+
 rmSync(tmp, { recursive: true, force: true });
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

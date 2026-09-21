@@ -12,7 +12,7 @@
 import { extname, join } from 'node:path';
 import { walkRepo, readSource, profileRepo } from '../harvest/walk.mjs';
 import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
-import { PALETTE_CLASS_RE } from '../harvest/paint.mjs';
+import { PALETTE_CLASS_RE, blankComments } from '../harvest/paint.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { harvestComponents, definedComponents } from '../harvest/components.mjs';
 import { loadExclusions } from './exclusions.mjs';
@@ -35,7 +35,10 @@ export { EMAIL_PRINT_RE, ARTWORK_NAME_RE, SVG_MARKUP_RE, exemptReason } from './
 export { WIDGET_CSS_RE, WIDGET_CONFIG_RE, LIBRARY_CLASS_RE, isLibraryClass } from './exempt.mjs';
 // A palette class (bg-blue-500, text-gray-600) where a theme variable exists:
 // the shadcn paint check (7.2). Only meaningful when system.profile.paletteReady.
-export { PALETTE_CLASS_RE };
+// blankComments (8.4.5) is what the report and the live checks run on a file
+// before matching, so a class named in a comment paints nothing; a guard that
+// matches the raw text counts it, and disagrees with the report.
+export { PALETTE_CLASS_RE, blankComments };
 
 // Radius, font size, shadow and typeface: the patterns, so both checkers agree
 // on what a declaration is and what counts as a disciplined value.

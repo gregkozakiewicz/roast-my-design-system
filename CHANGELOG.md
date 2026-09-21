@@ -2,6 +2,14 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.4.5 — 2026-09-22
+
+- **The guard doorway exposes the comment blanker.** `blankComments`, the
+  step the report and the live checks run on a file before matching palette
+  classes (8.4.4), is now exported from `roast-my-design-system/engine`. A
+  guard that reads the doorway can run the same step, so a class named in a
+  comment is counted by neither tool. Nothing in the scan changes.
+
 ## 8.4.4 — 2026-09-20
 
 - **A palette class named in a comment is no longer counted.** The report's

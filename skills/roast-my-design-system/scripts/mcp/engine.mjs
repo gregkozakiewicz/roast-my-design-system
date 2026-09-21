@@ -16,7 +16,7 @@ import { hexRgb } from '../lib/nearpairs.mjs';
 import { exemptReason } from '../lib/exempt.mjs';
 import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
 import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
-import { kitPaintInSource } from '../lib/kitpaint.mjs';
+import { kitPaintFindings } from '../lib/kitpaint.mjs';
 import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
@@ -41,8 +41,6 @@ export function checksFor(k) {
   return CHECKS;
 }
 // "an MUI component", "an Ant Design component", "a Mantine component"
-const aKit = (name) => (/^(?:[AEIOU]|MUI)/.test(name) ? `an ${name}` : `a ${name}`);
-const plain = (html) => String(html ?? '').replace(/<\/?code>/g, '').replace(/&quot;/g, '"');
 
 const CSS_FILE_RE = /\.(css|scss|sass|less|styl)$/i;
 const lineOf = (text, index) => text.slice(0, index).split('\n').length;
@@ -115,29 +113,12 @@ export function validateContent(content, k) {
   // compare, SVG artwork), so the generic check stays out of its way.
   let kitOwnsColours = false;
   if (k.kit?.def && !css) {
-    const paint = kitPaintInSource(text, k.kit.def, { file, layers: k.kit.layers ?? [] });
-    if (paint && !paint.exempt) {
+    const judged = kitPaintFindings(text, k.kit, { file });
+    if (judged && !judged.exempt) {
       kitOwnsColours = true;
-      const kitName = k.kit.name, adv = k.kit.def.advice, themeFile = k.kit.themeFiles?.[0] ?? null;
-      const themeSet = new Set(k.kit.themeValues ?? []);
-      for (const c of paint.colours) {
-        if (themeSet.has(c.value)) {
-          add('kit-colour', 'violation', c.index,
-            `Colour ${c.value} written onto ${aKit(kitName)} component. The theme already holds it${themeFile ? ` (${themeFile})` : ''}.`,
-            plain(adv.colourHow));
-        } else {
-          add('kit-colour', 'violation', c.index,
-            `Colour ${c.value} written onto ${aKit(kitName)} component, and the theme has no such colour.`,
-            `Add it to the theme once${themeFile ? ` (${themeFile})` : ` with ${adv.themeCall}`}, then read it there. ${plain(adv.colourHow)}`);
-        }
-      }
-      for (const h of paint.px) {
-        const [prop, raw] = h.value.split(': ');
-        kitPx.add(raw);
-        add('kit-px', 'violation', h.index,
-          `Pixel size ${h.value} on ${aKit(kitName)} component.`,
-          adv.step ? adv.step(k.kit, parseFloat(raw)) : plain(adv.spacingHow?.(k.kit)));
-        void prop;
+      for (const f of judged.findings) {
+        if (f.rule === 'kit-px') kitPx.add(f.value.split(': ')[1]);
+        add(f.rule, 'violation', f.index, f.message, f.fix);
       }
     }
   }

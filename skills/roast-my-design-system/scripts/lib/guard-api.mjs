@@ -12,6 +12,8 @@
 import { extname, join } from 'node:path';
 import { walkRepo, readSource, profileRepo } from '../harvest/walk.mjs';
 import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
+import { KITS } from '../profiles/kit-common.mjs';
+import { kitPaintFindings } from './kitpaint.mjs';
 import { PALETTE_CLASS_RE, blankComments } from '../harvest/paint.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { harvestComponents, definedComponents } from '../harvest/components.mjs';
@@ -39,6 +41,13 @@ export { WIDGET_CSS_RE, WIDGET_CONFIG_RE, LIBRARY_CLASS_RE, isLibraryClass } fro
 // before matching, so a class named in a comment paints nothing; a guard that
 // matches the raw text counts it, and disagrees with the report.
 export { PALETTE_CLASS_RE, blankComments };
+// A product built on a kit (MUI, Mantine, Chakra UI, Ant Design), 8.4.6: a
+// colour or a pixel size written onto a kit component where the theme has a
+// value. kitPaintFindings(fileText, system.profile.kit, { file }) returns the
+// worded findings the report's live checks give for the same file, with the
+// index of each in the text; null when the file is not a kit file, { exempt }
+// when it is not judged. Only meaningful when system.profile.kit is set.
+export { kitPaintFindings };
 
 // Radius, font size, shadow and typeface: the patterns, so both checkers agree
 // on what a declaration is and what counts as a disciplined value.
@@ -81,6 +90,10 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   const profile = profileRepo(repoRoot, files);
   decideProfile(profile, components, files, repoRoot);
   const P = profileOf(profile);
+  // the kit the product is built on, with its definition attached, the way
+  // the MCP knowledge reads it (mcp/knowledge.mjs): the theme's colours are
+  // the token set on a kit repo, whatever stylesheet holds the most literals
+  const kit = P.isKit && profile.kit && KITS[profile.kit.name] ? { ...profile.kit, def: KITS[profile.kit.name] } : null;
   const widgetDirs = files.code.filter((f) => /(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f))
     .filter((f) => WIDGET_CONFIG_RE.test(readSource(join(repoRoot, f)) ?? ''))
     .map((f) => f.slice(0, f.lastIndexOf('/') + 1));
@@ -107,7 +120,7 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     // report counts a token's base statement only, because a dark theme is
     // the system working rather than sprawl; a guard needs the opposite, the
     // full set, or it cannot recognise a dark-theme value as on-system.
-    tokens: t.tokenColors ?? t.colors.filter((c) => c.isToken).map((c) => c.value),
+    tokens: [...new Set([...(t.tokenColors ?? t.colors.filter((c) => c.isToken).map((c) => c.value)), ...(kit?.themeValues ?? [])])],
     tokenNames,
     spacing: t.spacing,
     radii: t.radii,
@@ -132,6 +145,9 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
       // only a shadcn kit has installed code; a hand-written components/ui on a
       // plain product is the team's own (the report splits nothing there either)
       installedDirs: P.isShadcn && !P.isRegistry ? installedDirs(P) : [],
+      // a product built on a kit: name, theme files and values, spacing step,
+      // the team's own layers over it, and the definition kitPaintFindings reads
+      kit,
       // a shadcn kit whose theme file holds the variables, in CSS-variable
       // mode: a palette class in own code is paint from a tin
       paletteReady: P.isShadcn && (P.shadcn?.sheet?.shadcnPresent ?? 0) >= 5 && P.designSystem?.cssVariables !== false,

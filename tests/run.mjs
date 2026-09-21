@@ -925,6 +925,23 @@ if (existsSync(bin)) {
   named(blanked).join(',') === 'bg-blue-500' && blanked.split('\n').length === src.split('\n').length
     ? ok('a palette class in a comment paints nothing, and line numbers hold')
     : bad('blankComments', `got ${named(blanked).join(',') || 'nothing'}`);
+
+  // 8.4.6: the kit and the kit judgement go through the same doorway, so a
+  // guard says about a kit line exactly what validate and review say
+  const sys = api.learnSystem(join(FIXTURES, 'muikit'));
+  sys.profile.kit?.name === 'MUI' && sys.profile.kit.themeFiles[0] === 'src/theme/theme.ts'
+    ? ok('the doorway names the kit and its theme file') : bad('doorway kit', JSON.stringify(sys.profile.kit));
+  sys.tokens.includes('#667085') ? ok('the theme colours are the token set on a kit repo') : bad('doorway kit tokens', sys.tokens.join(','));
+  const kitCode = `import Box from '@mui/material/Box';\nexport const X = () => <Box sx={{ color: '#667085', p: '12px', bgcolor: '#ff0000' }} />;`;
+  const judged = api.kitPaintFindings(kitCode, sys.profile.kit, { file: 'src/components/New.tsx' });
+  const { validateContent } = await import(pathToFileURL(join(ENGINE, 'mcp/engine.mjs')).href);
+  const live = validateContent({ text: kitCode, file: 'src/components/New.tsx' }, loadKnowledge(join(FIXTURES, 'muikit'))).findings
+    .filter((f) => f.rule.startsWith('kit-')).map((f) => `${f.rule}|${f.message}|${f.fix}`);
+  const door = judged.findings.map((f) => `${f.rule}|${f.message}|${f.fix}`);
+  door.length === 3 && door.every((d) => live.includes(d))
+    ? ok('the doorway and the live check word a kit line identically') : bad('doorway kit parity', `${door.join('\n')}\nvs\n${live.join('\n')}`);
+  api.kitPaintFindings(`export const a = 1;`, sys.profile.kit, { file: 'src/x.ts' }) === null
+    ? ok('a file that does not import the kit is not a kit file') : bad('doorway non-kit', 'judged');
 }
 
 rmSync(tmp, { recursive: true, force: true });

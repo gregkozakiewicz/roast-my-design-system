@@ -234,3 +234,47 @@ export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe,
     exempt: exempt.slice(0, 20),
   };
 }
+
+const aKit = (name) => (/^(?:[AEIOU]|MUI)/.test(name) ? `an ${name}` : `a ${name}`);
+const plain = (html) => String(html ?? '').replace(/<\/?code>/g, '').replace(/&quot;/g, '"');
+
+/**
+ * One file's kit findings, worded: what the MCP validate and review say about
+ * a line, and what guard-my-design-system says about the same line. One
+ * function, so the three never disagree. `kit` is the profile's kit with its
+ * definition attached ({ name, def, themeFiles, themeValues, spacingUnit,
+ * layers }). Returns null when the file is not a kit file or is the theme;
+ * { exempt } when the file is not judged, and why; otherwise
+ * { exempt: null, findings: [{ rule, index, value, label, note, message, fix }] }:
+ * label is the finding in a few words ("colour written onto an MUI
+ * component"), note what the theme says about it or null, message the two
+ * as one sentence for the live checks.
+ */
+export function kitPaintFindings(src, kit, { file = null } = {}) {
+  if (!kit?.def) return null;
+  const paint = kitPaintInSource(src, kit.def, { file, layers: kit.layers ?? [] });
+  if (!paint) return null;
+  if (paint.exempt) return { exempt: paint.exempt, findings: [] };
+  const adv = kit.def.advice, themeFile = kit.themeFiles?.[0] ?? null;
+  const themeSet = new Set(kit.themeValues ?? []);
+  const findings = [];
+  const colourLabel = `colour written onto ${aKit(kit.name)} component`;
+  for (const c of paint.colours) {
+    findings.push(themeSet.has(c.value)
+      ? { rule: 'kit-colour', index: c.index, value: c.value, label: colourLabel,
+          note: `the theme already holds it${themeFile ? ` (${themeFile})` : ''}`,
+          message: `Colour ${c.value} written onto ${aKit(kit.name)} component. The theme already holds it${themeFile ? ` (${themeFile})` : ''}.`,
+          fix: plain(adv.colourHow) }
+      : { rule: 'kit-colour', index: c.index, value: c.value, label: colourLabel,
+          note: 'the theme has no such colour',
+          message: `Colour ${c.value} written onto ${aKit(kit.name)} component, and the theme has no such colour.`,
+          fix: `Add it to the theme once${themeFile ? ` (${themeFile})` : ` with ${adv.themeCall}`}, then read it there. ${plain(adv.colourHow)}` });
+  }
+  for (const h of paint.px) {
+    const raw = h.value.split(': ')[1];
+    findings.push({ rule: 'kit-px', index: h.index, value: h.value, label: `pixel size on ${aKit(kit.name)} component`, note: null,
+      message: `Pixel size ${h.value} on ${aKit(kit.name)} component.`,
+      fix: adv.step ? adv.step(kit, parseFloat(raw)) : plain(adv.spacingHow?.(kit)) });
+  }
+  return { exempt: null, findings };
+}

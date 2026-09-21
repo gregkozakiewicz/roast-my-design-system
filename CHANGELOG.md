@@ -2,6 +2,19 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.4.6 — 2026-09-22
+
+- **The guard doorway exposes the kit check.** On a product built on MUI,
+  Mantine, Chakra UI or Ant Design, `roast-my-design-system/engine` now names
+  the kit, its theme files, the theme's colours and its spacing step, counts
+  the theme's colours as the token set, and exports `kitPaintFindings`, the
+  judgement `roast_validate`, `roast_review` and `--check` give a kit file: a
+  colour or a pixel size written onto a kit component, with the same message
+  and the same fix. The wording moved out of the MCP server into the shared
+  kit module so the live checks and a guard read one text. Nothing in the
+  scan or the live checks changes; the suite proves the live check's kit
+  findings are unchanged.
+
 ## 8.4.5 — 2026-09-22
 
 - **The guard doorway exposes the comment blanker.** `blankComments`, the

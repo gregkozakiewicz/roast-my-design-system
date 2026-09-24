@@ -48,6 +48,14 @@ export { PALETTE_CLASS_RE, blankComments };
 // index of each in the text; null when the file is not a kit file, { exempt }
 // when it is not judged. Only meaningful when system.profile.kit is set.
 export { kitPaintFindings };
+// Twin tokens and avoided copies (8.6.0). tokenTwinFindings(text, { before,
+// others, tailwind }) words the colour tokens a stylesheet ADDS that twin one
+// the repo already has (tokenDefsOf reads a stylesheet's tokens, light and
+// dark, for `others`). avoidedImportFindings(text, { file, before, dupes })
+// words a new import of a duplicate where a clear canonical copy exists.
+// Same words as roast_validate, roast_review and --check.
+export { tokenTwinFindings, tokenDefsOf } from './tokentwins.mjs';
+export { avoidedImportFindings, canonicalCopy } from './avoidedimports.mjs';
 
 // Radius, font size, shadow and typeface: the patterns, so both checkers agree
 // on what a declaration is and what counts as a disciplined value.

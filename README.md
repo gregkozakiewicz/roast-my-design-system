@@ -221,7 +221,7 @@ It writes a first draft anyway and runs `roast_validate` before saving:
 Second draft: `color: 'text.secondary'`, `p: 1.5`, the radius read from the theme. `roast_validate` again:
 
 ```
-No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, colours and pixel sizes written onto kit components where the theme has a value.
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, new colour tokens that twin an existing token, imports of a duplicate the canonical copy replaces, colours and pixel sizes written onto kit components where the theme has a value.
 ```
 
 Four calls, under 800 tokens in total, and the new component reads the theme instead of adding colour number 44. `roast_review` then checks the whole diff the same way before the agent says it is done.

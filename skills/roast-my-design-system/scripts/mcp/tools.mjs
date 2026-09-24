@@ -50,7 +50,7 @@ export function getContext(k, { path = null } = {}) {
     if (kit.colour?.uses) L.push(`  ${kit.colour.uses} colours are already written onto components (${kit.colour.samples.slice(0, 3).map((x) => x.value).join(', ')}); do not add one.`);
   } else if (t.tokenFile) {
     const strays = t.colors.length - k.tokenColors.length;
-    L.push(`TOKENS: ${k.tokenColors.length} colour tokens in ${t.tokenFile}. Use them${k.shadcn ? ' as classes (bg-primary, text-muted-foreground); never a palette class (text-gray-500, ring-green-500) and' : ';'} never hardcode a colour.${strays ? ` (${strays} hardcoded strays already exist; do not add more.)` : ''}`);
+    L.push(`TOKENS: ${k.tokenColors.length} colour tokens in ${t.tokenFile}. Use them${k.shadcn ? ' as classes (bg-primary, text-muted-foreground); never a palette class (text-gray-500, ring-green-500) and' : ';'} never hardcode a colour. Do not add a token that duplicates an existing one; reuse it.${strays ? ` (${strays} hardcoded strays already exist; do not add more.)` : ''}`);
   } else if (t.colors.length) {
     L.push(`TOKENS: none defined. ${t.colors.length} distinct colours already in play; reuse one, never invent another.`);
   }
@@ -273,12 +273,35 @@ function toPxLocal(len) {
   return m[2] === 'px' ? parseFloat(m[1]) : parseFloat(m[1]) * 16;
 }
 
+// ---------- the file before the change ----------
+// The last commit's copy of a file, so a check can tell a token or an import
+// the change ADDS from one that was already there: null when the file is new
+// (git has a HEAD and no copy of it), undefined when there is nothing to ask
+// (not a repository, no commits yet). gitPath is relative to the git root.
+function headVersion(gitRoot, gitPath) {
+  try {
+    return execFileSync('git', ['show', `HEAD:${gitPath}`], { cwd: gitRoot, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 16 * 1024 * 1024 });
+  } catch {
+    try {
+      execFileSync('git', ['rev-parse', '--verify', 'HEAD'], { cwd: gitRoot, stdio: 'ignore' });
+      return null;
+    } catch { return undefined; }
+  }
+}
+function beforeOf(k, file) {
+  if (!file) return undefined;
+  try {
+    const gitRoot = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: k.root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    return headVersion(gitRoot, relative(realpathSync.native(gitRoot), join(realpathSync.native(k.root), file)).split('\\').join('/'));
+  } catch { return undefined; }
+}
+
 // ---------- roast_validate ----------
 export function validate(k, { code, file = null } = {}) {
   if (typeof code !== 'string' || !code.trim()) return invalidInput('Send the code you are about to save (and ideally its file path).');
   if (file != null && typeof file !== 'string') return invalidInput('file is optional, but when sent it must be a repo-relative path as a string.');
   if (code.length > MAX_VALIDATE_CHARS) return invalidInput(`That is ${Math.round(code.length / 1000)}k characters; send the part you changed (up to ${MAX_VALIDATE_CHARS / 1000}k).`);
-  const { findings, exempt } = validateContent({ text: code, file }, k);
+  const { findings, exempt } = validateContent({ text: code, file, before: beforeOf(k, file) }, k);
   if (exempt) return `Not judged: ${file} is exempt because ${exempt}. Nothing here was checked.`;
   if (!findings.length) return cleanResultText(k);
   const L = [`${findings.length} finding${findings.length === 1 ? '' : 's'}:`];
@@ -323,7 +346,7 @@ export function reviewData(k) {
     let text;
     try { text = readFileSync(join(gitRoot, f), 'utf8'); } catch { continue; }
     // knowledge paths are scanned-root-relative; git paths are toplevel-relative
-    const { findings, exempt } = validateContent({ text, file: relative(realRoot, join(gitRoot, f)) }, k);
+    const { findings, exempt } = validateContent({ text, file: relative(realRoot, join(gitRoot, f)), before: headVersion(gitRoot, f) }, k);
     if (exempt) { exemptCount++; continue; }
     if (findings.length) { perFile.push({ f, findings }); total += findings.length; }
   }

@@ -1,5 +1,5 @@
 Design system context for packages/ui (scanned DATE). Rules derived from this repo's real code.
-TOKENS: 3 colour tokens in packages/ui/tokens.css. Use them; never hardcode a colour. (9 hardcoded strays already exist; do not add more.)
+TOKENS: 3 colour tokens in packages/ui/tokens.css. Use them; never hardcode a colour. Do not add a token that duplicates an existing one; reuse it. (9 hardcoded strays already exist; do not add more.)
 SPACING: this repo has no scale, just 10 values in circulation. Reuse one rather than inventing value number 11; do not treat them as a system.
 DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
 Before finishing: call roast_validate on what you wrote, then roast_review.

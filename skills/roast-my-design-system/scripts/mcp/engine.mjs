@@ -20,6 +20,8 @@ import { kitPaintFindings } from '../lib/kitpaint.mjs';
 import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
 import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
 import { oklab } from '../lib/color.mjs';
+import { tokenTwinFindings } from '../lib/tokentwins.mjs';
+import { avoidedImportFindings } from '../lib/avoidedimports.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
 export const CHECKS = [
@@ -32,6 +34,8 @@ export const CHECKS = [
   'static inline style blocks',
   '!important',
   'duplicate component definitions',
+  'new colour tokens that twin an existing token',
+  'imports of a duplicate the canonical copy replaces',
 ];
 // What a kit or a Tailwind theme adds to the list, so a clean result on an
 // MUI repo says the kit check ran.
@@ -77,13 +81,16 @@ function nearestToken(value, k) {
 
 /**
  * Validate one piece of content against the repo's knowledge.
- * @param content { text, file? } — file name decides css-vs-code mode and
- *   lets the duplicate check excuse a component's own existing file
+ * @param content { text, file?, before? } — file name decides css-vs-code
+ *   mode and lets the duplicate check excuse a component's own existing file;
+ *   before is the same file at the last commit (null: a new file; left out:
+ *   unknown), so a token or an import the change ADDS can be told from one
+ *   that was already there
  * @returns { findings: [{ rule, severity, line, message, fix? }], checked,
  *   exempt? } — exempt is a sentence saying why the file was not judged
  */
 export function validateContent(content, k) {
-  const { text, file = null } = content;
+  const { text, file = null, before } = content;
   // Some files cannot be on-system by their nature. Judging them is how a
   // checker earns its reputation for crying wolf, and a checker people
   // distrust gets switched off. Say nothing, and say why nothing was said.
@@ -283,6 +290,19 @@ export function validateContent(content, k) {
     }
   }
 
+  // ---------- a new token that twins an existing one ----------
+  // Minting a second name for a colour the system already has is drift
+  // promoted into the token set: the strays that matched it stop counting and
+  // the palette reads as tidier than it is (Ledgerly, 2026-09-24).
+  if (css) {
+    const twins = tokenTwinFindings(text, {
+      before,
+      others: (k.tokenDefs ?? []).filter((d) => d.file !== file),
+      tailwind: !!k.tailwind || /@theme\b/.test(text),
+    });
+    for (const f of twins) add(f.rule, 'violation', f.index, f.message, f.fix);
+  }
+
   // ---------- discipline ----------
   for (const b of got.inlineBlocks) {
     add('inline-style', 'violation', b.index,
@@ -311,6 +331,13 @@ export function validateContent(content, k) {
           ? `Defines <${name}>, which already exists in ${otherCopies.length} other places. This makes ${otherCopies.length + 1} competing copies, and every wrong pick becomes the example the next agent copies.`
           : `Defines <${name}>, but ${best.file} already defines it${best.usageCount ? ` (used ${best.usageCount}x)` : ''}.`,
         `Import ${best.file} instead of creating a copy.`);
+    }
+  }
+
+  // ---------- an import of the copy the canon replaces ----------
+  if (!css) {
+    for (const f of avoidedImportFindings(text, { file, before, dupes: k.dupeCopies })) {
+      add(f.rule, 'violation', f.index, f.message, f.fix);
     }
   }
 

@@ -640,12 +640,23 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     for (const [f, n] of e.files) head.files.set(f, (head.files.get(f) ?? 0) + n);
   }
   const mergedColors = [...byCanon.values()].sort((a, b) => b.count - a.count);
+  // The token names that state each colour first (dark and density variants
+  // left out, as in the counts). Two differently named tokens holding the same
+  // colour are how drift gets promoted into the palette; the near-pair count
+  // reads these names (lib/nearpairs.mjs, lib/tokentwins.mjs).
+  const namesByCanon = new Map();
+  for (const d of baseDefs) {
+    const list = namesByCanon.get(d.canon) ?? [];
+    if (!list.includes(`--${d.name}`)) list.push(`--${d.name}`);
+    namesByCanon.set(d.canon, list);
+  }
   const colorList = mergedColors.map((e) => ({
     value: e.value,
     count: e.count,
     files: [...e.files.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([file, count]) => ({ file, count })),
     isToken: e.spellings.some((v) => tokenDefined.has(v)),
     ...(e.spellings.length > 1 ? { spellings: e.spellings } : {}),
+    ...(namesByCanon.has(canonical(e.value)) ? { names: namesByCanon.get(canonical(e.value)).slice(0, 6) } : {}),
   }));
 
   // Worst offenders: files carrying the most stray styling (hardcoded colours

@@ -78,7 +78,7 @@ const PROMPTS = [
   {
     name: 'roast-build-ui',
     description: 'Build UI in this repo the way the repo already does it',
-    text: 'Before implementing any UI in this repository: call roast_get_context (pass the folder you will work in), check roast_find_component for anything you are about to create, and roast_find_token for any raw colour or size value. Build. Then call roast_validate on what you wrote and fix every finding, and finish with roast_review. Do not invent components, colours or spacing values this repository does not already have.',
+    text: 'Before implementing any UI in this repository: call roast_get_context (pass the folder you will work in), check roast_find_component for anything you are about to create, and roast_find_token for any raw colour or size value. Build. Then call roast_validate on what you wrote and fix every finding, and finish with roast_review. Do not invent components, colours or spacing values this repository does not already have, and do not add a token that duplicates an existing one; reuse it.',
   },
   {
     name: 'roast-review-ui',

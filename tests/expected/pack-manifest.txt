@@ -16,6 +16,7 @@ skills/roast-my-design-system/scripts/harvest/paint.mjs
 skills/roast-my-design-system/scripts/harvest/summary.mjs
 skills/roast-my-design-system/scripts/harvest/tokens.mjs
 skills/roast-my-design-system/scripts/harvest/walk.mjs
+skills/roast-my-design-system/scripts/lib/avoidedimports.mjs
 skills/roast-my-design-system/scripts/lib/color.mjs
 skills/roast-my-design-system/scripts/lib/declarations.mjs
 skills/roast-my-design-system/scripts/lib/exclusions.mjs
@@ -28,6 +29,7 @@ skills/roast-my-design-system/scripts/lib/lasttouched.mjs
 skills/roast-my-design-system/scripts/lib/nearpairs.mjs
 skills/roast-my-design-system/scripts/lib/neverimported.mjs
 skills/roast-my-design-system/scripts/lib/staleness.mjs
+skills/roast-my-design-system/scripts/lib/tokentwins.mjs
 skills/roast-my-design-system/scripts/lib/typefaces.mjs
 skills/roast-my-design-system/scripts/lib/version.mjs
 skills/roast-my-design-system/scripts/lib/workspaces.mjs

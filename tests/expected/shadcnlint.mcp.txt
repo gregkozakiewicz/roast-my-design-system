@@ -1,6 +1,6 @@
 === get_context ===
 Design system context for lint-kit (scanned DATE). Rules derived from this repo's real code.
-TOKENS: 13 colour tokens in app/globals.css. Use them as classes (bg-primary, text-muted-foreground); never a palette class (text-gray-500, ring-green-500) and never hardcode a colour.
+TOKENS: 13 colour tokens in app/globals.css. Use them as classes (bg-primary, text-muted-foreground); never a palette class (text-gray-500, ring-green-500) and never hardcode a colour. Do not add a token that duplicates an existing one; reuse it.
 USE THESE, DO NOT REBUILD THEM:
   <Button> from components/ui/button.tsx (3x)
   <ThemeProvider> from components/theme-provider.tsx (1x)
@@ -31,6 +31,6 @@ No component matching "date picker" is defined in this repo.
    Fix: Move the values to classes or tokens.
 ✕ L1 Defines <Button>, but components/ui/button.tsx already defines it (used 3x).
    Fix: Import components/ui/button.tsx instead of creating a copy.
-Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, palette classes where the theme names a colour.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, new colour tokens that twin an existing token, imports of a duplicate the canonical copy replaces, palette classes where the theme names a colour.
 === validate clean snippet ===
-No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, palette classes where the theme names a colour.
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, new colour tokens that twin an existing token, imports of a duplicate the canonical copy replaces, palette classes where the theme names a colour.

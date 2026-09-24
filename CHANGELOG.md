@@ -2,6 +2,50 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.6.0 — 2026-09-24
+
+Two gaps found while rehearsing a demo on the same Vite, React and Tailwind v4
+app.
+
+- **A new colour token that copies an existing one is flagged.** When a
+  stylesheet adds a colour token whose value is almost the same as a token
+  the repo already has, `roast_validate`, `roast_review`, `--check` and the
+  review skill now say so and name the existing token:
+  `--color-overdue-soft (#fff4e5) is a twin of the existing
+  --color-warning-soft (#fdf5e6)`. A new token whose dark value is exactly
+  the same as an existing token's dark value is flagged too, if the light
+  values are within 24 channel steps. Two tokens count as a copy when every
+  channel is within 8 steps and the difference is too small to see (an OKLab
+  distance of 0.01 or less). Numbered steps such as `gray-100`, shadcn's own
+  theme variables, and two names that start with the same word (`brand` and
+  `brand-strong`) are never compared. Only tokens the change adds are
+  judged: the checks compare the file with its last committed version.
+- **The report counts these copies as near-identical colour pairs.** Before,
+  two tokens were never counted as a pair. So when a hard-coded colour was
+  turned into a new token that copies an existing one, the hard-coded colour
+  stopped counting and the number of pairs went down. On the demo app the
+  count went from 5 to 4 after six copied tokens were added. It now goes
+  from 6 to 8.
+- **An import of a duplicate component is flagged when there is a clear
+  main copy.** If new code imports a component from a copy that
+  `roast_find_component` says to avoid, the live checks now name the main
+  copy: `Imports <Button> from src/features/invoices/ButtonV2.tsx, one of 2
+  competing copies. The canonical one is src/ui/Button.tsx (used 8x; this
+  copy 4x). This copy hard-codes #3d5ce0, #2e48b5, #cfd4dc and 2 more.` Imports that
+  were already in the file are not flagged. When two copies are used about
+  equally, nothing is flagged, because neither is the main copy.
+- **`roast_get_context` and the build prompt say not to copy tokens.** Where
+  the repo has a token file, the context now says: "Do not add a token that
+  duplicates an existing one; reuse it."
+- **The guard can use both checks.** `tokenTwinFindings`, `tokenDefsOf`,
+  `avoidedImportFindings` and `canonicalCopy` are exported through
+  `roast-my-design-system/engine`, with the same wording as the live checks.
+
+Score changes: tested on 204 public repos. 33 now show more near-identical
+pairs, almost all of them already over the limit. Three scores change:
+medama 75 to 67, trigger.dev 60 to 55, tRPC 85 to 80. The demo app stays
+at 69, because its pairs were already over the limit.
+
 ## 8.5.0 — 2026-09-24
 
 Five fixes from running 8.4.6 on a Vite, React and Tailwind v4 demo app.

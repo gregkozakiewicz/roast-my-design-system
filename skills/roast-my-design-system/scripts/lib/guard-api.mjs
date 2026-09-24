@@ -17,6 +17,9 @@ import { kitPaintFindings } from './kitpaint.mjs';
 import { PALETTE_CLASS_RE, blankComments } from '../harvest/paint.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { harvestComponents, definedComponents } from '../harvest/components.mjs';
+import { findDuplicates } from '../harvest/duplicates.mjs';
+import { repoTokenDefs } from './tokentwins.mjs';
+import { dupeCopiesOf } from './avoidedimports.mjs';
 import { loadExclusions } from './exclusions.mjs';
 import { WIDGET_CONFIG_RE } from './exempt.mjs';
 import { hexRgb } from './nearpairs.mjs';
@@ -86,6 +89,8 @@ export const isStyleFile = (p) => STYLE_EXTS.has(extname(p));
  *   fontFamilies,     // [{ value, count, files }] every family declared
  *   tailwind,         // { colors, spacing, radii, textSizes, arbitrary }
  *   components,       // [{ name, file, usageCount, isPage }] the ledger
+ *   tokenDefs,        // [{ name, file, value, canon, darkValue?, darkCanon? }] colour tokens
+ *   duplicates,       // Map<name, { copies: [{ file, usageCount }], strays }>
  *   files,            // { styles: n, code: n } — how much was read
  * }
  */
@@ -93,10 +98,14 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   const exclusions = loadExclusions(repoRoot, exclude);
   const files = walkRepo(repoRoot, 14, exclusions);
   const t = harvestTokens(repoRoot, files.styles, files.code);
-  const components = harvestComponents(repoRoot, files.code).components
-    .map(({ name, file, usageCount, isPage }) => ({ name, file, usageCount, isPage }));
+  const ledger = harvestComponents(repoRoot, files.code).components;
+  const components = ledger.map(({ name, file, usageCount, isPage }) => ({ name, file, usageCount, isPage }));
   const profile = profileRepo(repoRoot, files);
   decideProfile(profile, components, files, repoRoot);
+  // the same two lists the MCP knowledge builds (mcp/knowledge.mjs), from the
+  // same helpers, for tokenTwinFindings and avoidedImportFindings (8.6.1)
+  const read = (f) => readSource(join(repoRoot, f));
+  const hardDupes = (findDuplicates(ledger, profile.uiDir, repoRoot).exactDuplicates ?? []).filter((d) => !d.wrapped);
   const P = profileOf(profile);
   // the kit the product is built on, with its definition attached, the way
   // the MCP knowledge reads it (mcp/knowledge.mjs): the theme's colours are
@@ -140,6 +149,12 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     // it lives, how much the repo leans on it, and whether it is a page (pages
     // are routes, not reusable parts, so two of a name is not a duplicate).
     components,
+    // every colour token each stylesheet defines, light and dark: the
+    // `others` tokenTwinFindings compares a new token with (8.6.1)
+    tokenDefs: repoTokenDefs(files.styles, read),
+    // each duplicated name's copies, their usage and the colours each
+    // non-canonical copy hard-codes: the `dupes` avoidedImportFindings reads
+    duplicates: dupeCopiesOf(hardDupes, ledger, read),
     files: { styles: files.styles.length, code: files.code.length },
     // How the repo was read (7.1 to 7.7), decided once by the same profiles
     // the report uses, so a guard treats installed code, a registry's

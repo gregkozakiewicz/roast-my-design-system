@@ -14,7 +14,7 @@ import { statSync } from 'node:fs';
 import { join } from 'node:path';
 import { walkRepo, profileRepo, readSource } from '../harvest/walk.mjs';
 import { harvestComponents } from '../harvest/components.mjs';
-import { harvestTokens, extractStyling } from '../harvest/tokens.mjs';
+import { harvestTokens } from '../harvest/tokens.mjs';
 import { findDuplicates } from '../harvest/duplicates.mjs';
 import { harvestContext } from '../harvest/context.mjs';
 import { loadExclusions } from '../lib/exclusions.mjs';
@@ -24,8 +24,8 @@ import { typefaceOf } from '../lib/typefaces.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
 import { decideProfile, profileOf } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
-import { tokenDefsOf } from '../lib/tokentwins.mjs';
-import { canonicalCopy } from '../lib/avoidedimports.mjs';
+import { repoTokenDefs } from '../lib/tokentwins.mjs';
+import { dupeCopiesOf } from '../lib/avoidedimports.mjs';
 
 const MAX_DEPTH = 14; // same ruler as the harvest CLI
 
@@ -123,28 +123,11 @@ export function loadKnowledge(root) {
 
   // The copies of each duplicated name with their usage, and the colours each
   // copy hard-codes: what the avoided-import check names (lib/avoidedimports).
-  const dupeCopies = new Map();
-  for (const d of hardDupes) {
-    const paths = d.files.map((f) => (typeof f === 'string' ? f : f.file));
-    const copies = paths.map((file) => ({ file, usageCount: (byName.get(d.name) ?? []).find((c) => c.file === file)?.usageCount ?? 0 }));
-    const canon = canonicalCopy(copies);
-    const strays = new Map();
-    for (const file of paths) {
-      if (file === canon?.file) continue;
-      const text = readSource(join(root, file));
-      if (text) strays.set(file, [...new Set(extractStyling(text).colors.map((c) => c.value))]);
-    }
-    dupeCopies.set(d.name, { copies, strays });
-  }
-
+  const read = (file) => readSource(join(root, file));
+  const dupeCopies = dupeCopiesOf(hardDupes, components, read);
   // Every colour token each stylesheet defines, light and dark, so a new one
   // can be compared with the ones already there (lib/tokentwins).
-  const tokenDefs = [];
-  for (const file of files.styles) {
-    const text = readSource(join(root, file));
-    if (!text || !text.includes('--')) continue;
-    for (const [name, e] of tokenDefsOf(text)) tokenDefs.push({ name, file, ...e });
-  }
+  const tokenDefs = repoTokenDefs(files.styles, read);
 
   return {
     root,

@@ -11,6 +11,7 @@
  * use have no wrong pick, and saying otherwise would be inventing one.
  */
 import { posix } from 'node:path';
+import { extractStyling } from '../harvest/tokens.mjs';
 
 const CODE_EXT_RE = /\.(?:tsx|ts|jsx|js|mjs|cjs|vue|svelte)$/;
 const stem = (f) => f.replace(CODE_EXT_RE, '').replace(/\/index$/, '');
@@ -55,6 +56,32 @@ export function canonicalCopy(copies) {
   if (!top || !top.usageCount) return null;
   if (second && second.usageCount > 0 && top.usageCount / second.usageCount < 1.5) return null;
   return top;
+}
+
+/**
+ * The copies of each duplicated name, with their usage and the colours each
+ * non-canonical copy hard-codes: the `dupes` map avoidedImportFindings reads.
+ * `hardDupes` is findDuplicates' exactDuplicates minus wrapped pairs;
+ * `components` the harvested ledger; `read(file)` a file's text or null.
+ * Shared by the MCP knowledge and the guard doorway.
+ */
+export function dupeCopiesOf(hardDupes, components, read) {
+  const dupes = new Map();
+  for (const d of hardDupes) {
+    const paths = d.files.map((f) => (typeof f === 'string' ? f : f.file));
+    const copies = paths.map((file) => ({
+      file, usageCount: components.find((c) => c.name === d.name && c.file === file)?.usageCount ?? 0,
+    }));
+    const canon = canonicalCopy(copies);
+    const strays = new Map();
+    for (const file of paths) {
+      if (file === canon?.file) continue;
+      const text = read(file);
+      if (text) strays.set(file, [...new Set(extractStyling(text).colors.map((c) => c.value))]);
+    }
+    dupes.set(d.name, { copies, strays });
+  }
+  return dupes;
 }
 
 /**

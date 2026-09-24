@@ -117,6 +117,22 @@ export function tokenDefsOf(raw) {
 }
 
 /**
+ * Every colour token the repo's stylesheets define, one entry per name per
+ * file: [{ name, file, value, canon, darkValue?, darkCanon? }]. `read(file)`
+ * returns a file's text or null. Shared by the MCP knowledge and the guard
+ * doorway, so both compare a new token with the same list.
+ */
+export function repoTokenDefs(styleFiles, read) {
+  const out = [];
+  for (const file of styleFiles) {
+    const text = read(file);
+    if (!text || !text.includes('--')) continue;
+    for (const [name, e] of tokenDefsOf(text)) out.push({ name, file, ...e });
+  }
+  return out;
+}
+
+/**
  * The existing token a token is a twin of, or null. `pool` is
  * [{ name, canon, value, darkCanon?, darkValue?, file? }].
  */

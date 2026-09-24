@@ -2,6 +2,17 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.6.1 — 2026-09-24
+
+- **The guard doorway gives the guard what the two 8.6.0 checks need.**
+  `learnSystem` now returns `tokenDefs`, every colour token each stylesheet
+  defines with its light and dark value, and `duplicates`, each duplicated
+  component's copies with their usage and the colours each copy hard-codes.
+  They are built by the same code the MCP server uses, so
+  guard-my-design-system gives the same findings, in the same words, as
+  `roast_validate`, `roast_review` and `--check`. Nothing in the report or
+  the scores changes.
+
 ## 8.6.0 — 2026-09-24
 
 Two gaps found while rehearsing a demo on the same Vite, React and Tailwind v4

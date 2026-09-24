@@ -206,3 +206,26 @@ test('imports resolve relatively, through an alias, and by default name', () => 
   const found = importsOf(`import Button, { type Props } from './ButtonV2';\nimport * as UI from '../ui';\n`);
   assert.deepEqual(found.map((i) => i.name), ['Props', 'Button']);
 });
+
+// ---------- the guard doorway (8.6.1) ----------
+
+test('the doorway hands the guard the same lists, and the same words come out', async () => {
+  const api = await import('../../skills/roast-my-design-system/scripts/lib/guard-api.mjs');
+  const s = api.learnSystem(root);
+  assert.ok(s.tokenDefs.some((d) => d.name === '--color-warning-soft' && d.darkValue === '#2b2112'));
+  const dupe = s.duplicates.get('Button');
+  assert.deepEqual(dupe.copies.map((c) => c.file).sort(), ['src/features/invoices/ButtonV2.tsx', 'src/ui/Button.tsx']);
+
+  const k = loadKnowledge(root);
+  const file = 'src/styles/tokens.css';
+  const viaDoor = api.tokenTwinFindings(THEME_AFTER, { before: THEME, others: s.tokenDefs.filter((d) => d.file !== file), tailwind: true });
+  const viaLive = validateContent({ text: THEME_AFTER, file, before: THEME }, k).findings.filter((f) => f.rule === 'twin-token');
+  assert.equal(viaDoor.length, 5);
+  assert.deepEqual(viaDoor.map((f) => f.message), viaLive.map((f) => f.message));
+
+  const page = 'src/features/invoices/InvoicesPage.tsx';
+  const door = api.avoidedImportFindings(PAGE_WITH_V2, { file: page, before: FILES[page], dupes: s.duplicates });
+  const live = validateContent({ text: PAGE_WITH_V2, file: page, before: FILES[page] }, k).findings.filter((f) => f.rule === 'avoided-copy');
+  assert.equal(door.length, 1);
+  assert.equal(door[0].message, live[0].message);
+});

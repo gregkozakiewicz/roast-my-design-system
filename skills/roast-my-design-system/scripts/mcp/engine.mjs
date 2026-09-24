@@ -18,6 +18,8 @@ import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
 import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
 import { kitPaintFindings } from '../lib/kitpaint.mjs';
 import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
+import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
+import { oklab } from '../lib/color.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
 export const CHECKS = [
@@ -145,6 +147,7 @@ export function validateContent(content, k) {
     // foreground name, a bg- class a surface or background name
     const names = paletteRule === 'tailwind' ? (tw.names ?? []) : ['primary', 'foreground', 'muted-foreground', 'background', 'border'];
     const pick = (re) => names.find((n) => re.test(n)) ?? names[0] ?? 'brand';
+    const values = paletteRule === 'tailwind' ? tw.values ?? {} : {};
     // a class named in a comment paints nothing; blanked, not cut, so the
     // line numbers below still hold
     const code = blankComments(text);
@@ -155,12 +158,20 @@ export function validateContent(content, k) {
     for (const m of hits.sort((a, b) => a.index - b.index)) {
       const cls = m[0];
       const util = cls.replace(/^((?:[\w-]+:)*[a-z]+)-.*$/, '$1');
-      const example = /(^|:)(?:text|placeholder|caret|decoration)$/.test(util) ? pick(/ink|text|fg|foreground/) : /(^|:)bg$/.test(util) ? pick(/surface|bg|background|canvas/) : pick(/border|edge|line|ring/) ;
-      if (retuned.has(cls.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, ''))) continue;
+      const shade = cls.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, '');
+      const role = utilRole(util);
+      // the theme colour nearest by value among the names that suit the
+      // utility; the old pick by name alone only when none is close
+      const example = nearestThemeName(shade, role, values)
+        ?? (role === 'text' ? pick(/ink|text|fg|foreground/) : role === 'surface' ? pick(/surface|bg|background|canvas/) : pick(/border|edge|line|ring/));
+      if (retuned.has(shade)) continue;
       if (!hasFamily(cls)) continue;
+      const word = hueWord(shade, names);
       add('palette-class', 'violation', m.index,
         `Palette class ${cls} where the theme names its colours (${themeFile}).`,
-        `Use a theme token as the class (${util}-${example}). If no token fits, add one to the theme once, for example success, and use ${util}-success.`);
+        `Use a theme token as the class (${util}-${example}). ${names.includes(word)
+          ? `If no token fits, add ${/^[aeiou]/.test(word) ? 'an' : 'a'} ${word} shade to the theme once and use it by name.`
+          : `If no token fits, add one to the theme once, for example ${word}, and use ${util}-${word}.`}`);
     }
   }
 
@@ -304,6 +315,59 @@ export function validateContent(content, k) {
   }
 
   return { findings, checked: checksFor(k) };
+}
+
+// ---------- the theme colour a palette class stands in for ----------
+// Which theme names suit a utility, read from the name: a text class wants an
+// ink, a bg class a surface, a border class an edge. A name that says none of
+// these (brand, warning, positive) is an accent and suits every utility.
+const TEXT_NAME_RE = /ink|text|fg|foreground/;
+const SURFACE_NAME_RE = /surface|(^|-)bg(-|$)|background|canvas|soft|tint|wash/;
+const EDGE_NAME_RE = /border|edge|line|ring|divider|outline/;
+function utilRole(util) {
+  if (/(^|:)(?:text|placeholder|caret|decoration|fill|stroke)$/.test(util)) return 'text';
+  if (/(^|:)bg$/.test(util)) return 'surface';
+  if (/(^|:)(?:border|ring|outline|divide)$/.test(util)) return 'edge';
+  return 'any';
+}
+function suits(name, role) {
+  const text = TEXT_NAME_RE.test(name), surface = SURFACE_NAME_RE.test(name), edge = EDGE_NAME_RE.test(name);
+  if (role === 'any' || (!text && !surface && !edge)) return true;
+  return role === 'text' ? text && !surface && !edge : role === 'surface' ? surface : edge;
+}
+// Distance in OKLab with the two colour axes doubled, so a pale amber lands on
+// the pale warning surface rather than on the near-white canvas beside it.
+const hueDistance = (x, y) => Math.hypot(x.L - y.L, 2 * (x.a - y.a), 2 * (x.b - y.b));
+// Past this, the nearest theme colour is a different colour, not a stand-in
+// (bg-blue-600 against a theme of greys), and the old pick by name answers.
+const CLOSE = 0.2;
+/** The suitable theme name nearest to a palette shade's Tailwind value, or null. */
+function nearestThemeName(shade, role, values) {
+  const from = oklab(TAILWIND_DEFAULTS[shade] ?? '');
+  if (!from) return null;
+  let best = null;
+  for (const [name, value] of Object.entries(values)) {
+    if (!suits(name, role)) continue;
+    const to = oklab(value);
+    if (!to) continue;
+    const d = hueDistance(from, to);
+    if (!best || d < best.d) best = { name, d };
+  }
+  return best && best.d <= CLOSE ? best.name : null;
+}
+// The word for a new token follows the hue, in the theme's own vocabulary when
+// it has one (Ledgerly says positive and negative, not success and danger).
+const HUE_WORDS = [
+  [/^(?:red|rose)-/, ['negative', 'danger', 'error', 'destructive']],
+  [/^(?:orange|amber|yellow)-/, ['warning', 'caution']],
+  [/^(?:green|emerald|lime)-/, ['positive', 'success']],
+  [/^(?:blue|sky|cyan)-/, ['info']],
+];
+function hueWord(shade, names) {
+  const words = HUE_WORDS.find(([re]) => re.test(shade))?.[1];
+  if (!words) return GREY_HUE_RE.test(`-${shade}`) ? 'muted' : 'accent';
+  return words.find((w) => names.some((n) => n === w || n.startsWith(`${w}-`)))
+    ?? { negative: 'danger', warning: 'warning', positive: 'success', info: 'info' }[words[0]];
 }
 
 function looksLikeCss(text) {

@@ -71,7 +71,9 @@ function readTheme(root, styleFiles) {
 // grey is only drift when the theme has a grey of its own to use instead
 // (hey.xyz names four brand pinks and no grey, 2026-09-16).
 const GREY_NAME_RE = /gr[ae]y|neutral|slate|zinc|stone|surface|background|foreground|(^|-)(bg|fg|text|border|line|divider|muted|ink|base|canvas|charcoal|contrast)(-|\d|$)/;
-function themeFamilies(root, styleFiles, names) {
+/** Each theme name's value, followed through var() to a literal (null when it
+ *  leads nowhere readable). Tailwind's own palette answers for --color-x. */
+function resolveValues(root, styleFiles, names) {
   const defs = new Map();
   for (const f of styleFiles ?? []) {
     for (const d of read(join(root, f)).matchAll(/(--[\w-]+)\s*:\s*([^;{}]+);/g)) if (!defs.has(d[1])) defs.set(d[1], d[2].trim());
@@ -84,9 +86,12 @@ function themeFamilies(root, styleFiles, names) {
     const next = defs.get(m[1]) ?? (pal ? TAILWIND_DEFAULTS[pal[1]] : undefined) ?? m[2];
     return next === undefined ? null : resolve(next.trim(), depth + 1);
   };
+  return new Map(names.map(([n, v]) => [n, resolve(v)]));
+}
+function themeFamilies(values) {
   const out = { grey: false, colour: false };
-  for (const [n, v] of names) {
-    const c = parseColor(resolve(v) ?? '');
+  for (const [n, v] of values) {
+    const c = parseColor(v ?? '');
     const grey = c ? Math.max(c.r, c.g, c.b) - Math.min(c.r, c.g, c.b) <= 12 : GREY_NAME_RE.test(n);
     out[grey ? 'grey' : 'colour'] = true;
   }
@@ -152,6 +157,7 @@ export default {
         : `used as classes ${uses} times: defined, but not adopted yet`,
       twRaw ? `Tailwind ${twRaw}` : 'Tailwind v4 theme block',
     ];
+    const values = resolveValues(root, files.styles, theme.own.map((x) => [x, theme.names.get(x)]));
     profile.designSystem = { kind: 'tailwind', name: 'a Tailwind theme', confidence: 'high', cssVariables: true };
     profile.tailwind = {
       file: theme.file,
@@ -160,7 +166,10 @@ export default {
       // Tailwind names given the repo's own colours: on-theme, never drift
       retuned: theme.tuned,
       // which palette classes have a theme colour to stand in for them
-      families: themeFamilies(root, files.styles, theme.own.map((x) => [x, theme.names.get(x)])),
+      families: themeFamilies(values),
+      // name → literal colour, so a fix can point at the theme colour nearest
+      // to the palette class it replaces (bg-amber-50 → bg-warning-soft)
+      values: Object.fromEntries([...values].filter(([, v]) => v)),
       uses,
       usedIn,
       // a theme nobody uses is not the system yet: shown with receipts, not scored

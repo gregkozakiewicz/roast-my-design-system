@@ -10,10 +10,8 @@ DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match
 NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.
 Before finishing: call roast_validate on what you wrote, then roast_review.
 === find_component button ===
-No clear canon for "button", two candidates are genuinely in use:
-  <Button> from components/Button.tsx (used 1x)
-  <Button> from widgets/Button(.tsx (used 1x)
-Match whichever the surrounding code already imports. Do not create a third.
+Canonical: <Button> from components/Button.tsx (used 1x)
+Avoid: widgets/Button(.tsx (same name, competing copies).
 === find_component date picker ===
 No component matching "date picker" is defined in this repo.
 === find_token #3b81f5 ===

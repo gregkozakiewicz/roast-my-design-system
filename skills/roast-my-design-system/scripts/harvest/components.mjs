@@ -4,7 +4,7 @@
  * compile-skill.mjs — brace/string-aware regex parsing,
  * no AST dependency — then extended to scan the whole repo, not one ui/ dir.
  */
-import { join, basename } from 'node:path';
+import { join, basename, posix } from 'node:path';
 import { readSource } from './walk.mjs';
 
 const QUOTES = new Set(['"', "'", '`']);
@@ -161,6 +161,37 @@ function tagCounts(src, re) {
   return counts;
 }
 
+const stripExt = (f) => f.replace(/\.[cm]?[jt]sx?$/, '');
+/**
+ * Which of several same-named definitions a file's `<Name` means, read from
+ * its imports: `import { Button } from '../ui'` or `'./ButtonV2'`, relative
+ * or through an alias (`@/ui/Button`, matched as a path suffix). A barrel
+ * (`../ui` → ui/index.ts) resolves to the copy inside that folder. A file that
+ * defines the name itself means its own. Returns [def] or null when unsure.
+ */
+function importedDef(src, file, name, defs) {
+  const own = defs.find((d) => d.file === file);
+  if (own) return [own];
+  for (const m of src.matchAll(/import\s+(?:type\s+)?([^'";]*?)\s+from\s*['"]([^'"]+)['"]/g)) {
+    const clause = m[1];
+    const named = /\{([^}]*)\}/.exec(clause)?.[1] ?? '';
+    const imports = named.split(',').map((x) => x.trim().replace(/^type\s+/, '')).some((x) => x === name || new RegExp(`\\s+as\\s+${name}$`).test(x))
+      || new RegExp(`^${name}\\b`).test(clause.trim());
+    if (!imports) continue;
+    const spec = m[2];
+    let target = null, suffix = null;
+    if (spec.startsWith('.')) target = posix.normalize(posix.join(posix.dirname(file), spec));
+    else { const a = /^(?:@|~|#)\/(.+)$/.exec(spec); if (a) suffix = a[1]; else return null; }
+    const hit = defs.filter((d) => {
+      const f = stripExt(d.file);
+      if (target !== null) return f === target || f === `${target}/index` || d.file.startsWith(`${target}/`);
+      return f === suffix || f.endsWith(`/${suffix}`) || f.endsWith(`/${suffix}/index`) || d.file.includes(`/${suffix}/`);
+    });
+    return hit.length === 1 ? hit : null;
+  }
+  return null;
+}
+
 /**
  * Harvest all components: definitions (with variants/props) + usages across the
  * repo. `codeFiles` are relative paths; returns { components, totalDefined }.
@@ -208,7 +239,13 @@ export function harvestComponents(root, codeFiles) {
     for (const [name, n] of tagCounts(src, /<([A-Z]\w*)(?=[\s/>]|$)/g)) {
       const defs = byName.get(name);
       if (!defs) continue;
-      for (const def of defs) {
+      // Two components of one name: the use belongs to the one the file
+      // imports. Crediting both made src/ui/Button and a copy in
+      // features/invoices each "used 12x" (8 and 4 in truth), so neither read
+      // as the canon (Ledgerly, 2026-09-24). Unresolved imports keep the old
+      // rule and credit every copy.
+      const owners = defs.length > 1 ? importedDef(src, file, name, defs) ?? defs : defs;
+      for (const def of owners) {
         if (def.file === file) continue; // internal render/recursion, not adoption
         def.usageCount += n;
         if (def.usedIn.length < 8) def.usedIn.push(file);

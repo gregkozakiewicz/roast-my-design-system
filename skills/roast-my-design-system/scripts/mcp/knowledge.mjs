@@ -88,7 +88,9 @@ export function loadKnowledge(root) {
   const fontSizesSeen = new Map((tokens.fontSizes ?? []).map((f) => [f.value, f.count]));
   const shadowsSeen = new Map((tokens.shadows ?? []).map((s) => [s.value, s.count]));
   const faceCounts = new Map();
-  for (const f of tokens.fontFamilies ?? []) {
+  // a face the @theme declares is on-system, so a stylesheet using it is not
+  // "a new typeface" (tokens.themeFonts, harvest/tokens.mjs)
+  for (const f of [...(tokens.themeFonts ?? []), ...(tokens.fontFamilies ?? [])]) {
     const face = typefaceOf(f.value);
     if (face) faceCounts.set(face, (faceCounts.get(face) ?? 0) + f.count);
   }

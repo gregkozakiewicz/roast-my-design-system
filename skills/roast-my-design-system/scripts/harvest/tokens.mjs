@@ -308,6 +308,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
         fontSizes = new Tally(), fontFamilies = new Tally(), shadows = new Tally();
   const twColors = new Tally(), twSpacing = new Tally(), twRadii = new Tally(), twTextSizes = new Tally();
   const twArbitrary = new Tally();
+  const themeFonts = new Tally(); // stacks a Tailwind @theme declares
   let inlineStyleCount = 0;
   const inlineStyleFiles = new Map();
   // !important is the cascade admitting defeat; counted per style file.
@@ -455,6 +456,21 @@ export function harvestTokens(root, styleFiles, codeFiles) {
       // where one Roboto lived behind tokens (caught 2026-09-02).
       if (isTokenRef(v)) continue;
       fontFamilies.add(v, file);
+    }
+    // Tailwind v4 declares the system's typefaces as --font-* rows in @theme,
+    // with no font-family line anywhere: Ledgerly's Inter lived only there, so
+    // one legacy "Helvetica Neue" read as the system face (2026-09-24). Kept
+    // apart from the declarations the report counts: a theme naming its faces
+    // is the system, not sprawl, and Ghost's theme carries a 21-font picker
+    // its users choose from. --font-weight-* is a weight scale, and the
+    // feature and variation settings are settings on a face.
+    for (const b of text.matchAll(/@theme[^{]*\{([\s\S]*?)\n\}/g)) {
+      for (const d of b[1].matchAll(/--font-([\w-]+)\s*:\s*([^;{}]+)[;}]/g)) {
+        if (d[1].includes('--') || /^(?:weight|feature|variation)(-|$)/.test(d[1])) continue;
+        const v = d[2].trim().replace(/\s+/g, ' ');
+        if (isTokenRef(v) || v === 'initial' || v === 'inherit') continue;
+        themeFonts.add(v, file);
+      }
     }
     for (const m of text.matchAll(SHADOW_PROPS)) shadows.add(m[1].trim().replace(/\s+/g, ' '), file);
   };
@@ -750,6 +766,8 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     radii: radii.toJSON(),
     fontSizes: fontSizes.toJSON(),
     fontFamilies: fontFamilies.toJSON(),
+    // faces a Tailwind v4 @theme declares: the system's own, not counted
+    themeFonts: themeFonts.toJSON(),
     shadows: shadows.toJSON(),
     tailwind: {
       colors: twColors.toJSON(),

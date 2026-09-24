@@ -85,7 +85,9 @@ export function getContext(k, { path = null } = {}) {
       ? `SPACING: this repo has no scale, just ${k.spacingSeen.size} values in circulation. Reuse one rather than inventing value number ${k.spacingSeen.size + 1}; do not treat them as a system.`
       : 'SPACING: nothing on record yet. Whatever you pick, the next agent will copy; pick something divisible by 4.');
 
-  const faces = distinctTypefaces(t.fontFamilies ?? []);
+  // the faces the theme declares come first: they are the system, whatever a
+  // stylesheet repeats more often
+  const faces = distinctTypefaces([...(t.themeFonts ?? []), ...(t.fontFamilies ?? [])]);
   if (faces.length) L.push(`TYPE: ${faces.slice(0, 3).join(', ')}. No new typefaces, no hand-declared font stacks.`);
   L.push('DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.');
   if (k.agentFiles.length === 0) L.push('NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.');
@@ -112,24 +114,66 @@ export function getContext(k, { path = null } = {}) {
 // ---------- roast_find_component ----------
 const camelWords = (name) => name.split(/(?=[A-Z])/).map((w) => w.toLowerCase()).filter(Boolean);
 
-export function findComponent(k, { query } = {}) {
-  if (typeof query !== 'string' || !query.trim()) return invalidInput('Give me a component name or intent, like "icon button" or "Modal".');
-  const q = query.trim();
-  const qWords = q.toLowerCase().split(/[\s_-]+/).filter(Boolean);
+// Other names people give the same piece of UI. Asked only when nothing in the
+// repo carries the word itself, and the answer says it went by purpose: an
+// agent asking for a "banner" should hear that <Alert> is this repo's one
+// (Ledgerly, 2026-09-24), never that none exists.
+const SYNONYMS = {
+  banner: ['alert', 'callout', 'notice'], notice: ['alert', 'callout', 'banner'], callout: ['alert', 'notice', 'banner'],
+  alert: ['banner', 'callout', 'notice'], flash: ['alert', 'toast'], notification: ['toast', 'alert'],
+  snackbar: ['toast'], toast: ['snackbar', 'notification'],
+  dropdown: ['select', 'combobox', 'menu'], picker: ['select', 'combobox'], combobox: ['select'], listbox: ['select'],
+  select: ['dropdown', 'combobox', 'picker'],
+  modal: ['dialog'], dialog: ['modal'], popup: ['popover', 'modal', 'dialog'], lightbox: ['modal', 'dialog'],
+  drawer: ['sheet'], sheet: ['drawer'], flyout: ['popover', 'drawer'],
+  tooltip: ['hint'], hint: ['tooltip'],
+  chip: ['badge', 'tag', 'pill'], tag: ['badge', 'chip', 'pill'], pill: ['badge', 'chip', 'tag'], badge: ['tag', 'chip', 'pill'],
+  spinner: ['loader', 'loading'], loader: ['spinner', 'loading'],
+  toggle: ['switch'], switch: ['toggle'],
+  textbox: ['input'], textfield: ['input'], field: ['input'],
+  tile: ['card'], panel: ['card'],
+  datatable: ['table'], grid: ['table'],
+  collapse: ['accordion', 'collapsible'], collapsible: ['accordion'], accordion: ['collapsible'],
+  pager: ['pagination'], btn: ['button'], cta: ['button'],
+};
 
+function scoreComponents(k, qWords, { every = false } = {}) {
   const scored = [];
   for (const c of k.components.filter((x) => !x.isPage)) {
     const words = camelWords(c.name);
     const nameLc = c.name.toLowerCase();
-    let s = 0;
+    let s = 0, missed = 0;
     if (nameLc === qWords.join('')) s += 100;
     for (const w of qWords) {
       // whole camel-word or word-prefix matches only: "board" must not match
       // inside "Onboarding", or every intent finds a wrong component
       if (words.includes(w)) s += 40;
       else if (w.length >= 3 && words.some((x) => x.startsWith(w))) s += 15;
+      else missed += 1;
     }
-    if (s > 0) scored.push({ c, s });
+    if (s > 0 && !(every && missed)) scored.push({ c, s });
+  }
+  return scored;
+}
+
+export function findComponent(k, { query } = {}) {
+  if (typeof query !== 'string' || !query.trim()) return invalidInput('Give me a component name or intent, like "icon button" or "Modal".');
+  const q = query.trim();
+  const qWords = q.toLowerCase().split(/[\s_-]+/).filter(Boolean);
+
+  let scored = scoreComponents(k, qWords);
+  let bySynonym = null;
+  if (!scored.length) {
+    // one other name at a time, in the order listed: the first that names a
+    // real component answers, so "dropdown" finds Select before any Menu
+    for (const [i, w] of qWords.entries()) {
+      for (const alt of SYNONYMS[w] ?? []) {
+        // every word must match: a "date picker" is not any Select
+        const hit = scoreComponents(k, qWords.map((x, j) => (j === i ? alt : x)), { every: true });
+        if (hit.length) { scored = hit; bySynonym = alt; break; }
+      }
+      if (bySynonym) break;
+    }
   }
   if (!scored.length) {
     return `No component matching "${q}" is defined in this repo.`;
@@ -140,6 +184,7 @@ export function findComponent(k, { query } = {}) {
     .sort((a, b) => b.usageCount - a.usageCount);
   const [top, second] = relevant;
   const out = [];
+  if (bySynonym) out.push(`Nothing here is named "${q}". Searched for "${bySynonym}" instead, another name for the same kind of component:`);
 
   // the tie rule: two live candidates close in usage = no clear canon, say so
   const tie = second && second.usageCount > 0 && top.usageCount / Math.max(second.usageCount, 1) < 1.5
@@ -154,12 +199,10 @@ export function findComponent(k, { query } = {}) {
     out.push(`Canonical: ${componentLine(top, k).trim()}`);
     if (top.usageExample) out.push(`Most common real usage, as in ${top.usageExample.file} (${top.usageExample.matches} of ${top.usageExample.total} usages): ${top.usageExample.snippet}`);
     const dupe = k.dupeByName.get(top.name);
-    if (dupe) {
-      const others = dupe.files.map((f) => (typeof f === 'string' ? f : f.file)).filter((f) => f !== top.file);
-      out.push(`Avoid: ${others.join(', ')} (same name, competing copies).`);
-    }
+    const others = dupe ? dupe.files.map((f) => (typeof f === 'string' ? f : f.file)).filter((f) => f !== top.file) : [];
+    if (others.length) out.push(`Avoid: ${others.join(', ')} (same name, competing copies).`);
     for (const c of relevant.slice(1, 3)) {
-      if (c.usageCount === 0) out.push(`Avoid <${c.name}> (${c.file}): defined but never imported.`);
+      if (c.usageCount === 0 && !others.includes(c.file)) out.push(`Avoid <${c.name}> (${c.file}): defined but never imported.`);
     }
   }
   return out.join('\n');

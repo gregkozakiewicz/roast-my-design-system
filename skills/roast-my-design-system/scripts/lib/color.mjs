@@ -196,3 +196,24 @@ const HSL_TRIPLET =
   /^\s*(-?\d+(?:\.\d+)?)(?:deg)?\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%(?:\s*\/\s*(\d+(?:\.\d+)?%?))?\s*$/;
 // bare RGB channels (dub: --bg-default: 255 255 255), see harvest/tokens.mjs
 const RGB_TRIPLET = /^\s*(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})(?:\s*\/\s*\d+(?:\.\d+)?%?)?\s*$/;
+
+// Gamma-encoded sRGB (0-255) → linear, the inverse of `gamma` above.
+const linear = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+/**
+ * A colour in OKLab ({ L, a, b }), where a straight-line distance tracks what
+ * the eye sees; null when the value is not a literal colour. Used to find the
+ * theme colour nearest to a palette class, hue included.
+ */
+export function oklab(value) {
+  const c = parseColor(value);
+  if (!c) return null;
+  const r = linear(c.r), g = linear(c.g), b = linear(c.b);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return {
+    L: 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+    a: 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+    b: 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s,
+  };
+}

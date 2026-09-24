@@ -2,6 +2,52 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.5.0 — 2026-09-24
+
+Five fixes from running 8.4.6 on a Vite, React and Tailwind v4 demo app.
+
+- **A palette class is pointed at the nearest theme colour.** The fix for a
+  palette class used to pick a theme name by its wording alone, so
+  `bg-amber-50` was told to use `bg-canvas` and `text-amber-800` to use
+  `text-ink`. It now picks the theme colour closest to the class's Tailwind
+  value, among the names that suit the utility: `bg-amber-50` gets
+  `bg-warning-soft`, `text-amber-800` gets `text-warning`, `border-amber-200`
+  gets `border-warning-border`. When no theme colour is close, it picks by
+  name as before. The example for a new token follows the colour and the
+  theme's own words: amber gives warning, red gives negative or danger, green
+  gives positive or success. It no longer always says "success". This applies
+  to `roast_validate`, `roast_review`, `--check` and the review skill on a
+  repo with a Tailwind theme.
+- **Typefaces in a Tailwind v4 `@theme` block are read.** A
+  `--font-sans: "Inter Variable", ...` row in `@theme` now counts as a
+  typeface the system declares. `roast_get_context` lists those typefaces
+  first, and a stylesheet using one is not flagged as a new typeface. They
+  are not added to the report's typeface count. On one public repo, the
+  `@theme` block holds a 21-font picker for its users.
+- **Uses of a duplicated component go to the copy that is imported.** When
+  two components share a name, each use now counts for the copy the file
+  imports, read from its import line (relative paths, `@/` and `~/` aliases,
+  and `index` files). Before, both copies were given every use, so
+  `roast_find_component` said "No clear canon" when one copy was used 8 times
+  and the other 4. Where the import cannot be read, both copies are credited
+  as before.
+- **`src/ui` is recognised as the UI folder.** Along with the shadcn folders,
+  `src/ui`, `app/ui`, `src/shared/ui`, `shared/ui`, `src/lib/ui` and
+  `src/design-system` now count, if they hold at least 3 component files and
+  no `package.json` of their own. This names where the components live. It
+  does not make the repo a shadcn repo.
+- **`roast_find_component` knows other names for common components.** If no
+  component name contains the word asked for, it tries common alternatives:
+  banner, notice and callout for Alert; dropdown and picker for Select; modal
+  and dialog; drawer and sheet; chip, tag and badge. The answer says which
+  word it searched for. Every word in the question must still match, so
+  "date picker" does not return Select.
+- **Scores.** Across 204 public repos, one score moved: Ghost, from 18 to 10.
+  Its shared `Toggle` was being given the uses of a different `Toggle` in
+  another package. It is now counted as never imported. 19 repos show more
+  never-imported components for the same reason, with no score change. The
+  suite's two duplicate-Button fixtures now name a canonical copy.
+
 ## 8.4.6 — 2026-09-22
 
 - **The guard doorway exposes the kit check.** On a product built on MUI,

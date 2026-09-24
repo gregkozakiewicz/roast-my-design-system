@@ -197,6 +197,11 @@ const STYLING_DEPS = [
   { pkg: 'class-variance-authority', label: 'CVA' },
 ];
 
+// Plain names a team gives its own shared component folder, checked in order.
+// A bare ui/ at the root is left out: there it is usually the whole front
+// end (Azure-ipam), not a shelf of shared parts.
+const OWN_UI_DIRS = ['src/ui', 'app/ui', 'src/shared/ui', 'shared/ui', 'src/lib/ui', 'src/design-system'];
+
 /** Framework + design-system classification (1.0 logic, widened for monorepos). */
 export function profileRepo(root, files) {
   const pkg = readJSON(join(root, 'package.json')) || {};
@@ -251,21 +256,28 @@ export function profileRepo(root, files) {
   }
 
   const componentsJson = readJSON(join(root, 'components.json'));
-  const uiDir = ['src/components/ui', 'components/ui', 'app/components/ui'].find((d) => existsSync(join(root, d)));
-  const isShadcn = Boolean(componentsJson) || Boolean(uiDir);
+  const shadcnUiDir = ['src/components/ui', 'components/ui', 'app/components/ui'].find((d) => existsSync(join(root, d)));
+  const isShadcn = Boolean(componentsJson) || Boolean(shadcnUiDir);
+  // A team's own shared folder under a plainer name (src/ui, shared/ui) is the
+  // UI folder too, when it holds components: Ledgerly keeps its 13 in src/ui
+  // and read as having none (2026-09-24). It names where the components live;
+  // it never makes the repo a shadcn one or its folder installed stock.
+  const ownUiDir = shadcnUiDir ? null : OWN_UI_DIRS.find((d) => !existsSync(join(root, d, 'package.json'))
+    && files.code.filter((f) => f.startsWith(`${d}/`) && /\.(tsx|jsx)$/.test(f)).length >= 3);
+  const uiDir = shadcnUiDir ?? ownUiDir;
 
   // Catalogue filenames as shipped by `shadcn add --all` (61 as of 2026-09).
   // Only used to recognise a vendored folder, never to judge one.
   const SHADCN_CATALOGUE = CATALOGUE;
   let catalogueNames = 0;
-  if (uiDir) {
+  if (shadcnUiDir) {
     try {
-      for (const f of readdirSync(join(root, uiDir))) {
+      for (const f of readdirSync(join(root, shadcnUiDir))) {
         if (SHADCN_CATALOGUE.has(f.replace(/\.[cm]?[jt]sx?$/, ''))) catalogueNames += 1;
       }
     } catch { /* unreadable */ }
   }
-  const vendoredUi = Boolean(uiDir) && (Boolean(componentsJson) || catalogueNames >= 8);
+  const vendoredUi = Boolean(shadcnUiDir) && (Boolean(componentsJson) || catalogueNames >= 8);
 
   const knownLib = KNOWN_LIBRARIES.find((d) => deps[d.pkg]);
   const homegrown = files.code.filter((f) => /(^|\/)components\//.test(f) && !/\/components\/ui\//.test(f) && /\.(tsx|jsx)$/.test(f));

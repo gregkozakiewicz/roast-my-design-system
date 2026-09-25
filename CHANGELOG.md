@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.0.4 — unreleased
+## 9.0.4 — 2026-09-25
 
 - **No child process is handed a copy of the environment.** The `npx`
   wrapper told the harvest about its temporary output through an

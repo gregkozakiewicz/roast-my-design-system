@@ -16,7 +16,7 @@ import { validateContent } from '../../skills/roast-my-design-system/scripts/mcp
 import { harvestTokens } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
 import { walkRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
 import { nearColorPairs } from '../../skills/roast-my-design-system/scripts/lib/nearpairs.mjs';
-import { tokenTwinFindings, tokenDefsOf } from '../../skills/roast-my-design-system/scripts/lib/tokentwins.mjs';
+import { tokenTwinFindings, tokenDefsOf, repoTokenDefs } from '../../skills/roast-my-design-system/scripts/lib/tokentwins.mjs';
 import { importsOf, resolveSpec, canonicalCopy } from '../../skills/roast-my-design-system/scripts/lib/avoidedimports.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
@@ -154,6 +154,33 @@ test('an alias to an existing token is the fix, not a twin', () => {
   const css = `@theme {\n  --color-warning-soft: #fdf5e6;\n  --color-overdue-soft: var(--color-warning-soft);\n}\n`;
   assert.equal(tokenDefsOf(css).has('--color-overdue-soft'), false);
   assert.deepEqual(tokenTwinFindings(css, { before: '' }), []);
+});
+
+// Cal.com commits Tailwind's compiled build (343 KB, pretty-printed): a new
+// theme token was called a twin of --tw-ring-offset-color from it
+// (benchmark, 2026-09-25).
+const COMPILED = `/*! tailwindcss v4.1.15 | MIT License | https://tailwindcss.com */
+@layer properties {
+  *, :before, :after { --tw-ring-offset-color: #fff; --tw-prose-invert-quotes: oklch(96.7% 0.003 264.542); }
+}
+:root { --color-shipped: #fdf5e6; }
+`;
+
+test("Tailwind's internals and its compiled build are never an existing token", () => {
+  assert.equal(tokenDefsOf(':root { --tw-ring-offset-color: #fff; --color-paper: #fff; }').has('--tw-ring-offset-color'), false);
+  const read = (f) => ({ 'dist/globals.css': COMPILED, 'src/own.css': ':root { --tw-shadow-color: #000; --color-ink-soft: #111; }' })[f];
+  assert.deepEqual(repoTokenDefs(['dist/globals.css', 'src/own.css'], read).map((d) => d.name), ['--color-ink-soft']);
+  writeFileSync(join(root, 'src/styles/globals.css'), COMPILED);
+  try {
+    const k = loadKnowledge(root);
+    const css = `:root {\n  --cal-brand-text: hsla(0, 0%, 100%, 1);\n  --color-holiday-soft: #fdf5e5;\n}\n`;
+    const out = validate(k, { code: css, file: 'src/styles/holiday.css' });
+    assert.doesNotMatch(out, /--tw-|--color-shipped/);
+    // the team's own theme still counts
+    assert.match(out, /--color-holiday-soft .* twin of the existing --color-warning-soft/);
+  } finally {
+    rmSync(join(root, 'src/styles/globals.css'));
+  }
 });
 
 test('get_context and the build prompt say to reuse a token rather than duplicate it', () => {

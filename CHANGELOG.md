@@ -2,6 +2,18 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.6.2 — unreleased
+
+- **Tailwind's internals are no longer mistaken for design tokens.** A repo
+  that commits Tailwind's compiled output (Cal.com keeps a 343 KB
+  `globals.css` that starts with the `/*! tailwindcss v4… */` banner) had
+  every `--tw-*` variable in it read as an existing token, so a new theme
+  token was reported as a twin of `--tw-ring-offset-color`. `roast_validate`,
+  `roast_review`, `--check` and the guard doorway now ignore `--tw-*` names,
+  and leave out stylesheets the report already treats as not the team's own
+  (a library's CSS, a minified file, and now Tailwind's compiled build). The
+  report names a compiled build as not the team's own; scores do not move.
+
 ## 8.6.1 — 2026-09-24
 
 - **The guard doorway gives the guard what the two 8.6.0 checks need.**

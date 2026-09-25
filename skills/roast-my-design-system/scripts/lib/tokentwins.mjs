@@ -21,6 +21,7 @@
  */
 import { canonical, oklab } from './color.mjs';
 import { KNOWN_ROWS } from '../profiles/shadcn-data.mjs';
+import { foreignStylesheet } from './exempt.mjs';
 
 export const TWIN_STEPS = 8;
 // Two tokens are deliberate, so a pair of them must also be closer than the
@@ -102,6 +103,9 @@ export function tokenDefsOf(raw) {
   const defs = new Map();
   for (const m of text.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+)[;}]/g)) {
     const [, name, rawValue] = m;
+    // Tailwind's internals (--tw-ring-offset-color, --tw-prose-*) are its
+    // plumbing, set per element; no one picks them as a design decision
+    if (/^--tw-/.test(name)) continue;
     const value = rawValue.trim();
     const canon = canonical(value);
     if (!canon) continue;
@@ -127,6 +131,8 @@ export function repoTokenDefs(styleFiles, read) {
   for (const file of styleFiles) {
     const text = read(file);
     if (!text || !text.includes('--')) continue;
+    // a library's CSS or a compiled build: the report leaves it out, so does this
+    if (foreignStylesheet(file, text)) continue;
     for (const [name, e] of tokenDefsOf(text)) out.push({ name, file, ...e });
   }
   return out;

@@ -71,6 +71,11 @@ export const CONTENT_CSS_NAME_RE = /(^|\/)_?(?:highlight(?:-\w+)?|hljs(?:-theme)
 export const EXTENSION_CSS_PATH_RE = /(^|\/)(?:chrome-extension|browser-extension|webextension)\/[\s\S]*\/(?:content|inject)[\w-]*\.(?:css|scss|less)$|(^|\/)content[_-]?script[\w-]*\.(?:css|scss|less)$/i;
 // minified: one very long line, whoever shipped it
 export const minifiedCss = (text) => text.split('\n').some((l) => l.length > 2000);
+// Tailwind's own build output, committed: it opens with the licence banner and
+// restates every --tw-* internal. Cal.com keeps a 343 KB one, pretty-printed so
+// the minified test misses it, and until 8.6.2 the twin check paired a new
+// theme token with --tw-ring-offset-color from it (benchmark, 2026-09-25).
+export const COMPILED_TAILWIND_RE = /^\s*\/\*!\s*tailwindcss v\d/;
 
 /** Why this stylesheet is not the product's own, or null. */
 export function foreignStylesheet(file, text = '') {
@@ -78,6 +83,7 @@ export function foreignStylesheet(file, text = '') {
   if (/\.module\.(?:css|scss|less)$/i.test(file)) return null;
   if (VENDOR_CSS_NAME_RE.test(file)) return "a library's stylesheet kept in the repo";
   if (minifiedCss(text)) return 'a minified stylesheet, shipped rather than written here';
+  if (COMPILED_TAILWIND_RE.test(text)) return "Tailwind's compiled output, generated from the source rather than written here";
   if (CONTENT_CSS_NAME_RE.test(file)) return 'a code or markdown theme: it styles content, not the interface';
   if (EXTENSION_CSS_PATH_RE.test(file)) return "CSS injected into other people's pages by a browser extension";
   return null;

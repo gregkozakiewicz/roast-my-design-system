@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 8.9.1 — unreleased
+## 8.9.1 — 2026-09-25
 
 - **The edit hook says a warning once per file in a session.** A warning
   is advice ("this chart paints by hand and the repo has no chart palette"),

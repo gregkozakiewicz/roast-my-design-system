@@ -2,6 +2,17 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.0.4 — unreleased
+
+- **No child process is handed a copy of the environment.** The `npx`
+  wrapper told the harvest about its temporary output through an
+  environment variable, copying the whole environment into the child to
+  do it, and the tests copied it into every child they start. A plugin
+  scanner reads such a copy as forwarding whatever tokens the user has
+  set. The harvest takes `--ephemeral-out` as a flag, the wrapper passes
+  no environment at all, and the tests hand a child only its path and
+  home folder. Nothing in the scan, the score or the report changes.
+
 ## 9.0.3 — 2026-09-25
 
 Housekeeping for the plugin directory listing, continued. Nothing in the

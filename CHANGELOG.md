@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 8.7.0 — unreleased
+## 8.7.0 — 2026-09-25
 
 - **The plugin checks every file the agent edits, whether or not the agent
   asks.** The MCP tools only run when the agent decides to call them. In

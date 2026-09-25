@@ -134,11 +134,20 @@ if (existsSync(serverPath)) {
 
 step('Changelog');
 
-const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
+let changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 if (!new RegExp(`^## ${version.replace(/\./g, '\\.')}\\s`, 'm').test(changelog)) {
   die(`CHANGELOG.md has no "## ${version}" section. Write it before releasing: the changelog is what the next person reads to understand what moved.`);
 }
 ok(`"## ${version}" section present`);
+// The heading is written as "unreleased" while the work lands; the release
+// is the moment it gets its date. 8.6.2 and 8.7.0 shipped with "unreleased"
+// in the heading and in the GitHub release notes before this stamped it.
+const unreleased = new RegExp(`^(## ${version.replace(/\./g, '\\.')} — )unreleased`, 'm');
+if (unreleased.test(changelog)) {
+  changelog = changelog.replace(unreleased, `$1${new Date().toISOString().slice(0, 10)}`);
+  if (!DRY && !CHECK_ONLY) writeFileSync(join(ROOT, 'CHANGELOG.md'), changelog);
+  ok(`"## ${version}" dated today`);
+}
 
 // ---------- 4. the same gates CI will run ----------
 

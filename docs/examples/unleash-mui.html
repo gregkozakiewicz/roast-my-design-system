@@ -268,10 +268,10 @@
   .ledger-row a.path { font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ledger-pills { margin-left:auto; display:flex; gap:8px; flex-shrink:0; }
 
-  .start-row { align-items:flex-start; }
+  .start-row, .gap-row { align-items:flex-start; }
   .start-body { min-width:0; }
   .start-title { font:600 15px/1.4 var(--disp); }
-  .start-row .sub { margin-top:2px; overflow-wrap:anywhere; }
+  .start-row .sub, .gap-row .sub { margin-top:2px; overflow-wrap:anywhere; }
   .start-actions { display:flex; align-items:center; gap:10px; margin-top:10px; }
   .fixbtn { font:700 11.5px/1 var(--sans); padding:8px 13px; border-radius:8px; border:1px solid var(--accent);
     background:transparent; color:var(--accent); cursor:pointer; }
@@ -452,7 +452,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/8.2.2 -->
+<!-- rmds-schema: gregkozakiewicz/8.9.0 -->
 <!-- rmds-score: 64 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
@@ -468,14 +468,14 @@
 <aside class="side">
   <div class="eyebrow">Design-system diagnosis</div>
   <div class="repo"><span class="mono">Unleash/unleash</span></div>
-  <div class="scanned">Scanned 2026-09-18 · 5,223 code files · 1045ms</div>
+  <div class="scanned">Scanned 2026-09-25 · 5,223 code files · 1219ms</div>
   <div class="score"><div class="eyebrow">Health score</div><div class="val">64<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 82.</b></div></div>
   <div class="chips"><span class="chip">vite-react</span><span class="chip">TypeScript</span><span class="chip">Emotion</span><span class="chip">Emotion (styled)</span><span class="chip">Sass</span><span class="chip">custom design system</span><span class="chip">monorepo</span><span class="chip chip-agent">CLAUDE.md</span><span class="chip chip-agent">AGENTS.md</span></div>
   <div class="facts"><div class="excl fresh">Read as a product built on MUI: imported in 1,109 files, theme defined in frontend/src/themes/dark-theme.ts. The kit's own code is installed from npm and not counted; what is counted is what the repo writes onto its components.</div><div class="excl">Evidence: MUI imported in 1109 files · theme defined in frontend/src/themes/dark-theme.ts and 1 more · the theme is referenced 6162 times from components</div><div class="excl">Left out by design: <span class="mono">playground/</span> (26 UI files), <span class="mono">demo/</span> (10 UI files), <span class="mono">archive/</span> (4 UI files). A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div></div>
   <div class="eyebrow idx-head">Index</div>
   <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>What your agent sees</a><a href="#s-3"><i>03</i>Your present</a><a href="#s-4"><i>04</i>Your MUI theme</a><a href="#s-5"><i>05</i>Off-scale spacing</a><a href="#s-6"><i>06</i>Typography &amp; shape</a><a href="#s-7"><i>07</i>Where it hurts most</a><a href="#s-8"><i>08</i>The composition map</a></nav>
   <div class="excs"><b>Not yours, and not counted</b><p>A library: unused components are internal-only, and downstream consumers are invisible from here.</p><p>25 files not judged (ConfirmUserAdded/ConfirmUserEmail/ConfirmUserEmail.tsx, LinkField/ConfirmUserEmail/ConfirmUserEmail.tsx, ProductivityEmailSubscription.tsx and 22 more): email and print styling has to be inline, because there is no cascade to inherit. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p></div>
-  <div class="side-foot">roast-my-design-system 8.2.2</div>
+  <div class="side-foot">roast-my-design-system 8.9.0</div>
 </aside>
 <main class="main">
   
@@ -564,6 +564,8 @@ Work through the files named in the finding. When you are done, re-run the scan 
 npx roast-my-design-system@latest</div></div>
       </div></div></section>
 
+
+
 <section id="s-2" class="glass pad agent">
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
     <p class="sub">Your agent reads <span class="mono">CLAUDE.md</span>, <span class="mono">AGENTS.md</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">CLAUDE.md · Claude Code</span><span class="chip chip-agent">AGENTS.md · generic (AGENTS.md standard)</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-yes">✓</b> · Codex <b class="cov-yes">✓</b> · Cursor <b class="cov-yes">✓</b></p>
@@ -607,7 +609,7 @@ npx roast-my-design-system@latest</div></div>
           <span class="gift-count">18 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of Unleash/unleash on 2026-09-18.
+&lt;!-- Generated by roast-my-design-system from a scan of Unleash/unleash on 2026-09-25.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system@latest --rules
      Door note: Codex and Cursor read AGENTS.md; Claude Code reads CLAUDE.md only.
@@ -645,11 +647,11 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 ### Known duplicates: do not make it worse
 
-- `&lt;StyledSuccessIcon&gt;` exists in 6 places (`frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx`, `frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `&lt;StyledContainer&gt;` exists in 4 places (`frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx`, `frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `&lt;StyledFailedIcon&gt;` exists in 4 places (`frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx`, `frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `&lt;StyledTitle&gt;` is defined twice and one wraps the other; do not create a third.
+- `&lt;StyledSuccessIcon&gt;` exists in 6 places (`frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx`, `frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;StyledContainer&gt;` exists in 4 places (`frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx`, `frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;StyledFailedIcon&gt;` exists in 4 places (`frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx`, `frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx`). Match whichever the surrounding code already imports, and never create another.
 - `&lt;StyledHeader&gt;` exists in 2 places (`frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx`, `frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;StyledTitle&gt;` is defined twice and one wraps the other; do not create a third.
 - `&lt;StyledForm&gt;` is defined twice and one wraps the other; do not create a third.
 
 ### Spacing and sizing
@@ -673,7 +675,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 8.2.2. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 8.9.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -921,28 +923,21 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;StyledSuccessIcon&gt; · 6 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx">frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx">frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestReviewers/ChangeRequestReviewer.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx">frontend/src/component/changeRequest/ChangeRequestSidebar/ChangeRequestSidebar.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx">frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;StyledContainer&gt; · 4 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx">frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx">frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;StyledFailedIcon&gt; · 4 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx">frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx</a></div>
-      
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">&lt;StyledTitle&gt; · defined twice, one wraps the other</div>
-      <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx">frontend/src/component/integrations/IntegrationEvents/IntegrationEventsStateIcon.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsActionsCell/ProjectActionsLastEvent.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsDetails/ProjectActionsEventsDetailsAction.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx">frontend/src/component/project/Project/ProjectSettings/ProjectActions/ProjectActionsTable/ProjectActionsEventsModal/ProjectActionsEventsStateCell.tsx</a></div>
       
       </div>
     </div>
@@ -950,6 +945,13 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       <div class="eyebrow">&lt;StyledHeader&gt; · 2 implementations</div>
       <div class="fam-rows">
       <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx">frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx</a></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">&lt;StyledTitle&gt; · defined twice, one wraps the other</div>
+      <div class="fam-rows">
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feedbackNew/FeedbackComponent.tsx">frontend/src/component/feedbackNew/FeedbackComponent.tsx</a></div>
       
       </div>
     </div>
@@ -968,9 +970,9 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       </div>
     </div>
     <div class="fam">
-      <div class="eyebrow">&lt;StyledListItemIcon&gt; · defined twice, one wraps the other</div>
+      <div class="eyebrow">&lt;StyledSelect&gt; · defined twice, one wraps the other</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feature/FeatureView/FeatureOverview/FeatureOverviewMetaData/FeatureOverviewMetaData.tsx">frontend/src/component/feature/FeatureView/FeatureOverview/FeatureOverviewMetaData/FeatureOverviewMetaData.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/commandBar/RecentlyVisited/CommandResultGroup.tsx">frontend/src/component/commandBar/RecentlyVisited/CommandResultGroup.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feature/Dependencies/FeatureStatusOptions.tsx">frontend/src/component/feature/Dependencies/FeatureStatusOptions.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/Unleash-unleash/frontend/src/component/feature/FeatureView/FeatureOverview/ReleasePlan/shared/SharedFormComponents.tsx">frontend/src/component/feature/FeatureView/FeatureOverview/ReleasePlan/shared/SharedFormComponents.tsx</a></div>
       
       </div>
     </div>
@@ -1050,97 +1052,97 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 </div>
 <section id="s-8" class="glass pad">
     <div class="sec-head"><h2>The composition map</h2><p class="sub">1,425 components defined · tile area is internal use: how the system builds from itself, downstream consumers invisible from here · the real system, drawn to scale</p></div>
-    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="206.0" height="146.0" class="atile">
-      <title>&lt;StyledContainer&gt; · used 112× · frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</title></rect>
-    <text x="103.0" y="69.0" class="adot-n">StyledContainer</text>
-    <text x="103.0" y="87.0" class="adot-c">112×</text></g><g><rect x="0.0" y="146.0" width="206.0" height="146.0" class="atile">
-      <title>&lt;StyledContainer&gt; · used 112× · frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx</title></rect>
-    <text x="103.0" y="215.0" class="adot-n">StyledContainer</text>
-    <text x="103.0" y="233.0" class="adot-c">112×</text></g><g><rect x="0.0" y="292.0" width="206.0" height="146.0" class="atile">
-      <title>&lt;StyledContainer&gt; · used 112× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
-    <text x="103.0" y="361.0" class="adot-n">StyledContainer</text>
-    <text x="103.0" y="379.0" class="adot-c">112×</text></g><g><rect x="206.0" y="0.0" width="186.4" height="159.9" class="atile">
-      <title>&lt;StyledContainer&gt; · used 111× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
-    <text x="299.2" y="76.0" class="adot-n">StyledContainer</text>
-    <text x="299.2" y="94.0" class="adot-c">111×</text></g><g><rect x="206.0" y="159.9" width="186.4" height="139.8" class="atile">
+    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="202.8" height="147.3" class="atile">
+      <title>&lt;StyledContainer&gt; · used 110× · frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx</title></rect>
+    <text x="101.4" y="69.7" class="adot-n">StyledContainer</text>
+    <text x="101.4" y="87.7" class="adot-c">110×</text></g><g><rect x="0.0" y="147.3" width="202.8" height="146.0" class="atile">
+      <title>&lt;StyledContainer&gt; · used 109× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
+    <text x="101.4" y="216.3" class="adot-n">StyledContainer</text>
+    <text x="101.4" y="234.3" class="adot-c">109×</text></g><g><rect x="0.0" y="293.3" width="202.8" height="144.7" class="atile">
+      <title>&lt;StyledContainer&gt; · used 108× · frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</title></rect>
+    <text x="101.4" y="361.7" class="adot-n">StyledContainer</text>
+    <text x="101.4" y="379.7" class="adot-c">108×</text></g><g><rect x="202.8" y="0.0" width="186.7" height="157.2" class="atile">
+      <title>&lt;StyledContainer&gt; · used 108× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
+    <text x="296.1" y="74.6" class="adot-n">StyledContainer</text>
+    <text x="296.1" y="92.6" class="adot-c">108×</text></g><g><rect x="202.8" y="157.2" width="186.7" height="141.1" class="atile">
       <title>&lt;Dialogue&gt; · used 97× · frontend/src/component/common/Dialogue/Dialogue.tsx</title></rect>
-    <text x="299.2" y="225.8" class="adot-n">Dialogue</text>
-    <text x="299.2" y="243.8" class="adot-c">97×</text></g><g><rect x="206.0" y="299.7" width="186.4" height="138.3" class="atile">
+    <text x="296.1" y="223.7" class="adot-n">Dialogue</text>
+    <text x="296.1" y="241.7" class="adot-c">97×</text></g><g><rect x="202.8" y="298.3" width="186.7" height="139.7" class="atile">
       <title>&lt;TextCell&gt; · used 96× · frontend/src/component/common/Table/cells/TextCell/TextCell.tsx</title></rect>
-    <text x="299.2" y="364.8" class="adot-n">TextCell</text>
-    <text x="299.2" y="382.8" class="adot-c">96×</text></g><g><rect x="392.5" y="0.0" width="139.8" height="161.4" class="atile">
+    <text x="296.1" y="364.2" class="adot-n">TextCell</text>
+    <text x="296.1" y="382.2" class="adot-c">96×</text></g><g><rect x="389.5" y="0.0" width="140.8" height="162.1" class="atile">
       <title>&lt;PageContent&gt; · used 84× · frontend/src/component/common/PageContent/PageContent.tsx</title></rect>
-    <text x="462.4" y="76.7" class="adot-n">PageContent</text>
-    <text x="462.4" y="94.7" class="adot-c">84×</text></g><g><rect x="392.5" y="161.4" width="139.8" height="146.0" class="atile">
+    <text x="459.8" y="77.0" class="adot-n">PageContent</text>
+    <text x="459.8" y="95.0" class="adot-c">84×</text></g><g><rect x="389.5" y="162.1" width="140.8" height="146.6" class="atile">
       <title>&lt;PageHeader&gt; · used 76× · frontend/src/component/common/PageHeader/PageHeader.tsx</title></rect>
-    <text x="462.4" y="230.4" class="adot-n">PageHeader</text>
-    <text x="462.4" y="248.4" class="adot-c">76×</text></g><g><rect x="392.5" y="307.4" width="139.8" height="130.6" class="atile">
-      <title>&lt;StyledTitle&gt; · used 68× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
-    <text x="462.4" y="368.7" class="adot-n">StyledTitle</text>
-    <text x="462.4" y="386.7" class="adot-c">68×</text></g><g><rect x="532.3" y="0.0" width="123.3" height="146.0" class="atile">
+    <text x="459.8" y="231.4" class="adot-n">PageHeader</text>
+    <text x="459.8" y="249.4" class="adot-c">76×</text></g><g><rect x="389.5" y="308.7" width="140.8" height="129.3" class="atile">
       <title>&lt;Badge&gt; · used 67× · frontend/src/component/common/Badge/Badge.tsx</title></rect>
-    <text x="593.9" y="69.0" class="adot-n">Badge</text>
-    <text x="593.9" y="87.0" class="adot-c">67×</text></g><g><rect x="532.3" y="146.0" width="123.3" height="146.0" class="atile">
+    <text x="459.8" y="369.4" class="adot-n">Badge</text>
+    <text x="459.8" y="387.4" class="adot-c">67×</text></g><g><rect x="530.2" y="0.0" width="124.0" height="146.7" class="atile">
       <title>&lt;StyledHeader&gt; · used 67× · frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</title></rect>
-    <text x="593.9" y="215.0" class="adot-n">StyledHeader</text>
-    <text x="593.9" y="233.0" class="adot-c">67×</text></g><g><rect x="532.3" y="292.0" width="123.3" height="146.0" class="atile">
-      <title>&lt;StyledHeader&gt; · used 67× · frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx</title></rect>
-    <text x="593.9" y="361.0" class="adot-n">StyledHeader</text>
-    <text x="593.9" y="379.0" class="adot-c">67×</text></g><g><rect x="655.5" y="0.0" width="140.0" height="128.5" class="atile">
-      <title>&lt;StyledTitle&gt; · used 67× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
-    <text x="725.5" y="60.3" class="adot-n">StyledTitle</text>
-    <text x="725.5" y="78.3" class="adot-c">67×</text></g><g><rect x="795.5" y="0.0" width="127.5" height="128.5" class="atile">
+    <text x="592.2" y="69.4" class="adot-n">StyledHeader</text>
+    <text x="592.2" y="87.4" class="adot-c">67×</text></g><g><rect x="530.2" y="146.7" width="124.0" height="146.7" class="atile">
+      <title>&lt;StyledTitle&gt; · used 67× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
+    <text x="592.2" y="216.1" class="adot-n">StyledTitle</text>
+    <text x="592.2" y="234.1" class="adot-c">67×</text></g><g><rect x="530.2" y="293.5" width="124.0" height="144.5" class="atile">
+      <title>&lt;StyledHeader&gt; · used 66× · frontend/src/component/changeRequest/ChangeRequestSidebar/EnvironmentChangeRequest/ChangeRequestTitle.tsx</title></rect>
+    <text x="592.2" y="361.7" class="adot-n">StyledHeader</text>
+    <text x="592.2" y="379.7" class="adot-c">66×</text></g><g><rect x="654.3" y="0.0" width="136.4" height="127.5" class="atile">
+      <title>&lt;StyledTitle&gt; · used 64× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
+    <text x="722.5" y="59.7" class="adot-n">StyledTitle</text>
+    <text x="722.5" y="77.7" class="adot-c">64×</text></g><g><rect x="790.7" y="0.0" width="130.0" height="127.5" class="atile">
       <title>&lt;TablePlaceholder&gt; · used 61× · frontend/src/component/common/Table/TablePlaceholder/TablePlaceholder.tsx</title></rect>
-    <text x="859.3" y="60.3" class="adot-n s">TablePlaceholder</text>
-    <text x="859.3" y="78.3" class="adot-c">61×</text></g><g><rect x="923.0" y="0.0" width="117.0" height="128.5" class="atile">
+    <text x="855.7" y="59.7" class="adot-n s">TablePlaceholder</text>
+    <text x="855.7" y="77.7" class="adot-c">61×</text></g><g><rect x="920.7" y="0.0" width="119.3" height="127.5" class="atile">
       <title>&lt;Search&gt; · used 56× · frontend/src/component/common/Search/Search.tsx</title></rect>
-    <text x="981.5" y="60.3" class="adot-n">Search</text>
-    <text x="981.5" y="78.3" class="adot-c">56×</text></g><g><rect x="655.5" y="128.5" width="139.7" height="105.7" class="atile">
+    <text x="980.3" y="59.7" class="adot-n">Search</text>
+    <text x="980.3" y="77.7" class="adot-c">56×</text></g><g><rect x="654.3" y="127.5" width="140.8" height="106.1" class="atile">
       <title>&lt;PermissionButton&gt; · used 55× · frontend/src/component/common/PermissionButton/PermissionButton.tsx</title></rect>
-    <text x="725.4" y="177.4" class="adot-n">PermissionButton</text>
-    <text x="725.4" y="195.4" class="adot-c">55×</text></g><g><rect x="655.5" y="234.3" width="139.7" height="101.9" class="atile">
+    <text x="724.7" y="176.5" class="adot-n">PermissionButton</text>
+    <text x="724.7" y="194.5" class="adot-c">55×</text></g><g><rect x="654.3" y="233.5" width="140.8" height="102.2" class="atile">
       <title>&lt;StyledBox&gt; · used 53× · frontend/src/component/admin/users/InviteLinkBar/InviteLinkBarContent.tsx</title></rect>
-    <text x="725.4" y="281.2" class="adot-n">StyledBox</text>
-    <text x="725.4" y="299.2" class="adot-c">53×</text></g><g><rect x="655.5" y="336.1" width="139.7" height="101.9" class="atile">
+    <text x="724.7" y="280.7" class="adot-n">StyledBox</text>
+    <text x="724.7" y="298.7" class="adot-c">53×</text></g><g><rect x="654.3" y="335.8" width="140.8" height="102.2" class="atile">
       <title>&lt;StyledInput&gt; · used 53× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
-    <text x="725.4" y="383.1" class="adot-n">StyledInput</text>
-    <text x="725.4" y="401.1" class="adot-c">53×</text></g><g><rect x="795.3" y="128.5" width="123.6" height="106.4" class="atile">
+    <text x="724.7" y="382.9" class="adot-n">StyledInput</text>
+    <text x="724.7" y="400.9" class="adot-c">53×</text></g><g><rect x="795.1" y="127.5" width="123.7" height="107.6" class="atile">
       <title>&lt;FormTemplate&gt; · used 49× · frontend/src/component/common/FormTemplate/FormTemplate.tsx</title></rect>
-    <text x="857.1" y="177.8" class="adot-n">FormTemplate</text>
-    <text x="857.1" y="195.8" class="adot-c">49×</text></g><g><rect x="918.9" y="128.5" width="121.1" height="106.4" class="atile">
+    <text x="856.9" y="177.2" class="adot-n">FormTemplate</text>
+    <text x="856.9" y="195.2" class="adot-c">49×</text></g><g><rect x="918.8" y="127.5" width="121.2" height="107.6" class="atile">
       <title>&lt;Input&gt; · used 48× · frontend/src/component/common/Input/Input.tsx</title></rect>
-    <text x="979.4" y="177.8" class="adot-n">Input</text>
-    <text x="979.4" y="195.8" class="adot-c">48×</text></g><g><rect x="795.3" y="235.0" width="124.4" height="101.5" class="atile">
+    <text x="979.4" y="177.2" class="adot-n">Input</text>
+    <text x="979.4" y="195.2" class="adot-c">48×</text></g><g><rect x="795.1" y="235.0" width="124.5" height="102.6" class="atile">
       <title>&lt;HelpIcon&gt; · used 47× · frontend/src/component/common/HelpIcon/HelpIcon.tsx</title></rect>
-    <text x="857.4" y="281.7" class="adot-n">HelpIcon</text>
-    <text x="857.4" y="299.7" class="adot-c">47×</text></g><g><rect x="795.3" y="336.5" width="124.4" height="101.5" class="atile">
-      <title>&lt;StyledForm&gt; · used 47× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
-    <text x="857.4" y="383.2" class="adot-n">StyledForm</text>
-    <text x="857.4" y="401.2" class="adot-c">47×</text></g><g><rect x="919.6" y="235.0" width="120.4" height="102.6" class="atile">
-      <title>&lt;StyledForm&gt; · used 46× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
-    <text x="979.8" y="282.3" class="adot-n">StyledForm</text>
-    <text x="979.8" y="300.3" class="adot-c">46×</text></g><g><rect x="919.6" y="337.6" width="120.4" height="100.4" class="atile">
+    <text x="857.3" y="282.3" class="adot-n">HelpIcon</text>
+    <text x="857.3" y="300.3" class="adot-c">47×</text></g><g><rect x="795.1" y="337.6" width="124.5" height="100.4" class="atile">
+      <title>&lt;StyledForm&gt; · used 46× · frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</title></rect>
+    <text x="857.3" y="383.8" class="adot-n">StyledForm</text>
+    <text x="857.3" y="401.8" class="adot-c">46×</text></g><g><rect x="919.6" y="235.0" width="120.4" height="101.5" class="atile">
       <title>&lt;PermissionIconButton&gt; · used 45× · frontend/src/component/common/PermissionIconButton/PermissionIconButton.tsx</title></rect>
-    <text x="979.8" y="383.8" class="adot-n s">PermissionIconBu…</text>
-    <text x="979.8" y="401.8" class="adot-c">45×</text></g></svg>
-    <p class="sub">453 more adopted components below the top 24, not drawn.</p>
+    <text x="979.8" y="281.8" class="adot-n s">PermissionIconBu…</text>
+    <text x="979.8" y="299.8" class="adot-c">45×</text></g><g><rect x="919.6" y="336.5" width="120.4" height="101.5" class="atile">
+      <title>&lt;StyledForm&gt; · used 45× · frontend/src/component/feedbackNew/FeedbackComponent.tsx</title></rect>
+    <text x="979.8" y="383.3" class="adot-n">StyledForm</text>
+    <text x="979.8" y="401.3" class="adot-c">45×</text></g></svg>
+    <p class="sub">444 more adopted components below the top 24, not drawn.</p>
     
-    <p class="sub">787 components are imported exactly once: &lt;AccessOverviewAccordion&gt;, &lt;AccessProvider&gt;, &lt;AccessProviderMock&gt;, &lt;AccessRequestsNotifications&gt;, &lt;AccordionContent&gt;, &lt;ActionsCell&gt; and 781 more. Quiet corners, not yet a system.</p>
+    <p class="sub">790 components are imported exactly once: &lt;AccessOverviewAccordion&gt;, &lt;AccessProvider&gt;, &lt;AccessProviderMock&gt;, &lt;AccessRequestsNotifications&gt;, &lt;AccordionContent&gt;, &lt;ActionsCell&gt; and 784 more. Quiet corners, not yet a system.</p>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
     <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
-    <td><span class="pill pill-mint">112×</span></td>
-    <td class="path">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</td>
-    <td><span class="chip chip-xs">theme</span></td></tr>
-    <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
-    <td><span class="pill pill-mint">112×</span></td>
+    <td><span class="pill pill-mint">110×</span></td>
     <td class="path">frontend/src/component/changeRequest/ChangeRequests/ChangeRequestFilters/ChangeRequestFilters.styles.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
-    <td><span class="pill pill-mint">112×</span></td>
+    <td><span class="pill pill-mint">109×</span></td>
     <td class="path">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</td>
     <td><span class="chip chip-xs">theme</span></td></tr>
     <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
-    <td><span class="pill pill-mint">111×</span></td>
+    <td><span class="pill pill-mint">108×</span></td>
+    <td class="path">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</td>
+    <td><span class="chip chip-xs">theme</span></td></tr>
+    <tr><td class="mono strong">&lt;StyledContainer&gt;</td>
+    <td><span class="pill pill-mint">108×</span></td>
     <td class="path">frontend/src/component/feedbackNew/FeedbackComponent.tsx</td>
     <td><span class="chip chip-xs">theme</span></td></tr>
     <tr><td class="mono strong">&lt;Dialogue&gt;</td>
@@ -1159,20 +1161,20 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td><span class="pill pill-mint">76×</span></td>
     <td class="path">frontend/src/component/common/PageHeader/PageHeader.tsx</td>
     <td><span class="dim">none</span></td></tr>
-    <tr><td class="mono strong">&lt;StyledTitle&gt;</td>
-    <td><span class="pill pill-mint">68×</span></td>
-    <td class="path">frontend/src/component/integrations/IntegrationForm/IntegrationForm.styles.tsx</td>
-    <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;Badge&gt;</td>
     <td><span class="pill pill-mint">67×</span></td>
     <td class="path">frontend/src/component/common/Badge/Badge.tsx</td>
-    <td><span class="dim">none</span></td></tr></tbody></table></div>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;StyledHeader&gt;</td>
+    <td><span class="pill pill-mint">67×</span></td>
+    <td class="path">frontend/src/component/changeRequest/ChangeRequestOverview/ChangeRequestHeader/ChangeRequestHeader.styles.tsx</td>
+    <td><span class="chip chip-xs">theme</span></td></tr></tbody></table></div>
     </section>
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 8.2.2</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">0b83e9e9c5c3</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=8.2.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 8.9.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">c40341d1e8ca</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=8.9.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

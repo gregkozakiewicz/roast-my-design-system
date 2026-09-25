@@ -268,10 +268,10 @@
   .ledger-row a.path { font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ledger-pills { margin-left:auto; display:flex; gap:8px; flex-shrink:0; }
 
-  .start-row { align-items:flex-start; }
+  .start-row, .gap-row { align-items:flex-start; }
   .start-body { min-width:0; }
   .start-title { font:600 15px/1.4 var(--disp); }
-  .start-row .sub { margin-top:2px; overflow-wrap:anywhere; }
+  .start-row .sub, .gap-row .sub { margin-top:2px; overflow-wrap:anywhere; }
   .start-actions { display:flex; align-items:center; gap:10px; margin-top:10px; }
   .fixbtn { font:700 11.5px/1 var(--sans); padding:8px 13px; border-radius:8px; border:1px solid var(--accent);
     background:transparent; color:var(--accent); cursor:pointer; }
@@ -452,7 +452,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAALAUlEQVR42s2bbZBVZR3Af+eey8KyAspAZILhC2w65ih8KCqZhmyMKT8oIGoTDUUvI6LQjPRla6bRUYkZ5VOJBY5mvqQjNA0jfoCptNK0nEkiBM1FImTlLQaWvXfvPacP+392//x5zjnPvXsXPDNndu+9z/k///fX50SMzBWZv0mTcEryNzV/W45oq66SwKyb788HZgKXAh+Xz2OAUfJ7P9AHHAM+AP4N7JbP+oqFCclHjQGRIFeTz6OAGcANwBeBq4BJwPhAeMeBQ8AO4PfAS8AeYRRAWZicco6vSKkpwCeAZcBWoCII6jsRIipy98ntPvfLGvtcRWAukz2sxp2TK1b/TwZ+DOw0iNcUYWmDt2NUzXy/U/aanIHLWTGBWFRwDLAUWA1Ml99qxizcVQGOyH1Q7LtPfhsjfmEKMFHu0epZre5l+dsN/BR4TODEHt/T8kur3CyxTSeZOlA10joIvAD8UPzBdKAtB36brLlBnnlBYGiYVcWQVHCYlWGSIxYxviNOyhFeM0i9CnxXPH8WI91dljsL8ZkC61XDbL3nIcFppKLbIMA24CFj45rwl4GblJqi1DYOcFqxrB0ld2Rg3CR7WEa4zw8pDYtaTfx5wDPKm9fU5u8D3zKElwIILkleMCnHNNqMLynLXu8rIdRU9HhGcG0JEyLlpDapDRO14fPAJZ7sLQTuOOANYC/wltjzw8Ai4GKPBmjYl8jeqcLHCWST4DwsJjgvPgp4SoWmutqsyyAYNcjY8cCBjDB4FHgWWGwSqNhoWpcSSl2F3KcE97hZJjhur1H2Vlee+NtG1ZvRrHESzrRTSzzJ0F8lCSp5nCiCS9WD55oGtNJL/BIFNFFZ2e1KGtEwTGucqH/qITrxONntwLUKhs41blfZZ6KeW9IoE2IVfnqMw6uKJEKzr6jAGeYxwGaU7vdjwPcNUQ6XZYKjdow9KhzHoQi3AZuNl02B+xqw97w12rl2BzAgVRLtB77pKbudX7jPg/dmoamwdnAcvc1jT1uV2hUxMTKJzELgJ8DjwG+BLcDvgBeB3oC6wOHQCyzIUWm391YP/reFmEIETAB2GdU7AHQWALBp6ELgOVHBdBh3KPH6+07BWYfGXUJbVGT7d3uyrJWmEMmT+ueBbcZ51ZRDs3eo2i8qwAHz+0pPtnp3li8oKaf0pvL2CfB3qdSy7CdS9z1Smenavz4MySfASSX5coDpOU08X3BPVHR4U2g8Q4tipbY2tVya40Ej9dvPPcifDbW3uOnQuNSTui/MiwhPKpVLgbeBsTmSd3nAz9RzSYtsvk8hWw5w3F+WrFHnJ2OFBk3Tr7OkeBFw2Czuysmn3cYrPLE6bYHa3xyQbDkpzpb8YKdydO63HxmaDgutg3Q5QhabwuKEAPapi3vmWlmXtID4xCP5UoCz+5yKNFXgFlVFusaNxXGxhu82WS8LXE79iiorSx4GlCWmp8NwdKlheqjDc/h8VhVTDu/fmKh0ntDi1iRC6yAcpy6vK++fSlnqk777PA84ZcJZYkJeEkh8XfZdFKD2jjGfAf6bkSpPU+15VBPH0fa63WOqAmaLiLIn2YmAR4xt5XV3kwCn1xWQr8dK7Q96tM/ts8iYwRKzdr9pr3Od2IkDdByYkxFiAD4GvOtB4BDwB2lyvGcI9/mJmpLI2IJcPVaS359hem6Ph40GzBGazqDPSfdCQSAVBI4D+zxzvUjWzJSOTCpI1wTWduDrkmxcAHwS+II4nStViztWewH8UmJ+WbXV9TVKNGmOdHumKDj6cvhcYXDfJzSNkzUd0oobvL5nJLILaPeEwJJZXzfPPZshvfFSwu7zpNkfCHOigmRrjqzNc7ru+x2mx9hu6pvBBK+kFqCGDyfU0MJyGOnX5c0NYtW6Kgn3HwHmShVYUrD2K3NKPPBSUfvnleSLmhvjTMrbJzRhmDIIqM0QWFEq6htATsjY2NfRSRRT3hMH9bgwx/X+KhmhNhHzfEKcVj2wEROrpigqAmAnTCWPnYd0UhudyqYK+YqY0CbZJ8mBGQkTjzXRdksLaEo1A6pmUbvHUenraEFPIIuBdeF8BbhDMripIi2LsNOcD4FviA3HGU7SXjVlwqk8127WVDUDTnra1R05Dqk7Z2MXiuKcNSVxaPeKP+nMmOs5JuwGbpRcv0zxAYn/id+JlNcfbxx5r/5wyDiXDobGzz5p/lMhp9WtXRxVG6dPiX3qGQG/EES/kmNWqRD9jqTJe5R/yLr2yf5OCJOVQCMJqYf1A7NFrZ0DOwVcn5MITVRMqJkE4y3gj8Aq9WyUo033ShbaQf5018G6VPb2ZaFO+9aYROh6ocmtOwJco4FPVO1pR9DyjKLE2fi6gFT46ZyZX6wKGlt7FGWDMxg6jOFLhW800W25oa1bErXTJLHdFAwbMipBnZKeLCiGUuAHBSX1xSoPWGGYnFcMdapmhy6GDqosz+25wdC23dcPuN+UlTuUH/AxoSTxOSszc0x4g4HTHrZdHqmc4hXFvOUBRZHD5zJlDo64x4wpTRZaNG33+/oB8zxjpS9lpKgO+cvFnnyDDQfjHVV5lTww2pX2OXO6qwFz6AT+pZjwVaX+kdBg+5TzbD/ASWKP6uamqnGQ1xK7VTGtnsGAqYEMqCp1vjPAHGIliL2ibR1mcLrelOV7VCYbWWTWGkkcleaCbyLk67tpLmsGXBTIAD3m1kyIAwat14i0teZMU9HN0bTWJ9SyGmr0Gmk+UICEA9TlGYQ0wwBrTisCzKGUIZgHzIisV5opZ0Q3PRTdYvpnB8TZRDnzuJIaUfeYbtDuJhhgD0ItD2BCZFLxy9R4zDm/LXlDUse1rykVdGqzsQHPPBP4laSjKfCfJhlgu0ghmqBx3Ghsvy605dLhuPiisekqML+Bnp3r221g4NzP1CYZYJlwV0G16vafrzS4oel2SfXSe02qu1d1W6MCp6QJnaRSUppggDWHOzJwcJ+nmaw2EVpmh47H3YIHlQo5xF6SpCbkXFAc6L1DGGDzk1WGGIfPaIZOr9aUCT8YEFJP04JYcuXXPCPmRzMkTYCHpkkT0N93q+GJ7T886uk5via0xDRwTkiPvo54gK4LILDoKmJAYgqtiqTe0zMEsM4jrCMMHapqGE+nvrfI5vZ87kZVYzdzbl8zwB2oqHpS6n4JX/MzzKtDeXyNY0XNCeNmJeQeXGns0DFhm5Sm5LS1QxjwJ4/qvy0jrbnmGX34aobgoJMdx8CVgWEzmAmr8R9S3q9GUY1s6NaMlsHIn8WGV0kIneAhXDN4kZoQ2fOEq1tBvC8y3KnKzpqx2acZOreP8c7DeTGjzTw/S/bypd2VwCJqWJqwQE1o7BT4kFRfn85oZNhj8zp9dcfk2zjzqDwCcz1D7ykkngnTglZKPs8xXqVszzGiajz2ZimVL2/SCcXy7K0CS7+EVTXat01watjhRU0i5t4Xukds1vXX+jn91CZSkPwN+If09vdK2+q4mtaMlrb1FAYGqp8Crpbs7ULTUk9VZnlUeolrOYvvDVnGXcHA4apTRkL9GYnNCakY90lS0y3/93D6iD41GV3VdK2fZGgKDOfg9TmbiFwniUqPh4AqZ77slHdgoupR81RgPyF7MRLOrpnLInC1hKGXKT49EnK4ql9grRbYNJiKt9wHFDHC2eAYaUrMZWC2fyUDJ0vGMvTecKxmhu794V6R9E7gLzJkeVfN+lr6/vBIqE4egpPF0V3AwOktN7ioiv0fFQf5YQCD+agywMLW88O0gWft3HFEXpT+P6MvfkXS23zuAAAAAElFTkSuQmCC) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/8.2.2 -->
+<!-- rmds-schema: gregkozakiewicz/8.9.0 -->
 <!-- rmds-score: 47 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
@@ -468,14 +468,14 @@
 <aside class="side">
   <div class="eyebrow">Design-system diagnosis</div>
   <div class="repo"><span class="mono">metabase/metabase</span></div>
-  <div class="scanned">Scanned 2026-09-18 · 8,758 code files · 2255ms</div>
+  <div class="scanned">Scanned 2026-09-25 · 8,758 code files · 2484ms</div>
   <div class="score"><div class="eyebrow">Health score</div><div class="val">47<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 71.</b></div></div>
   <div class="chips"><span class="chip">next</span><span class="chip">TypeScript</span><span class="chip">Emotion</span><span class="chip">Emotion (styled)</span><span class="chip">custom design system (--mb-*)</span><span class="chip">monorepo</span><span class="chip chip-dim">also present: --mantine-*</span><span class="chip chip-agent">CLAUDE.md</span><span class="chip chip-agent">.github/copilot-instructions.md</span><span class="chip chip-agent">.github/instructions</span><span class="chip chip-agent">frontend/CLAUDE.md</span><span class="chip chip-agent">frontend/src/metabase/documents/CLAUDE.md</span></div>
   <div class="facts"><div class="excl fresh">Read as a product built on Mantine: imported in 2,679 files, theme defined in frontend/src/metabase/ui/theme.ts. The kit's own code is installed from npm and not counted; what is counted is what the repo writes onto its components.</div><div class="excl">Evidence: Mantine imported in 2679 files · theme defined in frontend/src/metabase/ui/theme.ts and 9 more · the theme is referenced 3045 times from components · the team's own layer over Mantine (metabase/ui) counted as Mantine</div><div class="excl">Left out by design: <span class="mono">tests/</span> (67 UI files), <span class="mono">docs/</span> (55 UI files), <span class="mono">e2e/</span> (36 UI files), <span class="mono">test/</span> (14 UI files), <span class="mono">fixtures/</span> (4 UI files), <span class="mono">archive/</span> (4 UI files) and 1 more. A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div></div>
   <div class="eyebrow idx-head">Index</div>
   <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>What your agent sees</a><a href="#s-3"><i>03</i>Your present</a><a href="#s-4"><i>04</i>Your Mantine theme</a><a href="#s-5"><i>05</i>Off-scale spacing</a><a href="#s-6"><i>06</i>Typography &amp; shape</a><a href="#s-7"><i>07</i>Where it hurts most</a><a href="#s-8"><i>08</i>The adoption map</a></nav>
   <div class="excs"><b>Not yours, and not counted</b><p>10 !important declarations aimed at a library's own class names (.cm-tooltip, .DashEditing, .cm-selectionBackground) are not counted: the library ships its CSS, and this is the only way through it. Your agent reads them like everything else.</p><p>25 files not judged (sample-contexts.js, serve.ts, utils/print.ts and 22 more): email and print styling has to be inline, because there is no cascade to inherit. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>3 files not judged (ExplorePlansIllustration.tsx, LogoIcon.tsx, EmbeddingThemeCardPreview.tsx): the file is mostly drawing rather than styling. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>3 files not judged (CountdownIcon.tsx, CheckMarkIcon.tsx, CheckboxIcon.tsx): the colours belong to the artwork, not to the interface. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p></div>
-  <div class="side-foot">roast-my-design-system 8.2.2</div>
+  <div class="side-foot">roast-my-design-system 8.9.0</div>
 </aside>
 <main class="main">
   
@@ -563,6 +563,8 @@ Work through the files named in the finding. When you are done, re-run the scan 
 npx roast-my-design-system@latest</div></div>
       </div></div></section>
 
+
+
 <section id="s-2" class="glass pad agent">
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
     <p class="sub">Your agent reads <span class="mono">CLAUDE.md</span>, <span class="mono">.github/copilot-instructions.md</span>, <span class="mono">.github/instructions</span>, plus 2 rules files nested in subfolders. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">CLAUDE.md · Claude Code</span><span class="chip chip-agent">.github/copilot-instructions.md · GitHub Copilot</span><span class="chip chip-agent">.github/instructions · GitHub Copilot (scoped)</span><span class="chip chip-agent">+2 nested in subfolders</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-yes">✓</b> · Codex <b class="cov-no">—</b> · Cursor <b class="cov-no">—</b> · <span class="dim">copy the same rules into an AGENTS.md and the other tools see them too</span></p></section>
@@ -585,7 +587,7 @@ npx roast-my-design-system@latest</div></div>
           <span class="gift-count">21 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of metabase/metabase on 2026-09-18.
+&lt;!-- Generated by roast-my-design-system from a scan of metabase/metabase on 2026-09-25.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system@latest --rules
      Door note: Codex and Cursor read AGENTS.md; Claude Code reads CLAUDE.md only.
@@ -622,12 +624,12 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 ### Known duplicates: do not make it worse
 
-- `&lt;ModalBody&gt;` exists in 5 places (`enterprise/frontend/src/metabase-enterprise/replacement/components/SourceReplacementModal/ModalBody/ModalBody.tsx`, `frontend/src/metabase/timelines/collections/components/TimelineDetailsModal/TimelineDetailsModal.styled.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;ModalBody&gt;` exists in 5 places (`frontend/src/metabase/timelines/common/components/ModalBody/ModalBody.tsx`, `enterprise/frontend/src/metabase-enterprise/replacement/components/SourceReplacementModal/ModalBody/ModalBody.tsx`). Match whichever the surrounding code already imports, and never create another.
 - `&lt;CardRoot&gt;` exists in 5 places (`frontend/src/metabase/admin/settings/auth/components/AuthCard/AuthCard.styled.tsx`, `frontend/src/metabase/timelines/collections/components/EventCard/EventCard.styled.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `&lt;Sidebar&gt;` exists in 4 places (`frontend/src/metabase/common/components/Sidebar/Sidebar.tsx`, `frontend/src/metabase/monitor/components/MonitorLayout/Sidebar.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `&lt;Label&gt;` exists in 4 places (`frontend/src/metabase/admin/databases/components/DatabaseFeatureComponents/DatabaseFeatureComponents.tsx`, `frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;Sidebar&gt;` exists in 4 places (`frontend/src/metabase/nav/containers/MainNavbar/MainNavbar.styled.tsx`, `frontend/src/metabase/common/components/Sidebar/Sidebar.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;Label&gt;` exists in 4 places (`frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx`, `frontend/src/metabase/metadata/components/FieldOrderPicker/Label.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;Table&gt;` exists in 4 places (`frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx`, `frontend/src/metabase/common/components/ItemsTable/BaseItemsTable.styled.tsx`). Match whichever the surrounding code already imports, and never create another.
 - `&lt;SidebarHeader&gt;` exists in 4 places (`enterprise/frontend/src/embedding-sdk-ee/metabot/SidebarHeader.tsx`, `enterprise/frontend/src/metabase-enterprise/monitor/dependency-diagnostics/components/DiagnosticsSidebar/SidebarHeader/SidebarHeader.tsx`). Match whichever the surrounding code already imports, and never create another.
-- `&lt;Table&gt;` exists in 4 places (`frontend/src/metabase/common/components/ItemsTable/BaseItemsTable.styled.tsx`, `frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx`). Match whichever the surrounding code already imports, and never create another.
 
 ### Spacing and sizing
 
@@ -651,7 +653,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 8.2.2. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 8.9.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -997,7 +999,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;ModalBody&gt; · 5 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/enterprise/frontend/src/metabase-enterprise/replacement/components/SourceReplacementModal/ModalBody/ModalBody.tsx">enterprise/frontend/src/metabase-enterprise/replacement/components/SourceReplacementModal/ModalBody/ModalBody.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/collections/components/TimelineDetailsModal/TimelineDetailsModal.styled.tsx">frontend/src/metabase/timelines/collections/components/TimelineDetailsModal/TimelineDetailsModal.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/collections/components/TimelineListModal/TimelineListModal.styled.tsx">frontend/src/metabase/timelines/collections/components/TimelineListModal/TimelineListModal.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/common/components/ModalBody/ModalBody.tsx">frontend/src/metabase/timelines/common/components/ModalBody/ModalBody.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/ModalContent/ModalContent.tsx">frontend/src/metabase/common/components/ModalContent/ModalContent.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/common/components/ModalBody/ModalBody.tsx">frontend/src/metabase/timelines/common/components/ModalBody/ModalBody.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/enterprise/frontend/src/metabase-enterprise/replacement/components/SourceReplacementModal/ModalBody/ModalBody.tsx">enterprise/frontend/src/metabase-enterprise/replacement/components/SourceReplacementModal/ModalBody/ModalBody.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/collections/components/TimelineDetailsModal/TimelineDetailsModal.styled.tsx">frontend/src/metabase/timelines/collections/components/TimelineDetailsModal/TimelineDetailsModal.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/collections/components/TimelineListModal/TimelineListModal.styled.tsx">frontend/src/metabase/timelines/collections/components/TimelineListModal/TimelineListModal.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/ModalContent/ModalContent.tsx">frontend/src/metabase/common/components/ModalContent/ModalContent.tsx</a></div>
       
       </div>
     </div>
@@ -1011,14 +1013,21 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;Sidebar&gt; · 4 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/Sidebar/Sidebar.tsx">frontend/src/metabase/common/components/Sidebar/Sidebar.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/monitor/components/MonitorLayout/Sidebar.tsx">frontend/src/metabase/monitor/components/MonitorLayout/Sidebar.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/nav/containers/MainNavbar/MainNavbar.styled.tsx">frontend/src/metabase/nav/containers/MainNavbar/MainNavbar.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/querying/components/NativeQueryEditor/slots/Sidebar.tsx">frontend/src/metabase/querying/components/NativeQueryEditor/slots/Sidebar.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/nav/containers/MainNavbar/MainNavbar.styled.tsx">frontend/src/metabase/nav/containers/MainNavbar/MainNavbar.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/Sidebar/Sidebar.tsx">frontend/src/metabase/common/components/Sidebar/Sidebar.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/monitor/components/MonitorLayout/Sidebar.tsx">frontend/src/metabase/monitor/components/MonitorLayout/Sidebar.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/querying/components/NativeQueryEditor/slots/Sidebar.tsx">frontend/src/metabase/querying/components/NativeQueryEditor/slots/Sidebar.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Label&gt; · 4 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/admin/databases/components/DatabaseFeatureComponents/DatabaseFeatureComponents.tsx">frontend/src/metabase/admin/databases/components/DatabaseFeatureComponents/DatabaseFeatureComponents.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx">frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/type/Label.tsx">frontend/src/metabase/common/components/type/Label.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/metadata/components/FieldOrderPicker/Label.tsx">frontend/src/metabase/metadata/components/FieldOrderPicker/Label.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx">frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/metadata/components/FieldOrderPicker/Label.tsx">frontend/src/metabase/metadata/components/FieldOrderPicker/Label.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/admin/databases/components/DatabaseFeatureComponents/DatabaseFeatureComponents.tsx">frontend/src/metabase/admin/databases/components/DatabaseFeatureComponents/DatabaseFeatureComponents.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/type/Label.tsx">frontend/src/metabase/common/components/type/Label.tsx</a></div>
+      
+      </div>
+    </div>
+    <div class="fam">
+      <div class="eyebrow">&lt;Table&gt; · 4 implementations</div>
+      <div class="fam-rows">
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx">frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/ItemsTable/BaseItemsTable.styled.tsx">frontend/src/metabase/common/components/ItemsTable/BaseItemsTable.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/Table/Table.tsx">frontend/src/metabase/common/components/Table/Table.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/visualizations/visualizations/Table/Table.tsx">frontend/src/metabase/visualizations/visualizations/Table/Table.tsx</a></div>
       
       </div>
     </div>
@@ -1026,13 +1035,6 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
       <div class="eyebrow">&lt;SidebarHeader&gt; · 4 implementations</div>
       <div class="fam-rows">
       <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/enterprise/frontend/src/embedding-sdk-ee/metabot/SidebarHeader.tsx">enterprise/frontend/src/embedding-sdk-ee/metabot/SidebarHeader.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/enterprise/frontend/src/metabase-enterprise/monitor/dependency-diagnostics/components/DiagnosticsSidebar/SidebarHeader/SidebarHeader.tsx">enterprise/frontend/src/metabase-enterprise/monitor/dependency-diagnostics/components/DiagnosticsSidebar/SidebarHeader/SidebarHeader.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/SidebarHeader/SidebarHeader.tsx">frontend/src/metabase/common/components/SidebarHeader/SidebarHeader.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/monitor/tools/notifications/NotificationDetailSidebar/SidebarHeader.tsx">frontend/src/metabase/monitor/tools/notifications/NotificationDetailSidebar/SidebarHeader.tsx</a></div>
-      
-      </div>
-    </div>
-    <div class="fam">
-      <div class="eyebrow">&lt;Table&gt; · 4 implementations</div>
-      <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/ItemsTable/BaseItemsTable.styled.tsx">frontend/src/metabase/common/components/ItemsTable/BaseItemsTable.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx">frontend/src/metabase/common/components/MetadataInfo/MetadataInfo.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/common/components/Table/Table.tsx">frontend/src/metabase/common/components/Table/Table.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/visualizations/visualizations/Table/Table.tsx">frontend/src/metabase/visualizations/visualizations/Table/Table.tsx</a></div>
       
       </div>
     </div>
@@ -1046,7 +1048,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;CardTitle&gt; · 4 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/admin/settings/auth/components/AuthCard/AuthCard.styled.tsx">frontend/src/metabase/admin/settings/auth/components/AuthCard/AuthCard.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/collections/components/EventCard/EventCard.styled.tsx">frontend/src/metabase/timelines/collections/components/EventCard/EventCard.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/collections/components/TimelineCard/TimelineCard.styled.tsx">frontend/src/metabase/timelines/collections/components/TimelineCard/TimelineCard.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/common/components/TimelinePicker/TimelinePicker.styled.tsx">frontend/src/metabase/timelines/common/components/TimelinePicker/TimelinePicker.styled.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/collections/components/EventCard/EventCard.styled.tsx">frontend/src/metabase/timelines/collections/components/EventCard/EventCard.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/admin/settings/auth/components/AuthCard/AuthCard.styled.tsx">frontend/src/metabase/admin/settings/auth/components/AuthCard/AuthCard.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/collections/components/TimelineCard/TimelineCard.styled.tsx">frontend/src/metabase/timelines/collections/components/TimelineCard/TimelineCard.styled.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/metabase-metabase/frontend/src/metabase/timelines/common/components/TimelinePicker/TimelinePicker.styled.tsx">frontend/src/metabase/timelines/common/components/TimelinePicker/TimelinePicker.styled.tsx</a></div>
       
       </div>
     </div>
@@ -1126,101 +1128,101 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 </div>
 <section id="s-8" class="glass pad">
     <div class="sec-head"><h2>The adoption map</h2><p class="sub">3,519 components defined · tile area is import count · the real system, drawn to scale</p></div>
-    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="422.4" height="219.0" class="atile">
-      <title>&lt;Text&gt; · used 1563× · frontend/src/metabase/dashboard/visualizations/Text/Text.tsx</title></rect>
-    <text x="211.2" y="105.5" class="adot-n">Text</text>
-    <text x="211.2" y="123.5" class="adot-c">1563×</text></g><g><rect x="0.0" y="219.0" width="422.4" height="219.0" class="atile">
+    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="422.5" height="219.3" class="atile">
       <title>&lt;Text&gt; · used 1563× · frontend/src/metabase/static-viz/components/Text/Text.tsx</title></rect>
-    <text x="211.2" y="324.5" class="adot-n">Text</text>
-    <text x="211.2" y="342.5" class="adot-c">1563×</text></g><g><rect x="422.4" y="0.0" width="184.5" height="438.0" class="atile">
+    <text x="211.2" y="105.6" class="adot-n">Text</text>
+    <text x="211.2" y="123.6" class="adot-c">1563×</text></g><g><rect x="0.0" y="219.3" width="422.5" height="218.7" class="atile">
+      <title>&lt;Text&gt; · used 1559× · frontend/src/metabase/dashboard/visualizations/Text/Text.tsx</title></rect>
+    <text x="211.2" y="324.6" class="adot-n">Text</text>
+    <text x="211.2" y="342.6" class="adot-c">1559×</text></g><g><rect x="422.5" y="0.0" width="184.7" height="438.0" class="atile">
       <title>&lt;Icon&gt; · used 1365× · frontend/src/metabase/ui/components/icons/Icon/Icon.tsx</title></rect>
-    <text x="514.7" y="215.0" class="adot-n">Icon</text>
-    <text x="514.7" y="233.0" class="adot-c">1365×</text></g><g><rect x="606.9" y="0.0" width="156.3" height="127.6" class="atile">
-      <title>&lt;Tooltip&gt; · used 337× · frontend/src/metabase/querying/components/expressions/Editor/Tooltip/Tooltip.tsx</title></rect>
-    <text x="685.0" y="59.8" class="adot-n">Tooltip</text>
-    <text x="685.0" y="77.8" class="adot-c">337×</text></g><g><rect x="763.2" y="0.0" width="156.3" height="127.6" class="atile">
-      <title>&lt;Tooltip&gt; · used 337× · frontend/src/metabase/ui/components/overlays/Tooltip/Tooltip.tsx</title></rect>
+    <text x="514.9" y="215.0" class="adot-n">Icon</text>
+    <text x="514.9" y="233.0" class="adot-c">1365×</text></g><g><rect x="607.2" y="0.0" width="156.0" height="127.6" class="atile">
+      <title>&lt;Tooltip&gt; · used 336× · frontend/src/metabase/querying/components/expressions/Editor/Tooltip/Tooltip.tsx</title></rect>
+    <text x="685.2" y="59.8" class="adot-n">Tooltip</text>
+    <text x="685.2" y="77.8" class="adot-c">336×</text></g><g><rect x="763.2" y="0.0" width="156.0" height="127.6" class="atile">
+      <title>&lt;Tooltip&gt; · used 336× · frontend/src/metabase/ui/components/overlays/Tooltip/Tooltip.tsx</title></rect>
     <text x="841.3" y="59.8" class="adot-n">Tooltip</text>
-    <text x="841.3" y="77.8" class="adot-c">337×</text></g><g><rect x="919.4" y="0.0" width="120.6" height="127.6" class="atile">
+    <text x="841.3" y="77.8" class="adot-c">336×</text></g><g><rect x="919.3" y="0.0" width="120.7" height="127.6" class="atile">
       <title>&lt;LoadingAndErrorWrapper&gt; · used 260× · frontend/src/metabase/common/components/LoadingAndErrorWrapper/LoadingAndErrorWrapper.tsx</title></rect>
-    <text x="979.7" y="59.8" class="adot-n s">LoadingAndErrorW…</text>
-    <text x="979.7" y="77.8" class="adot-c">260×</text></g><g><rect x="606.9" y="127.6" width="116.1" height="107.0" class="atile">
+    <text x="979.6" y="59.8" class="adot-n s">LoadingAndErrorW…</text>
+    <text x="979.6" y="77.8" class="adot-c">260×</text></g><g><rect x="607.2" y="127.6" width="116.3" height="107.0" class="atile">
       <title>&lt;Title&gt; · used 210× · frontend/src/embedding-sdk-bundle/components/private/SdkQuestion/components/Title.tsx</title></rect>
-    <text x="665.0" y="177.2" class="adot-n">Title</text>
-    <text x="665.0" y="195.2" class="adot-c">210×</text></g><g><rect x="606.9" y="234.7" width="116.1" height="107.0" class="atile">
+    <text x="665.4" y="177.2" class="adot-n">Title</text>
+    <text x="665.4" y="195.2" class="adot-c">210×</text></g><g><rect x="607.2" y="234.7" width="116.3" height="107.0" class="atile">
       <title>&lt;Title&gt; · used 210× · frontend/src/metabase/visualizations/components/FunnelNormal.styled.tsx</title></rect>
-    <text x="665.0" y="284.2" class="adot-n">Title</text>
-    <text x="665.0" y="302.2" class="adot-c">210×</text></g><g><rect x="606.9" y="341.7" width="116.1" height="96.3" class="atile">
+    <text x="665.4" y="284.2" class="adot-n">Title</text>
+    <text x="665.4" y="302.2" class="adot-c">210×</text></g><g><rect x="607.2" y="341.7" width="116.3" height="96.3" class="atile">
       <title>&lt;Ellipsified&gt; · used 189× · frontend/src/metabase/ui/components/data-display/Ellipsified/Ellipsified.tsx</title></rect>
-    <text x="665.0" y="385.8" class="adot-n">Ellipsified</text>
-    <text x="665.0" y="403.8" class="adot-c">189×</text></g><g><rect x="723.0" y="127.6" width="86.0" height="104.6" class="atile">
+    <text x="665.4" y="385.8" class="adot-n">Ellipsified</text>
+    <text x="665.4" y="403.8" class="adot-c">189×</text></g><g><rect x="723.5" y="127.6" width="86.1" height="104.6" class="atile">
       <title>&lt;Modal&gt; · used 152× · frontend/src/metabase/ui/components/overlays/Modal/index.tsx</title></rect>
-    <text x="766.0" y="175.9" class="adot-n">Modal</text>
-    <text x="766.0" y="193.9" class="adot-c">152×</text></g><g><rect x="723.0" y="232.2" width="86.0" height="103.2" class="atile">
+    <text x="766.6" y="175.9" class="adot-n">Modal</text>
+    <text x="766.6" y="193.9" class="adot-c">152×</text></g><g><rect x="723.5" y="232.2" width="86.1" height="103.2" class="atile">
       <title>&lt;Link&gt; · used 150× · frontend/src/metabase/common/components/Link/Link.tsx</title></rect>
-    <text x="766.0" y="279.9" class="adot-n">Link</text>
-    <text x="766.0" y="297.9" class="adot-c">150×</text></g><g><rect x="723.0" y="335.5" width="86.0" height="102.5" class="atile">
+    <text x="766.6" y="279.9" class="adot-n">Link</text>
+    <text x="766.6" y="297.9" class="adot-c">150×</text></g><g><rect x="723.5" y="335.5" width="86.1" height="102.5" class="atile">
       <title>&lt;Loader&gt; · used 149× · enterprise/frontend/src/embedding-sdk-package/components/private/Loader/Loader.tsx</title></rect>
-    <text x="766.0" y="382.7" class="adot-n">Loader</text>
-    <text x="766.0" y="400.7" class="adot-c">149×</text></g><g><rect x="809.0" y="127.6" width="83.9" height="105.1" class="atile">
+    <text x="766.6" y="382.7" class="adot-n">Loader</text>
+    <text x="766.6" y="400.7" class="adot-c">149×</text></g><g><rect x="809.7" y="127.6" width="83.7" height="105.5" class="atile">
       <title>&lt;Loader&gt; · used 149× · frontend/src/metabase/ui/components/feedback/Loader/Loader.tsx</title></rect>
-    <text x="851.0" y="176.2" class="adot-n">Loader</text>
-    <text x="851.0" y="194.2" class="adot-c">149×</text></g><g><rect x="893.0" y="127.6" width="76.0" height="105.1" class="atile">
+    <text x="851.5" y="176.4" class="adot-n">Loader</text>
+    <text x="851.5" y="194.4" class="adot-c">149×</text></g><g><rect x="893.4" y="127.6" width="75.8" height="105.5" class="atile">
       <title>&lt;FixedSizeIcon&gt; · used 135× · frontend/src/metabase/ui/components/icons/Icon/Icon.tsx</title></rect>
-    <text x="931.0" y="176.2" class="adot-n s">FixedSize…</text>
-    <text x="931.0" y="194.2" class="adot-c">135×</text></g><g><rect x="969.0" y="127.6" width="71.0" height="105.1" class="atile">
+    <text x="931.3" y="176.4" class="adot-n s">FixedSize…</text>
+    <text x="931.3" y="194.4" class="adot-c">135×</text></g><g><rect x="969.2" y="127.6" width="70.8" height="105.5" class="atile">
       <title>&lt;FormTextInput&gt; · used 126× · frontend/src/metabase/forms/components/FormTextInput/FormTextInput.tsx</title></rect>
-    <text x="1004.5" y="176.2" class="adot-n s">FormText…</text>
-    <text x="1004.5" y="194.2" class="adot-c">126×</text></g><g><rect x="809.0" y="232.7" width="88.5" height="77.6" class="atile">
+    <text x="1004.6" y="176.4" class="adot-n s">FormText…</text>
+    <text x="1004.6" y="194.4" class="adot-c">126×</text></g><g><rect x="809.7" y="233.2" width="88.8" height="77.4" class="atile">
       <title>&lt;ExternalLink&gt; · used 116× · frontend/src/metabase/common/components/ExternalLink/ExternalLink.tsx</title></rect>
-    <text x="853.3" y="267.5" class="adot-n s">ExternalLink</text>
-    <text x="853.3" y="285.5" class="adot-c">116×</text></g><g><rect x="809.0" y="310.3" width="88.5" height="64.9" class="atile">
+    <text x="854.1" y="267.9" class="adot-n s">ExternalLink</text>
+    <text x="854.1" y="285.9" class="adot-c">116×</text></g><g><rect x="809.7" y="310.6" width="88.8" height="64.7" class="atile">
       <title>&lt;TextInput&gt; · used 97× · frontend/src/metabase/dashboard/visualizations/Text/Text.styled.tsx</title></rect>
-    <text x="853.3" y="338.7" class="adot-n">TextInput</text>
-    <text x="853.3" y="356.7" class="adot-c">97×</text></g><g><rect x="809.0" y="375.1" width="88.5" height="62.9" class="atile">
+    <text x="854.1" y="338.9" class="adot-n">TextInput</text>
+    <text x="854.1" y="356.9" class="adot-c">97×</text></g><g><rect x="809.7" y="375.3" width="88.8" height="62.7" class="atile">
       <title>&lt;Popover&gt; · used 94× · frontend/src/metabase/common/components/MetadataInfo/Popover/Popover.tsx</title></rect>
-    <text x="853.3" y="402.6" class="adot-n">Popover</text>
-    <text x="853.3" y="420.6" class="adot-c">94×</text></g><g><rect x="897.6" y="232.7" width="73.2" height="74.4" class="atile">
+    <text x="854.1" y="402.6" class="adot-n">Popover</text>
+    <text x="854.1" y="420.6" class="adot-c">94×</text></g><g><rect x="898.5" y="233.2" width="72.7" height="75.0" class="atile">
       <title>&lt;Menu&gt; · used 92× · frontend/src/metabase/ui/components/overlays/Menu/Menu.tsx</title></rect>
-    <text x="934.2" y="265.9" class="adot-n">Menu</text>
-    <text x="934.2" y="283.9" class="adot-c">92×</text></g><g><rect x="970.8" y="232.7" width="69.2" height="74.4" class="atile">
+    <text x="934.9" y="266.6" class="adot-n">Menu</text>
+    <text x="934.9" y="284.6" class="adot-c">92×</text></g><g><rect x="971.2" y="233.2" width="68.8" height="75.0" class="atile">
       <title>&lt;Select&gt; · used 87× · frontend/src/metabase/ui/components/inputs/Select/Select.tsx</title></rect>
-    <text x="1005.4" y="265.9" class="adot-n">Select</text>
-    <text x="1005.4" y="283.9" class="adot-c">87×</text></g><g><rect x="897.6" y="307.1" width="72.8" height="67.5" class="atile">
+    <text x="1005.6" y="266.6" class="adot-n">Select</text>
+    <text x="1005.6" y="284.6" class="adot-c">87×</text></g><g><rect x="898.5" y="308.1" width="73.5" height="66.9" class="atile">
       <title>&lt;SettingsSection&gt; · used 83× · frontend/src/metabase/settings-components/SettingsSection/SettingsSection.tsx</title></rect>
-    <text x="934.0" y="336.8" class="adot-n s">SettingsS…</text>
-    <text x="934.0" y="354.8" class="adot-c">83×</text></g><g><rect x="897.6" y="374.6" width="72.8" height="63.4" class="atile">
+    <text x="935.2" y="337.6" class="adot-n s">SettingsS…</text>
+    <text x="935.2" y="355.6" class="adot-c">83×</text></g><g><rect x="898.5" y="375.1" width="73.5" height="62.9" class="atile">
       <title>&lt;Form&gt; · used 78× · frontend/src/metabase/forms/components/Form/Form.tsx</title></rect>
-    <text x="934.0" y="402.3" class="adot-n">Form</text>
-    <text x="934.0" y="420.3" class="adot-c">78×</text></g><g><rect x="970.4" y="307.1" width="69.6" height="65.4" class="atile">
-      <title>&lt;EmptyState&gt; · used 77× · enterprise/frontend/src/metabase-enterprise/replacement/components/SourceReplacementModal/ModalBody/EmptyState/EmptyState.tsx</title></rect>
-    <text x="1005.2" y="335.8" class="adot-n s">EmptySta…</text>
-    <text x="1005.2" y="353.8" class="adot-c">77×</text></g><g><rect x="970.4" y="372.6" width="69.6" height="65.4" class="atile">
-      <title>&lt;EmptyState&gt; · used 77× · frontend/src/metabase/common/components/EmptyState/EmptyState.tsx</title></rect>
-    <text x="1005.2" y="401.3" class="adot-n s">EmptySta…</text>
-    <text x="1005.2" y="419.3" class="adot-c">77×</text></g></svg>
-    <p class="sub">1220 more adopted components below the top 24, not drawn.</p>
+    <text x="935.2" y="402.5" class="adot-n">Form</text>
+    <text x="935.2" y="420.5" class="adot-c">78×</text></g><g><rect x="972.0" y="308.1" width="68.0" height="65.4" class="atile">
+      <title>&lt;FormProvider&gt; · used 75× · frontend/src/metabase/forms/components/FormProvider/FormProvider.tsx</title></rect>
+    <text x="1006.0" y="336.8" class="adot-n s">FormProv…</text>
+    <text x="1006.0" y="354.8" class="adot-c">75×</text></g><g><rect x="972.0" y="373.5" width="68.0" height="64.5" class="atile">
+      <title>&lt;Skeleton&gt; · used 74× · frontend/src/metabase/ui/components/feedback/Skeleton/Skeleton.tsx</title></rect>
+    <text x="1006.0" y="401.8" class="adot-n s">Skeleton</text>
+    <text x="1006.0" y="419.8" class="adot-c">74×</text></g></svg>
+    <p class="sub">1134 more adopted components below the top 24, not drawn.</p>
     
-    <p class="sub">1,635 components are imported exactly once: &lt;AboutModal&gt;, &lt;AbsoluteContainer&gt;, &lt;AccessGrantList&gt;, &lt;AccountHeader&gt;, &lt;AccountLayout&gt;, &lt;ActionCell&gt; and 1629 more. Quiet corners, not yet a system.</p>
+    <p class="sub">1,696 components are imported exactly once: &lt;AboutModal&gt;, &lt;AbsoluteContainer&gt;, &lt;AccessGrantList&gt;, &lt;AccountHeader&gt;, &lt;AccountLayout&gt;, &lt;ActionCell&gt; and 1690 more. Quiet corners, not yet a system.</p>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
-    <tr><td class="mono strong">&lt;Text&gt;</td>
-    <td><span class="pill pill-mint">1563×</span></td>
-    <td class="path">frontend/src/metabase/dashboard/visualizations/Text/Text.tsx</td>
-    <td><span class="chip chip-xs">onUpdateVisualizationSettings</span> <span class="chip chip-xs">dashboard</span> <span class="chip chip-xs">dashcard</span> <span class="chip chip-xs">gridSize</span> <span class="chip chip-xs">settings</span></td></tr>
     <tr><td class="mono strong">&lt;Text&gt;</td>
     <td><span class="pill pill-mint">1563×</span></td>
     <td class="path">frontend/src/metabase/static-viz/components/Text/Text.tsx</td>
     <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;Text&gt;</td>
+    <td><span class="pill pill-mint">1559×</span></td>
+    <td class="path">frontend/src/metabase/dashboard/visualizations/Text/Text.tsx</td>
+    <td><span class="chip chip-xs">onUpdateVisualizationSettings</span> <span class="chip chip-xs">dashboard</span> <span class="chip chip-xs">dashcard</span> <span class="chip chip-xs">gridSize</span> <span class="chip chip-xs">settings</span></td></tr>
     <tr><td class="mono strong">&lt;Icon&gt;</td>
     <td><span class="pill pill-mint">1365×</span></td>
     <td class="path">frontend/src/metabase/ui/components/icons/Icon/Icon.tsx</td>
     <td><span class="chip chip-xs">name</span> <span class="chip chip-xs">size</span> <span class="chip chip-xs">defaultSize</span> <span class="chip chip-xs">tooltip</span> <span class="chip chip-xs">tooltipPosition</span></td></tr>
     <tr><td class="mono strong">&lt;Tooltip&gt;</td>
-    <td><span class="pill pill-mint">337×</span></td>
+    <td><span class="pill pill-mint">336×</span></td>
     <td class="path">frontend/src/metabase/querying/components/expressions/Editor/Tooltip/Tooltip.tsx</td>
     <td><span class="chip chip-xs">query</span> <span class="chip chip-xs">stageIndex</span> <span class="chip chip-xs">database</span> <span class="chip chip-xs">reportTimezone</span> <span class="chip chip-xs">tooltipRef</span></td></tr>
     <tr><td class="mono strong">&lt;Tooltip&gt;</td>
-    <td><span class="pill pill-mint">337×</span></td>
+    <td><span class="pill pill-mint">336×</span></td>
     <td class="path">frontend/src/metabase/ui/components/overlays/Tooltip/Tooltip.tsx</td>
     <td><span class="dim">none</span></td></tr>
     <tr><td class="mono strong">&lt;LoadingAndErrorWrapper&gt;</td>
@@ -1247,8 +1249,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 8.2.2</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">4eeeb2c52272</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=8.2.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 8.9.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">fcfc08a1255b</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=8.9.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

@@ -268,10 +268,10 @@
   .ledger-row a.path { font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ledger-pills { margin-left:auto; display:flex; gap:8px; flex-shrink:0; }
 
-  .start-row { align-items:flex-start; }
+  .start-row, .gap-row { align-items:flex-start; }
   .start-body { min-width:0; }
   .start-title { font:600 15px/1.4 var(--disp); }
-  .start-row .sub { margin-top:2px; overflow-wrap:anywhere; }
+  .start-row .sub, .gap-row .sub { margin-top:2px; overflow-wrap:anywhere; }
   .start-actions { display:flex; align-items:center; gap:10px; margin-top:10px; }
   .fixbtn { font:700 11.5px/1 var(--sans); padding:8px 13px; border-radius:8px; border:1px solid var(--accent);
     background:transparent; color:var(--accent); cursor:pointer; }
@@ -452,7 +452,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/8.2.2 -->
+<!-- rmds-schema: gregkozakiewicz/8.9.0 -->
 <!-- rmds-score: 20 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
@@ -468,14 +468,14 @@
 <aside class="side">
   <div class="eyebrow">Design-system diagnosis</div>
   <div class="repo"><span class="mono">dubinc/dub</span></div>
-  <div class="scanned">Scanned 2026-09-18 · 4,157 code files · 1269ms</div>
+  <div class="scanned">Scanned 2026-09-25 · 4,157 code files · 1473ms</div>
   <div class="score"><div class="eyebrow">Health score</div><div class="val">20<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 50.</b></div></div>
   <div class="chips"><span class="chip">next</span><span class="chip">TypeScript</span><span class="chip">Tailwind CSS</span><span class="chip">CVA</span><span class="chip">monorepo</span><span class="chip chip-dim">design system: unrecognised</span><span class="chip chip-agent">packages/hubspot-app/CLAUDE.md</span></div>
   <div class="facts"><div class="excl">Left out by design: <span class="mono">example/</span> (1 UI file). A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div></div>
   <div class="eyebrow idx-head">Index</div>
-  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>What your agent sees</a><a href="#s-3"><i>03</i>Your present</a><a href="#s-4"><i>04</i>Package by package</a><a href="#s-5"><i>05</i>Off-scale spacing</a><a href="#s-6"><i>06</i>Typography &amp; shape</a><a href="#s-7"><i>07</i>Where it hurts most</a><a href="#s-8"><i>08</i>The adoption map</a></nav>
+  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>Where agents will invent</a><a href="#s-3"><i>03</i>What your agent sees</a><a href="#s-4"><i>04</i>Your present</a><a href="#s-5"><i>05</i>Package by package</a><a href="#s-6"><i>06</i>Off-scale spacing</a><a href="#s-7"><i>07</i>Typography &amp; shape</a><a href="#s-8"><i>08</i>Where it hurts most</a><a href="#s-9"><i>09</i>The adoption map</a></nav>
   <div class="excs"><b>Not yours, and not counted</b><p>193 files not judged (disposable-emails/route.ts, update/route.ts, email-domains/verify/route.ts and 190 more): email and print styling has to be inline, because there is no cascade to inherit. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>15 files not judged (quickstart.tsx, screenshot.tsx, qr-code-design-fields.tsx and 12 more): the file is mostly drawing rather than styling. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>11 files not judged (domain-renewal-invoice.tsx, partner-payout-invoice.tsx, [payoutId]/route.tsx and 8 more): a render-to-image surface accepts nothing but inline styling, so there is no on-system way to write one. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>24 files not judged (multi-tags-icon.tsx, conversion-score-icon.tsx, logout.tsx and 21 more): the colours belong to the artwork, not to the interface. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p></div>
-  <div class="side-foot">roast-my-design-system 8.2.2</div>
+  <div class="side-foot">roast-my-design-system 8.9.0</div>
 </aside>
 <main class="main">
   
@@ -565,11 +565,21 @@ Work through the files named in the finding. When you are done, re-run the scan 
 npx roast-my-design-system@latest</div></div>
       </div></div></section>
 
-<section id="s-2" class="glass pad agent">
+<section id="s-2" class="glass" style="margin-top:16px">
+    <div class="sec-head"><h2>Where agents will invent</h2><p class="sub">One place where this repo has no answer yet. An agent asked to build there will invent, because that is what the repo taught it. Close the gap once and the checks take over.</p></div>
+    <div class="ledger">
+      <div class="ledger-row gap-row">
+        <span class="ledger-idx">01</span>
+        <div class="start-body"><div class="start-head"><div class="start-title">Charts have no palette</div></div><div class="sub">5 chart files paint 17 series colours by hand (apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/commissions-analytics-chart.tsx (8), packages/ui/src/charts/x-axis.tsx (3), apps/web/app/(ee)/partners.dub.co/(dashboard)/programs/[programSlug]/(enrolled)/page-client.tsx (2) and 2 more), and no token names a chart colour. The next chart will invent colours 18 to 23, because that is what every chart here did.</div>
+        <div class="sub" style="margin-top:6px"><b>Close it:</b> Name the series once (--chart-1, --chart-2 … in packages/tailwind-config/themes.css) and point the existing charts at them. From then on a chart that writes a colour by hand is a finding the checks catch.</div>
+        <div class="chips-row" style="margin-top:8px"><span class="chip mono">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/commissions-analytics-chart.tsx</span><span class="chip mono">packages/ui/src/charts/x-axis.tsx</span><span class="chip mono">apps/web/app/(ee)/partners.dub.co/(dashboard)/programs/[programSlug]/(enrolled)/page-client.tsx</span><span class="chip mono">packages/ui/src/charts/y-axis.tsx</span><span class="chip mono">packages/ui/src/mini-area-chart.tsx</span></div></div>
+      </div></div></section>
+
+<section id="s-3" class="glass pad agent">
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
     <p class="sub">Your agent reads <span class="mono">packages/hubspot-app/CLAUDE.md</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">+1 nested in subfolders</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-yes">✓</b> · Codex <b class="cov-no">—</b> · Cursor <b class="cov-no">—</b> · <span class="dim">copy the same rules into an AGENTS.md and the other tools see them too</span></p></section>
 
-<section id="s-3" class="glass pad gift-sec">
+<section id="s-4" class="glass pad gift-sec">
     <div class="sec-head"><h2>You sat through the roast</h2><p class="sub">so you get a present.</p></div>
     <div class="gift-stage">
       <button class="gift" id="gift" aria-label="Unwrap your generated agent rules file">
@@ -587,7 +597,7 @@ npx roast-my-design-system@latest</div></div>
           <span class="gift-count">18 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-09-18.
+&lt;!-- Generated by roast-my-design-system from a scan of dubinc/dub on 2026-09-25.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system@latest --rules
      Door note: Codex and Cursor read AGENTS.md; Claude Code reads CLAUDE.md only.
@@ -652,7 +662,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 8.2.2. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 8.9.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -703,7 +713,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
   <div class="rows"><div class="row"><span class="rlab">Ideal Design System</span><span class="rval">~20 <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Avg Design System</span><span class="rval">77 · messier than 91% <span class="dir d-up">▲</span></span></div><div class="row"><span class="rlab">Reputable systems</span><span class="rval">0 <span class="dir d-up">▲</span></span></div></div>
 </div></div>
 
-<section id="s-4" class="glass pad">
+<section id="s-5" class="glass pad">
     <div class="sec-head"><h2>Package by package</h2><p class="sub">2 packages with enough UI to judge · the repo score above is the whole thing blended, and 7 packages were too small or too backend to score</p></div>
     <div class="tbl-wrap"><table><thead><tr><th>package</th><th>score</th><th>worst finding</th><th>size</th></tr></thead><tbody>
     <tr><td class="mono strong">apps/web</td>
@@ -753,7 +763,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 
 
-<section id="s-5" class="glass pad">
+<section id="s-6" class="glass pad">
     <div class="sec-head"><h2>49 off-scale spacing values</h2><p class="sub">a disciplined repo keeps these around a dozen · on-scale Tailwind steps (·) shown for context · off-scale in coral</p></div>
     <div class="bars">
     <div class="bar-row"><span class="bar-label">·2</span>
@@ -814,7 +824,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="receipts"><div class="eyebrow">622 bracket values written outside the scale</div>
     <div class="chips-row"><span class="vchip bad" title="apps/web/app/app.dub.co/(invites)/[slug]/invite/page.tsx">[400px] ×24</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/billing/payment-methods.tsx">[0.625rem] ×22</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/partners/partners-table.tsx">[200px] ×21</span><span class="vchip bad" title="packages/ui/src/modal.tsx">[10px] ×21</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/applications/applications-analytics-cards.tsx">[300px] ×19</span><span class="vchip bad" title="apps/web/app/(ee)/app.dub.co/embed/referrals/settings.tsx">[18px] ×17</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/links/page-client.tsx">[180px] ×16</span><span class="vchip bad" title="apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/settings/tracking/setup-instructions.tsx">[-0.02em] ×16</span><span class="vchip bad" title="apps/web/ui/partners/groups/design/previews/application-preview.tsx">[1200px] ×14</span><span class="vchip bad" title="apps/web/ui/activity-logs/commission-activity.tsx">[13px] ×12</span><span class="vchip dim">+155 more</span></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="arbitrary"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-arbitrary"><p>Brackets exist for a reason. Sometimes the scale really lacks a value, and one w-[137px] for a stubborn third-party embed is craft, done on purpose.</p><p>But a bracket is a value with no name. A search for the token will never find it, and a scale change leaves it untouched. An agent that sees brackets in the repo learns that the scale is optional. It can not tell which brackets were deliberate, so it feels free to add its own, and the escape hatch becomes the main door.</p><p>The 20 is a budget for real exceptions, and it is a generous one: 9 of the 10 reputable systems we scanned sit at 0, including systems built on Tailwind. The average product repo carries 70.</p></div></div></div></section>
-<section id="s-6">
+<section id="s-7">
     <div class="sec-head"><h2>Typography &amp; shape</h2></div>
     <div class="stats minis"><div class="stat glass st-good">
   <svg class="ic ic-good" viewBox="0 0 24 24"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>
@@ -842,7 +852,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     
     <div class="glass pad" style="margin-top:16px"><div class="sec-head"><h2>3 typefaces, declared 5 different ways</h2><p class="sub">every distinct declaration is a chance for the next one to be wrong</p></div><div class="fam-rows"><div class="mini-card"><span class="mc-path">system-ui</span><span class="pill pill-mint">×2</span></div><div class="mini-card"><span class="mc-path">Inter</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">satoshi</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">Geist</span><span class="pill pill-mint">×1</span></div><div class="mini-card"><span class="mc-path">ui-monospace</span><span class="pill pill-mint">×1</span></div></div></div>
   </section>
-<section id="s-7" class="glass pad">
+<section id="s-8" class="glass pad">
     <div class="sec-head"><h2>Where it hurts most</h2><p class="sub">the 5 files carrying the most off-system styling</p></div>
     <div class="ledger">
     <div class="ledger-row">
@@ -1024,84 +1034,84 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="chips-row"><span class="vchip bad" title="apps/web/styles/globals.css">globals.css ×1</span></div>
     <div class="whywrap"><button type="button" class="whybtn" data-why="important"><svg class="why-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.1a2.8 2.8 0 1 1 4 3.1c-.9.5-1.3 1.1-1.3 2.1"/><line x1="12" y1="17.2" x2="12" y2="17.21"/></svg><span class="why-lab">why this matters</span></button><div class="whytext" hidden id="why-important"><p>Every !important marks a styling fight someone had to win by the end of the day. One is harmless. And no one removes it later, because nobody is sure what will break.</p><p>But each one raises the floor. The next override in that area has to shout at least as loud, so the count only climbs. An agent that loses a styling fight reaches for !important straight away, because it is the most common CSS fix it has ever seen.</p><p>The ideal is 0, because !important is CSS admitting defeat. Fix the rule that kept losing, and the next one is never needed. The average product repo carries 7.</p></div></div></div></div>
 </div>
-<section id="s-8" class="glass pad">
+<section id="s-9" class="glass pad">
     <div class="sec-head"><h2>The adoption map</h2><p class="sub">1,594 components defined · tile area is import count · the real system, drawn to scale</p></div>
-    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="296.1" height="438.0" class="atile">
+    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="301.5" height="438.0" class="atile">
       <title>&lt;Button&gt; · used 1006× · packages/ui/src/button.tsx</title></rect>
-    <text x="148.1" y="215.0" class="adot-n">Button</text>
-    <text x="148.1" y="233.0" class="adot-c">1006×</text></g><g><rect x="296.1" y="0.0" width="184.6" height="438.0" class="atile">
+    <text x="150.8" y="215.0" class="adot-n">Button</text>
+    <text x="150.8" y="233.0" class="adot-c">1006×</text></g><g><rect x="301.5" y="0.0" width="187.9" height="438.0" class="atile">
       <title>&lt;Link&gt; · used 627× · apps/web/ui/shared/icons/link.tsx</title></rect>
-    <text x="388.4" y="215.0" class="adot-n">Link</text>
-    <text x="388.4" y="233.0" class="adot-c">627×</text></g><g><rect x="480.7" y="0.0" width="132.2" height="183.4" class="atile">
+    <text x="395.5" y="215.0" class="adot-n">Link</text>
+    <text x="395.5" y="233.0" class="adot-c">627×</text></g><g><rect x="489.4" y="0.0" width="134.6" height="183.4" class="atile">
       <title>&lt;Modal&gt; · used 188× · packages/ui/src/modal.tsx</title></rect>
-    <text x="546.8" y="87.7" class="adot-n">Modal</text>
-    <text x="546.8" y="105.7" class="adot-c">188×</text></g><g><rect x="480.7" y="183.4" width="132.2" height="146.3" class="atile">
+    <text x="556.7" y="87.7" class="adot-n">Modal</text>
+    <text x="556.7" y="105.7" class="adot-c">188×</text></g><g><rect x="489.4" y="183.4" width="134.6" height="146.3" class="atile">
       <title>&lt;Tooltip&gt; · used 150× · packages/ui/src/tooltip.tsx</title></rect>
-    <text x="546.8" y="252.6" class="adot-n">Tooltip</text>
-    <text x="546.8" y="270.6" class="adot-c">150×</text></g><g><rect x="480.7" y="329.7" width="132.2" height="108.3" class="atile">
+    <text x="556.7" y="252.6" class="adot-n">Tooltip</text>
+    <text x="556.7" y="270.6" class="adot-c">150×</text></g><g><rect x="489.4" y="329.7" width="134.6" height="108.3" class="atile">
       <title>&lt;LoadingSpinner&gt; · used 111× · packages/ui/src/icons/loading-spinner.tsx</title></rect>
-    <text x="546.8" y="379.9" class="adot-n">LoadingSpinner</text>
-    <text x="546.8" y="397.9" class="adot-c">111×</text></g><g><rect x="612.9" y="0.0" width="112.2" height="124.1" class="atile">
+    <text x="556.7" y="379.9" class="adot-n">LoadingSpinner</text>
+    <text x="556.7" y="397.9" class="adot-c">111×</text></g><g><rect x="624.0" y="0.0" width="113.7" height="124.6" class="atile">
       <title>&lt;Footer&gt; · used 108× · packages/email/src/components/footer.tsx</title></rect>
-    <text x="669.0" y="58.0" class="adot-n">Footer</text>
-    <text x="669.0" y="76.0" class="adot-c">108×</text></g><g><rect x="725.1" y="0.0" width="112.2" height="124.1" class="atile">
-      <title>&lt;Footer&gt; · used 108× · packages/ui/src/footer.tsx</title></rect>
-    <text x="781.2" y="58.0" class="adot-n">Footer</text>
-    <text x="781.2" y="76.0" class="adot-c">108×</text></g><g><rect x="837.3" y="0.0" width="103.9" height="124.1" class="atile">
+    <text x="680.9" y="58.3" class="adot-n">Footer</text>
+    <text x="680.9" y="76.3" class="adot-c">108×</text></g><g><rect x="737.7" y="0.0" width="105.3" height="124.6" class="atile">
       <title>&lt;Popover&gt; · used 100× · packages/ui/src/popover.tsx</title></rect>
-    <text x="889.3" y="58.0" class="adot-n">Popover</text>
-    <text x="889.3" y="76.0" class="adot-c">100×</text></g><g><rect x="941.3" y="0.0" width="98.7" height="124.1" class="atile">
+    <text x="790.4" y="58.3" class="adot-n">Popover</text>
+    <text x="790.4" y="76.3" class="adot-c">100×</text></g><g><rect x="843.1" y="0.0" width="100.1" height="124.6" class="atile">
       <title>&lt;InfoTooltip&gt; · used 95× · packages/ui/src/tooltip.tsx</title></rect>
-    <text x="990.6" y="58.0" class="adot-n">InfoTooltip</text>
-    <text x="990.6" y="76.0" class="adot-c">95×</text></g><g><rect x="612.9" y="124.1" width="109.7" height="108.2" class="atile">
+    <text x="893.1" y="58.3" class="adot-n">InfoTooltip</text>
+    <text x="893.1" y="76.3" class="adot-c">95×</text></g><g><rect x="943.1" y="0.0" width="96.9" height="124.6" class="atile">
       <title>&lt;X&gt; · used 92× · apps/web/ui/shared/icons/x.tsx</title></rect>
-    <text x="667.7" y="174.2" class="adot-n">X</text>
-    <text x="667.7" y="192.2" class="adot-c">92×</text></g><g><rect x="612.9" y="232.2" width="109.7" height="105.8" class="atile">
+    <text x="991.6" y="58.3" class="adot-n">X</text>
+    <text x="991.6" y="76.3" class="adot-c">92×</text></g><g><rect x="624.0" y="124.6" width="107.2" height="110.2" class="atile">
       <title>&lt;AnimatedSizeContainer&gt; · used 90× · packages/ui/src/animated-size-container.tsx</title></rect>
-    <text x="667.7" y="281.1" class="adot-n s">AnimatedSizeCon…</text>
-    <text x="667.7" y="299.1" class="adot-c">90×</text></g><g><rect x="612.9" y="338.1" width="109.7" height="99.9" class="atile">
+    <text x="677.6" y="175.7" class="adot-n s">AnimatedSizeCo…</text>
+    <text x="677.6" y="193.7" class="adot-c">90×</text></g><g><rect x="624.0" y="234.8" width="107.2" height="104.0" class="atile">
       <title>&lt;PageContent&gt; · used 85× · apps/web/ui/layout/page-content/index.tsx</title></rect>
-    <text x="667.7" y="384.0" class="adot-n">PageContent</text>
-    <text x="667.7" y="402.0" class="adot-c">85×</text></g><g><rect x="722.5" y="124.1" width="98.2" height="106.4" class="atile">
+    <text x="677.6" y="282.8" class="adot-n">PageContent</text>
+    <text x="677.6" y="300.8" class="adot-c">85×</text></g><g><rect x="624.0" y="338.9" width="107.2" height="99.1" class="atile">
       <title>&lt;PageWidthWrapper&gt; · used 81× · apps/web/ui/layout/page-width-wrapper.tsx</title></rect>
-    <text x="771.6" y="173.3" class="adot-n s">PageWidthWrap…</text>
-    <text x="771.6" y="191.3" class="adot-c">81×</text></g><g><rect x="722.5" y="230.5" width="98.2" height="103.8" class="atile">
+    <text x="677.6" y="384.4" class="adot-n s">PageWidthWrapp…</text>
+    <text x="677.6" y="402.4" class="adot-c">81×</text></g><g><rect x="731.2" y="124.6" width="105.1" height="98.6" class="atile">
       <title>&lt;StatusBadge&gt; · used 79× · packages/ui/src/status-badge.tsx</title></rect>
-    <text x="771.6" y="278.3" class="adot-n">StatusBadge</text>
-    <text x="771.6" y="296.3" class="adot-c">79×</text></g><g><rect x="722.5" y="334.2" width="98.2" height="103.8" class="atile">
+    <text x="783.8" y="170.0" class="adot-n">StatusBadge</text>
+    <text x="783.8" y="188.0" class="adot-c">79×</text></g><g><rect x="836.4" y="124.6" width="105.1" height="98.6" class="atile">
       <title>&lt;Switch&gt; · used 79× · packages/ui/src/switch.tsx</title></rect>
-    <text x="771.6" y="382.1" class="adot-n">Switch</text>
-    <text x="771.6" y="400.1" class="adot-c">79×</text></g><g><rect x="820.7" y="124.1" width="112.7" height="84.7" class="atile">
+    <text x="889.0" y="170.0" class="adot-n">Switch</text>
+    <text x="889.0" y="188.0" class="adot-c">79×</text></g><g><rect x="941.5" y="124.6" width="98.5" height="98.6" class="atile">
       <title>&lt;PartnerAvatar&gt; · used 74× · apps/web/ui/partners/partner-avatar.tsx</title></rect>
-    <text x="877.0" y="162.4" class="adot-n">PartnerAvatar</text>
-    <text x="877.0" y="180.4" class="adot-c">74×</text></g><g><rect x="933.4" y="124.1" width="106.6" height="84.7" class="atile">
+    <text x="990.8" y="170.0" class="adot-n s">PartnerAvatar</text>
+    <text x="990.8" y="188.0" class="adot-c">74×</text></g><g><rect x="731.2" y="223.3" width="84.4" height="108.9" class="atile">
       <title>&lt;Table&gt; · used 70× · packages/ui/src/table/table.tsx</title></rect>
-    <text x="986.7" y="162.4" class="adot-n">Table</text>
-    <text x="986.7" y="180.4" class="adot-c">70×</text></g><g><rect x="820.7" y="208.7" width="111.3" height="78.8" class="atile">
+    <text x="773.4" y="273.7" class="adot-n">Table</text>
+    <text x="773.4" y="291.7" class="adot-c">70×</text></g><g><rect x="731.2" y="332.2" width="84.4" height="105.8" class="atile">
       <title>&lt;MenuItem&gt; · used 68× · packages/ui/src/menu-item.tsx</title></rect>
-    <text x="876.3" y="244.1" class="adot-n">MenuItem</text>
-    <text x="876.3" y="262.1" class="adot-c">68×</text></g><g><rect x="932.0" y="208.7" width="108.0" height="78.8" class="atile">
+    <text x="773.4" y="381.1" class="adot-n">MenuItem</text>
+    <text x="773.4" y="399.1" class="adot-c">68×</text></g><g><rect x="815.6" y="223.3" width="75.8" height="114.3" class="atile">
       <title>&lt;TimestampTooltip&gt; · used 66× · packages/ui/src/timestamp-tooltip.tsx</title></rect>
-    <text x="986.0" y="244.1" class="adot-n s">TimestampToolt…</text>
-    <text x="986.0" y="262.1" class="adot-c">66×</text></g><g><rect x="820.7" y="287.5" width="95.9" height="77.9" class="atile">
+    <text x="853.5" y="276.4" class="adot-n s">Timestamp…</text>
+    <text x="853.5" y="294.4" class="adot-c">66×</text></g><g><rect x="815.6" y="337.6" width="75.8" height="100.4" class="atile">
       <title>&lt;InlineBadgePopover&gt; · used 58× · apps/web/ui/shared/inline-badge-popover.tsx</title></rect>
-    <text x="868.7" y="322.5" class="adot-n s">InlineBadgeP…</text>
-    <text x="868.7" y="340.5" class="adot-c">58×</text></g><g><rect x="820.7" y="365.4" width="95.9" height="72.6" class="atile">
+    <text x="853.5" y="383.8" class="adot-n s">InlineBad…</text>
+    <text x="853.5" y="401.8" class="adot-c">58×</text></g><g><rect x="891.4" y="223.3" width="75.0" height="94.5" class="atile">
       <title>&lt;ChevronRight&gt; · used 54× · packages/ui/src/icons/nucleo/chevron-right.tsx</title></rect>
-    <text x="868.7" y="397.7" class="adot-n s">ChevronRight</text>
-    <text x="868.7" y="415.7" class="adot-c">54×</text></g><g><rect x="916.6" y="287.5" width="66.0" height="103.5" class="atile">
+    <text x="928.9" y="266.6" class="adot-n s">ChevronRi…</text>
+    <text x="928.9" y="284.6" class="adot-c">54×</text></g><g><rect x="966.4" y="223.3" width="73.6" height="94.5" class="atile">
       <title>&lt;BlurImage&gt; · used 53× · packages/ui/src/blur-image.tsx</title></rect>
-    <text x="949.7" y="335.2" class="adot-n s">BlurImage</text>
-    <text x="949.7" y="353.2" class="adot-c">53×</text></g><g><rect x="982.7" y="287.5" width="57.3" height="103.5" class="atile">
+    <text x="1003.2" y="266.6" class="adot-n s">BlurImage</text>
+    <text x="1003.2" y="284.6" class="adot-c">53×</text></g><g><rect x="891.4" y="317.8" width="99.4" height="60.7" class="atile">
       <title>&lt;AnimatedEmptyState&gt; · used 46× · apps/web/ui/shared/animated-empty-state.tsx</title></rect>
-    <text x="1011.3" y="335.2" class="adot-n s">Animat…</text>
-    <text x="1011.3" y="353.2" class="adot-c">46×</text></g><g><rect x="916.6" y="391.0" width="123.4" height="47.0" class="atile">
+    <text x="941.1" y="344.2" class="adot-n s">AnimatedEmpty…</text>
+    <text x="941.1" y="362.2" class="adot-c">46×</text></g><g><rect x="891.4" y="378.6" width="99.4" height="59.4" class="atile">
       <title>&lt;Combobox&gt; · used 45× · packages/ui/src/combobox/index.tsx</title></rect>
-    <text x="978.3" y="410.5" class="adot-n">Combobox</text>
-    <text x="978.3" y="428.5" class="adot-c">45×</text></g></svg>
-    <p class="sub">572 more adopted components below the top 24, not drawn.</p>
+    <text x="941.1" y="404.3" class="adot-n">Combobox</text>
+    <text x="941.1" y="422.3" class="adot-c">45×</text></g><g><rect x="990.8" y="317.8" width="49.2" height="120.2" class="atile">
+      <title>&lt;TooltipContent&gt; · used 45× · packages/ui/src/tooltip.tsx</title></rect>
+    <text x="1015.4" y="373.9" class="adot-n s">Toolt…</text>
+    <text x="1015.4" y="391.9" class="adot-c">45×</text></g></svg>
+    <p class="sub">553 more adopted components below the top 24, not drawn.</p>
     
-    <p class="sub">537 components are imported exactly once: &lt;AboutYouForm&gt;, &lt;AcceptProgramInviteButton&gt;, &lt;AccordionBlockThumbnail&gt;, &lt;ActivityLogDescription&gt;, &lt;ActivityLogProvider&gt;, &lt;ActivityRing&gt; and 531 more. Quiet corners, not yet a system.</p>
+    <p class="sub">551 components are imported exactly once: &lt;AboutYouForm&gt;, &lt;AcceptProgramInviteButton&gt;, &lt;AccordionBlockThumbnail&gt;, &lt;ActivityLogDescription&gt;, &lt;ActivityLogProvider&gt;, &lt;ActivityRing&gt; and 545 more. Quiet corners, not yet a system.</p>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
     <tr><td class="mono strong">&lt;Button&gt;</td>
     <td><span class="pill pill-mint">1006×</span></td>
@@ -1127,10 +1137,6 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td><span class="pill pill-mint">108×</span></td>
     <td class="path">packages/email/src/components/footer.tsx</td>
     <td><span class="chip chip-xs">email</span> <span class="chip chip-xs">marketing</span> <span class="chip chip-xs">unsubscribeUrl</span> <span class="chip chip-xs">https</span> <span class="chip chip-xs">notificationSettingsUrl</span></td></tr>
-    <tr><td class="mono strong">&lt;Footer&gt;</td>
-    <td><span class="pill pill-mint">108×</span></td>
-    <td class="path">packages/ui/src/footer.tsx</td>
-    <td><span class="chip chip-xs">staticDomain</span></td></tr>
     <tr><td class="mono strong">&lt;Popover&gt;</td>
     <td><span class="pill pill-mint">100×</span></td>
     <td class="path">packages/ui/src/popover.tsx</td>
@@ -1142,6 +1148,10 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <tr><td class="mono strong">&lt;X&gt;</td>
     <td><span class="pill pill-mint">92×</span></td>
     <td class="path">apps/web/ui/shared/icons/x.tsx</td>
+    <td><span class="dim">none</span></td></tr>
+    <tr><td class="mono strong">&lt;AnimatedSizeContainer&gt;</td>
+    <td><span class="pill pill-mint">90×</span></td>
+    <td class="path">packages/ui/src/animated-size-container.tsx</td>
     <td><span class="dim">none</span></td></tr></tbody></table></div>
     
     <div class="receipts"><div class="eyebrow">16 components defined but never imported · they sit in the system as wrong answers waiting to be picked</div>
@@ -1153,8 +1163,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 8.2.2</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">94d5eb1bfa53</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=8.2.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 8.9.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">062ac10f41d3</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=8.9.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

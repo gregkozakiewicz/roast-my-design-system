@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 8.9.0 — unreleased
+## 8.9.0 — 2026-09-25
 
 - **The report says where agents will invent.** A new section, "Where
   agents will invent", lists the places where the repo has no answer yet,
@@ -24,6 +24,11 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   `roast_get_context` adds one `GAP:` line per gap so the agent knows when
   it is inventing; `learnSystem` returns `gaps` for the guard. Scores and
   tiles do not change.
+- The README screenshots are reshot from the regenerated vercel/ai-chatbot
+  report, and ten of the eleven hosted example reports are regenerated on
+  this engine (every score unchanged; the Dub example shows the new
+  section). The fresh shadcn example keeps its 8.2.2 footer: regenerating
+  it means a new install, which is a separate job.
 
 ## 8.8.0 — 2026-09-25
 

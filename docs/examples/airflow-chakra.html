@@ -268,10 +268,10 @@
   .ledger-row a.path { font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ledger-pills { margin-left:auto; display:flex; gap:8px; flex-shrink:0; }
 
-  .start-row { align-items:flex-start; }
+  .start-row, .gap-row { align-items:flex-start; }
   .start-body { min-width:0; }
   .start-title { font:600 15px/1.4 var(--disp); }
-  .start-row .sub { margin-top:2px; overflow-wrap:anywhere; }
+  .start-row .sub, .gap-row .sub { margin-top:2px; overflow-wrap:anywhere; }
   .start-actions { display:flex; align-items:center; gap:10px; margin-top:10px; }
   .fixbtn { font:700 11.5px/1 var(--sans); padding:8px 13px; border-radius:8px; border:1px solid var(--accent);
     background:transparent; color:var(--accent); cursor:pointer; }
@@ -452,7 +452,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/8.2.2 -->
+<!-- rmds-schema: gregkozakiewicz/8.9.0 -->
 <!-- rmds-score: 43 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
@@ -468,14 +468,14 @@
 <aside class="side">
   <div class="eyebrow">Design-system diagnosis</div>
   <div class="repo"><span class="mono">apache/airflow</span></div>
-  <div class="scanned">Scanned 2026-09-18 · 934 code files · 459ms</div>
+  <div class="scanned">Scanned 2026-09-25 · 934 code files · 632ms</div>
   <div class="score"><div class="eyebrow">Health score</div><div class="val">43<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 67.</b></div></div>
   <div class="chips"><span class="chip">vite-react</span><span class="chip">TypeScript</span><span class="chip">Emotion</span><span class="chip">monorepo</span><span class="chip chip-dim">design system: unrecognised</span><span class="chip chip-agent">CLAUDE.md</span><span class="chip chip-agent">AGENTS.md</span><span class="chip chip-agent">.github/instructions</span><span class="chip chip-agent">airflow-core/src/airflow/_shared/AGENTS.md</span><span class="chip chip-agent">airflow-core/src/airflow/api_fastapi/execution_api/AGENTS.md</span><span class="chip chip-agent">airflow-core/src/airflow/ui/AGENTS.md</span><span class="chip chip-agent">dev/AGENTS.md</span><span class="chip chip-agent">dev/ide_setup/AGENTS.md</span><span class="chip chip-agent">providers/AGENTS.md</span><span class="chip chip-agent">providers/common/ai/AGENTS.md</span><span class="chip chip-agent">providers/elasticsearch/AGENTS.md</span><span class="chip chip-agent">providers/opensearch/AGENTS.md</span><span class="chip chip-agent">registry/AGENTS.md</span><span class="chip chip-agent">registry/CLAUDE.md</span><span class="chip chip-agent">scripts/ci/prek/AGENTS.md</span><span class="chip chip-agent">task-sdk/src/airflow/sdk/_shared/AGENTS.md</span><span class="chip chip-agent">task-sdk/src/airflow/sdk/execution_time/schema/AGENTS.md</span></div>
   <div class="facts"><div class="excl fresh">Read as a product built on Chakra: imported in 432 files, theme defined in airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/theme.ts. The kit's own code is installed from npm and not counted; what is counted is what the repo writes onto its components.</div><div class="excl">Evidence: Chakra imported in 432 files · theme defined in airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/theme.ts and 4 more · the theme is referenced 466 times from components</div><div class="excl">Left out by design: <span class="mono">docs/</span> (2 UI files). A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div><div class="excl">2 stylesheets not read: <span class="mono">bootstrap-theme.css</span> · a library's stylesheet kept in the repo; <span class="mono">material-icons.css</span> · a minified stylesheet, shipped rather than written here.</div></div>
   <div class="eyebrow idx-head">Index</div>
   <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>What your agent sees</a><a href="#s-3"><i>03</i>Your present</a><a href="#s-4"><i>04</i>Your Chakra theme</a><a href="#s-5"><i>05</i>Off-scale spacing</a><a href="#s-6"><i>06</i>Typography &amp; shape</a><a href="#s-7"><i>07</i>Where it hurts most</a><a href="#s-8"><i>08</i>The adoption map</a></nav>
   <div class="excs"><b>Not yours, and not counted</b><p>1 !important declaration aimed at a library's own class names (.ace_editor) is not counted: the library ships its CSS, and this is the only way through it. Your agent reads it like everything else.</p><p>2 files not judged (DagIcon.tsx, TaskIcon.tsx): the colours belong to the artwork, not to the interface. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>1 file not judged (DownloadButton.tsx): a render-to-image surface accepts nothing but inline styling, so there is no on-system way to write one. Not counted, but your agent reads it like everything else, so what is in there is still an example it can copy.</p></div>
-  <div class="side-foot">roast-my-design-system 8.2.2</div>
+  <div class="side-foot">roast-my-design-system 8.9.0</div>
 </aside>
 <main class="main">
   
@@ -566,6 +566,8 @@ Work through the files named in the finding. When you are done, re-run the scan 
 npx roast-my-design-system@latest</div></div>
       </div></div></section>
 
+
+
 <section id="s-2" class="glass pad agent">
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
     <p class="sub">Your agent reads <span class="mono">CLAUDE.md</span>, <span class="mono">AGENTS.md</span>, <span class="mono">.github/instructions</span>, plus 14 rules files nested in subfolders. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">CLAUDE.md · Claude Code</span><span class="chip chip-agent">AGENTS.md · generic (AGENTS.md standard)</span><span class="chip chip-agent">.github/instructions · GitHub Copilot (scoped)</span><span class="chip chip-agent">+14 nested in subfolders</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-yes">✓</b> · Codex <b class="cov-yes">✓</b> · Cursor <b class="cov-yes">✓</b></p></section>
@@ -588,7 +590,7 @@ npx roast-my-design-system@latest</div></div>
           <span class="gift-count">19 rules generated from this scan, every one with a receipt</span></div>
         <pre class="gift-md" id="gift-md">## Design system rules
 
-&lt;!-- Generated by roast-my-design-system from a scan of apache/airflow on 2026-09-18.
+&lt;!-- Generated by roast-my-design-system from a scan of apache/airflow on 2026-09-25.
      Paste into CLAUDE.md, .cursor/rules or AGENTS.md. Regenerate after big refactors:
      npx roast-my-design-system@latest --rules
      Door note: Codex and Cursor read AGENTS.md; Claude Code reads CLAUDE.md only.
@@ -627,7 +629,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - `&lt;Content&gt;` exists in 6 places (`airflow-core/src/airflow/ui/src/system-components/ActionBar/BarContent.tsx`, `airflow-core/src/airflow/ui/src/system-components/Dialog/Content.tsx`). Match whichever the surrounding code already imports, and never create another.
 - `&lt;Root&gt;` exists in 4 places (`airflow-core/src/airflow/ui/src/system-components/Menu/MenuRoot.tsx`, `airflow-core/src/airflow/ui/src/system-components/Pagination/Root.tsx`). Match whichever the surrounding code already imports, and never create another.
 - `&lt;ErrorAlert&gt;` exists in 3 places. Treat `airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx` as canonical; do not import the other copies, and never create another.
-- `&lt;Alert&gt;` exists in 3 places (`airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/Alert.tsx`, `airflow-core/src/airflow/ui/src/system-components/Alert.tsx`). Match whichever the surrounding code already imports, and never create another.
+- `&lt;Alert&gt;` exists in 3 places (`airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/Alert.tsx`, `providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ui/Alert.tsx`). Match whichever the surrounding code already imports, and never create another.
 - `&lt;Toaster&gt;` exists in 3 places (`airflow-core/src/airflow/ui/src/system-components/Toaster/Toaster.tsx`, `providers/common/ai/src/airflow/providers/common/ai/plugins/www/src/toaster.tsx`). Match whichever the surrounding code already imports, and never create another.
 - `&lt;ColorModeProvider&gt;` exists in 3 places. Treat `airflow-core/src/airflow/ui/src/context/colorMode/ColorModeProvider.tsx` as canonical; do not import the other copies, and never create another.
 
@@ -653,7 +655,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 8.2.2. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 8.9.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -977,14 +979,14 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">&lt;ErrorAlert&gt; · 3 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx">airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx">airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx</a></div>
       
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">&lt;Alert&gt; · 3 implementations</div>
       <div class="fam-rows">
-      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/Alert.tsx">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/Alert.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/airflow-core/src/airflow/ui/src/system-components/Alert.tsx">airflow-core/src/airflow/ui/src/system-components/Alert.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ui/Alert.tsx">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ui/Alert.tsx</a></div>
+      <div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/Alert.tsx">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/Alert.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ui/Alert.tsx">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ui/Alert.tsx</a></div><div class="mini-card"><a class="path" href="vscode://file//Users/greg/Downloads/repos/apache-airflow/airflow-core/src/airflow/ui/src/system-components/Alert.tsx">airflow-core/src/airflow/ui/src/system-components/Alert.tsx</a></div>
       
       </div>
     </div>
@@ -1019,14 +1021,14 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <div class="fam">
       <div class="eyebrow">alert family · 7 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ErrorAlert&gt;</div><div class="mc-path">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx</div></div><span class="pill pill-mint">used 49×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ErrorAlert&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx</div></div><span class="pill pill-mint">used 49×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ErrorAlert&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx</div></div><span class="pill pill-mint">used 49×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Alert&gt;</div><div class="mc-path">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/Alert.tsx</div></div><span class="pill pill-mint">used 9×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Alert&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/system-components/Alert.tsx</div></div><span class="pill pill-mint">used 9×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Alert&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ui/Alert.tsx</div></div><span class="pill pill-mint">used 9×</span></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ErrorAlert&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx</div></div><span class="pill pill-mint">used 49×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ErrorAlert&gt;</div><div class="mc-path">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx</div></div><span class="pill pill-mint">used 46×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;ErrorAlert&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx</div></div><span class="pill pill-mint">used 46×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Alert&gt;</div><div class="mc-path">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/Alert.tsx</div></div><span class="pill pill-mint">used 8×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Alert&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ui/Alert.tsx</div></div><span class="pill pill-mint">used 8×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;Alert&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/system-components/Alert.tsx</div></div><span class="pill pill-mint">used 7×</span></div>
       <div class="mini-card dim">…and 1 more</div>
       </div>
     </div>
     <div class="fam">
       <div class="eyebrow">badge family · 6 variants</div>
       <div class="fam-rows">
-      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StateBadge&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/components/StateBadge.tsx</div></div><span class="pill pill-mint">used 50×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StateBadge&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/StateBadge.tsx</div></div><span class="pill pill-mint">used 50×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DrainingBadge&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/components/DrainingBadge.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;WorkerStateBadge&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/WorkerStateBadge.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;NeedsReviewBadge&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/components/NeedsReviewBadge.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;WorkerSysinfoBadge&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/WorkerSysinfoBadge.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
+      <div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StateBadge&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/components/StateBadge.tsx</div></div><span class="pill pill-mint">used 50×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;StateBadge&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/StateBadge.tsx</div></div><span class="pill pill-mint">used 47×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;DrainingBadge&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/components/DrainingBadge.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;WorkerStateBadge&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/WorkerStateBadge.tsx</div></div><span class="pill pill-mint">used 3×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;NeedsReviewBadge&gt;</div><div class="mc-path">airflow-core/src/airflow/ui/src/components/NeedsReviewBadge.tsx</div></div><span class="pill pill-mint">used 2×</span></div><div class="mini-card"><div class="mc-main"><div class="mc-name">&lt;WorkerSysinfoBadge&gt;</div><div class="mc-path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/WorkerSysinfoBadge.tsx</div></div><span class="pill pill-mint">used 1×</span></div>
       
       </div>
     </div>
@@ -1092,82 +1094,82 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 </div>
 <section id="s-8" class="glass pad">
     <div class="sec-head"><h2>The adoption map</h2><p class="sub">330 components defined · tile area is import count · the real system, drawn to scale</p></div>
-    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="240.4" height="253.6" class="atile">
+    <svg viewBox="0 0 1040 438" class="amap" role="img" aria-label="Component adoption map: tile area is import count"><g><rect x="0.0" y="0.0" width="243.6" height="253.6" class="atile">
       <title>&lt;Time&gt; · used 110× · airflow-core/src/airflow/ui/src/components/Time.tsx</title></rect>
-    <text x="120.2" y="122.8" class="adot-n">Time</text>
-    <text x="120.2" y="140.8" class="adot-c">110×</text></g><g><rect x="0.0" y="253.6" width="240.4" height="184.4" class="atile">
+    <text x="121.8" y="122.8" class="adot-n">Time</text>
+    <text x="121.8" y="140.8" class="adot-c">110×</text></g><g><rect x="0.0" y="253.6" width="243.6" height="184.4" class="atile">
       <title>&lt;IconButton&gt; · used 80× · airflow-core/src/airflow/ui/src/system-components/IconButton.tsx</title></rect>
-    <text x="120.2" y="341.8" class="adot-n">IconButton</text>
-    <text x="120.2" y="359.8" class="adot-c">80×</text></g><g><rect x="240.4" y="0.0" width="208.8" height="167.2" class="atile">
+    <text x="121.8" y="341.8" class="adot-n">IconButton</text>
+    <text x="121.8" y="359.8" class="adot-c">80×</text></g><g><rect x="243.6" y="0.0" width="211.6" height="167.2" class="atile">
       <title>&lt;RouterLink&gt; · used 63× · airflow-core/src/airflow/ui/src/system-components/RouterLink.tsx</title></rect>
-    <text x="344.8" y="79.6" class="adot-n">RouterLink</text>
-    <text x="344.8" y="97.6" class="adot-c">63×</text></g><g><rect x="240.4" y="167.2" width="208.8" height="138.0" class="atile">
+    <text x="349.4" y="79.6" class="adot-n">RouterLink</text>
+    <text x="349.4" y="97.6" class="adot-c">63×</text></g><g><rect x="243.6" y="167.2" width="211.6" height="138.0" class="atile">
       <title>&lt;Tooltip&gt; · used 52× · airflow-core/src/airflow/ui/src/system-components/Tooltip.tsx</title></rect>
-    <text x="344.8" y="232.3" class="adot-n">Tooltip</text>
-    <text x="344.8" y="250.3" class="adot-c">52×</text></g><g><rect x="240.4" y="305.3" width="208.8" height="132.7" class="atile">
+    <text x="349.4" y="232.3" class="adot-n">Tooltip</text>
+    <text x="349.4" y="250.3" class="adot-c">52×</text></g><g><rect x="243.6" y="305.3" width="211.6" height="132.7" class="atile">
       <title>&lt;StateBadge&gt; · used 50× · airflow-core/src/airflow/ui/src/components/StateBadge.tsx</title></rect>
-    <text x="344.8" y="367.6" class="adot-n">StateBadge</text>
-    <text x="344.8" y="385.6" class="adot-c">50×</text></g><g><rect x="449.1" y="0.0" width="187.3" height="148.0" class="atile">
-      <title>&lt;StateBadge&gt; · used 50× · providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/StateBadge.tsx</title></rect>
-    <text x="542.8" y="70.0" class="adot-n">StateBadge</text>
-    <text x="542.8" y="88.0" class="adot-c">50×</text></g><g><rect x="449.1" y="148.0" width="187.3" height="145.0" class="atile">
-      <title>&lt;ErrorAlert&gt; · used 49× · airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx</title></rect>
-    <text x="542.8" y="216.5" class="adot-n">ErrorAlert</text>
-    <text x="542.8" y="234.5" class="adot-c">49×</text></g><g><rect x="449.1" y="293.0" width="187.3" height="145.0" class="atile">
+    <text x="349.4" y="367.6" class="adot-n">StateBadge</text>
+    <text x="349.4" y="385.6" class="adot-c">50×</text></g><g><rect x="455.2" y="0.0" width="183.4" height="150.1" class="atile">
       <title>&lt;ErrorAlert&gt; · used 49× · airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx</title></rect>
-    <text x="542.8" y="361.5" class="adot-n">ErrorAlert</text>
-    <text x="542.8" y="379.5" class="adot-c">49×</text></g><g><rect x="636.4" y="0.0" width="206.0" height="131.8" class="atile">
-      <title>&lt;ErrorAlert&gt; · used 49× · providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx</title></rect>
-    <text x="739.4" y="61.9" class="adot-n">ErrorAlert</text>
-    <text x="739.4" y="79.9" class="adot-c">49×</text></g><g><rect x="842.4" y="0.0" width="197.6" height="131.8" class="atile">
+    <text x="546.9" y="71.0" class="adot-n">ErrorAlert</text>
+    <text x="546.9" y="89.0" class="adot-c">49×</text></g><g><rect x="455.2" y="150.1" width="183.4" height="144.0" class="atile">
       <title>&lt;Modal&gt; · used 47× · airflow-core/src/airflow/ui/src/system-components/Modal/Modal.tsx</title></rect>
-    <text x="941.2" y="61.9" class="adot-n">Modal</text>
-    <text x="941.2" y="79.9" class="adot-c">47×</text></g><g><rect x="636.4" y="131.8" width="130.3" height="123.3" class="atile">
+    <text x="546.9" y="218.1" class="adot-n">Modal</text>
+    <text x="546.9" y="236.1" class="adot-c">47×</text></g><g><rect x="455.2" y="294.0" width="183.4" height="144.0" class="atile">
+      <title>&lt;StateBadge&gt; · used 47× · providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/StateBadge.tsx</title></rect>
+    <text x="546.9" y="362.0" class="adot-n">StateBadge</text>
+    <text x="546.9" y="380.0" class="adot-c">47×</text></g><g><rect x="638.6" y="0.0" width="200.7" height="128.7" class="atile">
+      <title>&lt;ErrorAlert&gt; · used 46× · airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx</title></rect>
+    <text x="739.0" y="60.4" class="adot-n">ErrorAlert</text>
+    <text x="739.0" y="78.4" class="adot-c">46×</text></g><g><rect x="839.3" y="0.0" width="200.7" height="128.7" class="atile">
+      <title>&lt;ErrorAlert&gt; · used 46× · providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx</title></rect>
+    <text x="939.7" y="60.4" class="adot-n">ErrorAlert</text>
+    <text x="939.7" y="78.4" class="adot-c">46×</text></g><g><rect x="638.6" y="128.7" width="130.8" height="124.6" class="atile">
       <title>&lt;DataTable&gt; · used 29× · airflow-core/src/airflow/ui/src/components/DataTable/DataTable.tsx</title></rect>
-    <text x="701.6" y="189.5" class="adot-n">DataTable</text>
-    <text x="701.6" y="207.5" class="adot-c">29×</text></g><g><rect x="636.4" y="255.1" width="130.3" height="93.6" class="atile">
+    <text x="704.0" y="187.0" class="adot-n">DataTable</text>
+    <text x="704.0" y="205.0" class="adot-c">29×</text></g><g><rect x="638.6" y="253.3" width="130.8" height="94.5" class="atile">
       <title>&lt;TruncatedText&gt; · used 22× · airflow-core/src/airflow/ui/src/components/TruncatedText.tsx</title></rect>
-    <text x="701.6" y="297.9" class="adot-n">TruncatedText</text>
-    <text x="701.6" y="315.9" class="adot-c">22×</text></g><g><rect x="636.4" y="348.7" width="130.3" height="89.3" class="atile">
+    <text x="704.0" y="296.6" class="adot-n">TruncatedText</text>
+    <text x="704.0" y="314.6" class="adot-c">22×</text></g><g><rect x="638.6" y="347.8" width="130.8" height="90.2" class="atile">
       <title>&lt;CloseButton&gt; · used 21× · providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ui/CloseButton.tsx</title></rect>
-    <text x="701.6" y="389.3" class="adot-n">CloseButton</text>
-    <text x="701.6" y="407.3" class="adot-c">21×</text></g><g><rect x="766.7" y="131.8" width="91.1" height="97.3" class="atile">
+    <text x="704.0" y="388.9" class="adot-n">CloseButton</text>
+    <text x="704.0" y="406.9" class="adot-c">21×</text></g><g><rect x="769.4" y="128.7" width="90.2" height="99.6" class="atile">
       <title>&lt;Checkbox&gt; · used 16× · airflow-core/src/airflow/ui/src/system-components/Checkbox.tsx</title></rect>
-    <text x="812.3" y="176.5" class="adot-n">Checkbox</text>
-    <text x="812.3" y="194.5" class="adot-c">16×</text></g><g><rect x="857.8" y="131.8" width="91.1" height="97.3" class="atile">
+    <text x="814.5" y="174.6" class="adot-n">Checkbox</text>
+    <text x="814.5" y="192.6" class="adot-c">16×</text></g><g><rect x="859.6" y="128.7" width="90.2" height="99.6" class="atile">
       <title>&lt;SearchBar&gt; · used 16× · airflow-core/src/airflow/ui/src/components/SearchBar.tsx</title></rect>
-    <text x="903.4" y="176.5" class="adot-n">SearchBar</text>
-    <text x="903.4" y="194.5" class="adot-c">16×</text></g><g><rect x="948.9" y="131.8" width="91.1" height="97.3" class="atile">
+    <text x="904.7" y="174.6" class="adot-n">SearchBar</text>
+    <text x="904.7" y="192.6" class="adot-c">16×</text></g><g><rect x="949.8" y="128.7" width="90.2" height="99.6" class="atile">
       <title>&lt;SearchBar&gt; · used 16× · providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/SearchBar.tsx</title></rect>
-    <text x="994.5" y="176.5" class="adot-n">SearchBar</text>
-    <text x="994.5" y="194.5" class="adot-c">16×</text></g><g><rect x="766.7" y="229.1" width="74.3" height="104.4" class="atile">
+    <text x="994.9" y="174.6" class="adot-n">SearchBar</text>
+    <text x="994.9" y="192.6" class="adot-c">16×</text></g><g><rect x="769.4" y="228.4" width="75.0" height="104.8" class="atile">
       <title>&lt;ClipboardIconButton&gt; · used 14× · airflow-core/src/airflow/ui/src/system-components/Clipboard.tsx</title></rect>
-    <text x="803.9" y="277.4" class="adot-n s">Clipboard…</text>
-    <text x="803.9" y="295.4" class="adot-c">14×</text></g><g><rect x="766.7" y="333.6" width="74.3" height="104.4" class="atile">
+    <text x="806.9" y="276.8" class="adot-n s">Clipboard…</text>
+    <text x="806.9" y="294.8" class="adot-c">14×</text></g><g><rect x="769.4" y="333.2" width="75.0" height="104.8" class="atile">
       <title>&lt;ClipboardRoot&gt; · used 14× · airflow-core/src/airflow/ui/src/system-components/Clipboard.tsx</title></rect>
-    <text x="803.9" y="381.8" class="adot-n s">Clipboard…</text>
-    <text x="803.9" y="399.8" class="adot-c">14×</text></g><g><rect x="841.0" y="229.1" width="103.2" height="75.2" class="atile">
+    <text x="806.9" y="381.6" class="adot-n s">Clipboard…</text>
+    <text x="806.9" y="399.6" class="adot-c">14×</text></g><g><rect x="844.4" y="228.4" width="105.3" height="74.7" class="atile">
       <title>&lt;TeamName&gt; · used 14× · airflow-core/src/airflow/ui/src/components/TeamName.tsx</title></rect>
-    <text x="892.6" y="262.7" class="adot-n">TeamName</text>
-    <text x="892.6" y="280.7" class="adot-c">14×</text></g><g><rect x="944.2" y="229.1" width="95.8" height="75.2" class="atile">
-      <title>&lt;StateIcon&gt; · used 13× · airflow-core/src/airflow/ui/src/components/StateIcon.tsx</title></rect>
-    <text x="992.1" y="262.7" class="adot-n">StateIcon</text>
-    <text x="992.1" y="280.7" class="adot-c">13×</text></g><g><rect x="841.0" y="304.3" width="103.6" height="69.5" class="atile">
-      <title>&lt;StateIcon&gt; · used 13× · providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/StateIcon.tsx</title></rect>
-    <text x="892.8" y="335.1" class="adot-n">StateIcon</text>
-    <text x="892.8" y="353.1" class="adot-c">13×</text></g><g><rect x="841.0" y="373.8" width="103.6" height="64.2" class="atile">
+    <text x="897.1" y="261.7" class="adot-n">TeamName</text>
+    <text x="897.1" y="279.7" class="adot-c">14×</text></g><g><rect x="949.7" y="228.4" width="90.3" height="74.7" class="atile">
       <title>&lt;FilterBar&gt; · used 12× · airflow-core/src/airflow/ui/src/components/FilterBar/FilterBar.tsx</title></rect>
-    <text x="892.8" y="401.9" class="adot-n">FilterBar</text>
-    <text x="892.8" y="419.9" class="adot-c">12×</text></g><g><rect x="944.6" y="304.3" width="95.4" height="69.7" class="atile">
+    <text x="994.9" y="261.7" class="adot-n">FilterBar</text>
+    <text x="994.9" y="279.7" class="adot-c">12×</text></g><g><rect x="844.4" y="303.0" width="99.9" height="67.5" class="atile">
       <title>&lt;ReactMarkdown&gt; · used 12× · airflow-core/src/airflow/ui/src/components/ReactMarkdown.tsx</title></rect>
-    <text x="992.3" y="335.2" class="adot-n s">ReactMarkdown</text>
-    <text x="992.3" y="353.2" class="adot-c">12×</text></g><g><rect x="944.6" y="374.1" width="95.4" height="63.9" class="atile">
+    <text x="894.3" y="332.8" class="adot-n s">ReactMarkdown</text>
+    <text x="894.3" y="350.8" class="adot-c">12×</text></g><g><rect x="844.4" y="370.5" width="99.9" height="67.5" class="atile">
+      <title>&lt;StateIcon&gt; · used 12× · airflow-core/src/airflow/ui/src/components/StateIcon.tsx</title></rect>
+    <text x="894.3" y="400.3" class="adot-n">StateIcon</text>
+    <text x="894.3" y="418.3" class="adot-c">12×</text></g><g><rect x="944.3" y="303.0" width="95.7" height="70.4" class="atile">
+      <title>&lt;StateIcon&gt; · used 12× · providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/StateIcon.tsx</title></rect>
+    <text x="992.1" y="334.2" class="adot-n">StateIcon</text>
+    <text x="992.1" y="352.2" class="adot-c">12×</text></g><g><rect x="944.3" y="373.4" width="95.7" height="64.6" class="atile">
       <title>&lt;NavButton&gt; · used 11× · airflow-core/src/airflow/ui/src/layouts/Nav/NavButton.tsx</title></rect>
-    <text x="992.3" y="402.0" class="adot-n">NavButton</text>
-    <text x="992.3" y="420.0" class="adot-c">11×</text></g></svg>
-    <p class="sub">124 more adopted components below the top 24, not drawn.</p>
+    <text x="992.1" y="401.7" class="adot-n">NavButton</text>
+    <text x="992.1" y="419.7" class="adot-c">11×</text></g></svg>
+    <p class="sub">123 more adopted components below the top 24, not drawn.</p>
     
-    <p class="sub">130 components are imported exactly once: &lt;AddQueueButton&gt;, &lt;AdminButton&gt;, &lt;AndGateNode&gt;, &lt;AssetEvent&gt;, &lt;AssetEventsFilter&gt;, &lt;AssetProgressCell&gt; and 124 more. Quiet corners, not yet a system.</p>
+    <p class="sub">128 components are imported exactly once: &lt;AddQueueButton&gt;, &lt;AdminButton&gt;, &lt;AndGateNode&gt;, &lt;AssetEvent&gt;, &lt;AssetEventsFilter&gt;, &lt;AssetProgressCell&gt; and 122 more. Quiet corners, not yet a system.</p>
     <div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>
     <tr><td class="mono strong">&lt;Time&gt;</td>
     <td><span class="pill pill-mint">110×</span></td>
@@ -1189,32 +1191,32 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
     <td><span class="pill pill-mint">50×</span></td>
     <td class="path">airflow-core/src/airflow/ui/src/components/StateBadge.tsx</td>
     <td><span class="chip chip-xs">state</span> <span class="chip chip-xs">rest</span></td></tr>
-    <tr><td class="mono strong">&lt;StateBadge&gt;</td>
-    <td><span class="pill pill-mint">50×</span></td>
-    <td class="path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/StateBadge.tsx</td>
-    <td><span class="chip chip-xs">state</span> <span class="chip chip-xs">rest</span></td></tr>
-    <tr><td class="mono strong">&lt;ErrorAlert&gt;</td>
-    <td><span class="pill pill-mint">49×</span></td>
-    <td class="path">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx</td>
-    <td><span class="chip chip-xs">error</span> <span class="chip chip-xs">err</span></td></tr>
     <tr><td class="mono strong">&lt;ErrorAlert&gt;</td>
     <td><span class="pill pill-mint">49×</span></td>
     <td class="path">airflow-core/src/airflow/ui/src/components/ErrorAlert.tsx</td>
     <td><span class="chip chip-xs">error</span> <span class="chip chip-xs">err</span></td></tr>
-    <tr><td class="mono strong">&lt;ErrorAlert&gt;</td>
-    <td><span class="pill pill-mint">49×</span></td>
-    <td class="path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx</td>
-    <td><span class="chip chip-xs">error</span> <span class="chip chip-xs">err</span></td></tr>
     <tr><td class="mono strong">&lt;Modal&gt;</td>
     <td><span class="pill pill-mint">47×</span></td>
     <td class="path">airflow-core/src/airflow/ui/src/system-components/Modal/Modal.tsx</td>
-    <td><span class="chip chip-xs">bodyProps</span> <span class="chip chip-xs">cancelActionProps</span> <span class="chip chip-xs">contentProps</span> <span class="chip chip-xs">footerActions</span> <span class="chip chip-xs">footerProps</span></td></tr></tbody></table></div>
+    <td><span class="chip chip-xs">bodyProps</span> <span class="chip chip-xs">cancelActionProps</span> <span class="chip chip-xs">contentProps</span> <span class="chip chip-xs">footerActions</span> <span class="chip chip-xs">footerProps</span></td></tr>
+    <tr><td class="mono strong">&lt;StateBadge&gt;</td>
+    <td><span class="pill pill-mint">47×</span></td>
+    <td class="path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/StateBadge.tsx</td>
+    <td><span class="chip chip-xs">state</span> <span class="chip chip-xs">rest</span></td></tr>
+    <tr><td class="mono strong">&lt;ErrorAlert&gt;</td>
+    <td><span class="pill pill-mint">46×</span></td>
+    <td class="path">airflow-core/src/airflow/api_fastapi/auth/managers/simple/ui/src/alert/ErrorAlert.tsx</td>
+    <td><span class="chip chip-xs">error</span> <span class="chip chip-xs">err</span></td></tr>
+    <tr><td class="mono strong">&lt;ErrorAlert&gt;</td>
+    <td><span class="pill pill-mint">46×</span></td>
+    <td class="path">providers/edge3/src/airflow/providers/edge3/plugins/www/src/components/ErrorAlert.tsx</td>
+    <td><span class="chip chip-xs">error</span> <span class="chip chip-xs">err</span></td></tr></tbody></table></div>
     </section>
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 8.2.2</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">d3204895eabe</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=8.2.2"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 8.9.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">38dcf3c57624</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=8.9.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

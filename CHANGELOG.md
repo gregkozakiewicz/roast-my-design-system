@@ -2,6 +2,33 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.0.2 — unreleased
+
+Housekeeping for the plugin directory listing. Nothing in the scan, the
+score or the report changes.
+
+- **The plugin manifest carries an icon and a full repository URL.** The
+  directory listing showed the publisher's avatar and name because the
+  manifest had none at submission; it now names the roaster mark
+  (`assets/roastmds.svg`) and links the repository over https.
+- **Link previews stay wired.** The hosted example pages got their Open
+  Graph tags on 15 September by calling the report builder directly; the
+  `npx` command never passed `--og-url` and `--og-image` through, so every
+  regeneration since 8.2.2 dropped the preview cards. The CLI now takes
+  both flags, the example manifest records each page's URL and card, and
+  the release regenerates with them and refuses to ship a page that lost
+  its card.
+- **A "For reviewers" section in the README** says what the plugin runs
+  on a user's machine (two skills, one local MCP server, one hook, all from
+  the plugin folder, no network) and what in the repository is tooling the
+  plugin never runs.
+- **The eval suite leaves the repository.** The five behaviour tests for
+  Claude Code's plugin eval runner live with the maintainer's private
+  notes now; the suite that runs on every commit is unchanged. The plugin
+  folder drops under the directory's file limit.
+- README screenshots and logos are linked by relative path, so the
+  directory's validator can see what uses them.
+
 ## 9.0.1 — 2026-09-25
 
 - **The first chart in a repo is called that.** The scan already holds the

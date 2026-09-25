@@ -1,6 +1,0 @@
-schema_version: "1.1"
-name: roast-plain-words
-description: The plain request, in the words the README promises.
-tags: [trigger, report]
-context:
-  scaffold_script: scaffold.sh

@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/roster_logo_v1.png?v=8.2.0" width="100" alt="roast-my-design-system">
+<img src="assets/roster_logo_v1.png?v=8.2.0" width="100" alt="roast-my-design-system">
 
 # roast-my-design-system
 
@@ -117,11 +117,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=9.0.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.0.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=9.0.0)
+![The diagnosis report in light mode](assets/report-light-hero.png?v=9.0.0)
 
 ## What it works on
 
@@ -382,6 +382,15 @@ Review my UI changes against the design system.
 
 Bugs and questions go to [GitHub Issues](https://github.com/gregkozakiewicz/roast-my-design-system/issues). Everything else reaches Greg through [gregkozakiewicz.com](https://gregkozakiewicz.com). Security problems: see [SECURITY.md](SECURITY.md).
 
+## For reviewers
+
+What runs on a user's machine, and what does not, in one place.
+
+- **The plugin runs three things, all from its own folder.** Two skills, which run `node` on scripts inside the plugin; one local MCP server, started with `node` on a script inside the plugin; and one edit hook, which runs the bundled CLI on the file that changed. Nothing is downloaded at install or run time, nothing is fetched from the network, and nothing leaves the machine. There is no telemetry and no credential is read.
+- **The rest of the repository is tooling and documentation, never run by the plugin.** `release.mjs` and `.github/workflows` publish new versions from the maintainer's machine and GitHub, and use the maintainer's own GitHub and npm logins; `tools/benchmark` rebuilds the benchmark from public repos; `tests` is the snapshot suite; `docs` is the landing page and the hosted example reports; `assets` holds the README screenshots and the logo. A scanner reading the whole folder sees these too. None of them is reachable from a skill, the server or the hook.
+- **`npx roast-my-design-system@latest` appears in the documentation only.** It is how people run the scanner without the plugin. The plugin itself never calls a package launcher.
+- **Images.** The PNGs are the two README screenshots, the logo marks, and the seven link-preview cards the hosted example pages reference. No code opens them.
+
 ## Privacy
 
 The tool reads the repository you point it at and writes its output next to it. It makes no network requests, collects no data, and has no telemetry. The MCP server answers from the same local scan and never leaves the machine. Nothing about your code, your prompts or your conversation is sent to anyone, including the author.
@@ -416,4 +425,4 @@ Building your own report, summary or audit from this tool's scores, counts or be
 
 **roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://gregkozakiewicz.github.io/roast-my-design-system/brand.html).
 
-Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/gk-mark-dark.png?v=3.10.1"><img src="https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/gk-mark.png?v=3.10.1" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.
+Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/gk-mark-dark.png?v=3.10.1"><img src="assets/gk-mark.png?v=3.10.1" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.

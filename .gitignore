@@ -19,7 +19,6 @@ CLAUDE.md
 package-lock.json
 
 # plugin eval runs
-evals/results/
 
 # Private idea notes, kept out of the repo and the GitHub Pages site
 docs/ideas/

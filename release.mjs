@@ -82,6 +82,12 @@ if (CHECK_ONLY) {
   const dirty = git('status', '--porcelain');
   say(dirty ? `\nUncommitted changes:\n${dirty}` : '\nWorking tree clean.');
   say(`\nCurrent version: ${PKG().version}`);
+  // the hosted examples name the engine that made them; a lag is staleness
+  try {
+    const ex = JSON.parse(readFileSync(join(ROOT, 'docs/examples/examples.json'), 'utf8')).examples;
+    const stale = ex.filter((e) => !(readFileSync(join(ROOT, 'docs/examples', e.file), 'utf8').includes(`ver. ${PKG().version}`)));
+    say(stale.length ? `Example pages not on ${PKG().version}: ${stale.map((e) => e.file).join(', ')} (the release regenerates them)` : `All ${ex.length} example pages carry ${PKG().version}.`);
+  } catch (e) { say(`Could not read the example manifest: ${e.message}`); }
   process.exit(0);
 }
 
@@ -92,11 +98,13 @@ if (!/^\d+\.\d+\.\d+(-[\w.]+)?$/.test(version)) die(`"${version}" is not a semve
 // bump written to disk, and re-running for real must not trip over its own
 // earlier pass.
 const current = JSON.parse(git('show', 'HEAD:package.json')).version;
-if (version === current) die(`${version} is already the released version. Bump to something new.`);
-ok(`${current} → ${version}${PKG().version === version ? ' (already written to disk, likely a dry run)' : ''}`);
-
 const tags = git('tag', '--list', `v${version}`);
 if (tags) die(`tag v${version} already exists. Versions are never reused: npm rejects a republished version.`);
+// The tag is the release, not the number in package.json: a version bumped
+// and committed ahead of the release (9.0.0 was, so the regenerated examples
+// could carry it) is fine as long as no tag claims it yet.
+if (version === current) ok(`${version} is already written and committed; no tag claims it, so this is the release of it`);
+else ok(`${current} → ${version}${PKG().version === version ? ' (already written to disk, likely a dry run)' : ''}`);
 ok(`tag v${version} is free`);
 
 // ---------- 2. write the version everywhere ----------
@@ -128,6 +136,43 @@ if (existsSync(serverPath)) {
     die(`package.json mcpName (${pkg.mcpName}) does not match server.json name (${server.name}). The registry checks one against the other and will refuse the publish.`);
   }
   ok('mcpName matches the registry listing name');
+}
+
+// ---------- 2b. the hosted examples are made by the engine being released ----------
+// Each example page says in its footer which version made it. Until 9.0.0
+// they were regenerated only when someone remembered, so the footers lagged
+// npm by up to seven releases (8.2.2 on pages served next to 8.9.2). Now the
+// release rescans every example from its clone, after the version is written
+// and before the tests, and refuses to ship if an example's score moved
+// without the README and the landing page being told.
+
+step('Regenerating the hosted examples');
+
+const EXAMPLES = JSON.parse(readFileSync(join(ROOT, 'docs/examples/examples.json'), 'utf8')).examples;
+const CLONES = process.env.ROAST_CLONES || join(process.env.HOME, 'Downloads/repos');
+const scoreOf = (html) => (html.match(/og:title" content="[^"]*?: (\d+|No score)\/?100?/) || [])[1] ?? null;
+{
+  const missing = EXAMPLES.filter((e) => !existsSync(join(CLONES, e.clone)));
+  if (missing.length && !argv.includes('--skip-examples')) {
+    die(`clones missing under ${CLONES}: ${missing.map((e) => e.clone).join(', ')}. Clone them (see docs/examples/examples.json), set ROAST_CLONES, or pass --skip-examples to ship stale example pages on purpose.`);
+  }
+  const moved = [];
+  for (const e of EXAMPLES) {
+    const page = join(ROOT, 'docs/examples', e.file);
+    const clone = join(CLONES, e.clone);
+    if (!existsSync(clone)) { say(`  \x1b[33m…${e.file} skipped, no clone\x1b[0m`); continue; }
+    const before = existsSync(page) ? scoreOf(readFileSync(page, 'utf8')) : null;
+    const r = spawnSync(process.execPath, ['cli/roast.mjs', clone, '--no-open', '--out', page], { cwd: ROOT, encoding: 'utf8', env: { ...process.env, CI: '1' } });
+    if (r.status !== 0) die(`${e.file}: the scan of ${clone} failed\n${r.stderr.slice(-800)}`);
+    const html = readFileSync(page, 'utf8');
+    if (!html.includes(`ver. ${version}`)) die(`${e.file} does not carry "ver. ${version}" in its footer after regeneration`);
+    const after = scoreOf(html);
+    if (before !== null && after !== before) moved.push(`${e.file}: ${before} → ${after}`);
+    ok(`${e.file} — ${e.repo}${after ? `, ${after}${/^\d/.test(after) ? '/100' : ''}` : ''}`);
+  }
+  if (moved.length) {
+    die(`an example's score moved on this engine:\n    ${moved.join('\n    ')}\n  Update the README example list and the landing-page cards to the new numbers (or say why in the changelog), then re-run.`);
+  }
 }
 
 // ---------- 3. the changelog is not optional ----------

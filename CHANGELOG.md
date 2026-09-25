@@ -28,6 +28,13 @@ compare with an older one.
   eleven are regenerated on this engine, as are the README screenshots.
 - The `What it measures` table in the README and the example cards on the
   landing page carry the new numbers.
+- **The release regenerates the hosted examples.** Every example page
+  names in its footer the version that made it, and until now they were
+  rescanned only when someone remembered (pages served next to 8.9.2 still
+  said 8.2.2). The release script now rescans all eleven from their clones,
+  listed in `docs/examples/examples.json`, after the version is written and
+  before the tests. It stops if an example's score moved without the README
+  and the landing page being told, and if a clone is missing.
 
 ## 8.9.2 — 2026-09-25
 

@@ -137,6 +137,9 @@ const isTokenRef = (v) =>
 const FONTFAMILY_PROPS = /font-family\s*:\s*([^;{}]+)[;}]/g;
 const SHADOW_PROPS = /box-shadow\s*:\s*([^;{}]+)[;}]/g;
 const LENGTH_RE = /-?\d*\.?\d+(?:px|rem|em|%|vh|vw|ch)\b/g;
+// the spacing keys of a style object, camelCase: padding, paddingTop, margin,
+// marginInline, gap, rowGap, top, inset, insetBlock
+const INLINE_SPACING_RE = /\b(padding(?:Top|Right|Bottom|Left|Block|Inline|X|Y)?|margin(?:Top|Right|Bottom|Left|Block|Inline|X|Y)?|gap|rowGap|columnGap|top|right|bottom|left|inset(?:Block|Inline)?)\s*:\s*(['"`][^'"`]*['"`])/g;
 
 // ---------- Tailwind utility classes ----------
 // Colour-bearing utilities: bg-red-500, text-zinc-400, border-gray-200, arbitrary bg-[#1a1a1a]
@@ -274,7 +277,12 @@ export function extractStyling(src, { css = false } = {}) {
     const at = src.indexOf(b);
     if (isStaticInline(b)) out.inlineBlocks.push({ index: at });
     for (const m of b.matchAll(HEX_RE)) out.colors.push({ value: normalizeHex(m[0]), index: at + m.index });
-    for (const m of b.matchAll(LENGTH_RE)) out.spacing.push({ value: m[0], index: at + m.index });
+    // Only the spacing properties, the same set the CSS rule reads: a width,
+    // a font size or a shadow's offsets (boxShadow: '0 3px 9px …') are not
+    // spacing, and the live check reported them as such until 8.9.2.
+    for (const m of b.matchAll(INLINE_SPACING_RE)) {
+      for (const len of (m[2].match(LENGTH_RE) ?? [])) out.spacing.push({ value: len, index: at + m.index });
+    }
   }
   // hex literals outside class strings / style blocks (styled-components,
   // colour consts) — everything not already collected above

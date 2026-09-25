@@ -116,3 +116,13 @@ test('a list-shaped palette is told apart from a named one', () => {
   assert.equal(colourListShare(named), 0, 'named exports are a vocabulary');
   assert.equal(colourListShare('const x = 1;'), 0, 'no colours, no share');
 });
+
+// 8.9.2: a length inside an inline style block counts as spacing only on a
+// spacing property. A shadow's offsets, a width and a font size are not.
+test('inline style lengths are spacing only on spacing properties', async () => {
+  const { extractStyling } = await import('../../skills/roast-my-design-system/scripts/harvest/tokens.mjs');
+  const src = "export const X = () => <div style={{ boxShadow: '0 3px 9px rgba(0,0,0,.3)', width: '200px', fontSize: '13px', padding: '13px', marginTop: '7px', gap: '5px' }}>x</div>;\n";
+  const got = extractStyling(src);
+  const values = got.spacing.map((s) => s.value).sort();
+  assert.deepEqual(values, ['13px', '5px', '7px']);
+});

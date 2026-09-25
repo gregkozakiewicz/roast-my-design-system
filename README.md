@@ -49,7 +49,7 @@ Run it on your codebase and get, in about a second:
 
 ## Why this exists
 
-Your AI agent (Claude, Cursor, Copilot) builds UI by imitating what's already in your repo. If your repo has 112 colours and 4 Button implementations, your agent guesses which one is canonical, and it picks wrong half the time. That's why AI-generated UI looks *almost-but-not-quite* right. The first step to fixing it is seeing the mess measured.
+Your AI agent (Claude, Cursor, Copilot) builds UI by copying what is already in your repo. We measured it: 164 agent sessions on 10 real products, with and without this tool. On everyday work the agent reused the components and tokens it found and stayed on-system. It went off-system where the design system had no answer, a chart with no palette or a whole new theme, and it filled the gap the way the repo's own code did: by hand. So the mess an agent adds is a map of the gaps in your system. This tool measures the mess, names the gaps, and puts the check inside the agent's editor, so it runs whether or not the agent thinks to ask.
 
 ## Live examples
 

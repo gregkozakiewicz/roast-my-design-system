@@ -2,6 +2,23 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.9.2 — unreleased
+
+- **A shadow's offsets are no longer reported as spacing by the live
+  checks.** Inside a style object, every length used to count as a spacing
+  value, so `boxShadow: '0 3px 9px …'`, a width or a font size came back
+  from `roast_validate`, `roast_review`, `--check` and the edit hook as
+  "new one-off spacing value 3px". The live checks now read only the
+  spacing properties of a style object (padding, margin, gap, inset and
+  their variants), the same set the CSS rule reads. The report's spacing
+  tile is unchanged on purpose: changing how the harvest counts moves
+  scores across the benchmark, so that waits for the next ruler rebuild.
+- **The README says what the agent runs showed.** The "Why this exists"
+  paragraph no longer claims an agent picks wrong half the time. It says
+  what was measured over 164 sessions on 10 real products: agents copy
+  what is there, stay on-system on everyday work, and invent where the
+  design system has no answer, the way the repo's own code did.
+
 ## 8.9.1 — 2026-09-25
 
 - **The edit hook says a warning once per file in a session.** A warning

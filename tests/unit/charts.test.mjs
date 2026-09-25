@@ -119,3 +119,11 @@ test('the guard doorway learns the same chart system as the MCP knowledge', () =
   assert.deepEqual(g.charts, k.charts);
   rmSync(dir, { recursive: true, force: true });
 });
+
+test('installed kit code is never a chart precedent: a fresh shadcn install has no chart gap', () => {
+  const fresh = join(process.cwd(), 'tests/fixtures/shadcnfresh');
+  const k = loadKnowledge(fresh);
+  assert.deepEqual(k.charts.precedents, []);
+  assert.deepEqual(k.gaps, []);
+  assert.deepEqual(learnSystem(fresh).gaps, []);
+});

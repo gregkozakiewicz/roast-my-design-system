@@ -110,9 +110,10 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   // the same two lists the MCP knowledge builds (mcp/knowledge.mjs), from the
   // same helpers, for tokenTwinFindings and avoidedImportFindings (8.6.1)
   const read = (f) => readSource(join(repoRoot, f));
-  const charts = chartSystemOf(files, read);
   const hardDupes = (findDuplicates(ledger, profile.uiDir, repoRoot).exactDuplicates ?? []).filter((d) => !d.wrapped);
   const P = profileOf(profile);
+  const installedNow = installedDirs(P);
+  const charts = chartSystemOf(files, read, { own: (f) => !installedNow.some((d) => f === d || f.startsWith(`${d}/`)) });
   // the kit the product is built on, with its definition attached, the way
   // the MCP knowledge reads it (mcp/knowledge.mjs): the theme's colours are
   // the token set on a kit repo, whatever stylesheet holds the most literals

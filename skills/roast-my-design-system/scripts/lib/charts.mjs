@@ -62,11 +62,13 @@ const refRe = (name) => name.startsWith('--')
 
 /**
  * What the repo already knows about charts, from the same file set the rest
- * of the knowledge reads.
+ * of the knowledge reads. `own` says whether a file is the team's own code;
+ * installed kit code (a shadcn catalogue, a registry block) is left out of
+ * the precedents, and a fresh install therefore has no chart gap.
  * @returns { palette: { names, file, shadcnDefault, referenced } | null,
  *            precedents: [{ file, count, sample }], chartFiles }
  */
-export function chartSystemOf(files, read) {
+export function chartSystemOf(files, read, { own = () => true } = {}) {
   const names = [], where = new Map();
   const noteToken = (name, file) => { if (!where.has(name)) { names.push(name); where.set(name, file); } };
   for (const f of files.styles ?? []) {
@@ -84,7 +86,9 @@ export function chartSystemOf(files, read) {
         if (COLOUR_LITERAL_RE.test(text.slice(m.index, m.index + 600))) noteToken(m[1], f);
       }
     }
-    if (isChartFile(f, text)) chartTexts.push({ f, text });
+    // a chart inside installed kit code (shadcn's components/ui/chart.tsx, a
+    // registry block) is the kit's, not a precedent the team set
+    if (own(f) && isChartFile(f, text)) chartTexts.push({ f, text });
   }
   const palette = names.length ? { names, file: where.get(names[0]), shadcnDefault: names.every((n) => SHADCN_DEFAULT_RE.test(n)), referenced: false } : null;
   const precedents = [];

@@ -18,6 +18,16 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   what was measured over 164 sessions on 10 real products: agents copy
   what is there, stay on-system on everyday work, and invent where the
   design system has no answer, the way the repo's own code did.
+- **Installed kit code is never a chart precedent.** The gap report read
+  shadcn's own `components/ui/chart.tsx` as a chart the team paints by
+  hand, so a fresh install was told it had a chart gap. A chart inside
+  installed kit code (a shadcn catalogue, a registry block) is the kit's,
+  not the team's, in the report, the MCP knowledge and the guard doorway
+  alike. A fresh shadcn install has no gap.
+- **The fresh shadcn example is a new install** (`npx shadcn create`
+  with the defaults, base-nova, neutral, Tailwind 4, all 61 components),
+  scanned on this engine: same 13 colours, same verdict, footer says the
+  current version.
 
 ## 8.9.1 — 2026-09-25
 

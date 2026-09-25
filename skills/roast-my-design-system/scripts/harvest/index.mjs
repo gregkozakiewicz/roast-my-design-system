@@ -159,7 +159,11 @@ const duplicates = findDuplicates(components, profile.uiDir, target, profile.uiD
 const context = harvestContext(target);
 // The chart palette the repo keeps, or the charts painting by hand without
 // one, and the gaps an agent will fill by inventing (lib/charts, lib/gaps).
-const charts = chartSystemOf(files, (f) => readSource(resolve(target, f)));
+const charts = (() => {
+  const installed = installedDirs(profileOf(profile));
+  const own = (f) => !installed.some((d) => f === d || f.startsWith(`${d}/`));
+  return chartSystemOf(files, (f) => readSource(resolve(target, f)), { own });
+})();
 const gaps = designGaps({ charts, tokenFile: tokens.tokenFile ?? null });
 const staleRules = ruleStaleness(target, components,
   new Set(neverImportedComponents(components, profile.uiDir).map((c) => c.name)),

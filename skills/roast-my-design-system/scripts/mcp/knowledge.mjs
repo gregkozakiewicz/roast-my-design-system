@@ -22,7 +22,7 @@ import { resolveWorkspaces } from '../lib/workspaces.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { typefaceOf } from '../lib/typefaces.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
-import { decideProfile, profileOf } from '../profiles/index.mjs';
+import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { repoTokenDefs } from '../lib/tokentwins.mjs';
 import { dupeCopiesOf } from '../lib/avoidedimports.mjs';
@@ -132,7 +132,10 @@ export function loadKnowledge(root) {
   const tokenDefs = repoTokenDefs(files.styles, read);
   // the chart palette the repo keeps, or the charts that paint by hand
   // without one (lib/charts.mjs)
-  const charts = chartSystemOf(files, read);
+  // installed kit code is the kit's own door, never a precedent (profiles/index)
+  const installed = installedDirs(P);
+  const ownCode = (f) => !installed.some((d) => f === d || f.startsWith(`${d}/`));
+  const charts = chartSystemOf(files, read, { own: ownCode });
   const gaps = designGaps({ charts, tokenFile: tokens.tokenFile ?? null });
 
   return {

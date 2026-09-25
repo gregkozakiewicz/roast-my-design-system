@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 8.8.0 — unreleased
+## 8.8.0 — 2026-09-25
 
 - **Chart colours are judged against the chart palette, or its absence,
   and every door says the same thing.** A chart needs several colours that

@@ -242,7 +242,12 @@ say('  Watching the run. Ctrl-C is safe: the workflow keeps going without you.\n
 const hasGh = spawnSync('gh', ['--version'], { stdio: 'ignore' }).status === 0;
 if (hasGh) {
   execSync('sleep 6', { stdio: 'ignore' }); // give GitHub a moment to register the run
-  run(`gh run watch --exit-status $(gh run list --workflow=publish.yml --limit 1 --json databaseId --jq '.[0].databaseId')`);
+  // A failed run is a failed release: 8.9.0's Action gave up waiting for npm
+  // and this script went on to announce the version and create the GitHub
+  // release as if nothing had happened. Stop here instead.
+  if (!run(`gh run watch --exit-status $(gh run list --workflow=publish.yml --limit 1 --json databaseId --jq '.[0].databaseId')`)) {
+    die(`the publish Action failed. Read it: gh run view --log-failed. If npm already serves ${version}, publish the listing alone with: gh workflow run publish.yml -f version=${version}`);
+  }
 } else {
   say('  gh CLI not installed, so no live view. Check:');
   say('  https://github.com/gregkozakiewicz/roast-my-design-system/actions\n');

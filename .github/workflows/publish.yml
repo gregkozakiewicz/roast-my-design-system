@@ -12,6 +12,15 @@ name: publish
 on:
   push:
     tags: ['v*']
+  # Re-publish the MCP listing for a version npm already serves: 8.9.0's run
+  # gave up waiting for npm after five minutes, npm served it a minute later,
+  # and the listing was never published. This path skips npm and runs the
+  # registry steps against the tag's own files.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version already on npm whose MCP listing to publish (e.g. 8.9.0)'
+        required: true
 
 permissions:
   contents: read
@@ -24,6 +33,12 @@ jobs:
       # Actions pinned to commits: this job holds the token that publishes to
       # npm, so a moved tag upstream must not be able to change what runs here.
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref }}
+
+      # One name for the version whichever way the job started
+      - name: Name the version
+        run: echo "VERSION=${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}" >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
@@ -38,7 +53,7 @@ jobs:
       # forgotten bump before anything reaches the public
       - name: Check the tag matches package.json and server.json
         run: |
-          TAG=${GITHUB_REF_NAME#v}
+          TAG=${VERSION#v}
           PKG=$(node -p "require('./package.json').version")
           if [ "$PKG" != "$TAG" ]; then
             echo "Tag v$TAG does not match package.json $PKG" >&2
@@ -68,7 +83,16 @@ jobs:
       - name: Snapshot tests
         run: node tests/run.mjs
 
-      - run: npm publish
+      # Idempotent: a rerun after a lagging registry must not fail here on a
+      # version that already went out.
+      - name: Publish to npm
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          if npm view "roast-my-design-system@${VERSION#v}" version >/dev/null 2>&1; then
+            echo "npm already serves ${VERSION#v}; not publishing twice"
+          else
+            npm publish
+          fi
 
       # ---- MCP registry: the listing at registry.modelcontextprotocol.io ----
       # Metadata only. It points at the npm package published a step ago, and
@@ -77,13 +101,14 @@ jobs:
 
       - name: Wait for npm to serve the new version
         run: |
-          for i in $(seq 1 30); do
-            if npm view roast-my-design-system@${GITHUB_REF_NAME#v} version >/dev/null 2>&1; then
-              echo "npm is serving ${GITHUB_REF_NAME#v}"; exit 0
+          # up to 15 minutes: 8.9.0 took more than five
+          for i in $(seq 1 90); do
+            if npm view roast-my-design-system@${VERSION#v} version >/dev/null 2>&1; then
+              echo "npm is serving ${VERSION#v}"; exit 0
             fi
             echo "waiting for npm... ($i)"; sleep 10
           done
-          echo "npm never served ${GITHUB_REF_NAME#v}; the registry would reject the listing" >&2
+          echo "npm never served ${VERSION#v}; the registry would reject the listing" >&2
           exit 1
 
       # Pinned version and checksum: a download that runs in the publish job

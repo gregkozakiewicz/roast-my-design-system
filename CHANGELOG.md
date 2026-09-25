@@ -2,6 +2,17 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.0.5 — unreleased
+
+- **The review skill reaches its engine through the plugin root.** Its
+  instructions ran the engine by way of `${CLAUDE_SKILL_DIR}/../`, a path
+  that climbs out of the skill's folder; they now use `${CLAUDE_PLUGIN_ROOT}`
+  and say what to run when the skills were copied by hand. Same engine,
+  same command.
+- **The tests hand their child processes no environment at all.** Git gets
+  its test identity as `-c` options and one stubbed-command test gets a
+  fixed PATH. Nothing in the scan, the score or the report changes.
+
 ## 9.0.4 — 2026-09-25
 
 - **No child process is handed a copy of the environment.** The `npx`

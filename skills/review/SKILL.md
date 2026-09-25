@@ -15,10 +15,10 @@ You are checking the files that changed against the design system this repo alre
 2. **Run the review** (deterministic, read-only, needs only Node 18 or newer):
 
    ```bash
-   node ${CLAUDE_SKILL_DIR}/../roast-my-design-system/scripts/review/index.mjs <repo-root>
+   node ${CLAUDE_PLUGIN_ROOT}/skills/roast-my-design-system/scripts/review/index.mjs <repo-root>
    ```
 
-   `${CLAUDE_SKILL_DIR}` is this skill's own folder; the engine lives beside it in the roast skill's folder. Exit code 1 means findings, 0 means none. The output lists each changed file with its findings, a `Checked:` line naming every rule that ran, and a note for files left unjudged (email, print, artwork, pictures drawn with code).
+   `${CLAUDE_PLUGIN_ROOT}` is the plugin's own folder. Installed by hand rather than as the plugin (the two skill folders copied side by side), that variable is unset: then the engine is in the `roast-my-design-system` folder next to this one, so run `node <that folder>/scripts/review/index.mjs <repo-root>` instead. Exit code 1 means findings, 0 means none. The output lists each changed file with its findings, a `Checked:` line naming every rule that ran, and a note for files left unjudged (email, print, artwork, pictures drawn with code).
 
 3. **Report in chat, file by file.** For each finding: the line, what was found, and the fix the engine names. Keep the engine's numbers and paths exactly; never add findings of your own or soften the engine's. If there are no findings, say so in one line and quote the `Checked:` list, so "clean" is never mistaken for "certified".
 

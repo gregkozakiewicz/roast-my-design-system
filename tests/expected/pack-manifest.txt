@@ -34,6 +34,7 @@ skills/roast-my-design-system/scripts/lib/typefaces.mjs
 skills/roast-my-design-system/scripts/lib/version.mjs
 skills/roast-my-design-system/scripts/lib/workspaces.mjs
 skills/roast-my-design-system/scripts/mcp/engine.mjs
+skills/roast-my-design-system/scripts/mcp/hook.mjs
 skills/roast-my-design-system/scripts/mcp/knowledge.mjs
 skills/roast-my-design-system/scripts/mcp/server.mjs
 skills/roast-my-design-system/scripts/mcp/tools.mjs

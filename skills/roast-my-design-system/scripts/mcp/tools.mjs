@@ -15,6 +15,8 @@ import { hexRgb } from '../lib/nearpairs.mjs';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
 
 const CONTEXT_BUDGET = 1600; // chars ≈ 400 tokens
+// the files a review or an edit hook judges; everything else is not UI
+export const RELEVANT = /\.(tsx|jsx|ts|js|vue|svelte|css|scss|sass|less)$/i;
 const MAX_VALIDATE_CHARS = 200_000; // a whole file, not a whole bundle
 const approxTokens = (s) => Math.ceil(s.length / 4);
 
@@ -288,7 +290,7 @@ function headVersion(gitRoot, gitPath) {
     } catch { return undefined; }
   }
 }
-function beforeOf(k, file) {
+export function beforeOf(k, file) {
   if (!file) return undefined;
   try {
     const gitRoot = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: k.root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
@@ -304,13 +306,18 @@ export function validate(k, { code, file = null } = {}) {
   const { findings, exempt } = validateContent({ text: code, file, before: beforeOf(k, file) }, k);
   if (exempt) return `Not judged: ${file} is exempt because ${exempt}. Nothing here was checked.`;
   if (!findings.length) return cleanResultText(k);
+  return findingLines(findings, k).join('\n');
+}
+
+/** The finding list as roast_validate prints it; the edit hook prints the same. */
+export function findingLines(findings, k) {
   const L = [`${findings.length} finding${findings.length === 1 ? '' : 's'}:`];
   for (const f of findings.slice(0, 12)) {
     L.push(`${f.severity === 'violation' ? '✕' : '⚠'} L${f.line} ${f.message}${f.fix ? `\n   Fix: ${f.fix}` : ''}`);
   }
   if (findings.length > 12) L.push(`(+${findings.length - 12} more of the same kinds)`);
   L.push(`Checked: ${checksFor(k).join(', ')}.`);
-  return L.join('\n');
+  return L;
 }
 
 // ---------- roast_review ----------
@@ -336,7 +343,6 @@ export function reviewData(k) {
   } catch {
     return { text: 'Not a git repository (or git is unavailable), so there is no diff to review. Use roast_validate with the code instead.', total: 0 };
   }
-  const RELEVANT = /\.(tsx|jsx|ts|js|vue|svelte|css|scss|sass|less)$/i;
   const changed = names.filter((f) => RELEVANT.test(f));
   if (!changed.length) return { text: 'No changed UI or style files in the working tree. Nothing to review.', total: 0 };
 

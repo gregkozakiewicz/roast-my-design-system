@@ -2,7 +2,28 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 8.6.2 — unreleased
+## 8.7.0 — unreleased
+
+- **The plugin checks every file the agent edits, whether or not the agent
+  asks.** The MCP tools only run when the agent decides to call them. In
+  164 headless Claude Code sessions on 10 open-source products (September
+  2026), Sonnet 5 called `roast_validate` or `roast_review` in about a third
+  of the runs where it added off-system values, and Haiku 4.5 never did. The
+  plugin now registers a Claude Code hook that runs after each `Edit` or
+  `Write`. It checks the one file that changed with the same engine and the
+  same words as `roast_validate`, and returns only the findings the edit
+  added, compared with the committed version of the file. A file with no
+  new findings gets no message. Files the report never judges (email,
+  print, artwork, pictures drawn with code) are left alone. The hook is
+  Claude Code only; Cursor, Windsurf and Codex keep the MCP tools and the
+  CLI. Under a second on most repos, about three on a large monorepo.
+- **`--hook` runs the same check from the command line** for anyone who
+  installs the server by hand: `npx roast-my-design-system@latest --hook`
+  reads the hook event on stdin and prints the findings as JSON. It always
+  exits 0, so a failed check never stops the agent editing.
+- Nothing in the scan, the score or the report changes.
+
+## 8.6.2 — 2026-09-25
 
 - **Tailwind's internals are no longer mistaken for design tokens.** A repo
   that commits Tailwind's compiled output (Cal.com keeps a 343 KB

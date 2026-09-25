@@ -8,7 +8,7 @@
 
 ## Your AI can write the UI. This makes sure it writes *your* UI.
 
-A free CLI tool, and a Claude Code plugin with two skills and a bundled local MCP server, that roasts your repo's design system with real data, reviews what you change against it, and generates the rules that keep your AI agent on-system.
+A free CLI tool, and a Claude Code plugin with two skills, a bundled local MCP server and an edit hook, that roasts your repo's design system with real data, reviews what you change against it, and generates the rules that keep your AI agent on-system.
 
 > **New in 8.0: support for the four big component kits.**
 >
@@ -97,6 +97,7 @@ These need an agent.
 |---|---|
 | <code>...&nbsp;--notes&nbsp;&lt;file.md&gt;</code> | The agent's read of this scan, embedded in the report as **"What the numbers mean"**: which findings matter, which good numbers are accidents, what to fix first. Labelled as written by AI and kept apart from the measured numbers. The Claude Code skill writes and passes it automatically; the flag is here so any agent can |
 | <code>...&nbsp;--section&nbsp;"Title"&nbsp;&lt;file.md&gt;</code> | A further agent-written chapter after the notes, same styling, same label, sub-headings allowed. Repeatable, so analysis that outgrows the notes still lives inside the report instead of a hand-built page |
+| `... --hook` | The check the Claude Code plugin runs after every edit, for hand-installed setups: reads the hook event on stdin, checks the one file that changed, prints only the findings the edit added as JSON. Always exits 0 |
 | `... --mcp` | The scan as a local MCP server: 5 tools your agent calls while writing UI, from "is there a Button already?" to "review my changes", plus the `roast-fix` prompt that serves the top fix from a fresh scan. See [Live answers over MCP](#live-answers-over-mcp) |
 | <code>/roast-my-design-system</code> (in&nbsp;Claude&nbsp;Code) | The full experience: the roast in chat *and* embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers |
 
@@ -285,7 +286,7 @@ Run it inside any repo. Same scanner, same report, straight from npm. The Claude
 /plugin install roast-my-design-system@roast-my-design-system
 ```
 
-What it installs: two skills and one local MCP server, nothing else. **roast** (`/roast-my-design-system`, or "roast my design system") scans the whole repo and writes the report with Claude's read of the numbers inside it, then walks the fixes with you. **review** (`/roast-my-design-system:review`, or "review my UI changes") checks only what changed, in about a second. The bundled server gives your agent five read-only tools while it writes UI. Local, no network, no telemetry.
+What it installs: two skills, one local MCP server and one edit hook, nothing else. **roast** (`/roast-my-design-system`, or "roast my design system") scans the whole repo and writes the report with Claude's read of the numbers inside it, then walks the fixes with you. **review** (`/roast-my-design-system:review`, or "review my UI changes") checks only what changed, in about a second. The bundled server gives your agent five read-only tools while it writes UI. The hook runs after every file the agent edits and hands back the findings that edit added, so the check happens whether or not the agent thought to ask; a file with nothing new gets no message. Local, no network, no telemetry.
 
 If those commands error, your Claude Code is likely older than the plugin marketplace feature. Update Claude Code and retry, or use the manual route below: it works everywhere and installs the same skill.
 

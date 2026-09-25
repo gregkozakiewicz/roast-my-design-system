@@ -90,6 +90,8 @@ Run it yourself
                   number of files it removed, so a scoped scan says so
   --json          print the scan summary as JSON on stdout (implies --no-open)
   --check         check the working tree's changed files (git diff + untracked)
+  --hook          Claude Code edit hook: reads the PostToolUse event on stdin,
+                  checks the one file that changed, answers with findings
                   against the design system and print the findings; exits 1
                   when something is over the line, so it composes with scripts
 
@@ -123,6 +125,20 @@ if (argv.includes('--mcp')) {
   // the server owns the process now; readline keeps it alive until the client
   // closes stdin, and nothing below (the report pipeline) may run
   await new Promise(() => {});
+} else if (argv.includes('--hook')) {
+  // Claude Code's PostToolUse hook: the event arrives as JSON on stdin, the
+  // findings leave as JSON on stdout. Exit 0 whatever happens — a hook that
+  // fails must never stop the agent editing; it only loses one check.
+  let raw = '';
+  try { raw = readFileSync(0, 'utf8'); } catch { /* no stdin */ }
+  try {
+    const { hookResult } = await import(pathToFileURL(join(SCRIPTS, 'mcp/hook.mjs')).href);
+    const r = hookResult(raw.trim() ? JSON.parse(raw) : {});
+    if (r) console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: r.text } }));
+  } catch (e) {
+    console.error(`roast-my-design-system --hook: ${e.message}`);
+  }
+  process.exit(0);
 } else if (argv.includes('--check')) {
   argv.splice(argv.indexOf('--check'), 1);
   const root = resolve(argv.find((a) => !a.startsWith('--')) || process.cwd());

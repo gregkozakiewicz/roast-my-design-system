@@ -11,8 +11,9 @@
  * say: a hook that talks on every edit is a hook people switch off.
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, realpathSync } from 'node:fs';
-import { dirname, isAbsolute, relative, resolve } from 'node:path';
+import { existsSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { validateContent } from './engine.mjs';
 import { loadKnowledge } from './knowledge.mjs';
 import { RELEVANT, beforeOf, findingLines } from './tools.mjs';
@@ -22,6 +23,30 @@ const gitTop = (dir) => {
     return execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
   } catch { return null; }
 };
+
+// The files a shell command may have written: everything changed or untracked
+// in the repo that the review would judge. Cheap (two git calls), and the
+// mtime ledger below keeps it from re-judging what the hook already saw.
+function changedFiles(root) {
+  try {
+    const git = (...a) => execFileSync('git', a, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    const top = realpathSync.native(git('rev-parse', '--show-toplevel').trim());
+    const names = [...git('diff', 'HEAD', '--name-only').split('\n'), ...git('ls-files', '--others', '--exclude-standard', '--full-name').split('\n')];
+    return [...new Set(names.map((s) => s.trim()).filter((f) => f && RELEVANT.test(f)))].map((f) => join(top, f));
+  } catch { return []; }
+}
+
+// What the hook has judged this session, file → mtime, so a file is judged
+// once per change however it was written, and never twice for one save.
+const ledgerPath = (session) => join(tmpdir(), `roast-hook-${String(session).replace(/[^A-Za-z0-9_-]/g, '')}.json`);
+function readLedger(session) {
+  if (!session) return {};
+  try { return JSON.parse(readFileSync(ledgerPath(session), 'utf8')); } catch { return {}; }
+}
+function writeLedger(session, ledger) {
+  if (!session) return;
+  try { writeFileSync(ledgerPath(session), JSON.stringify(ledger)); } catch { /* a lost ledger costs one repeat, nothing more */ }
+}
 
 const keyOf = (f) => `${f.rule}|${f.message}`;
 /** The findings in `now` that `prior` does not account for, kind by kind. */
@@ -38,24 +63,46 @@ export function newSince(now, prior) {
 
 /**
  * @param payload the PostToolUse event Claude Code writes to stdin
- * @returns { text, total } when the edited file has new findings, else null
+ * @returns { text, total } when a changed file has new findings, else null
  */
 export function hookResult(payload) {
-  const file = payload?.tool_input?.file_path;
-  if (typeof file !== 'string' || !RELEVANT.test(file)) return null;
-  const cwd = typeof payload.cwd === 'string' && payload.cwd ? payload.cwd : process.cwd();
-  const abs = isAbsolute(file) ? file : resolve(cwd, file);
-  if (!existsSync(abs)) return null;
+  const cwd = typeof payload?.cwd === 'string' && payload.cwd ? payload.cwd : process.cwd();
+  const named = payload?.tool_input?.file_path;
+  const fromEditor = typeof named === 'string' && RELEVANT.test(named);
+  // An Edit or Write names its file. A shell command (cat > file, sed -i, a
+  // generator) names nothing, so every changed UI file is a candidate and
+  // the ledger decides which ones are new since the hook last looked.
+  const candidates = fromEditor
+    ? [isAbsolute(named) ? named : resolve(cwd, named)]
+    : payload?.tool_name === 'Bash' ? changedFiles(cwd) : [];
+  const session = payload?.session_id;
+  const ledger = readLedger(session);
+  const blocks = [];
+  let total = 0, knowledge = null;
+  for (const abs of candidates) {
+    if (!existsSync(abs)) continue;
+    const real = realpathSync.native(abs);
+    const mtime = statSync(real).mtimeMs;
+    if (!fromEditor && ledger[real] === mtime) continue;
+    ledger[real] = mtime;
+    // The repo is the session's working directory when the file lives under
+    // it (the same root the MCP server would be pointed at); a file edited
+    // elsewhere is judged against its own repository.
+    const under = (root) => root && real.startsWith(realpathSync.native(root) + '/');
+    const root = under(cwd) ? cwd : gitTop(dirname(real));
+    if (!root) continue;
+    const k = knowledge?.root === root ? knowledge : (knowledge = loadKnowledge(root));
+    const r = judge(real, root, k);
+    if (r) { blocks.push(r.text); total += r.total; }
+  }
+  writeLedger(session, ledger);
+  if (!blocks.length) return null;
+  blocks.push('Fix these now, in the repo\'s own vocabulary as each fix says (a token, a spacing step, a theme path), not by deleting the code. A value that is deliberate stays, with a one-line comment saying why.');
+  return { text: blocks.join('\n'), total };
+}
 
-  // The repo is the session's working directory when the file lives under
-  // it (the same root the MCP server would be pointed at); a file edited
-  // elsewhere is judged against its own repository.
-  const real = realpathSync.native(abs);
-  const under = (root) => root && real.startsWith(realpathSync.native(root) + '/');
-  const root = under(cwd) ? cwd : gitTop(dirname(real));
-  if (!root) return null;
-
-  const k = loadKnowledge(root);
+/** One file against the system: only what the working copy added since HEAD. */
+function judge(real, root, k) {
   const rel = relative(realpathSync.native(root), real).split('\\').join('/');
   const text = readFileSync(real, 'utf8');
   const before = beforeOf(k, rel);
@@ -68,7 +115,5 @@ export function hookResult(payload) {
   // more of it than the committed version did.
   const findings = typeof before === 'string' ? newSince(all, validateContent({ text: before, file: rel }, k).findings) : all;
   if (!findings.length) return null;
-  const L = [`Design-system check of ${rel} (roast-my-design-system, the same engine as roast_validate): ${findingLines(findings, k).join('\n')}`];
-  L.push('Fix these now, in the repo\'s own vocabulary as each fix says (a token, a spacing step, a theme path), not by deleting the code. A value that is deliberate stays, with a one-line comment saying why.');
-  return { text: L.join('\n'), total: findings.length };
+  return { text: `Design-system check of ${rel} (roast-my-design-system, the same engine as roast_validate): ${findingLines(findings, k).join('\n')}`, total: findings.length };
 }

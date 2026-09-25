@@ -78,6 +78,35 @@ test('files that are not UI, missing files and an empty event all stay silent an
   rmSync(dir, { recursive: true, force: true });
 });
 
+test('a file written by a shell command is judged on the Bash event, once', () => {
+  const dir = repo();
+  const sid = `roast-hook-test-${process.pid}-${Date.now()}`;
+  writeFileSync(join(dir, 'components/Shelled.tsx'), "export const S = () => <div style={{ color: '#00ffee' }}>s</div>;\n");
+  const bash = { cwd: dir, session_id: sid, tool_name: 'Bash', hook_event_name: 'PostToolUse', tool_input: { command: 'cat > components/Shelled.tsx' } };
+  const first = hook(dir, bash);
+  assert.equal(first.status, 0);
+  const ctx = JSON.parse(first.stdout).hookSpecificOutput.additionalContext;
+  assert.match(ctx, /components\/Shelled\.tsx/);
+  assert.match(ctx, /Hardcoded colour #00ffee/);
+  // the next shell command changes nothing: the ledger keeps the hook quiet
+  const again = hook(dir, { ...bash, tool_input: { command: 'ls' } });
+  assert.equal(again.stdout, '', again.stdout);
+  // the file changes again: judged again
+  appendFileSync(join(dir, 'components/Shelled.tsx'), '// touched\n');
+  const third = hook(dir, { ...bash, tool_input: { command: 'sed -i s/a/b/ components/Shelled.tsx' } });
+  assert.match(JSON.parse(third.stdout).hookSpecificOutput.additionalContext, /#00ffee/);
+  rmSync(dir, { recursive: true, force: true });
+  rmSync(join(tmpdir(), `roast-hook-${sid}.json`), { force: true });
+});
+
+test('a Bash event with no changed UI files stays silent', () => {
+  const dir = repo();
+  const r = hook(dir, { cwd: dir, session_id: 'x', tool_name: 'Bash', tool_input: { command: 'ls' } });
+  assert.equal(r.status, 0);
+  assert.equal(r.stdout, '');
+  rmSync(dir, { recursive: true, force: true });
+});
+
 test('a broken event never fails the hook', () => {
   const r = spawnSync(process.execPath, [BIN, '--hook'], { input: '{not json', encoding: 'utf8' });
   assert.equal(r.status, 0);

@@ -14,7 +14,10 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   same words as `roast_validate`, and returns only the findings the edit
   added, compared with the committed version of the file. A file with no
   new findings gets no message. Files the report never judges (email,
-  print, artwork, pictures drawn with code) are left alone. The hook is
+  print, artwork, pictures drawn with code) are left alone. A file written
+  by a shell command instead of the editor (`cat > file`, `sed -i`, a
+  generator) is judged too: after each shell command the hook looks at every
+  changed UI file it has not seen at that version in this session. The hook is
   Claude Code only; Cursor, Windsurf and Codex keep the MCP tools and the
   CLI. Under a second on most repos, about three on a large monorepo.
 - **`--hook` runs the same check from the command line** for anyone who

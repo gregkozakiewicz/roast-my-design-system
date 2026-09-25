@@ -4,7 +4,7 @@
   "displayName": "Roast my design system",
   "icon": "./assets/roastmds.svg",
   "description": "Roast your repo's design system with real data: a health score, the receipts behind it (every colour, spacing value, duplicated component and inline style), and the first fixes ranked by payoff. Deterministic scanner, benchmarked against 112 public repos and 10 reputable design systems, one shareable light/dark HTML report.",
-  "version": "9.0.5",
+  "version": "9.0.6",
   "author": {
     "name": "Greg Kozakiewicz",
     "url": "https://gregkozakiewicz.com"

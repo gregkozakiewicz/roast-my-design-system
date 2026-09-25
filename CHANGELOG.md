@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.0.6 — unreleased
+## 9.0.6 — 2026-09-25
 
 - **A hosted report carries no machine paths.** Every receipt in a report
   is a link that opens the file in the editor, which needs the absolute

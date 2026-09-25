@@ -22,6 +22,7 @@ import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
 import { oklab } from '../lib/color.mjs';
 import { tokenTwinFindings } from '../lib/tokentwins.mjs';
 import { avoidedImportFindings } from '../lib/avoidedimports.mjs';
+import { isChartFile, chartFindings } from '../lib/charts.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
 export const CHECKS = [
@@ -36,6 +37,7 @@ export const CHECKS = [
   'duplicate component definitions',
   'new colour tokens that twin an existing token',
   'imports of a duplicate the canonical copy replaces',
+  'chart colours against the chart palette',
 ];
 // What a kit or a Tailwind theme adds to the list, so a clean result on an
 // MUI repo says the kit check ran.
@@ -121,7 +123,18 @@ export function validateContent(content, k) {
   // knows which are not paint (a comment, a fallback after a theme read, a
   // compare, SVG artwork), so the generic check stays out of its way.
   let kitOwnsColours = false;
-  if (k.kit?.def && !css) {
+  // ---------- chart colours ----------
+  // A chart's series colours are judged against the chart palette, or its
+  // absence, by lib/charts.mjs: the report never counted them, the live
+  // checks counted every one, and the same file got two verdicts. On a
+  // chart file the chart rule owns colours; the kit judge and the generic
+  // colour check stay out of its way.
+  const chartFile = !css && !!k.charts && isChartFile(file, text);
+  if (chartFile) {
+    const paint = got.colors.filter((c) => !k.colorInfo.get(c.value)?.isToken);
+    for (const f of chartFindings({ file, colours: paint, charts: k.charts, tokenFile: k.tokens.tokenFile })) add(f.rule, f.severity, f.index, f.message, f.fix);
+  }
+  if (k.kit?.def && !css && !chartFile) {
     const judged = kitPaintFindings(text, k.kit, { file });
     if (judged && !judged.exempt) {
       kitOwnsColours = true;
@@ -187,7 +200,7 @@ export function validateContent(content, k) {
   for (const c of got.colors) {
     if (seenHere.has(`${c.value}:${c.index}`)) continue;
     seenHere.add(`${c.value}:${c.index}`);
-    if (kitOwnsColours) continue; // the kit judge said it, or judged it not paint
+    if (kitOwnsColours || chartFile) continue; // the kit judge or the chart rule said it, or judged it not paint
     const info = k.colorInfo.get(c.value);
     if (info?.isToken) continue; // it IS the token's value — the system can see it
     const near = nearestToken(c.value, k);

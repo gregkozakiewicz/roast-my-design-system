@@ -26,6 +26,7 @@ import { decideProfile, profileOf } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { repoTokenDefs } from '../lib/tokentwins.mjs';
 import { dupeCopiesOf } from '../lib/avoidedimports.mjs';
+import { chartSystemOf } from '../lib/charts.mjs';
 
 const MAX_DEPTH = 14; // same ruler as the harvest CLI
 
@@ -128,6 +129,9 @@ export function loadKnowledge(root) {
   // Every colour token each stylesheet defines, light and dark, so a new one
   // can be compared with the ones already there (lib/tokentwins).
   const tokenDefs = repoTokenDefs(files.styles, read);
+  // the chart palette the repo keeps, or the charts that paint by hand
+  // without one (lib/charts.mjs)
+  const charts = chartSystemOf(files, read);
 
   return {
     root,
@@ -156,6 +160,7 @@ export function loadKnowledge(root) {
     dupeByName,
     dupeCopies,
     tokenDefs,
+    charts,
     neverImported,
     // stock, not debt: see profiles/index.mjs
     vendoredUi: P.vendoredUi,

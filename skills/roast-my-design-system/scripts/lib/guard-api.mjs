@@ -11,6 +11,7 @@
  */
 import { extname, join } from 'node:path';
 import { walkRepo, readSource, profileRepo } from '../harvest/walk.mjs';
+import { chartSystemOf } from './charts.mjs';
 import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { kitPaintFindings } from './kitpaint.mjs';
@@ -59,6 +60,7 @@ export { kitPaintFindings };
 // Same words as roast_validate, roast_review and --check.
 export { tokenTwinFindings, tokenDefsOf } from './tokentwins.mjs';
 export { avoidedImportFindings, canonicalCopy } from './avoidedimports.mjs';
+export { isChartFile, chartSystemOf, chartTier, chartFindings } from './charts.mjs';
 
 // Radius, font size, shadow and typeface: the patterns, so both checkers agree
 // on what a declaration is and what counts as a disciplined value.
@@ -90,6 +92,7 @@ export const isStyleFile = (p) => STYLE_EXTS.has(extname(p));
  *   tailwind,         // { colors, spacing, radii, textSizes, arbitrary }
  *   components,       // [{ name, file, usageCount, isPage }] the ledger
  *   tokenDefs,        // [{ name, file, value, canon, darkValue?, darkCanon? }] colour tokens
+ *   charts,           // { palette, precedents, chartFiles } the chart palette or its absence
  *   duplicates,       // Map<name, { copies: [{ file, usageCount }], strays }>
  *   files,            // { styles: n, code: n } — how much was read
  * }
@@ -152,6 +155,8 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     // every colour token each stylesheet defines, light and dark: the
     // `others` tokenTwinFindings compares a new token with (8.6.1)
     tokenDefs: repoTokenDefs(files.styles, read),
+    // the chart palette, or the charts painting by hand without one (lib/charts.mjs)
+    charts: chartSystemOf(files, read),
     // each duplicated name's copies, their usage and the colours each
     // non-canonical copy hard-codes: the `dupes` avoidedImportFindings reads
     duplicates: dupeCopiesOf(hardDupes, ledger, read),

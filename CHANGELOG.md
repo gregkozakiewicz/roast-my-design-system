@@ -2,6 +2,35 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.8.0 — unreleased
+
+- **Chart colours are judged against the chart palette, or its absence,
+  and every door says the same thing.** A chart needs several colours that
+  differ from each other, and most design systems never name them. The
+  report has always left chart colours out; `roast_validate`, `roast_review`,
+  `--check`, the edit hook and the guard doorway counted every one, so the
+  same file got two verdicts. A probe over the 126 benchmark repos found
+  charts in three quarters of them and a named chart palette in a quarter;
+  the biggest group, 43 repos, has charts painting their series by hand with
+  no palette to point at. One rule now, in three tiers. Where the repo keeps
+  a chart palette (`--chart-*` or `--series-*` custom properties whose value
+  is a colour, a `chartColors` or `charts` entry in a theme, tokens or
+  palette file, or shadcn's `--chart-1` to `--chart-5` when a chart reads
+  them), a colour written by hand in a chart file is a violation that names
+  the palette and how to read it. Where the repo has charts but no palette,
+  a chart that paints by hand gets one warning per file naming the existing
+  chart that does the same and asking for the palette once, in the token
+  file. The first chart in a repo gets one warning asking for a name. A
+  shadcn install's `--chart-1` to `--chart-5` count as a palette only when a
+  chart reads them; otherwise the warning says the names already exist and
+  nothing uses them. A chart file is one that imports a chart library or is
+  named for a chart; icons, illustrations, stories and build output are not.
+  The generic colour checks stay out of chart files; spacing, inline styles
+  and the rest still apply. Scores and the report do not change.
+- The `Checked:` line on every live result gains "chart colours against the
+  chart palette", and `learnSystem` returns the chart system, so
+  guard-my-design-system can give the same answer.
+
 ## 8.7.0 — 2026-09-25
 
 - **The plugin checks every file the agent edits, whether or not the agent

@@ -180,6 +180,8 @@ The report and the rules file describe the repo as it was at scan time. `--mcp` 
 
 The loop: context before building, find while building, validate before saving, review before finishing.
 
+Charts get their own rule, because a chart needs several colours that differ from each other and most design systems never name them. In a repo that keeps a chart palette (its own `--chart-*` or `--series-*` tokens, a `chartColors` entry in the theme, or shadcn's `--chart-1` to `--chart-5` when a chart actually reads them), a colour written by hand in a chart file is a finding that names the palette. In a repo that has charts but no palette, a new chart that paints by hand gets one warning that names the existing chart doing the same and asks for the palette once. The first chart in a repo gets one warning asking for a name. The report never counted chart colours; the live checks now agree with it.
+
 The server reads the repo the way the report does. On a product built on MUI, Mantine, Chakra UI or Ant Design, the context names the theme file and the kit's own way of reading it, `roast_find_token` answers in spacing steps (`12px` is `p: 3` on a 4px MUI theme), and `roast_validate` and `roast_review` flag a colour or a pixel size written onto a kit component where the theme has a value. On a Tailwind theme or a shadcn repo they flag a palette class such as `text-gray-500` or `ring-green-500` where the theme names a colour of that kind.
 
 ### What a session looks like
@@ -222,7 +224,7 @@ It writes a first draft anyway and runs `roast_validate` before saving:
 Second draft: `color: 'text.secondary'`, `p: 1.5`, the radius read from the theme. `roast_validate` again:
 
 ```
-No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, new colour tokens that twin an existing token, imports of a duplicate the canonical copy replaces, colours and pixel sizes written onto kit components where the theme has a value.
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, new colour tokens that twin an existing token, imports of a duplicate the canonical copy replaces, chart colours against the chart palette, colours and pixel sizes written onto kit components where the theme has a value.
 ```
 
 Four calls, under 800 tokens in total, and the new component reads the theme instead of adding colour number 44. `roast_review` then checks the whole diff the same way before the agent says it is done.

@@ -162,10 +162,15 @@ const scoreOf = (html) => (html.match(/og:title" content="[^"]*?: (\d+|No score)
     const clone = join(CLONES, e.clone);
     if (!existsSync(clone)) { say(`  \x1b[33m…${e.file} skipped, no clone\x1b[0m`); continue; }
     const before = existsSync(page) ? scoreOf(readFileSync(page, 'utf8')) : null;
-    const r = spawnSync(process.execPath, ['cli/roast.mjs', clone, '--no-open', '--out', page], { cwd: ROOT, encoding: 'utf8', env: { ...process.env, CI: '1' } });
+    // the page's canonical URL and its preview card (docs/examples/og), so a
+    // shared link shows the card; regenerating without them dropped the
+    // tags between 8.2.2 and 9.0.1
+    const og = [...(e.url ? ['--og-url', e.url] : []), ...(e.ogImage ? ['--og-image', e.ogImage] : [])];
+    const r = spawnSync(process.execPath, ['cli/roast.mjs', clone, '--no-open', '--out', page, ...og], { cwd: ROOT, encoding: 'utf8', env: { ...process.env, CI: '1' } });
     if (r.status !== 0) die(`${e.file}: the scan of ${clone} failed\n${r.stderr.slice(-800)}`);
     const html = readFileSync(page, 'utf8');
     if (!html.includes(`ver. ${version}`)) die(`${e.file} does not carry "ver. ${version}" in its footer after regeneration`);
+    if (e.ogImage && !html.includes(`og:image" content="${e.ogImage}`)) die(`${e.file} lost its link-preview card (og:image) after regeneration`);
     const after = scoreOf(html);
     if (before !== null && after !== before) moved.push(`${e.file}: ${before} → ${after}`);
     ok(`${e.file} — ${e.repo}${after ? `, ${after}${/^\d/.test(after) ? '/100' : ''}` : ''}`);

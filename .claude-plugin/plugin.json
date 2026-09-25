@@ -2,6 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "roast-my-design-system",
   "displayName": "Roast my design system",
+  "icon": "./assets/roastmds.svg",
   "description": "Roast your repo's design system with real data: a health score, the receipts behind it (every colour, spacing value, duplicated component and inline style), and the first fixes ranked by payoff. Deterministic scanner, benchmarked against 112 public repos and 10 reputable design systems, one shareable light/dark HTML report.",
   "version": "9.0.1",
   "author": {
@@ -9,7 +10,7 @@
     "url": "https://gregkozakiewicz.com"
   },
   "homepage": "https://github.com/gregkozakiewicz/roast-my-design-system",
-  "repository": "gregkozakiewicz/roast-my-design-system",
+  "repository": "https://github.com/gregkozakiewicz/roast-my-design-system",
   "license": "MIT",
   "keywords": [
     "design-system",

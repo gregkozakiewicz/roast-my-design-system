@@ -1,16 +1,78 @@
 {
-  "note": "The hosted example reports, one line each: the page, the repo it shows and the clone folder the release script scans (under ~/Downloads/repos or $ROAST_CLONES). release.mjs regenerates every page from these clones on each release, so the footer always names the engine that made it.",
+  "note": "The hosted example reports, one line each: the page, the repo it shows, the clone folder the release script scans (under ~/Downloads/repos or $ROAST_CLONES), the page's own URL for og:url, and the 1200x630 preview card under og/ where one exists. release.mjs regenerates every page from these clones on each release with --og-url and --og-image, so the footer names the engine that made it and the link preview stays wired.",
   "examples": [
-    { "file": "vercel-ai-chatbot.html", "repo": "vercel/ai-chatbot", "clone": "ai-chatbot" },
-    { "file": "unleash-mui.html", "repo": "Unleash/unleash", "clone": "Unleash-unleash" },
-    { "file": "metabase-mantine.html", "repo": "metabase/metabase", "clone": "metabase-metabase" },
-    { "file": "signoz-antd.html", "repo": "SigNoz/signoz", "clone": "SigNoz-signoz" },
-    { "file": "airflow-chakra.html", "repo": "apache/airflow", "clone": "apache-airflow" },
-    { "file": "excalidraw-excalidraw.html", "repo": "excalidraw/excalidraw", "clone": "excalidraw-excalidraw" },
-    { "file": "dubinc-dub.html", "repo": "dubinc/dub", "clone": "dubinc-dub" },
-    { "file": "telekom-scale.html", "repo": "telekom/scale", "clone": "telekom-scale" },
-    { "file": "magicui.html", "repo": "magicuidesign/magicui", "clone": "magicuidesign-magicui" },
-    { "file": "adobe-spectrum.html", "repo": "adobe/spectrum-web-components", "clone": "adobe-spectrum-web-components" },
-    { "file": "shadcn-create-fresh.html", "repo": "npx shadcn create, fresh install with all 61 components", "clone": "shadcn-create-fresh" }
+    {
+      "file": "vercel-ai-chatbot.html",
+      "repo": "vercel/ai-chatbot",
+      "clone": "ai-chatbot",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html",
+      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/vercel-ai-chatbot.png"
+    },
+    {
+      "file": "unleash-mui.html",
+      "repo": "Unleash/unleash",
+      "clone": "Unleash-unleash",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/unleash-mui.html"
+    },
+    {
+      "file": "metabase-mantine.html",
+      "repo": "metabase/metabase",
+      "clone": "metabase-metabase",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/metabase-mantine.html"
+    },
+    {
+      "file": "signoz-antd.html",
+      "repo": "SigNoz/signoz",
+      "clone": "SigNoz-signoz",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/signoz-antd.html"
+    },
+    {
+      "file": "airflow-chakra.html",
+      "repo": "apache/airflow",
+      "clone": "apache-airflow",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/airflow-chakra.html"
+    },
+    {
+      "file": "excalidraw-excalidraw.html",
+      "repo": "excalidraw/excalidraw",
+      "clone": "excalidraw-excalidraw",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html",
+      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/excalidraw-excalidraw.png"
+    },
+    {
+      "file": "dubinc-dub.html",
+      "repo": "dubinc/dub",
+      "clone": "dubinc-dub",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html",
+      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/dubinc-dub.png"
+    },
+    {
+      "file": "telekom-scale.html",
+      "repo": "telekom/scale",
+      "clone": "telekom-scale",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html",
+      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/telekom-scale.png"
+    },
+    {
+      "file": "magicui.html",
+      "repo": "magicuidesign/magicui",
+      "clone": "magicuidesign-magicui",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/magicui.html",
+      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/magicui.png"
+    },
+    {
+      "file": "adobe-spectrum.html",
+      "repo": "adobe/spectrum-web-components",
+      "clone": "adobe-spectrum-web-components",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html",
+      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/adobe-spectrum.png"
+    },
+    {
+      "file": "shadcn-create-fresh.html",
+      "repo": "npx shadcn create, fresh install with all 61 components",
+      "clone": "shadcn-create-fresh",
+      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/shadcn-create-fresh.html",
+      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/shadcn-create-fresh.png"
+    }
   ]
 }

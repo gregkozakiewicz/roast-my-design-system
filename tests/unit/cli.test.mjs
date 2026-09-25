@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -46,5 +46,16 @@ test('--json prints the versioned summary and nothing else on stdout', () => {
   assert.ok(j.benchmark && j.benchmark.repoCount > 0, 'the ruler is named');
   assert.ok(j.tiles.every((t) => t.metric && (typeof t.value === 'number' || t.value === null) && typeof t.display === 'string'));
   assert.equal(typeof j.metrics.colors, 'number');
+  rmSync(tmp, { recursive: true, force: true });
+});
+
+test('--og-url and --og-image reach the report as Open Graph tags', () => {
+  const tmp = mkdtempSync(join(tmpdir(), 'roast-og-'));
+  const out = join(tmp, 'r.html');
+  const r = run(CLEAN, '--no-open', '--out', out, '--og-url', 'https://example.com/r.html', '--og-image', 'https://example.com/r.png');
+  assert.equal(r.status, 0, r.stderr);
+  const html = readFileSync(out, 'utf8');
+  assert.match(html, /og:url" content="https:\/\/example\.com\/r\.html"/);
+  assert.match(html, /og:image" content="https:\/\/example\.com\/r\.png"/);
   rmSync(tmp, { recursive: true, force: true });
 });

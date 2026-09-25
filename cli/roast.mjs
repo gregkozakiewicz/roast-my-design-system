@@ -82,6 +82,8 @@ Run it yourself
   --sarif         also write design-system-roast.sarif for GitHub code
                   scanning: findings annotated on files in the Security tab
   --by <name>     put a name in the report header, for when you ran it for
+  --og-url <url>  the address a hosted report lives at, for link previews
+  --og-image <url> its 1200x630 preview card, for link previews
                   someone else ("commissioned by <name>")
   --exclude <p>   leave a folder out of the scan (repo-relative, e.g.
                   --exclude lab/ --exclude piglet/ or --exclude lab/,piglet/;
@@ -168,6 +170,11 @@ const askedNoOpen = flag('no-open') === true;
 const noOpen = askedNoOpen || asJson;
 const theme = opt('theme', 'dark');
 const commissionedBy = opt('by', null);
+// A hosted report's own address and its 1200x630 preview card, so a shared
+// link shows the card (Open Graph). Passed through to the report; never
+// guessed for a local file.
+const ogUrl = opt('og-url', null);
+const ogImage = opt('og-image', null);
 const notesFile = opt('notes', null);
 const sections = optPairs('section');
 const excludes = optAll('exclude');
@@ -232,6 +239,8 @@ say('');
 run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath,
   ...(commissionedBy ? ['--by', commissionedBy] : []),
   ...(notesFile ? ['--notes', resolve(notesFile)] : []),
+  ...(ogUrl ? ['--og-url', ogUrl] : []),
+  ...(ogImage ? ['--og-image', ogImage] : []),
   ...sections.flatMap(([title, file]) => ['--section', title, resolve(file)])]);
 
 // The verdict leads, the evidence follows: harvest details print here, after

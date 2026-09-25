@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 8.9.2 — unreleased
+## 8.9.2 — 2026-09-25
 
 - **A shadow's offsets are no longer reported as spacing by the live
   checks.** Inside a style object, every length used to count as a spacing

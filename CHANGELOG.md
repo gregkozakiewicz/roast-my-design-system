@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.0.5 — unreleased
+## 9.0.5 — 2026-09-25
 
 - **The review skill reaches its engine through the plugin root.** Its
   instructions ran the engine by way of `${CLAUDE_SKILL_DIR}/../`, a path

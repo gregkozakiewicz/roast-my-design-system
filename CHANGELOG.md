@@ -2,6 +2,29 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.9.0 — unreleased
+
+- **The report says where agents will invent.** A new section, "Where
+  agents will invent", lists the places where the repo has no answer yet,
+  so the next piece of UI, human or agent, will make one up. It comes from
+  164 agent sessions on 10 real products (September 2026): agents copied
+  what the repo already had and invented only where the design system was
+  silent. One gap is admitted so far, because a probe over the 126
+  benchmark repos showed it discriminates: charts that paint their series
+  colours by hand in a repo with no chart palette (44 repos), or next to a
+  shadcn palette no chart reads. The entry names the chart files, how many
+  colours each writes, and the one move that closes the gap: name the
+  series once as tokens and point the existing charts at them. Three other
+  candidates were probed and left out: tokens without a dark value (usually
+  a deliberate mode-invariant colour), missing radius, shadow or font-size
+  scales (Tailwind classes or the kit theme carry them in 98 of 105 repos),
+  and status colours (absent in two thirds of repos and agents did not
+  drift on them).
+- `summary.json` gains `gaps`, each with `id`, `title` and `files`;
+  `roast_get_context` adds one `GAP:` line per gap so the agent knows when
+  it is inventing; `learnSystem` returns `gaps` for the guard. Scores and
+  tiles do not change.
+
 ## 8.8.0 — 2026-09-25
 
 - **Chart colours are judged against the chart palette, or its absence,

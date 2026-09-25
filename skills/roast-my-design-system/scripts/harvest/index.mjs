@@ -14,7 +14,9 @@
  */
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { walkRepo, profileRepo } from './walk.mjs';
+import { walkRepo, profileRepo, readSource } from './walk.mjs';
+import { chartSystemOf } from '../lib/charts.mjs';
+import { designGaps } from '../lib/gaps.mjs';
 import { headerLines, detailLines } from './summary.mjs';
 import { harvestComponents } from './components.mjs';
 import { harvestTokens, isGrey } from './tokens.mjs';
@@ -155,6 +157,10 @@ const duplicates = findDuplicates(components, profile.uiDir, target, profile.uiD
   }
 }
 const context = harvestContext(target);
+// The chart palette the repo keeps, or the charts painting by hand without
+// one, and the gaps an agent will fill by inventing (lib/charts, lib/gaps).
+const charts = chartSystemOf(files, (f) => readSource(resolve(target, f)));
+const gaps = designGaps({ charts, tokenFile: tokens.tokenFile ?? null });
 const staleRules = ruleStaleness(target, components,
   new Set(neverImportedComponents(components, profile.uiDir).map((c) => c.name)),
   [...files.code, ...files.styles, ...files.other]);
@@ -263,6 +269,8 @@ const harvest = {
   duplicates,
   context,
   staleRules,
+  charts,
+  gaps,
   packages,
   // Active user exclusions with per-pattern removal counts. Present only when
   // something was excluded, so downstream renderers can trust its presence.

@@ -12,6 +12,8 @@
 import { extname, join } from 'node:path';
 import { walkRepo, readSource, profileRepo } from '../harvest/walk.mjs';
 import { chartSystemOf } from './charts.mjs';
+import { designGaps } from './gaps.mjs';
+export { designGaps } from './gaps.mjs';
 import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { kitPaintFindings } from './kitpaint.mjs';
@@ -108,6 +110,7 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   // the same two lists the MCP knowledge builds (mcp/knowledge.mjs), from the
   // same helpers, for tokenTwinFindings and avoidedImportFindings (8.6.1)
   const read = (f) => readSource(join(repoRoot, f));
+  const charts = chartSystemOf(files, read);
   const hardDupes = (findDuplicates(ledger, profile.uiDir, repoRoot).exactDuplicates ?? []).filter((d) => !d.wrapped);
   const P = profileOf(profile);
   // the kit the product is built on, with its definition attached, the way
@@ -156,7 +159,8 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     // `others` tokenTwinFindings compares a new token with (8.6.1)
     tokenDefs: repoTokenDefs(files.styles, read),
     // the chart palette, or the charts painting by hand without one (lib/charts.mjs)
-    charts: chartSystemOf(files, read),
+    charts,
+    gaps: designGaps({ charts, tokenFile: t.tokenFile ?? null }),
     // each duplicated name's copies, their usage and the colours each
     // non-canonical copy hard-codes: the `dupes` avoidedImportFindings reads
     duplicates: dupeCopiesOf(hardDupes, ledger, read),

@@ -1236,6 +1236,25 @@ function whereToStartSection() {
       </div>`).join('')}</div></section>`;
 }
 
+// ---------- where agents will invent ----------
+// A gap is a place where the next piece of UI has nothing to reuse (lib/gaps).
+// The September 2026 runs showed agents inventing exactly there; the section
+// names the gap, the files that prove it and the one move that closes it.
+function gapsSection() {
+  const gaps = h.gaps ?? [];
+  if (!gaps.length) return '';
+  const head = `${gaps.length === 1 ? 'One place' : `${gaps.length} places`} where this repo has no answer yet. An agent asked to build there will invent, because that is what the repo taught it. Close the gap once and the checks take over.`;
+  return `<section class="glass" style="margin-top:16px">
+    ${sectionHead('Where agents will invent', head)}
+    <div class="ledger">${gaps.map((g, i) => `
+      <div class="ledger-row gap-row">
+        <span class="ledger-idx">${String(i + 1).padStart(2, '0')}</span>
+        <div class="start-body"><div class="start-head"><div class="start-title">${esc(g.title)}</div></div><div class="sub">${esc(g.detail)}</div>
+        <div class="sub" style="margin-top:6px"><b>Close it:</b> ${esc(g.fix)}</div>
+        ${g.files?.length ? `<div class="chips-row" style="margin-top:8px">${g.files.map((f) => `<span class="chip mono">${esc(f)}</span>`).join('')}</div>` : ''}</div>
+      </div>`).join('')}</div></section>`;
+}
+
 // ---------- package by package ----------
 // One number for a monorepo hides which package is the problem. Each package
 // is judged on the same nine tiles, with usage counted repo-wide, so a shared
@@ -1860,10 +1879,10 @@ ${ogTags()}
   .ledger-row a.path { font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ledger-pills { margin-left:auto; display:flex; gap:8px; flex-shrink:0; }
 
-  .start-row { align-items:flex-start; }
+  .start-row, .gap-row { align-items:flex-start; }
   .start-body { min-width:0; }
   .start-title { font:600 15px/1.4 var(--disp); }
-  .start-row .sub { margin-top:2px; overflow-wrap:anywhere; }
+  .start-row .sub, .gap-row .sub { margin-top:2px; overflow-wrap:anywhere; }
   .start-actions { display:flex; align-items:center; gap:10px; margin-top:10px; }
   .fixbtn { font:700 11.5px/1 var(--sans); padding:8px 13px; border-radius:8px; border:1px solid var(--accent);
     background:transparent; color:var(--accent); cursor:pointer; }
@@ -2076,6 +2095,8 @@ ${extraSectionsHtml()}
 
 ${whereToStartHtml}
 
+${gapsSection()}
+
 ${agentSection()}
 
 ${giftSection()}
@@ -2237,6 +2258,7 @@ if (summaryPath) {
     // what the page prints. Until 7.0.0 value was the formatted string.
     tiles: judgedTiles.map((t, i) => ({ metric: t.metric, label: t.label, value: t.value, display: bigStats[i].num, health: t.health })),
     ...(startMoves.length ? { moves: startMoves } : {}),
+    ...((h.gaps ?? []).length ? { gaps: h.gaps.map(({ id, title, files }) => ({ id, title, files })) } : {}),
     packages: (h.packages ?? []).filter((p) => p.scored && p.metrics)
       .map((p) => ({ dir: p.dir, name: p.name, ...(scorePackage(p.metrics) ?? {}) }))
       .filter((p) => p.score !== undefined)

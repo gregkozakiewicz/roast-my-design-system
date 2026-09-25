@@ -44,6 +44,7 @@ Run it on your codebase and get, in about a second:
 - **Reads React and web components alike.** Stencil, Lit and custom elements are detected by tag registration and counted by kebab tag. Libraries get composition maps, not adoption accusations. Earned token namespaces are named in the header. Anything the scan can not read is declared "not measured" instead of scored.
 - **The receipts behind it.** Every colour and its near-identical twin. Every spacing value, typeface, duplicated or never-imported component, inline style and !important. All with real file paths, in one self-contained HTML report you can open, Slack or email.
 - **The first fixes ranked by payoff, each with its prompt.** A "Where to start" list derived from your own numbers. Every move carries a copy button with a ready-made fix prompt for your agent: the finding, the files, the expected payoff, and rules that respect deliberate craft. Fix, re-run the scan, press the next button.
+- **Where agents will invent.** The places where the repo has no answer yet, so the next piece of UI, human or agent, will make one up. Today that is one gap, found by measuring 164 agent sessions on real products: charts that paint their series colours by hand in a repo with no chart palette. The section names the files and the one move that closes it.
 - **Rules that stop the mess coming back.** A generated `design-system-rules.md` with canonical components, your token file, and known duplicates to avoid, so your AI agent follows your system instead of guessing at it. `--apply` injects them into every agent file you have: Claude, Cursor, GitHub Copilot, and Windsurf. Every scan also checks the rules you already have for stale references: paths that no longer exist, components named canonical that nothing imports anymore. And the agent card states which tools can actually read the rules you have (Claude Code, Codex, Cursor), with the one-line fix where a door is missing.
 
 ## Why this exists
@@ -338,6 +339,7 @@ You get the roast in chat plus `design-system-roast.html` at your repo root: a s
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the off-scale spacing receipts, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger
 - a **Where to start** close: up to 3 moves derived from your repo's own numbers, each with a file-path receipt
+- a **Where agents will invent** list: the gaps where the repo has no answer yet, with the files that prove each one and the move that closes it
 - a **present** 🎁 below it: you sat through the roast, so `design-system-rules.md` is wrapped inside the report itself. Unwrap, then copy or download the agent rules generated from your scan.
 
 After the roast, the skill also offers to write `design-system-rules.md` to disk and merge it into your CLAUDE.md, `.cursor/rules` or AGENTS.md.

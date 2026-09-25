@@ -26,11 +26,11 @@ import { parseColor } from './color.mjs';
 // chart libraries only: a map or an editor is a renderer too, but its
 // colours are never a series (lib/kitpaint.mjs keeps the wider list)
 export const CHART_IMPORT_RE = /from\s+['"](?:recharts|chart\.js|react-chartjs-2|echarts|echarts-for-react|d3|d3-[\w-]+|@nivo\/[\w-]+|victory|apexcharts|react-apexcharts|highcharts|highcharts-react-official|plotly\.js[\w-]*|react-plotly\.js|@visx\/[\w-]+|@antv\/[\w-]+|@mui\/x-charts|@mantine\/charts|@tremor\/react|lightweight-charts|uplot|uplot-react|frappe-charts|@ant-design\/(?:plots|charts)|chartist|billboard\.js|vega|vega-lite|@observablehq\/plot|@carbon\/charts[\w-]*|react-vis)['"\/]/;
-// a file named for a chart; "graphql" is not a graph, "flowchart" is a diagram
-const CHART_NAME_RE = /(^|[^a-z])(chart|graph(?!ql)|sparkline|donut|histogram|heatmap)/i;
+// a file named for a chart; "graphql" is not a graph and neither is a "graphic"
+const CHART_NAME_RE = /(^|[^a-z])(chart|graph(?!ql|ic)|sparkline|donut|histogram|heatmap)/i;
 // an icon, an illustration, a story or a build is not a chart, whatever it
 // imports (likec4's icon set, twenty's storybook, a committed Next chunk)
-const NOT_CHART_RE = /(^|\/)(icons?|illustrations?|__stories__|stories|storybook|\.storybook|static\/chunks|dist|build|out)\/|\.stories\.[jt]sx?$/i;
+const NOT_CHART_RE = /(^|\/)(icons?|illustrations?|graphics?|__stories__|stories|storybook|\.storybook|static\/chunks|dist|build|out)\/|\.stories\.[jt]sx?$/i;
 const CHART_TOKEN_RE = /(--(?:chart|charts|series|graph|graphs|viz|dataviz|data-viz|visuali[sz]ation)[\w-]*)\s*:\s*([^;{}]+)[;}]/gi;
 // a key in a theme, tokens or palette file: chartColors, charts: {…}, series: […]
 const THEME_FILE_RE = /(^|\/)[\w.-]*(theme|palette|colou?rs?|tokens?|foundations?)[\w.-]*(\/|\.[jt]sx?$)/i;

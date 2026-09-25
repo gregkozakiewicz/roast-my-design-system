@@ -27,6 +27,7 @@ import { KITS } from '../profiles/kit-common.mjs';
 import { repoTokenDefs } from '../lib/tokentwins.mjs';
 import { dupeCopiesOf } from '../lib/avoidedimports.mjs';
 import { chartSystemOf } from '../lib/charts.mjs';
+import { designGaps } from '../lib/gaps.mjs';
 
 const MAX_DEPTH = 14; // same ruler as the harvest CLI
 
@@ -132,6 +133,7 @@ export function loadKnowledge(root) {
   // the chart palette the repo keeps, or the charts that paint by hand
   // without one (lib/charts.mjs)
   const charts = chartSystemOf(files, read);
+  const gaps = designGaps({ charts, tokenFile: tokens.tokenFile ?? null });
 
   return {
     root,
@@ -161,6 +163,7 @@ export function loadKnowledge(root) {
     dupeCopies,
     tokenDefs,
     charts,
+    gaps,
     neverImported,
     // stock, not debt: see profiles/index.mjs
     vendoredUi: P.vendoredUi,

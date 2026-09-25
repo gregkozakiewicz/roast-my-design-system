@@ -24,6 +24,7 @@ skills/roast-my-design-system/scripts/lib/exclusions.mjs
 skills/roast-my-design-system/scripts/lib/exempt.mjs
 skills/roast-my-design-system/scripts/lib/feedback.mjs
 skills/roast-my-design-system/scripts/lib/fixprompt.mjs
+skills/roast-my-design-system/scripts/lib/gaps.mjs
 skills/roast-my-design-system/scripts/lib/guard-api.mjs
 skills/roast-my-design-system/scripts/lib/kitpaint.mjs
 skills/roast-my-design-system/scripts/lib/lasttouched.mjs

@@ -91,6 +91,8 @@ export function getContext(k, { path = null } = {}) {
   // stylesheet repeats more often
   const faces = distinctTypefaces([...(t.themeFonts ?? []), ...(t.fontFamilies ?? [])]);
   if (faces.length) L.push(`TYPE: ${faces.slice(0, 3).join(', ')}. No new typefaces, no hand-declared font stacks.`);
+  // where the repo has no answer yet, so the agent knows it is inventing
+  for (const g of (k.gaps ?? []).slice(0, 2)) L.push(`GAP: ${g.title.toLowerCase()}. ${g.fix}`);
   L.push('DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.');
   if (k.agentFiles.length === 0) L.push('NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.');
   L.push('Before finishing: call roast_validate on what you wrote, then roast_review.');

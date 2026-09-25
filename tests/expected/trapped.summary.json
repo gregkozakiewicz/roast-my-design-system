@@ -2,11 +2,11 @@
   "repo": "trapped-fixture",
   "schemaVersion": 1,
   "benchmark": {
-    "builtAt": "2026-09-17T18:55:27.201Z",
+    "builtAt": "2026-09-25T20:59:26.746Z",
     "repoCount": 34,
     "referenceSystems": 10
   },
-  "score": 45,
+  "score": 40,
   "noSystemLikely": false,
   "verdict": "16 pairs of colours are nearly the same (#6b6f70 next to #6b6f71). Each pair is 1 colour recorded twice. 54 inline style blocks skip the design system. An agent that reads them learns to do the same. 25 spacing values sit outside the scale. A tidy system needs about 12.",
   "role": "product",
@@ -47,7 +47,7 @@
       "label": "off-scale spacing values",
       "value": 25,
       "display": "25",
-      "health": "warn"
+      "health": "bad"
     },
     {
       "metric": "exactDuplicates",

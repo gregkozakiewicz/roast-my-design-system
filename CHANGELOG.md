@@ -2,6 +2,33 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.0.0 — unreleased
+
+A major because every yardstick is rebuilt. Take a fresh scan before you
+compare with an older one.
+
+- **The off-scale spacing count means what its label says.** Inside a
+  style object every length used to count as a spacing value, so a width,
+  a font size or a shadow's offsets (`boxShadow: '0 3px 9px …'`) raised the
+  tile. Only padding, margin, gap and position count now, the same set the
+  CSS rule reads and the live checks read since 8.9.2. The report, the
+  scores, `summary.json` and the guard all count the same way again.
+- **The benchmark is rebuilt on the same repos.** The 34-repo core fleet,
+  the 10 reputable systems and the six kit slices (shadcn, Tailwind, MUI,
+  Mantine, Chakra, Ant Design) are rescanned on this engine. Off-scale
+  spacing medians move down everywhere: fleet 33 to 23, reputable systems
+  6 to 5, shadcn 29 to 14, Tailwind 42 to 37, MUI 22 to 15, Mantine 31 to
+  28, Chakra 16 to 9, Ant Design 97 to 75. Three other fleet medians move
+  by one to three from counting fixes shipped between 8.4 and 8.9 that the
+  ruler had not absorbed: colours 115 to 118, greys 23 to 21, near-identical
+  pairs 7 to 8. Every other median is unchanged.
+- **What moves on the examples.** Nine of the eleven hosted reports keep
+  their score. Adobe Spectrum goes from 72 to 66 and Unleash from 64 to 60,
+  both because their spacing count now sits against a tighter median. All
+  eleven are regenerated on this engine, as are the README screenshots.
+- The `What it measures` table in the README and the example cards on the
+  landing page carry the new numbers.
+
 ## 8.9.2 — 2026-09-25
 
 - **A shadow's offsets are no longer reported as spacing by the live

@@ -10,6 +10,8 @@
 
 A free CLI tool, and a Claude Code plugin with two skills, a bundled local MCP server and an edit hook, that roasts your repo's design system with real data, reviews what you change against it, and generates the rules that keep your AI agent on-system.
 
+> **New in 9.0: the spacing count means what its label says, and the ruler is rebuilt.** Inside a style object every length used to count as an off-scale spacing value: a width, a font size, a shadow's offsets. Only padding, margin, gap and position count now, the same set the CSS rule reads. Because the benchmark was built on the old count, every yardstick is rebuilt on the same 34 repos, 10 reputable systems and 6 kit slices. Fleet medians are now 118 colours, 21 greys, 23 off-scale spacing values, 21 duplicated components, 51 inline style blocks, 77 bracket values, 8 near-identical pairs and 5 `!important`. Spacing moved down everywhere (33 to 23 on the fleet, 29 to 14 on shadcn repos, 97 to 75 on Ant Design); colours, greys and near pairs moved by one to three from counting fixes shipped since the last rebuild. Two of the eleven examples change score: Adobe Spectrum 72 to 66, Unleash 64 to 60. Take a fresh scan before you compare.
+
 > **New in 8.0: support for the four big component kits.**
 >
 > If your product is built on MUI, Mantine, Chakra UI or Ant Design, roast now reads it as such. It finds your theme in the repo, counts how often your components read it, and measures the two things that drift: colours and spacing written onto components when the theme already has a value.
@@ -31,7 +33,7 @@ A free CLI tool, and a Claude Code plugin with two skills, a bundled local MCP s
 > - **Stylesheets you did not write are left out.** So are apps you have replaced, such as a `web-old` folder. The report lists everything left out, with file counts.
 > - **Fix prompts start from a product file,** not from your docs site.
 >
-> Fleet medians are now 115 colours, 23 greys, 33 off-scale spacing values, 21 duplicated components, 51 inline style blocks, 77 bracket values, 7 near-identical pairs and 5 `!important`.
+> Fleet medians then: 115 colours, 23 greys, 33 off-scale spacing values, 21 duplicated components, 51 inline style blocks, 77 bracket values, 7 near-identical pairs and 5 `!important`. (9.0 moved them; see the note above.)
 
 > **New in 7.10: a fifth profile, `tailwind`, with its own benchmark.** A repo that uses Tailwind v4 and defines at least 3 colours of its own in an `@theme` block is read as a Tailwind repo. It gets one extra check: Tailwind palette classes such as `text-gray-500` written where the theme has a colour of that kind, per 100 files. A Tailwind name given a different colour counts as the repo's own. Tailwind repos are compared with a group of 11 Tailwind repos, and the target is 3 per 100 files (median 10). Three scores that were too high now show no score or a lower one: better-auth (100, its interface is in skipped folders), strapi (75, its colours are in an installed package) and supabase (100, now 28). Files that import an email kit are skipped as emails wherever they are. Svelte, Vue and Tailwind v3 configs are not read as Tailwind yet. `summary.json` gains `kind: "tailwind"` and a `tailwind` block, and `score` can be `null`.
 
@@ -56,16 +58,16 @@ Your AI agent (Claude, Cursor, Copilot) builds UI by copying what is already in 
 The same eleven reports the landing page shows, hosted exactly as the tool generates them: self-contained HTML, every number deterministic, every path real. Four kits, a fresh install, a registry, Stencil, Lit and plain React.
 
 - **[npx shadcn create, fresh](https://gregkozakiewicz.github.io/roast-my-design-system/examples/shadcn-create-fresh.html)** (factory install, all 61 components): read as a fresh install: "the score is the kit's, not yours"; 13 colours, every theme variable in place, shadcn's own 24 bracket values named and not counted. No score: a fresh install is the kit's, not yours.
-- **[Unleash](https://gregkozakiewicz.github.io/roast-my-design-system/examples/unleash-mui.html)** (MUI): read as an MUI product: 1,109 files import the kit and the theme is read 6,166 times; 4 colours and 2 spacings per 100 kit files are written onto components. Score 64.
+- **[Unleash](https://gregkozakiewicz.github.io/roast-my-design-system/examples/unleash-mui.html)** (MUI): read as an MUI product: 1,109 files import the kit and the theme is read 6,166 times; 4 colours and 2 spacings per 100 kit files are written onto components. Score 60.
 - **[Metabase](https://gregkozakiewicz.github.io/roast-my-design-system/examples/metabase-mantine.html)** (Mantine): its own wrapper over Mantine counts as the kit, so 2,679 files are read instead of 392; nothing written onto components, 2 spacings per 100 kit files. Score 47.
 - **[SigNoz](https://gregkozakiewicz.github.io/roast-my-design-system/examples/signoz-antd.html)** (Ant Design): read as an Ant Design product: 2 colours and 7 spacings per 100 kit files written in style objects where a token exists. Score 51.
 - **[Apache Airflow](https://gregkozakiewicz.github.io/roast-my-design-system/examples/airflow-chakra.html)** (Chakra UI): read as a Chakra product: no colours written onto components, 4 spacings per 100 kit files as pixel strings where a space step exists. Score 43.
 - **[vercel/ai-chatbot](https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)** (shadcn install): 74 values like [13px] written outside the Tailwind scale, and 66 palette colours per 100 files where a theme variable exists; Claude's notes embedded. Score 80.
-- **[excalidraw/excalidraw](https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**: 84 off-scale spacing values and 90 !important declarations. Score 55.
+- **[excalidraw/excalidraw](https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**: 78 off-scale spacing values and 90 !important declarations. Score 55.
 - **[dubinc/dub](https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html)**: 622 arbitrary bracket values and 22 duplicated components. Score 20.
 - **[telekom/scale](https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html)** (Stencil): 95 Stencil components read by tag; 66 spacing values outside the scale where about 12 would do; Claude's notes embedded. Score 55.
 - **[magicuidesign/magicui](https://gregkozakiewicz.github.io/roast-my-design-system/examples/magicui.html)** (registry): read as a shadcn registry and counted on the components it publishes: 52 off-theme colours per 100 files in the code it ships, its docs site kept out and named. Score 78.
-- **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): hardcoded colours sitting beside 744 colour tokens, and 37 !important declarations. Score 72.
+- **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): hardcoded colours sitting beside 744 colour tokens, and 37 !important declarations. Score 66.
 
 ## Every command
 
@@ -115,11 +117,11 @@ Not to be confused with each other: **"Why this matters"** is generic, ships wit
 
 The full report for vercel/ai-chatbot, top to bottom, including "What the numbers mean", Claude's read of the scan, embedded right under the verdict:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=8.9.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-full-dark.png?v=9.0.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=8.9.0)
+![The diagnosis report in light mode](https://raw.githubusercontent.com/gregkozakiewicz/roast-my-design-system/main/assets/report-light-hero.png?v=9.0.0)
 
 ## What it works on
 
@@ -146,7 +148,7 @@ The same report in light mode (one file, built-in toggle):
 - **Honest exclusions.** Test files, Storybook stories, docs sites, example apps, SVG artwork, and email templates (which *must* inline styles) are excluded, so you can't discredit the numbers on a technicality. Your own exclusions (`.roastignore`, `--exclude`) are printed in the report header with file counts, so a scoped scan can never pass itself off as the whole repo.
 - **Intent-aware counting (v3).** Runtime-computed inline styles, compound-component APIs and wrapper components are not crimes and are not counted as ones. Token-led repos are judged on their hardcoded strays, not their token architecture. Repeated arbitrary values are read as decisions without names, not drift.
 - **The scoring code can be imported.** `scoreHarvest(harvest)` in `diagnose/score.mjs` returns the score, the nine tile results and the metrics as plain data. The report uses the same function. A CI check gets the same numbers as the page, and every `summary.json` records its schema version and the benchmark used.
-- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 112 public React repos. A core fleet of 34 (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…) sets the medians for ordinary product repos: 115 colours, 23 greys, 21 duplicated components, 51 inline style blocks, 77 arbitrary Tailwind values. The other 78 were scanned for the kit profiles, so a repo built on shadcn, Tailwind, MUI, Mantine, Chakra or Ant Design is compared with repos built the same way. The builder and the repo list are in `tools/benchmark/`, so the ruler can be checked, not just quoted.
+- **A real benchmark.** The "Avg Design System" yardstick comes from scanning 112 public React repos. A core fleet of 34 (cal.com, excalidraw, supabase, grafana, twenty, dub, langfuse…) sets the medians for ordinary product repos: 118 colours, 21 greys, 23 off-scale spacing values, 21 duplicated components, 51 inline style blocks, 77 arbitrary Tailwind values. The other 78 were scanned for the kit profiles, so a repo built on shadcn, Tailwind, MUI, Mantine, Chakra or Ant Design is compared with repos built the same way. The builder and the repo list are in `tools/benchmark/`, so the ruler can be checked, not just quoted.
 - **A second yardstick: reputable systems.** Curated, scoped scans of 10 well-known design systems (shadcn/ui, Primer, Polaris, Carbon, Material UI, Chakra, Ant Design, GOV.UK, Spectrum, Cloudscape) show what disciplined looks like at scale.
 
 ## Scoping the scan
@@ -187,7 +189,7 @@ The server reads the repo the way the report does. On a product built on MUI, Ma
 
 ### What a session looks like
 
-A real exchange against [Unleash](https://github.com/Unleash/unleash), an MUI product that scores 64/100. The agent was asked to add a small usage hint to a feature page. Every answer is the server's own text, unedited.
+A real exchange against [Unleash](https://github.com/Unleash/unleash), an MUI product that scores 60/100. The agent was asked to add a small usage hint to a feature page. Every answer is the server's own text, unedited.
 
 Before writing anything, the agent calls `roast_get_context`:
 
@@ -388,15 +390,15 @@ The tool reads the repository you point it at and writes its output next to it. 
 
 | Metric | Ideal Design System | Median of the 34-repo core fleet | Median of 10 reputable systems |
 |---|---|---|---|
-| Distinct colours | ~24 | 115 | 14 |
-| Shades of grey | up to 13 | 23 | 2 |
-| Off-scale spacing values | ~12 | 33 | 6 |
+| Distinct colours | ~24 | 118 | 14 |
+| Shades of grey | up to 13 | 21 | 2 |
+| Off-scale spacing values | ~12 | 23 | 5 |
 | Typefaces | 2 to 3 | 3 | 1 |
 | Off-scale border radii | up to 10 | 14 | 0 |
 | Duplicated components | 0 | 21 | 9 |
 | Inline style blocks | 0 | 51 | 12 |
 | Arbitrary Tailwind values | ~20 | 77 | 0 |
-| Near-identical colour pairs | 0 | 7 | 1 |
+| Near-identical colour pairs | 0 | 8 | 1 |
 | !important declarations | 0 | 5 | 3 |
 | Components never imported | 0 | 0 | 0 |
 

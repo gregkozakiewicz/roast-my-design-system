@@ -604,7 +604,11 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     for (const b of allBlocks) {
       for (const m of b.matchAll(HEX_RE)) colors.add(normalizeHex(m[0]), f);
       for (const m of b.matchAll(FUNC_COLOR_RE)) { const v = isVarRef(m[0]) ? null : funcColour(m[0]); if (v) colors.add(v, f); }
-      for (const m of b.matchAll(LENGTH_RE)) spacing.add(m[0], f);
+      // 9.0.0: only the spacing properties of a style object, the same set
+      // the CSS rule reads. Until then every length in the block counted
+      // (a width, a font size, a shadow's offsets), and the benchmark was
+      // built on that count, so this change came with a rebuilt ruler.
+      for (const m of b.matchAll(INLINE_SPACING_RE)) for (const len of (m[2].match(LENGTH_RE) ?? [])) spacing.add(len, f);
     }
 
     // Raw hex colours in code outside class strings (styled-components, consts)

@@ -2,13 +2,13 @@
   "repo": "tw-theme",
   "schemaVersion": 1,
   "benchmark": {
-    "builtAt": "2026-09-17T18:55:27.201Z",
+    "builtAt": "2026-09-25T20:59:26.746Z",
     "repoCount": 34,
     "referenceSystems": 10,
     "slice": {
       "kind": "tailwind",
       "repoCount": 11,
-      "builtAt": "2026-09-17T18:55:55.506Z"
+      "builtAt": "2026-09-25T20:59:55.367Z"
     }
   },
   "score": 91,

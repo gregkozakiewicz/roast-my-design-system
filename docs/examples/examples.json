@@ -1,5 +1,5 @@
 {
-  "note": "The hosted example reports, one line each: the page, the repo it shows, the clone folder the release script scans (under ~/Downloads/repos or $ROAST_CLONES), the page's own URL for og:url, and the 1200x630 preview card under og/ where one exists. release.mjs regenerates every page from these clones on each release with --og-url and --og-image, so the footer names the engine that made it and the link preview stays wired.",
+  "note": "The hosted example reports, one line each: the page, the repo it shows, the clone folder the release script scans (under ~/Downloads/repos, or --clones <dir>), the page's own URL for og:url, and the 1200x630 preview card under og/ where one exists. release.mjs regenerates every page from these clones on each release with --og-url and --og-image, so the footer names the engine that made it and the link preview stays wired.",
   "examples": [
     {
       "file": "vercel-ai-chatbot.html",

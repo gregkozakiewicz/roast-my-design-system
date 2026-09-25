@@ -1,5 +1,6 @@
 # Publishes to npm AND the official MCP registry when a version tag (v3.4.0
-# style) is pushed. Started by `node release.mjs <version>`, which is the only
+# style) is pushed. Started by the maintainer's release script (kept outside
+# this repository), which is the only
 # supported way to cut a release — never `npm publish` from a laptop.
 #
 # npm uses Trusted Publishing: no tokens, no secrets — npmjs.com is configured

@@ -2,6 +2,26 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.0.3 — unreleased
+
+Housekeeping for the plugin directory listing, continued. Nothing in the
+scan, the score or the report changes.
+
+- **The bundled MCP server is declared in the plugin manifest as well as
+  the root `.mcp.json`.** The directory's inventory reads the manifest; the
+  plugin inventory, the desktop app's Connectors tab and a reviewer's "will
+  install" list read the root file (8.3.2). Both declarations name the
+  same server, and Claude Code starts it once (tested on a throwaway
+  plugin: one server, one set of tools).
+- **The release script leaves the repository.** It only ever runs on the
+  maintainer's machine and talks to GitHub and npm with the maintainer's
+  own logins, which a scanner reading the whole repository reports as
+  credential use and as a download-and-run command. It lives with the
+  maintainer's private notes now and takes the repository as its working
+  directory. Releases are still cut from a tag by GitHub, with no stored
+  secrets; nothing about how a version reaches npm changes.
+- An unreferenced logo file is removed from `assets`.
+
 ## 9.0.2 — 2026-09-25
 
 Housekeeping for the plugin directory listing. Nothing in the scan, the

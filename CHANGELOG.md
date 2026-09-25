@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.0.1 — unreleased
+## 9.0.1 — 2026-09-25
 
 - **The first chart in a repo is called that.** The scan already holds the
   file being judged, so a brand-new chart counted as its own precedent and

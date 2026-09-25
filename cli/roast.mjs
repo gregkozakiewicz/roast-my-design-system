@@ -209,10 +209,13 @@ const tmp = mkdtempSync(join(tmpdir(), 'roast-'));
 const harvestPath = join(tmp, 'harvest.json');
 const summaryPath = join(tmp, 'summary.json');
 
-function run(script, args, env) {
-  // --json keeps stdout clean for the JSON payload; child chatter is dropped
+function run(script, args) {
+  // --json keeps stdout clean for the JSON payload; child chatter is dropped.
+  // No env is passed: the child inherits the process environment as any
+  // child does, and nothing is copied or added (9.0.4: a plugin scanner
+  // reads an explicit spread of process.env as forwarding credentials).
   const r = spawnSync(process.execPath, [join(SCRIPTS, script), ...args],
-    { stdio: asJson ? 'ignore' : 'inherit', ...(env ? { env: { ...process.env, ...env } } : {}) });
+    { stdio: asJson ? 'ignore' : 'inherit' });
   if (r.status !== 0) {
     rmSync(tmp, { recursive: true, force: true });
     process.exit(r.status ?? 1);
@@ -233,8 +236,8 @@ try {
 
 // the harvest goes to a temp dir this wrapper deletes right after; tell the
 // script so it does not print a path that will be gone seconds later
-run('harvest/index.mjs', [target, '--out', harvestPath,
-  ...excludes.flatMap((e) => ['--exclude', e])], { ROAST_EPHEMERAL_OUT: '1' });
+run('harvest/index.mjs', [target, '--out', harvestPath, '--ephemeral-out',
+  ...excludes.flatMap((e) => ['--exclude', e])]);
 say('');
 run('diagnose/index.mjs', [harvestPath, '--out', outPath, '--theme', theme, '--summary', summaryPath,
   ...(commissionedBy ? ['--by', commissionedBy] : []),

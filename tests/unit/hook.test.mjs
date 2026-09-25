@@ -24,7 +24,7 @@ function repo() {
   return dir;
 }
 const hook = (dir, event) => spawnSync(process.execPath, [BIN, '--hook'], {
-  cwd: dir, input: JSON.stringify(event), encoding: 'utf8', env: { ...process.env, CI: '1' },
+  cwd: dir, input: JSON.stringify(event), encoding: 'utf8', env: { PATH: process.env.PATH, HOME: process.env.HOME, CI: '1' },
 });
 const event = (dir, file, tool = 'Write') => ({ cwd: dir, tool_name: tool, hook_event_name: 'PostToolUse', tool_input: { file_path: join(dir, file) } });
 

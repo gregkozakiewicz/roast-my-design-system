@@ -295,7 +295,9 @@ writeFileSync(outPath, JSON.stringify(harvest, null, 2));
 // itself from harvest.json. Run directly (the skill flow), everything prints
 // here in one go, with the real output path at the end.
 for (const l of headerLines(harvest)) console.log(l);
-if (process.env.ROAST_EPHEMERAL_OUT !== '1') {
+// --ephemeral-out: the npx wrapper deletes the harvest right after, so the
+// path is not worth printing (a flag since 9.0.4; it was an env var)
+if (!process.argv.includes('--ephemeral-out')) {
   for (const l of detailLines(harvest)) console.log(l);
   console.log(`\n  → ${outPath}   (${harvest.tookMs}ms)`);
 }

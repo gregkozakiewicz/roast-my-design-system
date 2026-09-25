@@ -572,7 +572,7 @@ console.log('mcp review:');
 const gitFix = join(tmp, 'review-git');
 rmSync(gitFix, { recursive: true, force: true });
 spawnSync('cp', ['-R', join(FIXTURES, 'messy'), gitFix]);
-const git = (...a) => spawnSync('git', a, { cwd: gitFix, encoding: 'utf8', env: { ...process.env, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t' } });
+const git = (...a) => spawnSync('git', a, { cwd: gitFix, encoding: 'utf8', env: { PATH: process.env.PATH, HOME: process.env.HOME, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t' } });
 git('init', '-q'); git('add', '-A'); git('commit', '-qm', 'base');
 writeFileSync(join(gitFix, 'components/NewThing.tsx'), BAD_SNIPPET);
 const rk = loadKnowledge(gitFix);
@@ -885,7 +885,7 @@ if (existsSync(bin)) {
     writeFileSync(join(stubDir, name), `#!/bin/sh\necho "$*" >> ${opened}\n`);
     spawnSync('chmod', ['+x', join(stubDir, name)]);
   }
-  const withStub = { ...process.env, PATH: `${stubDir}:${process.env.PATH}` };
+  const withStub = { PATH: `${stubDir}:${process.env.PATH}`, HOME: process.env.HOME };
   const opens = () => { try { return readFileSync(opened, 'utf8').trim().split('\n').filter(Boolean).length; } catch { return 0; } };
   const reportDir = join(tmp, 'openflow');
   mkdirSync(reportDir, { recursive: true });

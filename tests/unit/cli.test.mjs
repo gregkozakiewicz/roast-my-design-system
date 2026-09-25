@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const BIN = join(HERE, '../../cli/roast.mjs');
 const CLEAN = join(HERE, '../fixtures/clean');
-const run = (...args) => spawnSync(process.execPath, [BIN, ...args], { encoding: 'utf8', env: { ...process.env, CI: '1' } });
+const run = (...args) => spawnSync(process.execPath, [BIN, ...args], { encoding: 'utf8', env: { PATH: process.env.PATH, HOME: process.env.HOME, CI: '1' } });
 
 test('--help exits 0 and names the flags', () => {
   const r = run('--help');

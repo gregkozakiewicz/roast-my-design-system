@@ -56,7 +56,7 @@ function chartyRepo() {
 test('the gap reaches summary.json, the report, the MCP context and the guard doorway', () => {
   const dir = chartyRepo();
   const out = join(dir, 'report.html');
-  const r = spawnSync(process.execPath, [BIN, dir, '--json', '--out', out, '--no-open'], { encoding: 'utf8', env: { ...process.env, CI: '1' } });
+  const r = spawnSync(process.execPath, [BIN, dir, '--json', '--out', out, '--no-open'], { encoding: 'utf8', env: { PATH: process.env.PATH, HOME: process.env.HOME, CI: '1' } });
   assert.equal(r.status, 0, r.stderr);
   const summary = JSON.parse(r.stdout);
   assert.equal(summary.gaps?.[0]?.id, 'chart-palette', JSON.stringify(summary.gaps));

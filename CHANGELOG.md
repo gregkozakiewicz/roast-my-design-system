@@ -2,6 +2,18 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.0.6 — unreleased
+
+- **A hosted report carries no machine paths.** Every receipt in a report
+  is a link that opens the file in the editor, which needs the absolute
+  path of the machine the scan ran on. The hosted example pages were built
+  that way too, so each carried the maintainer's home folder in every
+  link, up to nineteen times a page. A report built for hosting (given
+  `--og-url`) now prints the repo-relative path with no link, the release
+  refuses to ship an example page that carries a machine path, and a test
+  holds the rule. Local reports are unchanged: their links still open the
+  file.
+
 ## 9.0.5 — 2026-09-25
 
 - **The review skill reaches its engine through the plugin root.** Its

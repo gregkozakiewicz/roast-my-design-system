@@ -59,3 +59,14 @@ test('--og-url and --og-image reach the report as Open Graph tags', () => {
   assert.match(html, /og:image" content="https:\/\/example\.com\/r\.png"/);
   rmSync(tmp, { recursive: true, force: true });
 });
+
+test('a hosted report (--og-url) carries no editor links and no absolute path', () => {
+  const tmp = mkdtempSync(join(tmpdir(), 'roast-hosted-'));
+  const out = join(tmp, 'r.html');
+  const r = run(CLEAN, '--no-open', '--out', out, '--og-url', 'https://example.com/r.html');
+  assert.equal(r.status, 0, r.stderr);
+  const html = readFileSync(out, 'utf8');
+  assert.doesNotMatch(html, /vscode:\/\/file/);
+  assert.ok(!html.includes(CLEAN), 'the scanned folder\'s absolute path is not in a hosted page');
+  rmSync(tmp, { recursive: true, force: true });
+});

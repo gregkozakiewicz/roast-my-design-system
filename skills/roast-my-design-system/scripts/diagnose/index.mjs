@@ -275,7 +275,15 @@ const notMeasuredReason = P.notMeasuredReason;
 // version. So it is counted and shown, never scored and never a fix to make.
 
 // Clickable file paths — vscode:// opens the file straight in the editor.
-const fileLink = (f) => `<a class="path" href="vscode://file/${encodeURI(`${h.repo}/${f}`)}">${esc(f)}</a>`;
+// A receipt opens the file in the editor, which needs the absolute path of
+// the machine the scan ran on. A hosted report (--og-url says it lives at
+// an address) has no such machine to open files on, and the path would only
+// publish the maintainer's home folder (the examples did, until 9.0.6), so
+// there the receipt is the repo-relative path and nothing else.
+const HOSTED = !!arg('og-url', null);
+const fileLink = (f) => (HOSTED
+  ? `<span class="path">${esc(f)}</span>`
+  : `<a class="path" href="vscode://file/${encodeURI(`${h.repo}/${f}`)}">${esc(f)}</a>`);
 const fontSizeTotal = (h.tokens.fontSizes ?? []).length + (h.tokens.tailwind?.textSizes ?? []).length;
 const radiiTotal = (h.tokens.radii ?? []).length + (h.tokens.tailwind?.radii ?? []).length;
 const shadows = h.tokens.shadows ?? [];

@@ -127,3 +127,13 @@ test('installed kit code is never a chart precedent: a fresh shadcn install has 
   assert.deepEqual(k.gaps, []);
   assert.deepEqual(learnSystem(fresh).gaps, []);
 });
+
+test('the chart being judged is not its own precedent: alone in the repo, it is the first chart', () => {
+  const dir = repo({ files: { 'components/Donut.tsx': NEW_CHART } });
+  const k = loadKnowledge(dir);
+  assert.equal(k.charts.precedents.length, 1, 'the scan holds the new file');
+  const fs = judge(dir, 'components/Donut.tsx', NEW_CHART);
+  assert.equal(fs.length, 1);
+  assert.match(fs[0].message, /^First chart in this repo/);
+  rmSync(dir, { recursive: true, force: true });
+});

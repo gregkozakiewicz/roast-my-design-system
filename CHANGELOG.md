@@ -2,6 +2,16 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.0.1 — unreleased
+
+- **The first chart in a repo is called that.** The scan already holds the
+  file being judged, so a brand-new chart counted as its own precedent and
+  the chart rule said "the repo has no chart palette" with no precedent
+  named. A precedent is another file; with none and no palette, the
+  finding now reads "First chart in this repo" and asks for a name. Same
+  advice, right label, in the validate tool, the review, `--check`, the
+  edit hook and the guard alike.
+
 ## 9.0.0 — 2026-09-25
 
 A major because every yardstick is rebuilt. Take a fresh scan before you

@@ -131,9 +131,12 @@ export function chartFindings({ file, colours, charts, tokenFile = null }) {
     }));
   }
   const where = tokenFile ?? 'the theme';
-  if (tier === 2) {
-    const prec = charts.precedents.find((p) => p.file !== file) ?? null;
-    const shadcn = charts.palette?.shadcnDefault ? charts.palette : null;
+  // The scan already holds the file being judged, so a brand-new chart is
+  // its own precedent. A precedent is another file; with none, and no
+  // palette, this is the first chart in the repo (9.0.1).
+  const prec = charts.precedents.find((p) => p.file !== file) ?? null;
+  const shadcn = charts.palette?.shadcnDefault ? charts.palette : null;
+  if (tier === 2 && (prec || shadcn)) {
     return [{
       rule: 'chart-palette', severity: 'warning', index: first,
       message: `This chart paints its ${plural(distinct.length, 'series colour')} by hand (${list(distinct)}); the repo has no chart palette${prec ? `, and ${prec.file} already does the same with ${prec.count}` : ''}.`,

@@ -77,6 +77,12 @@ export function hookResult(payload) {
     : payload?.tool_name === 'Bash' ? changedFiles(cwd) : [];
   const session = payload?.session_id;
   const ledger = readLedger(session);
+  // Warnings are advice, not violations: "this chart paints by hand and the
+  // repo has no palette" is worth saying once per file in a session, not
+  // after every edit while the agent works on something else in the file
+  // (five repeats in one Dub rehearsal, 2026-09-25). Violations repeat
+  // until they are fixed.
+  const warned = new Set(ledger['\u0000warned'] ?? []);
   const blocks = [];
   let total = 0, knowledge = null;
   for (const abs of candidates) {
@@ -92,9 +98,10 @@ export function hookResult(payload) {
     const root = under(cwd) ? cwd : gitTop(dirname(real));
     if (!root) continue;
     const k = knowledge?.root === root ? knowledge : (knowledge = loadKnowledge(root));
-    const r = judge(real, root, k);
+    const r = judge(real, root, k, warned);
     if (r) { blocks.push(r.text); total += r.total; }
   }
+  ledger['\u0000warned'] = [...warned];
   writeLedger(session, ledger);
   if (!blocks.length) return null;
   blocks.push('Fix these now, in the repo\'s own vocabulary as each fix says (a token, a spacing step, a theme path), not by deleting the code. A value that is deliberate stays, with a one-line comment saying why.');
@@ -102,7 +109,7 @@ export function hookResult(payload) {
 }
 
 /** One file against the system: only what the working copy added since HEAD. */
-function judge(real, root, k) {
+function judge(real, root, k, warned = new Set()) {
   const rel = relative(realpathSync.native(root), real).split('\\').join('/');
   const text = readFileSync(real, 'utf8');
   const before = beforeOf(k, rel);
@@ -113,7 +120,14 @@ function judge(real, root, k) {
   // (--check, roast_review) already reports them once at the end. Same rule
   // as the September runs measured by: a finding is new when the file has
   // more of it than the committed version did.
-  const findings = typeof before === 'string' ? newSince(all, validateContent({ text: before, file: rel }, k).findings) : all;
+  const fresh = typeof before === 'string' ? newSince(all, validateContent({ text: before, file: rel }, k).findings) : all;
+  const findings = fresh.filter((f) => {
+    if (f.severity !== 'warning') return true;
+    const key = `${rel}|${f.rule}|${f.message}`;
+    if (warned.has(key)) return false;
+    warned.add(key);
+    return true;
+  });
   if (!findings.length) return null;
   return { text: `Design-system check of ${rel} (roast-my-design-system, the same engine as roast_validate): ${findingLines(findings, k).join('\n')}`, total: findings.length };
 }

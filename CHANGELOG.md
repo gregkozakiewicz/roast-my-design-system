@@ -2,6 +2,14 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 8.9.1 — unreleased
+
+- **The edit hook says a warning once per file in a session.** A warning
+  is advice ("this chart paints by hand and the repo has no chart palette"),
+  and in a rehearsal it was repeated after every edit while the agent worked
+  on something else in the same file. It is now said once per file per
+  session; a violation is still repeated until it is fixed.
+
 ## 8.9.0 — 2026-09-25
 
 - **The report says where agents will invent.** A new section, "Where

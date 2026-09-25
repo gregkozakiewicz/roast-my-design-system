@@ -107,6 +107,27 @@ test('a Bash event with no changed UI files stays silent', () => {
   rmSync(dir, { recursive: true, force: true });
 });
 
+test('a warning is said once per file in a session; a violation repeats until fixed', () => {
+  const dir = repo();
+  const sid = `roast-hook-warn-${process.pid}-${Date.now()}`;
+  // a chart painting by hand in a repo with no chart palette: one warning (chart-palette)
+  const chart = "import { Bar } from 'recharts';\nconst S = ['#2563eb', '#16a34a', '#f59e0b'];\nexport function C() { return <Bar fill={S[0]} />; }\n";
+  writeFileSync(join(dir, 'components/UsageChart.tsx'), chart);
+  const ev = { ...event(dir, 'components/UsageChart.tsx'), session_id: sid };
+  const first = JSON.parse(hook(dir, ev).stdout).hookSpecificOutput.additionalContext;
+  assert.match(first, /This chart paints its 3 series colours by hand|First chart in this repo/);
+  // the same file edited again, warning still true: silence
+  appendFileSync(join(dir, 'components/UsageChart.tsx'), '// touched\n');
+  assert.equal(hook(dir, { ...ev, tool_name: 'Edit' }).stdout, '');
+  // a violation in the same file is still reported
+  appendFileSync(join(dir, 'components/UsageChart.tsx'), "export const X = () => <div style={{ padding: '3px' }}>x</div>;\n");
+  const third = hook(dir, { ...ev, tool_name: 'Edit' }).stdout;
+  assert.match(third, /Static inline style block/);
+  assert.doesNotMatch(third, /This chart paints|First chart/);
+  rmSync(dir, { recursive: true, force: true });
+  rmSync(join(tmpdir(), `roast-hook-${sid}.json`), { force: true });
+});
+
 test('a broken event never fails the hook', () => {
   const r = spawnSync(process.execPath, [BIN, '--hook'], { input: '{not json', encoding: 'utf8' });
   assert.equal(r.status, 0);

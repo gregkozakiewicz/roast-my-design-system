@@ -2,6 +2,18 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.0.7 — 2026-09-26
+
+- **The README and the landing page lead with what the agent runs showed.**
+  Both now open with the finding the September runs produced: an agent
+  copies what the repo has and invents where the repo has no answer, so
+  the mess it adds is a map of the gaps. The release notes that used to
+  open the README live in this file only. The evidence section quotes
+  three results from 259 sessions on 10 public products. The long
+  version of the trust list, scan scoping and what the plugin runs on a
+  machine moved to `docs/reference.md`. No change to the scanner, the
+  report or the tools.
+
 ## 9.0.6 — 2026-09-25
 
 - **A hosted report carries no machine paths.** Every receipt in a report

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>roast-my-design-system · Your design system, measured. Score, receipts, fixes and agent rules</title>
-<meta name="description" content="Your AI can write the UI. This makes sure it writes your UI. Roast your repo's design system with real data, free via npx or as a Claude Code plugin with two skills, a local MCP server and an edit hook: a health score, package-by-package for monorepos, the receipts behind it, the first fixes ranked by payoff, and the agent rules file that stops the mess coming back. Live example reports inside.">
+<title>roast-my-design-system · Find where your AI agent will invent UI</title>
+<meta name="description" content="Your AI can write the UI. This makes sure it writes your UI. A free scanner that finds where your repo has no answer for an AI agent, measures the mess already there, writes the agent rules, and checks every edit. Measured on 259 agent sessions across 10 real products. Live example reports inside.">
 <style>
   :root { --bg:#020617; --card:rgba(15,23,42,.6); --line:rgba(51,65,85,.7); --text:#f1f5f9; --dim:#94a3b8; --dim2:#64748b; --mint:#2dd4bf;
     --glow1:rgba(45,212,191,.08); --glow2:rgba(56,189,248,.06);
@@ -83,38 +83,49 @@
 <script>try{var t=localStorage.getItem('roast-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <main>
 <div class="kicker">roast-my-design-system</div>
-<h1>Your design system, measured.</h1>
+<h1>Find where your AI agent will invent UI.</h1>
 <p class="lead"><b>Your AI can write the UI. This makes sure it writes your UI.</b></p>
-<p class="lead">A free CLI tool <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a>, and a Claude Code plugin with two skills, a bundled local MCP server and an edit hook (the skills also run in Codex). A deterministic scanner reads your repo and returns:</p>
-<ul class="lead-list">
-<li><b>A health score you can defend in a meeting.</b> It measures how safely an AI agent can build new UI on this repo without going off-system; everything else on the report is receipts for humans. 0-100, benchmarked against Ideal Design System norms, 112 public repos and 10 reputable design systems. Monorepos are scored package by package, so the disciplined UI library and the messy app stop hiding behind one blended number.</li>
-<li><b>A one-second review of what you changed.</b> The plugin's second skill, <code>/roast-my-design-system:review</code>, checks only the files in your git diff against the design system the scan found and names each finding with its fix, in your kit's own vocabulary. No score, no report: the check for Tuesday afternoons, and the same check the CLI runs as --check and the agent gets over MCP as roast_review.</li>
-<li><b>Reads React and web components alike.</b> Stencil, Lit and plain custom elements are detected by their tag registrations and counted by their kebab tags; component libraries get composition maps and library language instead of adoption accusations; a token namespace like --telekom-* is named in the header when it is earned. And what the scan cannot read, it says so, plainly, instead of scoring zeros as discipline.</li>
-<li><b>Built on shadcn? Read as shadcn.</b> The scanner finds the installed catalogue where it actually lives, reads the theme file components.json names, and says under the header how it decided. Two checks from shadcn's own rules for agents join the tiles: palette colours in your own code where a theme variable exists, and components restyled through className. shadcn's own bracket values are named and not counted; palette colours inside an installed registry such as ai-elements stay in the score and are never prompted, because your agent reads them too. A fresh install is told apart from a repo built on one: the score is the kit's, not yours. A project that publishes a registry, shadcn's own source, magicui, kibo-ui, tweakcn, is read as a registry and counted on what it publishes: its docs site and demos kept out and named, variants counted once, published themes checked for every variable in light and dark. A shadcn/lint config is read as the team's declared policy: the report shows which rules are on and marks what they allow, and the score does not move. And you are compared with the shadcn repos in the benchmark, not with Material or Chakra.</li>
-<li><b>The receipts behind it.</b> Every colour and its near-identical twin, every spacing value, duplicated or never-imported component, inline style and !important, with real file paths. The values are rendered, not just counted: your type scale at real sizes, your radii as real corners. Findings an agent would copy and multiply are marked as agent traps.</li>
-<li><b>The adoption map.</b> Your real system drawn to scale: a treemap where every adopted component's tile area is its import count, and the never-imported grouped by the year git last saw them touched. The cupboard audit, with dates on the boxes.</li>
-<li><b>Built on MUI, Mantine, Chakra UI or Ant Design? Read as that kit.</b> Each kit has its own profile. The scanner finds your theme in the repo, counts how often your components read it, and measures the two things that drift: colours and spacing written onto components when the theme already has a value. The kit's own installed code is not counted, and neither are chart colours, colour pickers, artwork, editor themes or fallbacks. Your own layer over a kit counts as the kit: Metabase wraps Mantine and imports the wrapper in 2,469 files, so the old reading covered 14% of the product. A repo belongs to the kit it uses most, shadcn included. You are compared with products on the same kit, 70 of them in the benchmark, and each target comes from the tidiest third of its group. The fix prompts speak your kit: MUI's sx, Mantine's props, Chakra's space steps, Ant Design's theme.useToken().</li>
-<li><b>Everything left out of a count is named.</b> The side panel lists what a check skipped and why: shadcn's own values, catalogue stock, email templates, the Next.js crash page, an embedded widget's !important, !important aimed at a library's own class names. Each with the one line that stays true: your agent reads it anyway.</li>
-<li><b>The first fixes ranked by payoff, each with its prompt.</b> A Where to start list derived from your own numbers, with what each move is worth and where the score lands if you do them all: three tweaks, 55 becomes 85. Every move carries a copy button with a ready-made fix prompt for your agent, viewable right in the report before you trust it.</li>
-<li><b>Where agents will invent.</b> The places where the repo has no answer yet, so the next piece of UI will make one up. Found by measuring 164 agent sessions on real products: charts that paint their series colours by hand in a repo with no chart palette. The section names the files and the one move that closes it.</li>
-<li><b>The analysis travels with the report.</b> Run as the Claude Code skill, the shareable HTML carries What the numbers mean — Claude's read of your scan: which findings matter, which good numbers are accidents, what to fix first. Forwarded reports keep the interpretation, not just the score. Labelled as written by AI, never mixed into the measurement.</li>
-<li><b>Rules that stop the mess coming back.</b> A generated design-system-rules.md with your canonical components and their most common real usage, quoted from your own code with a receipt. One flag injects it into every agent file you have: Claude, Cursor, GitHub Copilot, and Windsurf. And every scan checks the rules you already have for stale references, because a rule your agent obeys is worse than no rule when the repo has moved on.</li>
-<li><b>Numbers a script can use.</b> --json prints the summary with a schema version, the benchmark it was scored against and every metric as a number, so a CI check can compare two scans and tell a change in your repo from a change in the benchmark. The scoring code is one small importable file, and the report uses the same one.</li>
-<li><b>Live answers while the agent works.</b> --mcp runs the scan as a local MCP server: your agent asks which Button is canonical, which token holds the colour it was about to hardcode, and gets its changed files reviewed before finishing. Five tools plus the roast-fix prompt, which serves the top fix from a fresh scan; ask again and the next move has risen to the top. Nothing leaves your machine.</li>
-</ul>
-<p class="lead-close">Read only, no network, no telemetry, one shareable HTML report. Every release is provenance signed on npm and passes a 293-check test suite before it ships.</p>
-<div class="kicker" style="margin-top:26px">Install the Claude Code plugin</div>
-<div class="install"><b>/plugin marketplace add</b> gregkozakiewicz/roast-my-design-system<br><b>/plugin install</b> roast-my-design-system@roast-my-design-system</div>
-<p class="sub">What it installs: two skills, one local MCP server and one edit hook, nothing else. <b>roast</b> (<code>/roast-my-design-system</code>, or "roast my design system") scans the whole repo and writes the report with Claude's read of the numbers inside it, then walks the fixes with you. <b>review</b> (<code>/roast-my-design-system:review</code>, or "review my UI changes") checks only what changed, in about a second. The bundled server gives your agent five read-only tools while it writes UI. The hook runs after every file the agent edits and hands back the findings that edit added, so the check happens whether or not the agent thought to ask. Local, no network, no telemetry.</p>
-<div class="kicker" style="margin-top:26px">Run it with npx</div>
+<p class="lead">An agent builds UI the way a new hire does on their first day: it looks around the repo and copies what it finds. We measured that on 10 real products, 259 agent sessions, with and without this tool. On everyday work the agent reused the components and tokens that were there and stayed on-system. It went off-system where the repo had no answer to copy, a chart in a codebase with no chart palette, a theme where nobody had named the surfaces, and it filled each gap the way the repo's own code did: by hand.</p>
 <div class="install"><b>npx</b> roast-my-design-system@latest</div>
-<p class="sub">One command in any repo. No install, no Claude needed.</p>
-<div class="kicker" style="margin-top:26px">Add the MCP server to Claude Code</div>
+<p class="sub">Run it at the root of a UI repo. About a second later a self-contained HTML report opens. No account, no network, no telemetry, nothing in your repo is changed. Free, <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a>, MIT.</p>
+
+<h2>The mess an agent adds is a map of the gaps in your system</h2>
+<p class="sub">An agent copies what it finds. Where the repo has no answer, it makes one up, and the next agent copies that. This tool draws the map before the gap becomes a layer: it finds the places with no answer, measures the mess already there, writes the rules that keep the agent on-system, and puts a check inside the agent's editor that runs whether or not the agent thinks to ask.</p>
+<p class="sub"><b>A script does the counting. Claude writes the explanation.</b> Every number in the report comes from a deterministic read of your files, the same numbers every run. Where an AI reads the scan for you, its text is labelled as written by AI and kept apart from the measurements.</p>
+
+<h2>What you get</h2>
+<ul class="lead-list">
+<li><b>The gaps, named.</b> A "Where agents will invent" section lists the places where the repo has no answer yet, with the files that prove each one and the single move that closes it. Today it knows one gap for certain, because the agent runs found it: charts that paint their series colours by hand in a repo with no chart palette. Across 126 public repos, 43 look like that. The list grows only when a gap has been measured.</li>
+<li><b>A health score you can defend in a meeting.</b> 0 to 100, the same number every run, measured against 3 yardsticks: the ideal norms of a design system, the median of 34 scanned public products, and 10 reputable systems (Primer, Polaris, Carbon, shadcn/ui and others). Monorepos get a score per package, so the tidy UI library stops hiding the messy app.</li>
+<li><b>The receipts behind it.</b> Every colour and its near-identical twin, every off-scale spacing value, typeface, duplicated or never-imported component, inline style block and !important, each with a real file path. The adoption map draws your real system to scale, every component's tile sized by its import count, the never-imported grouped by the year git last saw them.</li>
+<li><b>The first fixes, ranked by payoff.</b> A "Where to start" list derived from your own numbers, with what each move is worth and where the score lands if you do them all. Every move carries a copy button with a ready-made fix prompt for your agent. Fix, rescan, press the next button.</li>
+<li><b>Rules that stop the mess coming back.</b> A generated design-system-rules.md with the canonical components, your token file and the known duplicates to avoid. One flag writes it into every agent file you have: Claude, Cursor, GitHub Copilot and Windsurf. Every scan also checks the rules you already have for stale references.</li>
+</ul>
+
+<h2>What the agent runs showed</h2>
+<p class="sub">Claude Code, headless, on 10 public products pinned to one commit each (cal.com, Dub, Metabase, Plausible, SigNoz, trigger.dev and four more). We counted the design-system findings each session added, by this tool's own rules. 259 sessions, Sonnet 5 and Haiku 4.5, September 2026. Routine work did not drift, with or without help: 7 findings without and 9 with, over 80 sessions. Invention drifted, in the shape the repo already had.</p>
+<ul class="lead-list">
+<li><b>28 to 2.</b> Findings a Christmas theme added across 10 products, without and with this tool.</li>
+<li><b>42 in 16 runs, to 3 in 51.</b> Haiku 4.5 asked for a chart, a status colour, an empty state and a new component, without the tool and with the edit hook on.</li>
+<li><b>10 in 20 runs, to 0 in 20.</b> Sonnet 5 asked for a chart, without and with the plugin installed. It called no tool and the hook never had to speak: the rules in its context were enough.</li>
+</ul>
+<p class="sub">The agent does not always call a tool when it should: Sonnet in about one session in 3, Haiku never. A check on every edit does not have that problem. Nothing was rendered, so zero findings means on-system by these rules, a floor rather than a design review. Method, tables and limits are in the research write-up, which will be published separately.</p>
+
+<h2>Three ways to use it</h2>
+<div class="kicker" style="margin-top:18px">1. Roast the repo</div>
+<div class="install"><b>npx</b> roast-my-design-system@latest</div>
+<p class="sub">The scan and the report. Every flag is in the table below.</p>
+<div class="kicker" style="margin-top:22px">2. Put the system inside the agent</div>
 <div class="install"><b>claude mcp add</b> roast -- npx roast-my-design-system@latest --mcp</div>
-<p class="sub">The Claude Code plugin bundles this server, so plugin users skip this step. Your agent asks the design system before writing UI, and gets the work checked after. Local, read only, nothing leaves your machine. Verified in Claude Code, Cursor, and Windsurf (now Devin Desktop); any MCP client can register the same command.</p>
-<div class="kicker" style="margin-top:26px">Manual install (Claude Code, any version)</div>
-<div class="install"><b>git clone</b> https://github.com/gregkozakiewicz/roast-my-design-system.git<br><b>cp -r</b> roast-my-design-system/skills/roast-my-design-system ~/.claude/skills/</div>
-<p class="sub">Works everywhere, installs the same skill. Use ~/.codex/skills/ instead for OpenAI Codex.</p>
+<p class="sub">The same engine as a local MCP server: five read-only tools the agent calls while it writes UI, from "is there a Button already?" to "review my changes". The Claude Code plugin bundles it, so plugin users skip this step. Verified in Claude Code, Cursor and Windsurf (now Devin Desktop); any MCP client can register the same command.</p>
+<div class="kicker" style="margin-top:22px">3. Check what the agent changed</div>
+<div class="install"><b>npx</b> roast-my-design-system@latest <b>--check</b></div>
+<p class="sub">Three doors to one check. --check reads your git diff in the terminal and exits 1 on findings. The plugin's review skill does it in chat. And the plugin's edit hook runs it after every file the agent edits, writes or produces with a shell command, handing back only the findings that edit added, so the agent does not have to remember to ask. For pull requests, the sister package <a href="https://github.com/gregkozakiewicz/guard-my-design-system" style="color:var(--mint);text-decoration:none">guard-my-design-system</a> runs the same rules as a GitHub Action and fails the check when new mess arrives.</p>
+
+<div class="kicker" style="margin-top:30px">Install the Claude Code plugin</div>
+<div class="install"><b>/plugin marketplace add</b> gregkozakiewicz/roast-my-design-system<br><b>/plugin install</b> roast-my-design-system@roast-my-design-system</div>
+<p class="sub">What it installs: two skills, one local MCP server and one edit hook, nothing else. <b>roast</b> (<code>/roast-my-design-system</code>) scans the whole repo, writes the report with Claude's read of the numbers inside it, then walks the fixes with you. <b>review</b> (<code>/roast-my-design-system:review</code>) checks only what changed, in about a second. Older Claude Code without the marketplace: clone the repo and copy skills/roast-my-design-system into ~/.claude/skills/ (or ~/.codex/skills/ for OpenAI Codex).</p>
+<p class="lead-close">Read only, no network, no telemetry, one shareable HTML report. Every release is provenance signed on npm and passes a 293-check test suite before it ships.</p>
 
 <h2>What it works on</h2>
 <div class="kicker">Supported</div>
@@ -125,14 +136,14 @@
 <li>5 kit profiles: Tailwind theme, MUI, Mantine, Chakra, Ant Design.</li>
 <li>Any styling on top: Tailwind, styled-components, Emotion, Sass, Less, vanilla-extract, Stitches, CVA, CSS Modules.</li>
 </ul>
-<div class="kicker" style="margin-top:18px">Recognised, not supported yet but on the roadmap</div>
+<div class="kicker" style="margin-top:18px">Recognised, not supported yet</div>
 <ul class="lead-list">
 <li>Vue, Angular and Svelte: named in the header, colours and spacing still counted, but components are not measured and the report says so.</li>
 <li>HeroUI, NextUI, Radix Themes, Fluent UI, React Bootstrap and Grommet: named in the header, no kit rules.</li>
 </ul>
 
 <h2>Every command</h2>
-<p class="sub">One scan powers all of it; the flags decide what lands on disk. Combine freely. The full documentation, with every flag explained and the MCP tools in detail, lives at <a href="https://github.com/gregkozakiewicz/roast-my-design-system" style="color:var(--mint);text-decoration:none">github.com/gregkozakiewicz/roast-my-design-system</a>.</p>
+<p class="sub">One scan powers all of it; the flags decide what lands on disk. Combine freely. The full documentation lives at <a href="https://github.com/gregkozakiewicz/roast-my-design-system" style="color:var(--mint);text-decoration:none">github.com/gregkozakiewicz/roast-my-design-system</a>.</p>
 <div class="cmd-wrap"><table class="cmd">
 <thead><tr><th>Command</th><th>What you get</th></tr></thead>
 <tbody>
@@ -156,34 +167,20 @@
 </table></div>
 <p class="sub">One scan writes rules for every agent: Claude, Cursor, GitHub Copilot, and Windsurf. Every scan also checks the agent rules you already have and flags stale references, no flag needed.</p>
 
-
 <h2>What your agent gets over MCP</h2>
-<p class="sub">A real session against <a href="https://github.com/Unleash/unleash">Unleash</a>, an MUI product that scores <a href="examples/unleash-mui.html">60/100</a>. The agent was asked to add a small usage hint to a feature page. Every answer below is the server's own text, unedited.</p>
+<p class="sub">One real exchange against <a href="https://github.com/Unleash/unleash">Unleash</a>, an MUI product that scores <a href="examples/unleash-mui.html">60/100</a>. The agent has a grey in hand and a padding in mind. Every answer is the server's own text, unedited.</p>
 <div class="mcp-log">
-<div class="mcp-q">Before writing anything, the agent asks <b>roast_get_context</b>:</div>
-<pre>KIT: MUI (1109 files import it, the theme is read 6162x). A colour, a spacing step or a radius is decided in frontend/src/themes/dark-theme.ts. On a component, read it: sx paths (color: 'text.secondary', p: 2) or theme.palette / theme.spacing() in styled().
-  43 colours are already written onto components (#6c65e5, #f1f0fc, #302e42); do not add one.
-USE THESE, DO NOT REBUILD THEM:
-  &lt;Dialogue&gt; from frontend/src/component/common/Dialogue/Dialogue.tsx (97x)
-  &lt;TextCell&gt; from frontend/src/component/common/Table/cells/TextCell/TextCell.tsx (96x)
-  &lt;PageContent&gt; from frontend/src/component/common/PageContent/PageContent.tsx (84x)
-DUPLICATES, DO NOT MAKE IT WORSE:
-  &lt;StyledSuccessIcon&gt; exists in 6 places; match what the surrounding code imports, never create another.
-SPACING: Use spacing steps (p: 2), not pixels. 17 pixel sizes are already written onto components; do not add one.
-TYPE: Sen. No new typefaces, no hand-declared font stacks.
-Before finishing: call roast_validate on what you wrote, then roast_review.</pre>
-<div class="mcp-q">It has a grey in hand and a padding in mind. <b>roast_find_token</b>, twice:</div>
-<pre>#6b7280 → Nearest token: #607d8b, 11 channel steps from #6b7280. Unless the difference is a deliberate decision, use the token.
-12px    → 12px is between steps 1 (8px) and 2 (16px) on the default theme. If the design needs 12px exactly, keep it with a comment; otherwise use the nearest step in sx.</pre>
+<div class="mcp-q"><b>roast_find_token</b> #6b7280:</div>
+<pre>Nearest token: #607d8b, 11 channel steps from #6b7280. Unless the difference is a deliberate decision, use the token.</pre>
 <div class="mcp-q">It writes the first draft anyway and runs <b>roast_validate</b> before saving:</div>
 <pre>2 findings:
 ✕ L5 Colour #6b7280 written onto an MUI component, and the theme has no such colour.
-   Fix: Add it to the theme once (frontend/src/themes/dark-theme.ts), then read it there. On an MUI component, point at it: color: 'text.secondary' in sx, or theme.palette.primary.main in a styled() call.
+   Fix: Add it to the theme once (frontend/src/themes/dark-theme.ts), then read it there: color: 'text.secondary' in sx.
 ✕ L5 Pixel size p: 12px on an MUI component.
-   Fix: 12px is between steps 1 (8px) and 2 (16px) on the default theme. If the design needs 12px exactly, keep it with a comment; otherwise use the nearest step in sx.</pre>
-<div class="mcp-q">Second draft: <code>color: 'text.secondary'</code> and <code>p: 1.5</code>, radius read from the theme. <b>roast_validate</b> again:</div>
-<pre>No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, new colour tokens that twin an existing token, imports of a duplicate the canonical copy replaces, chart colours against the chart palette, colours and pixel sizes written onto kit components where the theme has a value.</pre>
-<p class="sub">Four calls, under 800 tokens in total, and the new component reads the theme instead of adding colour number 44. <b>roast_review</b> then checks the whole diff the same way before the agent says it is done.</p>
+   Fix: 12px is between steps 1 (8px) and 2 (16px) on the default theme. Keep it with a comment, or use the nearest step in sx.</pre>
+<div class="mcp-q">Second draft: <code>color: 'text.secondary'</code> and <code>p: 1.5</code>. <b>roast_validate</b> again:</div>
+<pre>No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, chart colours against the chart palette, colours and pixel sizes written onto kit components where the theme has a value.</pre>
+<p class="sub">Four calls, under 800 tokens, and the new component reads the theme instead of adding colour number 44. Where a repo has charts but no palette, a new chart that paints by hand gets one warning naming the existing chart that does the same and asking for the palette once. That is the gap report, live.</p>
 </div>
 
 <h2>Example roasts</h2>

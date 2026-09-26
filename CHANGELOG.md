@@ -2,6 +2,24 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.1.0 — 2026-09-26
+
+- **The report answers one question first: what will your agent learn
+  here?** The verdict card opens with that question and a lead line that
+  says whether the repo gives an agent something to copy and where it
+  does not ("One gap remains: charts have no palette"). The measured
+  verdict follows under it. "Where agents will invent" moves up to sit
+  directly under the verdict, explains that a gap is not a violation
+  because there is no rule yet to break, and now appears on every scored
+  report: when no gap is found it says so and names the limit (one gap
+  kind is checked so far). Three sections are renamed to match the
+  question: "What the numbers mean" is "What the repo teaches the agent",
+  "Where to start" is "Fix what makes agents guess", and the present is
+  "Give the agent the answers", with a line on the edit hook and the pull
+  request check. The link preview title reads "repo: where an AI agent
+  will invent UI · score". Scores, tiles, yardsticks and every count are
+  unchanged. README screenshots reshot.
+
 ## 9.0.7 — 2026-09-26
 
 - **The README and the landing page lead with what the agent runs showed.**

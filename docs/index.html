@@ -89,16 +89,23 @@
 <div class="install"><b>npx</b> roast-my-design-system@latest</div>
 <p class="sub">Run it at the root of a UI repo. About a second later a self-contained HTML report opens. No account, no network, no telemetry, nothing in your repo is changed. Free, <a href="https://www.npmjs.com/package/roast-my-design-system" style="color:var(--mint);text-decoration:none">on npm</a>, MIT.</p>
 
+<h2>Roast. Teach. Guard.</h2>
+<ul class="lead-list">
+<li><b>Roast</b> the repo to find its real design system, the mess in it, and the gaps.</li>
+<li><b>Teach</b> the agent, through generated rules and a local MCP server.</li>
+<li><b>Guard</b> every edit, so the agent does not have to remember to ask.</li>
+</ul>
+
 <h2>The mess an agent adds is a map of the gaps in your system</h2>
 <p class="sub">An agent copies what it finds. Where the repo has no answer, it makes one up, and the next agent copies that. This tool draws that map before the gap becomes a layer. It finds the places with no answer, measures the mess already there, writes the rules for your agent, and checks every edit the agent makes, so nobody has to remember to ask.</p>
 <p class="sub"><b>A script does the counting. Claude writes the explanation.</b> Every number in the report comes from a deterministic read of your files, the same numbers every run. Where an AI reads the scan for you, its text is labelled as written by AI and kept apart from the measurements.</p>
 
 <h2>What you get</h2>
 <ul class="lead-list">
-<li><b>The gaps, named.</b> A "Where agents will invent" section lists the places where the repo has no answer yet, with the files that prove each one and the single move that closes it. Today it knows one gap for certain, because the agent runs found it: charts that paint their series colours by hand in a repo with no chart palette. Across 126 public repos, 43 look like that. The list grows only when a gap has been measured.</li>
+<li><b>The gaps, named.</b> The report now opens with what the agent will learn here, and "Where agents will invent" comes first: it lists the places where the repo has no answer yet, with the files that prove each one and the single move that closes it. Today it knows one gap for certain, because the agent runs found it: charts that paint their series colours by hand in a repo with no chart palette. Across 126 public repos, 43 look like that. The list grows only when a gap has been measured.</li>
 <li><b>A health score you can defend in a meeting.</b> 0 to 100, the same number every run, measured against 3 yardsticks: the ideal norms of a design system, the median of the 34 product repos at the core of a 112-repo benchmark, and 10 reputable systems (Primer, Polaris, Carbon, shadcn/ui and others). Monorepos get a score per package, so the tidy UI library stops hiding the messy app.</li>
 <li><b>Every finding with its file path.</b> Every colour and its near-identical twin, every off-scale spacing value, typeface, duplicated or never-imported component, inline style block and !important, each with a real file path. The adoption map draws your real system to scale, every component's tile sized by its import count, the never-imported grouped by the year git last saw them.</li>
-<li><b>What to fix first.</b> A "Where to start" list derived from your own numbers, with what each move is worth and where the score lands if you do them all. Every move carries a copy button with a ready-made fix prompt for your agent. Fix, rescan, press the next button.</li>
+<li><b>What to fix first.</b> A "Fix what makes agents guess" list derived from your own numbers, with what each move is worth and where the score lands if you do them all. Every move carries a copy button with a ready-made fix prompt for your agent. Fix, rescan, press the next button.</li>
 <li><b>Rules that stop the mess coming back.</b> A generated design-system-rules.md with the canonical components, your token file and the known duplicates to avoid. One flag writes it into every agent file you have: Claude, Cursor, GitHub Copilot and Windsurf. Every scan also checks the rules you already have for stale references.</li>
 </ul>
 
@@ -156,13 +163,13 @@
 <tr><td><code>... --mcp</code></td><td>The scan as a local MCP server: five tools your agent calls while writing UI, from "is there a Button already?" to "review my changes", plus the roast-fix prompt serving the top fix from a fresh scan. Nothing leaves your machine</td></tr>
 <tr><td><code>... --check</code></td><td>The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts</td></tr>
 <tr><td><code>... --by "Dwayne Hicks"</code></td><td>A requester credit in the report header, next to the scan date</td></tr>
-<tr><td><code>... --notes &lt;file.md&gt;</code></td><td>An agent-written analysis embedded in the report as "What the numbers mean": labelled as written by AI, kept apart from the measured numbers. The Claude Code skill writes and passes this automatically; the flag is here so any agent can</td></tr>
+<tr><td><code>... --notes &lt;file.md&gt;</code></td><td>An agent-written analysis embedded in the report as "What the repo teaches the agent": labelled as written by AI, kept apart from the measured numbers. The Claude Code skill writes and passes this automatically; the flag is here so any agent can</td></tr>
 <tr><td><code>... --section "Title" &lt;file.md&gt;</code></td><td>An agent-written chapter appended after the notes, same styling, same written-by-AI label, with sub-headings allowed. Repeatable, so analysis that outgrows the notes still lives inside the report instead of a hand-built page</td></tr>
 <tr><td><code>... --exclude lab/</code></td><td>Leave a folder out of the scan, or list folders in a .roastignore file at the repo root. The report prints every exclusion in the header with its file count, so a scoped score always says it is scoped</td></tr>
 <tr><td><code>... --json</code></td><td>The scan summary as JSON on stdout, for scripts and pipelines</td></tr>
 <tr><td><code>... --theme light / --out &lt;file&gt; / --no-open</code></td><td>Light report, custom report path, don't open the browser</td></tr>
 <tr><td><code>/roast-my-design-system:review</code> (in Claude Code)</td><td>The plugin's second skill: the same check as --check, in chat. Each changed file's findings with the fix named, the fixes applied on request, the check re-run. About a second, no score</td></tr>
-<tr><td><code>/roast-my-design-system</code> (in Claude Code)</td><td>The full experience: the roast in chat and embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers</td></tr>
+<tr><td><code>/roast-my-design-system</code> (in Claude Code)</td><td>The full experience: the roast in chat and embedded in the report as "What the repo teaches the agent", the rules offer, and the fix loop with Claude on your own numbers</td></tr>
 </tbody>
 </table></div>
 <p class="sub">One scan writes rules for every agent: Claude, Cursor, GitHub Copilot, and Windsurf. Every scan also checks the agent rules you already have and flags stale references, no flag needed.</p>

@@ -17,7 +17,7 @@ npx roast-my-design-system@latest
 Run it at the root of a UI repo. One second later, a report opens.
 No account. No network. No telemetry. Nothing in your repo changes.
 
-**Current release: 9.0.** Version history in [CHANGELOG.md](CHANGELOG.md).
+**Current release: 9.1.** Version history in [CHANGELOG.md](CHANGELOG.md).
 
 ## The idea
 
@@ -73,7 +73,7 @@ The places where the repo has no answer yet.
 
 One gap is known for certain today, because the runs found it: charts hardcoding colours in a repo with no chart palette. 43 of 126 public repos look like that. A gap joins the list when it has been measured.
 
-### Where to start
+### Fix what makes agents guess
 
 The mess the agent will copy, ranked by what fixing it is worth.
 
@@ -140,13 +140,13 @@ Eleven reports, hosted exactly as the tool writes them. Every number determinist
 - **[magicuidesign/magicui](https://gregkozakiewicz.github.io/roast-my-design-system/examples/magicui.html)** (registry): counted on the components it publishes, 52 off-theme colours per 100 files in the code it ships, its docs site kept out and named. Score 78.
 - **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): hardcoded colours sitting beside 744 colour tokens, and 37 !important declarations. Score 66.
 
-The full report for vercel/ai-chatbot, with "What the numbers mean", Claude's read of the scan, under the verdict:
+The full report for vercel/ai-chatbot. The verdict answers what the agent will learn here, the gap section comes first, then "What the repo teaches the agent", Claude's read of the scan:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.0.6)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the verdict on what the agent will learn here, the Where agents will invent section, the What the repo teaches the agent analysis written by Claude, priced Fix what makes agents guess moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.1.0)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](assets/report-light-hero.png?v=9.0.6)
+![The diagnosis report in light mode](assets/report-light-hero.png?v=9.1.0)
 
 ## Why the numbers hold
 
@@ -203,13 +203,13 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 
 | Command&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | What you get |
 |---|---|
-| <code>...&nbsp;--notes&nbsp;&lt;file.md&gt;</code> | The agent's read of this scan, embedded in the report as **"What the numbers mean"**: which findings matter, which good numbers are accidents, what to fix first. Labelled as written by AI and kept apart from the measured numbers. The Claude Code skill writes and passes it automatically; the flag is here so any agent can |
+| <code>...&nbsp;--notes&nbsp;&lt;file.md&gt;</code> | The agent's read of this scan, embedded in the report as **"What the repo teaches the agent"**: which findings matter, which good numbers are accidents, what to fix first. Labelled as written by AI and kept apart from the measured numbers. The Claude Code skill writes and passes it automatically; the flag is here so any agent can |
 | <code>...&nbsp;--section&nbsp;"Title"&nbsp;&lt;file.md&gt;</code> | A further agent-written chapter after the notes, same styling, same label, sub-headings allowed. Repeatable |
 | `... --hook` | The check the Claude Code plugin runs after every edit, for hand-installed setups: reads the hook event on stdin, checks the file that changed, prints only the findings the edit added as JSON. Always exits 0 |
 | `... --mcp` | The scan as a local MCP server: 5 tools your agent calls while writing UI, plus the `roast-fix` prompt that serves the top fix from a fresh scan. See [Live answers over MCP](#live-answers-over-mcp) |
-| <code>/roast-my-design-system</code> (in&nbsp;Claude&nbsp;Code) | The full experience: the roast in chat *and* embedded in the report as "What the numbers mean", the rules offer, and the fix loop with Claude on your own numbers |
+| <code>/roast-my-design-system</code> (in&nbsp;Claude&nbsp;Code) | The full experience: the roast in chat *and* embedded in the report as "What the repo teaches the agent", the rules offer, and the fix loop with Claude on your own numbers |
 
-**"Why this matters"** is generic, ships with the tool and reads the same in every report. **"What the numbers mean"** is your agent's read of your repo, and only appears when an agent passed it.
+**"Why this matters"** is generic, ships with the tool and reads the same in every report. **"What the repo teaches the agent"** is your agent's read of your repo, and only appears when an agent passed it.
 
 ## Live answers over MCP
 
@@ -343,13 +343,13 @@ It runs the same check as `--check` on the files in your git diff and lists each
 You get the roast in chat plus `design-system-roast.html` at your repo root, a self-contained page with:
 
 - a **health score** computed from how your numbers sit against the ideal
-- **"What the numbers mean"**: Claude's read of your scan, embedded in the file you'll forward, labelled as written by Claude and kept apart from the measured numbers. The score alone can flatter; this section keeps a shared 85/100 honest
+- **"What the repo teaches the agent"**: Claude's read of your scan, embedded in the file you'll forward, labelled as written by Claude and kept apart from the measured numbers. The score alone can flatter; this section keeps a shared 85/100 honest
 - stat tiles comparing you to all 3 yardsticks
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the off-scale spacing receipts, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger
-- a **Where to start** close: up to 3 moves derived from your repo's own numbers, each with a file-path receipt
-- a **Where agents will invent** list: the gaps where the repo has no answer yet, with the files that prove each one and the move that closes it
-- a **present** 🎁 below it: `design-system-rules.md` wrapped inside the report. Unwrap, then copy or download the agent rules generated from your scan
+- a **Fix what makes agents guess** list: up to 3 moves derived from your repo's own numbers, each with a file-path receipt
+- a **Where agents will invent** section, first under the verdict: the gaps where the repo has no answer yet, with the files that prove each one and the move that closes it, or the honest empty state when none is found
+- **Give the agent the answers**: `design-system-rules.md` wrapped inside the report as a present. Unwrap, then copy or download the agent rules generated from your scan
 
 After the roast, the skill offers to write `design-system-rules.md` to disk and merge it into your CLAUDE.md, `.cursor/rules` or AGENTS.md.
 

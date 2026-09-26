@@ -100,7 +100,7 @@ Run it yourself
 For your agent (a plain terminal has no agent to write these)
 
   --notes <file>  the agent's read of this scan, embedded in the report as
-                  "What the numbers mean", labelled as written by AI and kept
+                  "What the repo teaches the agent", labelled as written by AI and kept
                   apart from the measured numbers. The Claude Code skill
                   writes and passes this automatically
   --section "Title" <file>

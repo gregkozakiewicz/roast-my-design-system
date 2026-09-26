@@ -351,6 +351,15 @@ let verdict = noSystemLikely
     ? 'This repo is in good shape, and your agent has rules to read. Keep them in step with the code.'
     : 'This repo is in good shape. The gap is documentation: your agent still can\'t see the system.')
   : findings.slice(0, 3).join('. ') + '.';
+// The lead line answers the report's question before the measured verdict
+// does: does this repo give an agent something to copy, and where does it
+// not. A gap named here is one lib/gaps admitted after a fleet probe.
+const gapLead = (noSystemLikely || fresh) ? '' : (() => {
+  const gaps = h.gaps ?? [];
+  if (!gaps.length) return 'This repo gives an agent something to copy everywhere this scan can measure.';
+  const named = gaps.map((g) => g.title.charAt(0).toLowerCase() + g.title.slice(1));
+  return `Most of this repo gives an agent something to copy. ${gaps.length === 1 ? 'One gap remains' : `${gaps.length} gaps remain`}: ${esc(named.join('; '))}.`;
+})();
 if (bench && findings.length && !fresh) {
   const core = [['colors', tokenLed ? colorStrays : colors.length], ['greys', tokenLed ? greyStrays : greys.length],
     ['spacing', spacingTotal], ['typefaces', typefaces.length], ['exactDuplicates', hardDupes.length], ['inlineStyles', inline.count]];
@@ -958,7 +967,7 @@ function componentsSection() {
 function giftSection() {
   const { text: rulesText, ruleCount } = rulesMarkdown(h);
   return `<section class="glass pad gift-sec">
-    ${sectionHead('You sat through the roast', 'so you get a present.')}
+    ${sectionHead('Give the agent the answers', 'the rules file generated from this scan, wrapped as a present. Agents do not always ask before inventing, so the plugin also checks every file they edit, and guard-my-design-system checks the pull request.')}
     <div class="gift-stage">
       <button class="gift" id="gift" aria-label="Unwrap your generated agent rules file">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1020,7 +1029,7 @@ function notesSection() {
   return `<section class="glass pad notes-sec">
     <div class="sec-head">
       ${eyebrow(`Written by ${esc(arg('notes-author', 'Claude'))} from this scan · ${esc((h.harvestedAt ?? '').slice(0, 10))} · not part of the measurement`)}
-      <h2>What the numbers mean</h2>
+      <h2>What the repo teaches the agent</h2>
     </div>
     <div class="notes-body">${notesBody(notesText)}</div>
 </section>`;
@@ -1234,7 +1243,7 @@ function whereToStartSection() {
     delta: item.delta || 0, prompt: promptFor(item),
   }));
   return `<section class="glass pad">
-    ${sectionHead('Where to start', head)}
+    ${sectionHead('Fix what makes agents guess', head)}
     <div class="ledger">${top3.map((item, i) => `
       <div class="ledger-row start-row">
         <span class="ledger-idx">${String(i + 1).padStart(2, '0')}</span>
@@ -1249,10 +1258,15 @@ function whereToStartSection() {
 // The September 2026 runs showed agents inventing exactly there; the section
 // names the gap, the files that prove it and the one move that closes it.
 function gapsSection() {
+  if (noSystemLikely || fresh) return '';
   const gaps = h.gaps ?? [];
-  if (!gaps.length) return '';
-  const head = `${gaps.length === 1 ? 'One place' : `${gaps.length} places`} where this repo has no answer yet. An agent asked to build there will invent, because that is what the repo taught it. Close the gap once and the checks take over.`;
-  return `<section class="glass" style="margin-top:16px">
+  if (!gaps.length) {
+    return `<section class="glass pad" style="margin-top:16px">
+    ${sectionHead('Where agents will invent', 'No gap found. This scan checks for one kind of gap so far, a chart palette, and this repo either has one or has no charts. The list grows as more gap kinds are measured on real agent runs; a clean result here says the known gaps are closed, and no more than that.')}
+</section>`;
+  }
+  const head = `${gaps.length === 1 ? 'One place' : `${gaps.length} places`} where this repo gives an agent nothing to copy. Asked to build there, an agent invents, because that is what the repo taught it. Nothing here is a violation: there is no rule yet to break. Define the answer once and every agent after that inherits it.`;
+  return `<section class="glass pad" style="margin-top:16px">
     ${sectionHead('Where agents will invent', head)}
     <div class="ledger">${gaps.map((g, i) => `
       <div class="ledger-row gap-row">
@@ -1523,8 +1537,8 @@ function exclusionsLine() {
 // Title and description come from the scan; an image and canonical URL are
 // passed in when the report is hosted (--og-image, --og-url), never guessed.
 function ogTags() {
-  const title = `${repoName}: ${healthScore !== null ? `${healthScore}/100` : 'design-system diagnosis'}${healthScore !== null ? ' design-system health' : ''}`;
-  const desc = verdict.replace(/\s+/g, ' ').trim().slice(0, 200);
+  const title = `${repoName}: where an AI agent will invent UI${healthScore !== null ? ` · ${healthScore}/100` : ''}`;
+  const desc = `${gapLead ? `${gapLead.replace(/<[^>]+>/g, '')} ` : ''}${verdict}`.replace(/\s+/g, ' ').trim().slice(0, 200);
   const image = arg('og-image', null), url = arg('og-url', null);
   return [
     `<meta property="og:type" content="website">`,
@@ -1636,7 +1650,7 @@ function exceptionsBlock() {
 function addIndex(page) {
   // heading text is already HTML-escaped; strip tags and leading counts only
   const short = (t) => t.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().replace(/^[\d,]+ /, '')
-    .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^You sat through the roast$/, 'Your present')
+    .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^Give the agent the answers$/, 'Agent rules').replace(/^What the repo teaches the agent$/, 'What it teaches').replace(/^Fix what makes agents guess$/, 'What to fix')
     .replace(/^The shadcn theme and the 2 shadcn checks$/, 'shadcn theme and checks')
     .replace(/^Your Tailwind theme, and what goes around it$/, 'Your Tailwind theme').replace(/^Your (\w+) theme, and what is written around it$/, 'Your $1 theme').replace(/, declared .*$/, '')
     .replace(/^off-scale spacing values$/, 'Off-scale spacing').replace(/^inline style blocks?$/, 'Inline styles').replace(/^typefaces?$/, 'Typefaces');
@@ -1772,6 +1786,9 @@ ${ogTags()}
   .verdict-card .b1 { right:-64px; top:-64px; width:256px; height:256px; background:var(--blob); filter:blur(48px); }
   .verdict-card .b2 { left:-40px; bottom:-80px; width:224px; height:224px; background:var(--blob2); filter:blur(48px); }
   .verdict { position:relative; font:600 clamp(18px,2.6vw,24px)/1.45 var(--disp); letter-spacing:-.01em; margin-top:10px; }
+  .verdict-sub { position:relative; margin-top:12px; font-size:14.5px; line-height:1.6; color:var(--dim); }
+  .gap-empty { padding:0 26px 22px; color:var(--dim); font-size:14px; line-height:1.6; }
+  .gap-why { margin-top:6px; color:var(--dim); font-size:13.5px; }
 
   section, .agent { margin-top:28px; }
 
@@ -2093,17 +2110,17 @@ ${sidePanel()}
     : `There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output). No score is given.`}</span></div>` : ''}
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
-    ${eyebrow('Summary')}
-    <div class="verdict">${esc(verdict)}</div>
+    ${eyebrow(noSystemLikely || fresh ? 'Summary' : 'What will your agent learn here?')}
+    ${gapLead ? `<div class="verdict">${gapLead}</div><div class="verdict-sub">${esc(verdict)}</div>` : `<div class="verdict">${esc(verdict)}</div>`}
   </div>
+
+${gapsSection()}
 
 ${notesSection()}
 
 ${extraSectionsHtml()}
 
 ${whereToStartHtml}
-
-${gapsSection()}
 
 ${agentSection()}
 

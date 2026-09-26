@@ -1,5 +1,5 @@
 /**
- * Where agents will invent. The September 2026 runs (164 sessions, 10 real
+ * Where agents will invent. The September 2026 runs (259 sessions, 10 real
  * products) showed agents copying what a repo already has and inventing only
  * where the design system has no answer: a theme, a chart. A gap is a place
  * where the next piece of UI, human or agent, has nothing to reuse, so the

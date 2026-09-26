@@ -1,8 +1,8 @@
-<img src="assets/roster_logo_v1.png?v=8.2.0" width="100" alt="roast-my-design-system">
+<img src="assets/roastmds.svg" width="100" alt="roast-my-design-system">
 
 # roast-my-design-system
 
-[![npm](https://img.shields.io/npm/v/roast-my-design-system?color=2dd4bf&label=npm)](https://www.npmjs.com/package/roast-my-design-system) [![Socket](https://badge.socket.dev/npm/package/roast-my-design-system)](https://socket.dev/npm/package/roast-my-design-system) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![zero dependencies](https://img.shields.io/badge/dependencies-0-2dd4bf)](https://www.npmjs.com/package/roast-my-design-system?activeTab=dependencies) [![no telemetry](https://img.shields.io/badge/no-telemetry-2dd4bf)](#what-makes-the-numbers-trustworthy)
+[![npm](https://img.shields.io/npm/v/roast-my-design-system?color=2dd4bf&label=npm)](https://www.npmjs.com/package/roast-my-design-system) [![downloads](https://img.shields.io/npm/dm/roast-my-design-system?color=2dd4bf&label=downloads)](https://www.npmjs.com/package/roast-my-design-system) [![Socket](https://badge.socket.dev/npm/package/roast-my-design-system)](https://socket.dev/npm/package/roast-my-design-system) [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![zero dependencies](https://img.shields.io/badge/dependencies-0-2dd4bf)](https://www.npmjs.com/package/roast-my-design-system?activeTab=dependencies) [![no telemetry](https://img.shields.io/badge/no-telemetry-2dd4bf)](#what-makes-the-numbers-trustworthy)
 
 [![MCP verified in Claude Code](https://img.shields.io/badge/MCP_verified-Claude_Code-2dd4bf)](#live-answers-over-mcp) [![MCP verified in Cursor](https://img.shields.io/badge/MCP_verified-Cursor-2dd4bf)](#live-answers-over-mcp) [![MCP verified in Windsurf / Devin Desktop](https://img.shields.io/badge/MCP_verified-Windsurf_%2F_Devin_Desktop-2dd4bf)](#live-answers-over-mcp)
 
@@ -10,7 +10,7 @@
 
 Your AI can write the UI. This makes sure it writes *your* UI.
 
-An agent builds UI the way a new hire does on their first day: it looks around the repo and copies what it finds. We measured that on 10 real products, 259 agent sessions, with and without this tool. On everyday work the agent reused the components and tokens that were there and stayed on-system. It went off-system in the places where the repo had no answer to copy. A chart, in a codebase with no chart palette. A theme, where nobody had named the surfaces. And it filled each gap the way the repo's own code did: by hand.
+An agent builds UI the way a new hire does on their first day: it looks around the repo and copies what it finds. We measured that on 10 real products, 259 agent sessions, with and without this tool. On everyday work the agent reused the components and tokens that were there and stayed on-system. It went off-system in the places where the repo had no answer to copy: a chart in a codebase with no chart palette, a theme in a codebase with no named surfaces. In each case it made the values up and hardcoded them.
 
 ```bash
 npx roast-my-design-system@latest
@@ -22,7 +22,7 @@ Run it at the root of a UI repo. About a second later a self-contained HTML repo
 
 ### The mess an agent adds is a map of the gaps in your system
 
-An agent copies what it finds. Where the repo has no answer, it makes one up, and the next agent copies that. This tool draws the map before the gap becomes a layer: it finds the places with no answer, measures the mess already there, writes the rules that keep the agent on-system, and puts a check inside the agent's editor that runs whether or not the agent thinks to ask.
+An agent copies what it finds. Where the repo has no answer, it makes one up, and the next agent copies that. This tool draws that map before the gap becomes a layer. It finds the places with no answer, measures the mess already there, writes the rules for your agent, and checks every edit the agent makes, so nobody has to remember to ask.
 
 **A script does the counting. Claude writes the explanation.** Every number in the report comes from a deterministic read of your files, the same numbers every run. Where an AI reads the scan for you, its text is labelled as written by AI and kept apart from the measurements.
 
@@ -30,11 +30,11 @@ An agent copies what it finds. Where the repo has no answer, it makes one up, an
 
 **The gaps, named.** A "Where agents will invent" section lists the places where the repo has no answer yet, with the files that prove each one and the single move that closes it. Today it knows one gap for certain, because the agent runs found it: charts that paint their series colours by hand in a repo with no chart palette. Across 126 public repos, 43 look like that. The list grows only when a gap has been measured, never guessed.
 
-**A health score you can defend in a meeting.** 0 to 100, the same number every run, measured against 3 yardsticks: the ideal norms of a design system, the median of 34 scanned public products, and 10 reputable systems (Primer, Polaris, Carbon, shadcn/ui and others). Monorepos get a score per package, so `packages/ui` at 80 stops hiding `apps/web` at 40.
+**A health score you can defend in a meeting.** 0 to 100, the same number every run, measured against 3 yardsticks: the ideal norms of a design system, the median of the 34 product repos at the core of a 112-repo benchmark, and 10 reputable systems (Primer, Polaris, Carbon, shadcn/ui and others). Monorepos get a score per package, so `packages/ui` at 80 stops hiding `apps/web` at 40.
 
-**The receipts behind it.** Every colour and its near-identical twin. Every off-scale spacing value, typeface, duplicated or never-imported component, inline style block and `!important`, each with a real file path. One HTML file you can open, Slack or email.
+**Every finding with its file path.** Every colour and its near-identical twin. Every off-scale spacing value, typeface, duplicated or never-imported component, inline style block and `!important`, each with a real file path. One HTML file you can open, Slack or email.
 
-**The first fixes, ranked by payoff.** A "Where to start" list derived from your own numbers. Each move has a copy button with a ready-made fix prompt for your agent: the finding, the files, the expected payoff, and rules that respect deliberate craft. Fix, rescan, press the next button.
+**What to fix first.** A "Where to start" list derived from your own numbers. Each move has a copy button with a ready-made fix prompt for your agent: the finding, the files, the expected payoff, and rules that respect deliberate craft. Fix, rescan, press the next button.
 
 **Rules that stop the mess coming back.** A generated `design-system-rules.md` with the canonical components, your token file and the known duplicates to avoid. `--apply` writes it into every agent file you have: Claude, Cursor, GitHub Copilot and Windsurf. Every scan also checks the rules you already have for stale references, and says which of your tools can actually read them.
 

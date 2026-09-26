@@ -10,77 +10,123 @@
 
 Your AI can write the UI. This makes sure it writes *your* UI.
 
-An agent builds UI the way a new hire does on their first day: it looks around the repo and copies what it finds. We measured that on 10 real products, 259 agent sessions, with and without this tool. On everyday work the agent reused the components and tokens that were there and stayed on-system. It went off-system in the places where the repo had no answer to copy: a chart in a codebase with no chart palette, a theme in a codebase with no named surfaces. In each case it made the values up and hardcoded them.
-
 ```bash
 npx roast-my-design-system@latest
 ```
 
-Run it at the root of a UI repo. About a second later a self-contained HTML report opens. No account, no network, no telemetry, nothing in your repo is changed.
+Run it at the root of a UI repo. One second later, a report opens.
+No account. No network. No telemetry. Nothing in your repo changes.
 
-**Current release: 9.0.** What changed in each version is in [CHANGELOG.md](CHANGELOG.md).
+**Current release: 9.0.** Version history in [CHANGELOG.md](CHANGELOG.md).
 
-### The mess an agent adds is a map of the gaps in your system
+## The idea
 
-An agent copies what it finds. Where the repo has no answer, it makes one up, and the next agent copies that. This tool draws that map before the gap becomes a layer. It finds the places with no answer, measures the mess already there, writes the rules for your agent, and checks every edit the agent makes, so nobody has to remember to ask.
+### An agent copies what it finds.
 
-**A script does the counting. Claude writes the explanation.** Every number in the report comes from a deterministic read of your files, the same numbers every run. Where an AI reads the scan for you, its text is labelled as written by AI and kept apart from the measurements.
+### It invents where the repo has no answer.
+
+We tested this on 10 real open-source products, 259 agent sessions, with and without this tool.
+
+Findings each session added, counted by this tool's own rules:
+
+| Task | Model | Without roast | Roast MCP and rules installed | Roast edit hook on |
+|---|---|---|---|---|
+| Add a panel, build a dashboard, tighten a list (80 sessions) | Sonnet 5 | 7 | 9 | not run |
+| A Christmas theme, 10 products | Sonnet 5 | 28 | 2 | not run |
+| A new chart, 4 products, 5 runs each | Sonnet 5 | 10 in 20 runs | 0 in 20 runs, hook installed too but it never had to speak | |
+| A new chart, 4 products | Haiku 4.5 | 25 | 39 | 0 in 14 of 15 runs |
+| Chart, status colour, empty state, new component | Haiku 4.5 | 42 in 16 runs | 49 in 16 runs | 3 in 51 runs |
+
+Routine work stayed on-system either way. Invention drifted.
+
+Sonnet called the MCP tools in about one session in three. Haiku never did, so for Haiku the MCP on its own changed nothing. The edit hook runs without being asked, and that is the column that goes to zero.
+
+Where did the agent invent? Where the repo had nothing to copy. Dub has no chart palette. Its own charts hardcode 17 colours. Asked for a chart, Haiku hardcoded 9 more.
+
+So the mess an agent adds is a map of the gaps in your system.
+
+This tool draws the map.
+
+## Roast. Teach. Guard.
+
+**Roast** the repo to find its real design system, the mess in it, and the gaps.
+
+**Teach** the agent, through generated rules and a local MCP server.
+
+**Guard** every edit, so the agent does not have to remember to ask.
+
+    ROAST   what is in the repo, and what is missing
+      ↓
+    TEACH   rules in the agent files, answers over MCP
+      ↓
+    GUARD   every edit checked, the PR gated
 
 ## What you get
 
-**The gaps, named.** A "Where agents will invent" section lists the places where the repo has no answer yet, with the files that prove each one and the single move that closes it. Today it knows one gap for certain, because the agent runs found it: charts that paint their series colours by hand in a repo with no chart palette. Across 126 public repos, 43 look like that. The list grows only when a gap has been measured, never guessed.
+### Where agents will invent
 
-**A health score you can defend in a meeting.** 0 to 100, the same number every run, measured against 3 yardsticks: the ideal norms of a design system, the median of the 34 product repos at the core of a 112-repo benchmark, and 10 reputable systems (Primer, Polaris, Carbon, shadcn/ui and others). Monorepos get a score per package, so `packages/ui` at 80 stops hiding `apps/web` at 40.
+The places where the repo has no answer yet.
 
-**Every finding with its file path.** Every colour and its near-identical twin. Every off-scale spacing value, typeface, duplicated or never-imported component, inline style block and `!important`, each with a real file path. One HTML file you can open, Slack or email.
+- the gap, in one line
+- the files that prove it
+- the one move that closes it
 
-**What to fix first.** A "Where to start" list derived from your own numbers. Each move has a copy button with a ready-made fix prompt for your agent: the finding, the files, the expected payoff, and rules that respect deliberate craft. Fix, rescan, press the next button.
+One gap is known for certain today, because the runs found it: charts hardcoding colours in a repo with no chart palette. 43 of 126 public repos look like that. A gap joins the list when it has been measured.
 
-**Rules that stop the mess coming back.** A generated `design-system-rules.md` with the canonical components, your token file and the known duplicates to avoid. `--apply` writes it into every agent file you have: Claude, Cursor, GitHub Copilot and Windsurf. Every scan also checks the rules you already have for stale references, and says which of your tools can actually read them.
+### Where to start
 
-## Three ways to use it
+The mess the agent will copy, ranked by what fixing it is worth.
 
-### 1. Roast the repo
+- what was found
+- where, with the file path
+- why it matters
+- what to change
+- a copy button with the fix prompt for your agent
 
-The scan and the report. The full flag list is under [Every command](#every-command).
+Fix, rescan, press the next button.
 
-```bash
-npx roast-my-design-system@latest
-```
+### A score you can defend in a meeting
 
-### 2. Put the system inside the agent
+0 to 100. The same number every run.
 
-The same engine as a local MCP server. Five read-only tools the agent calls while it writes UI, from "is there a Button already?" to "review my changes". The Claude Code plugin bundles it; any other client registers one command. See [Live answers over MCP](#live-answers-over-mcp).
+Measured against three yardsticks: the ideal norms of a design system, the median of 34 product repos at the core of a 112-repo benchmark, and 10 reputable systems (Primer, Polaris, Carbon, shadcn/ui and others).
 
-```bash
-claude mcp add roast -- npx roast-my-design-system@latest --mcp
-```
+Monorepos get a score per package. `packages/ui` at 80 stops hiding `apps/web` at 40.
 
-### 3. Check what the agent changed
+### Every finding, with its file path
 
-Three doors to the same check. `--check` reads your git diff in the terminal and exits 1 on findings, so it slots into a script. The plugin's `review` skill does it in chat. And the plugin's edit hook runs it after every file the agent edits, writes or produces with a shell command, handing back only the findings that edit added. The agent does not have to remember to ask.
+- every hardcoded colour, and its near-identical twin
+- every spacing value off the scale
+- every duplicated component
 
-```bash
-npx roast-my-design-system@latest --check
-```
+And 8 more kinds, all in [What it measures](#what-it-measures). One HTML file. Open it, Slack it, email it.
 
-For pull requests there is a sister package, [guard-my-design-system](https://github.com/gregkozakiewicz/guard-my-design-system): a GitHub Action that runs the same rules on the diff and fails the check when new mess arrives.
+### Rules for your agent
 
-## What the agent runs showed
+Generated from your repo, into `design-system-rules.md`:
 
-We ran Claude Code headless on 10 public products (cal.com, Dub, Metabase, Plausible, SigNoz, trigger.dev and four more), pinned to one commit each, and counted the design-system findings each session added, by this tool's own rules. 259 sessions, Sonnet 5 and Haiku 4.5, September 2026.
+    canonical components
+    the token file
+    known duplicates to avoid
+    spacing steps
+    typefaces
+    the kit's own vocabulary
 
-Routine work did not drift, with or without help: 7 findings without this tool and 9 with it, over 80 sessions of moving panels and building dashboards. Invention drifted, and in the shape the repo already had. Three numbers:
+`--apply` writes them into every agent file you have: Claude, Cursor, GitHub Copilot, Windsurf. Every scan also checks the rules you already have for stale references.
 
-- **28 to 2.** Findings a Christmas theme added across 10 products, without and with this tool. The agent called the MCP tools in every theme session.
-- **42 in 16 runs, to 3 in 51.** Haiku 4.5 asked for a chart, a status colour, an empty state and a new component, without the tool and with the edit hook on.
-- **10 in 20 runs, to 0 in 20.** Sonnet 5 asked for a chart, without and with the plugin installed. It called no tool and the hook never had to speak: the rules in its context were enough.
+### A script does the counting
 
-The agent does not always call a tool when it should: Sonnet in about one session in 3, Haiku never. A check on every edit does not have that problem. Nothing was rendered, so zero findings means on-system by these rules, a floor rather than a design review. Method, tables and limits are in the research write-up, which will be published separately.
+Every number comes from a deterministic read of your files. Claude writes the explanation, labelled as written by AI and kept apart from the numbers.
+
+## How the runs were done
+
+Claude Code, headless, on 10 public products pinned to one commit each: cal.com, Dub, Metabase, Plausible, SigNoz, trigger.dev and four more. 259 sessions, Sonnet 5 and Haiku 4.5, September 2026. Every changed file was judged by this tool's rules at the end of the session and at the pinned commit; a finding counts only if the session added it.
+
+Nothing was rendered. Zero findings means on-system by these rules: a floor, not a design review. Method, tables and limits are in the research write-up, which will be published separately.
 
 ## Live examples
 
-Eleven reports, hosted exactly as the tool writes them: self-contained HTML, every number deterministic, every path real. Four kits, a fresh install, a registry, Stencil, Lit and plain React.
+Eleven reports, hosted exactly as the tool writes them. Every number deterministic, every path real.
 
 - **[npx shadcn create, fresh](https://gregkozakiewicz.github.io/roast-my-design-system/examples/shadcn-create-fresh.html)** (factory install, all 61 components): read as a fresh install, "the score is the kit's, not yours"; 13 colours, every theme variable in place, shadcn's own 24 bracket values named and not counted. No score.
 - **[Unleash](https://gregkozakiewicz.github.io/roast-my-design-system/examples/unleash-mui.html)** (MUI): 1,109 files import the kit and the theme is read 6,166 times; 4 colours and 2 spacings per 100 kit files are written onto components. Score 60.
@@ -94,7 +140,7 @@ Eleven reports, hosted exactly as the tool writes them: self-contained HTML, eve
 - **[magicuidesign/magicui](https://gregkozakiewicz.github.io/roast-my-design-system/examples/magicui.html)** (registry): counted on the components it publishes, 52 off-theme colours per 100 files in the code it ships, its docs site kept out and named. Score 78.
 - **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): hardcoded colours sitting beside 744 colour tokens, and 37 !important declarations. Score 66.
 
-The full report for vercel/ai-chatbot, top to bottom, with "What the numbers mean", Claude's read of the scan, under the verdict:
+The full report for vercel/ai-chatbot, with "What the numbers mean", Claude's read of the scan, under the verdict:
 
 ![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the summary, the What the numbers mean analysis written by Claude, priced Where to start moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.0.6)
 
@@ -102,30 +148,35 @@ The same report in light mode (one file, built-in toggle):
 
 ![The diagnosis report in light mode](assets/report-light-hero.png?v=9.0.6)
 
-## What makes the numbers trustworthy
+## Why the numbers hold
 
-- **Deterministic.** A zero-dependency Node script reads every file, about a second on a normal repo, and returns the same numbers every run.
-- **Read-only, no network, no telemetry.** Nothing in your repo is modified and nothing about your code leaves your machine. The suite fails if package.json ever declares a dependency.
-- **Honest gaps and exclusions.** What the scan cannot read says "not measured" and drops out of the score. Test files, stories, docs sites, artwork and email templates are left out, and your own exclusions are printed in the report header with file counts.
-- **A real benchmark.** 112 public React repos scanned; a core fleet of 34 sets the medians, the rest feed the kit profiles so a shadcn repo is compared with shadcn repos. Ten reputable systems (Primer, Polaris, Carbon, GOV.UK and others) are the second yardstick. The builder is in `tools/benchmark/`, so the ruler can be checked.
-- **Importable scoring.** `scoreHarvest(harvest)` returns the score and metrics as plain data; the report and a CI check get the same numbers.
+- **Deterministic.** A zero-dependency Node script reads every file and returns the same numbers every run. About a second on a normal repo.
+- **Read-only. No network. No telemetry.** The test suite fails if package.json ever declares a dependency.
+- **Honest gaps.** What the scan cannot read says "not measured" and drops out of the score.
+- **Honest exclusions.** Tests, stories, docs sites, artwork and email templates are left out. Your own exclusions are printed in the report header with file counts.
+- **A real benchmark.** 112 public React repos. A core fleet of 34 sets the medians; the rest feed the kit profiles, so a shadcn repo is compared with shadcn repos. The builder is in `tools/benchmark/`.
+- **Importable scoring.** `scoreHarvest(harvest)` returns the score and metrics as plain data. The report and a CI check get the same numbers.
 
-The longer version, with what each exclusion covers, how a scan is scoped and what the plugin runs on your machine, is in [docs/reference.md](docs/reference.md).
+The long version, with scan scoping and what the plugin runs on your machine, is in [docs/reference.md](docs/reference.md).
 
-## What it works on
+## Works with
 
-**Supported**
+### Frameworks
 
-- React repos: Next, Remix, Vite and plain React.
-- Web-component repos: Stencil and Lit.
-- 4 kinds of repo: product, library, shadcn, registry.
-- 5 kit profiles: Tailwind theme, MUI, Mantine, Chakra, Ant Design.
-- Any styling on top: Tailwind, styled-components, Emotion, Sass, Less, vanilla-extract, Stitches, CVA, CSS Modules.
+React, Next.js, Remix, Vite
+Stencil, Lit, custom elements
 
-**Recognised, not supported yet**
+### Kits and styling
 
-- Vue, Angular and Svelte: named in the header, colours and spacing still counted, but components are not measured and the report says so.
-- HeroUI, NextUI, Radix Themes, Fluent UI, React Bootstrap and Grommet: named in the header, no kit rules.
+Tailwind, shadcn/ui, MUI, Mantine, Chakra UI, Ant Design
+CSS Modules, Sass, Less, Emotion, styled-components, vanilla-extract, CVA, Stitches
+
+Four kinds of repo: product, library, shadcn install, registry. Each compared with repos built the same way.
+
+### Recognised, not measured yet
+
+Vue, Angular, Svelte: named in the header, colours and spacing counted, components not measured. The report says so.
+HeroUI, NextUI, Radix Themes, Fluent UI, React Bootstrap, Grommet: named in the header, no kit rules.
 
 ## Every command
 
@@ -359,8 +410,6 @@ The tool reads the repository you point it at and writes its output next to it. 
 Yes, the median repo is already a mess. That is the point. An agent arriving in it will copy the mess faithfully and, where the mess runs out, add some of its own.
 
 **Your AI can write the UI. This makes sure it writes *your* UI.**
-
-<a href="https://github.com/gregkozakiewicz/roast-my-design-system"><img src="https://img.shields.io/badge/If%20it%20roasted%20you%20fairly%2C%20a%20star%20helps%20other%20people%20find%20it-a855f7?style=for-the-badge&logo=github&logoColor=white" alt="If it roasted you fairly, a star helps other people find it"></a>
 
 ## License
 

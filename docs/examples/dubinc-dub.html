@@ -3,15 +3,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Design-system diagnosis:​‌‌​​‌‌‌​‌‌‌​​‌​​‌‌​​‌​‌​‌‌​​‌‌‌​‌‌​‌​‌‌​‌‌​‌‌‌‌​‌‌‌‌​‌​​‌‌​​​​‌​‌‌​‌​‌‌​‌‌​‌​​‌​‌‌​​‌​‌​‌‌‌​‌‌‌​‌‌​‌​​‌​‌‌​​​‌‌​‌‌‌‌​‌​ dubinc/dub</title>
 <meta property="og:type" content="website">
-<meta property="og:title" content="dubinc/dub: 20/100 design-system health">
-<meta property="og:description" content="622 values like [400px] are written outside the Tailwind scale. An agent that reads them learns to do the same. 22 components exist in more than 1 version. An agent asked for a Button can not tell whi">
+<meta property="og:title" content="dubinc/dub: where an AI agent will invent UI · 20/100">
+<meta property="og:description" content="Most of this repo gives an agent something to copy. One gap remains: charts have no palette. 622 values like [400px] are written outside the Tailwind scale. An agent that reads them learns to do the s">
 <meta property="og:site_name" content="roast-my-design-system">
 <meta property="og:url" content="https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html">
 <meta property="og:image" content="https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/dubinc-dub.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="dubinc/dub: 20/100 design-system health">
-<meta name="twitter:description" content="622 values like [400px] are written outside the Tailwind scale. An agent that reads them learns to do the same. 22 components exist in more than 1 version. An agent asked for a Button can not tell whi">
+<meta name="twitter:title" content="dubinc/dub: where an AI agent will invent UI · 20/100">
+<meta name="twitter:description" content="Most of this repo gives an agent something to copy. One gap remains: charts have no palette. 622 values like [400px] are written outside the Tailwind scale. An agent that reads them learns to do the s">
 <meta name="twitter:image" content="https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/dubinc-dub.png">
 <meta name="author" content="Greg Kozakiewicz · gregkozakiewicz.com">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAAAAAAAAQCEeRdzAAACPklEQVR4nOVWTYh5URR/PlJYEKV8LKwkZalsmI2dZmMnK8pKmaZ87JSanexEkayUhSxsZyfJNBQ7UYqVhSShfM+v/6mXmtU81+p/Frfze+/d3++ce88993Hcf2cikehZ1GazWafTPUVDLBZjLBQKnU6HMTVvcrl8Op3ebrdsNgsokUiYUVP4Pp/v9s96vd79cwZGK95sNkkgGAwC2u12lhrY3u12C/b1ei2TyV5eXjabjV6vZ6BBa51MJin8arUKWKlU4H99fSkUCo5JUQ2HQxJwuVzIYLVawcdIVSs8CQoNpMQ+Go0Aw+EwwXw+D+h2u4Vr0LRSqUSMqVQKsN1uE3Q4HEql8ng8BgIBTnDhqlSqxWIBuvP5bDAYLBbL5XIBHAwGeBuJRODvdjun0/nnPOjraDRK8TYaDcBMJkMwFosBfn9/E0wkEn9OgjYgnU6fTidQwAGcTCbw9/u9VqvFUYB/vV5RskajkRNcTiaTKR6PI9j5fE7xlstlPM/lcgTr9ToneJ/5oOB4PB70O8Tb7/f9fv9sNqPkXl9fhQsQ9f1ktVqNvUVCxA6ZRxsf5pMAxnsuVBSOwvv7+6Phk0PsBNn0OOLC9haLReqdvBL/wUNKNPnt7Q0LjeVutVqhUEij0TwU9W8BVA4JUEUul8tarcZGhpbIarWiSeA0HQ4Hkvn4+GB56VMvov6DA+z1eplR89btdsE+Ho9tNhv3jOv+8/MTFz06M3ypVMqMnTfcwPhn4djG/tue+Mf4RGom9gMt6lAx16huIwAAAABJRU5ErkJggg==">
@@ -157,6 +157,9 @@
   .verdict-card .b1 { right:-64px; top:-64px; width:256px; height:256px; background:var(--blob); filter:blur(48px); }
   .verdict-card .b2 { left:-40px; bottom:-80px; width:224px; height:224px; background:var(--blob2); filter:blur(48px); }
   .verdict { position:relative; font:600 clamp(18px,2.6vw,24px)/1.45 var(--disp); letter-spacing:-.01em; margin-top:10px; }
+  .verdict-sub { position:relative; margin-top:12px; font-size:14.5px; line-height:1.6; color:var(--dim); }
+  .gap-empty { padding:0 26px 22px; color:var(--dim); font-size:14px; line-height:1.6; }
+  .gap-why { margin-top:6px; color:var(--dim); font-size:13.5px; }
 
   section, .agent { margin-top:28px; }
 
@@ -456,7 +459,7 @@
     background:currentColor; -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat; mask:url(data:image/png;base64,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) center/contain no-repeat; }
   .author:hover { text-decoration:underline; }
 </style>
-<!-- rmds-schema: gregkozakiewicz/9.0.7 -->
+<!-- rmds-schema: gregkozakiewicz/9.1.0 -->
 <!-- rmds-score: 20 -->
 </head><body>
 <button class="theme-toggle glass" aria-label="Switch between light and dark mode" onclick="(function(){var r=document.documentElement,t=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',t);try{localStorage.setItem('roast-theme',t)}catch(e){}})()">
@@ -472,29 +475,39 @@
 <aside class="side">
   <div class="eyebrow">Design-system diagnosis</div>
   <div class="repo"><span class="mono">dubinc/dub</span></div>
-  <div class="scanned">Scanned 2026-09-26 · 4,157 code files · 1065ms</div>
+  <div class="scanned">Scanned 2026-09-26 · 4,157 code files · 1363ms</div>
   <div class="score"><div class="eyebrow">Health score</div><div class="val">20<span class="slash">/</span><span class="of">100</span></div><div class="def">How safely an AI agent can build on this repo without going off-system. <b>Three fixes lift it to 50.</b></div></div>
   <div class="chips"><span class="chip">next</span><span class="chip">TypeScript</span><span class="chip">Tailwind CSS</span><span class="chip">CVA</span><span class="chip">monorepo</span><span class="chip chip-dim">design system: unrecognised</span><span class="chip chip-agent">packages/hubspot-app/CLAUDE.md</span></div>
   <div class="facts"><div class="excl">Left out by design: <span class="mono">example/</span> (1 UI file). A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div></div>
   <div class="eyebrow idx-head">Index</div>
-  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where to start</a><a href="#s-2"><i>02</i>Where agents will invent</a><a href="#s-3"><i>03</i>What your agent sees</a><a href="#s-4"><i>04</i>Your present</a><a href="#s-5"><i>05</i>Package by package</a><a href="#s-6"><i>06</i>Off-scale spacing</a><a href="#s-7"><i>07</i>Typography &amp; shape</a><a href="#s-8"><i>08</i>Where it hurts most</a><a href="#s-9"><i>09</i>The adoption map</a></nav>
+  <nav class="idx" id="idx"><a href="#s-1"><i>01</i>Where agents will invent</a><a href="#s-2"><i>02</i>What to fix</a><a href="#s-3"><i>03</i>What your agent sees</a><a href="#s-4"><i>04</i>Agent rules</a><a href="#s-5"><i>05</i>Package by package</a><a href="#s-6"><i>06</i>Off-scale spacing</a><a href="#s-7"><i>07</i>Typography &amp; shape</a><a href="#s-8"><i>08</i>Where it hurts most</a><a href="#s-9"><i>09</i>The adoption map</a></nav>
   <div class="excs"><b>Not yours, and not counted</b><p>193 files not judged (disposable-emails/route.ts, update/route.ts, email-domains/verify/route.ts and 190 more): email and print styling has to be inline, because there is no cascade to inherit. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>15 files not judged (quickstart.tsx, screenshot.tsx, qr-code-design-fields.tsx and 12 more): the file is mostly drawing rather than styling. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>11 files not judged (domain-renewal-invoice.tsx, partner-payout-invoice.tsx, [payoutId]/route.tsx and 8 more): a render-to-image surface accepts nothing but inline styling, so there is no on-system way to write one. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p><p>24 files not judged (multi-tags-icon.tsx, conversion-score-icon.tsx, logout.tsx and 21 more): the colours belong to the artwork, not to the interface. Not counted, but your agent reads them like everything else, so what is in there is still an example it can copy.</p></div>
-  <div class="side-foot">roast-my-design-system 9.0.7</div>
+  <div class="side-foot">roast-my-design-system 9.1.0</div>
 </aside>
 <main class="main">
   
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
-    <div class="eyebrow">Summary</div>
-    <div class="verdict">622 values like [400px] are written outside the Tailwind scale. An agent that reads them learns to do the same. 22 components exist in more than 1 version. An agent asked for a Button can not tell which one to use. 127 distinct colours for your agent to pick from, a design system needs ~24. Messier than the median of 34 scanned repos on 3 of 6 core metrics. And the median repo is already a mess.</div>
+    <div class="eyebrow">What will your agent learn here?</div>
+    <div class="verdict">Most of this repo gives an agent something to copy. One gap remains: charts have no palette.</div><div class="verdict-sub">622 values like [400px] are written outside the Tailwind scale. An agent that reads them learns to do the same. 22 components exist in more than 1 version. An agent asked for a Button can not tell which one to use. 127 distinct colours for your agent to pick from, a design system needs ~24. Messier than the median of 34 scanned repos on 3 of 6 core metrics. And the median repo is already a mess.</div>
   </div>
 
+<section id="s-1" class="glass pad" style="margin-top:16px">
+    <div class="sec-head"><h2>Where agents will invent</h2><p class="sub">One place where this repo gives an agent nothing to copy. Asked to build there, an agent invents, because that is what the repo taught it. Nothing here is a violation: there is no rule yet to break. Define the answer once and every agent after that inherits it.</p></div>
+    <div class="ledger">
+      <div class="ledger-row gap-row">
+        <span class="ledger-idx">01</span>
+        <div class="start-body"><div class="start-head"><div class="start-title">Charts have no palette</div></div><div class="sub">5 chart files paint 17 series colours by hand (apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/commissions-analytics-chart.tsx (8), packages/ui/src/charts/x-axis.tsx (3), apps/web/app/(ee)/partners.dub.co/(dashboard)/programs/[programSlug]/(enrolled)/page-client.tsx (2) and 2 more), and no token names a chart colour. The next chart will invent colours 18 to 23, because that is what every chart here did.</div>
+        <div class="sub" style="margin-top:6px"><b>Close it:</b> Name the series once (--chart-1, --chart-2 … in packages/tailwind-config/themes.css) and point the existing charts at them. From then on a chart that writes a colour by hand is a finding the checks catch.</div>
+        <div class="chips-row" style="margin-top:8px"><span class="chip mono">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/commissions-analytics-chart.tsx</span><span class="chip mono">packages/ui/src/charts/x-axis.tsx</span><span class="chip mono">apps/web/app/(ee)/partners.dub.co/(dashboard)/programs/[programSlug]/(enrolled)/page-client.tsx</span><span class="chip mono">packages/ui/src/charts/y-axis.tsx</span><span class="chip mono">packages/ui/src/mini-area-chart.tsx</span></div></div>
+      </div></div></section>
 
 
 
 
-<section id="s-1" class="glass pad">
-    <div class="sec-head"><h2>Where to start</h2><p class="sub">Three tweaks · <b class="proj">20 &rarr; 50</b></p></div>
+
+<section id="s-2" class="glass pad">
+    <div class="sec-head"><h2>Fix what makes agents guess</h2><p class="sub">Three tweaks · <b class="proj">20 &rarr; 50</b></p></div>
     <div class="ledger">
       <div class="ledger-row start-row">
         <span class="ledger-idx">01</span>
@@ -569,22 +582,12 @@ Work through the files named in the finding. When you are done, re-run the scan 
 npx roast-my-design-system@latest</div></div>
       </div></div></section>
 
-<section id="s-2" class="glass" style="margin-top:16px">
-    <div class="sec-head"><h2>Where agents will invent</h2><p class="sub">One place where this repo has no answer yet. An agent asked to build there will invent, because that is what the repo taught it. Close the gap once and the checks take over.</p></div>
-    <div class="ledger">
-      <div class="ledger-row gap-row">
-        <span class="ledger-idx">01</span>
-        <div class="start-body"><div class="start-head"><div class="start-title">Charts have no palette</div></div><div class="sub">5 chart files paint 17 series colours by hand (apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/commissions-analytics-chart.tsx (8), packages/ui/src/charts/x-axis.tsx (3), apps/web/app/(ee)/partners.dub.co/(dashboard)/programs/[programSlug]/(enrolled)/page-client.tsx (2) and 2 more), and no token names a chart colour. The next chart will invent colours 18 to 23, because that is what every chart here did.</div>
-        <div class="sub" style="margin-top:6px"><b>Close it:</b> Name the series once (--chart-1, --chart-2 … in packages/tailwind-config/themes.css) and point the existing charts at them. From then on a chart that writes a colour by hand is a finding the checks catch.</div>
-        <div class="chips-row" style="margin-top:8px"><span class="chip mono">apps/web/app/app.dub.co/(dashboard)/[slug]/(ee)/program/analytics/commissions-analytics-chart.tsx</span><span class="chip mono">packages/ui/src/charts/x-axis.tsx</span><span class="chip mono">apps/web/app/(ee)/partners.dub.co/(dashboard)/programs/[programSlug]/(enrolled)/page-client.tsx</span><span class="chip mono">packages/ui/src/charts/y-axis.tsx</span><span class="chip mono">packages/ui/src/mini-area-chart.tsx</span></div></div>
-      </div></div></section>
-
 <section id="s-3" class="glass pad agent">
     <div class="sec-head"><h2>What your AI agent sees today</h2></div>
     <p class="sub">Your agent reads <span class="mono">packages/hubspot-app/CLAUDE.md</span>. But none of it points at a single source of truth for components and tokens, because there isn't one yet. The numbers below are what your agent actually works from.</p><div class="chips"><span class="chip chip-agent">+1 nested in subfolders</span></div><p class="sub coverage">Readable by: Claude Code <b class="cov-yes">✓</b> · Codex <b class="cov-no">—</b> · Cursor <b class="cov-no">—</b> · <span class="dim">copy the same rules into an AGENTS.md and the other tools see them too</span></p></section>
 
 <section id="s-4" class="glass pad gift-sec">
-    <div class="sec-head"><h2>You sat through the roast</h2><p class="sub">so you get a present.</p></div>
+    <div class="sec-head"><h2>Give the agent the answers</h2><p class="sub">the rules file generated from this scan, wrapped as a present. Agents do not always ask before inventing, so the plugin also checks every file they edit, and guard-my-design-system checks the pull request.</p></div>
     <div class="gift-stage">
       <button class="gift" id="gift" aria-label="Unwrap your generated agent rules file">
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -666,7 +669,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 - Before styling anything new, look at a neighbouring component and match how it does it. Consistency with the repo beats personal preference.
 
 ---
-*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 9.0.7. Rescan after refactors to keep these rules honest.*
+*Generated by [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) ver. 9.1.0. Rescan after refactors to keep these rules honest.*
 </pre>
         <div class="gift-actions">
           <button class="gbtn" id="gift-copy">Copy the rules</button>
@@ -1167,8 +1170,8 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 <footer>
   <div class="foot-left">
-    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 9.0.7</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
-    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">9b2a8eeee7a1</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=9.0.7"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
+    <div>Generated by <a class="brand" href="https://github.com/gregkozakiewicz/roast-my-design-system">roast-my-design-system</a> <span class="ver">ver. 9.1.0</span> · free to run: <span class="mono" id="npx-cmd">npx roast-my-design-system@latest</span> <button type="button" class="copy-pill" id="npx-copy">copy</button> · also a Claude Code + Codex skill and a local MCP server</div>
+    <div class="foot-sub">Designed and built by <a class="author" href="https://gregkozakiewicz.com/?utm_source=roast-report"><span class="gk-mark"></span>Greg Kozakiewicz</a> · <span class="scan-id" title="scan id">9b2a8eeee7a1</span> · Think it got something wrong? <a class="feedback" href="https://github.com/gregkozakiewicz/roast-my-design-system/issues/new?template=feedback.yml&amp;version=9.1.0"><svg class="pulse" viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12.5 6.5 12.5 9.5 4 15 20.5 18 12.5 22 12.5"/></svg>Say so, and say which bit</a></div>
   </div>
   <span class="creds"><span>Non-destructive scan</span><span>Read-only</span><span>Paths are real</span></span>
 </footer>

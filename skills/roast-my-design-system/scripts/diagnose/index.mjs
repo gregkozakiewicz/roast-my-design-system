@@ -367,10 +367,10 @@ const gapLead = (noSystemLikely || fresh) ? '' : (() => {
 function gapSub() {
   const gaps = h.gaps ?? [];
   const meaning = gaps.length
-    ? `There your repo gives the agent no clear answer. When it needs to build there, it has to decide for itself.`
-    : `Wherever your agent needs to build here, your repo gives it a clear answer to copy.`;
+    ? `Your repo gives the agent no clear answer there. When it needs to build there, it has to decide for itself.`
+    : `Your repo gives the agent a clear answer for every check in this scan.`;
   const lift = startProjection && healthScore !== null && startProjection.after > healthScore
-    ? ` ${['One fix', 'Two fixes', 'Three fixes'][startProjection.count - 1] ?? 'The fixes'} below make${startProjection.count === 1 ? 's' : ''} those answers easier to copy: ${healthScore} to ${startProjection.after}.`
+    ? ` ${['One fix', 'Two fixes', 'Three fixes'][startProjection.count - 1] ?? 'The fixes'} below could raise your design system health score from ${healthScore} to ${startProjection.after}.`
     : ` ${esc(verdict)}`;
   return meaning + lift;
 }
@@ -1574,9 +1574,9 @@ function ogTags() {
 // index of what rendered, and what is not the team's and not counted.
 function sidePanel() {
   const date = esc((h.harvestedAt ?? '').slice(0, 10));
-  const def = 'How safely an AI agent can build on this repo without going off-system.';
+  const def = 'How well this repo follows the design system rules Roast checks.';
   const lift = startProjection && healthScore !== null && startProjection.after > healthScore
-    ? ` <b>${['One fix lifts', 'Two fixes lift', 'Three fixes lift'][startProjection.count - 1] ?? 'The fixes lift'} it to ${startProjection.after}.</b>` : '';
+    ? ` <b>${['One fix', 'Two fixes', 'Three fixes'][startProjection.count - 1] ?? 'The fixes'} could raise it to ${startProjection.after}.</b>` : '';
   const rp = P.shadcn?.registryPaint ?? null;
   const bd = breakdown.ownScore !== null && breakdown.installedPoints > 0 && rp
     ? `<div class="bd">Of which <b>${breakdown.installedPoints} point${breakdown.installedPoints === 1 ? '' : 's'}</b> come from installed code you did not write: ${esc(rp.dirs.map((d) => basename(d)).join(', '))} (${n(rp.files)} file${rp.files === 1 ? '' : 's'}, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}). Your own code alone would score <b>${breakdown.ownScore}</b>. Kept in the score because your agent reads those files like everything else; left out of the fixes because they are not yours to edit.</div>` : '';

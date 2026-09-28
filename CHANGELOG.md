@@ -12,8 +12,12 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   what that means for the agent, then what the fixes below do to the
   score ("Two fixes below make those answers easier to copy: 84 to 92").
   The "Where agents will invent" card opens with "No gaps found" too, and
-  its note on how many gap kinds are measured is one sentence. Scores and
-  counts are unchanged. README screenshots reshot.
+  its note on how many gap kinds are measured is one sentence. The score's
+  definition in the side panel is now "How well this repo follows the design
+  system rules Roast checks", with "Three fixes could raise it to 71" under
+  it, and the verdict card uses the same words: the score is evidence, the
+  gaps are the finding. Scores and counts are unchanged. README screenshots
+  reshot.
 
 ## 9.1.1 — 2026-09-28
 

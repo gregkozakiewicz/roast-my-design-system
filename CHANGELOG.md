@@ -2,8 +2,29 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.1.3 — 2026-09-29
+## 9.2.0 — 2026-09-29
 
+- **A button built from scratch is now a warning when the repo already
+  has a Button.** The live check (the edit hook, the MCP validate tool and
+  the review) only judged values until now. On Twenty, agents with the
+  hook on reached zero findings and still hand-made the button four times
+  in five, with clean token colours. The check now fires on a styled
+  button or a button tag that is dressed as a button: real padding, a
+  background or a border, and a label style such as a font weight. Rows,
+  tabs, close crosses, select triggers, option cards and icon squares
+  built on a button tag are left alone. It fires only when the file's own
+  package can import a Button that at least 20 files already import, and
+  the message gives the import line: "A styled button (StyledConnectButton)
+  where the repo already has <Button> (imported 274x from twenty-ui/input).
+  Use import { Button } from 'twenty-ui/input'. If it needs a kind the
+  Button lacks, add a variant there rather than a new button here." In a
+  monorepo the Button is chosen from the file's package or one it depends
+  on, never from another app in the same repo. Probed on fifteen repos:
+  seven warnings, six of them genuine. All eight buttons the test agents
+  wrote on Twenty are caught. Scores and report counts are unchanged; the
+  list of checks in a result gains "hand-made buttons where the repo has a
+  Button" when the repo has one. The guard doorway exports the same
+  functions and lists the Button candidates.
 - **A token's value pasted into a component is now a finding.** The live
   check (the edit hook, the MCP validate tool and the review) used to
   skip any hardcoded colour whose value matched a token, on the grounds

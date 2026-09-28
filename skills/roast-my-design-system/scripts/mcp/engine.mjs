@@ -23,6 +23,7 @@ import { oklab } from '../lib/color.mjs';
 import { tokenTwinFindings } from '../lib/tokentwins.mjs';
 import { avoidedImportFindings } from '../lib/avoidedimports.mjs';
 import { isChartFile, chartFindings } from '../lib/charts.mjs';
+import { handmadeButtonFindings } from '../lib/handmade.mjs';
 
 // What this engine measures — shipped with every result, clean or not.
 export const CHECKS = [
@@ -43,10 +44,11 @@ export const CHECKS = [
 // MUI repo says the kit check ran.
 export const KIT_CHECK = 'colours and pixel sizes written onto kit components where the theme has a value';
 export const PALETTE_CHECK = 'palette classes where the theme names a colour';
+export const BUTTON_CHECK = 'hand-made buttons where the repo has a Button';
 export function checksFor(k) {
-  if (k?.kit) return [...CHECKS, KIT_CHECK];
-  if (k?.tailwind || k?.shadcn) return [...CHECKS, PALETTE_CHECK];
-  return CHECKS;
+  const list = k?.kit ? [...CHECKS, KIT_CHECK] : (k?.tailwind || k?.shadcn) ? [...CHECKS, PALETTE_CHECK] : [...CHECKS];
+  if (k?.buttons?.length) list.push(BUTTON_CHECK);
+  return list;
 }
 // "an MUI component", "an Ant Design component", "a Mantine component"
 
@@ -232,6 +234,11 @@ export function validateContent(content, k) {
         'Reuse a colour the repo already has rather than adding to the count.');
     }
   }
+
+  // ---------- the choice, not the value: a button from scratch ----------
+  // The value checks above cannot see it. Hooked agents on Twenty passed
+  // them and still hand-made the button four times in five (2026-09-29).
+  if (!css) for (const f of handmadeButtonFindings(text, { file }, k)) add(f.rule, f.severity, f.index, f.message, f.fix);
 
   // ---------- spacing ----------
   for (const s of got.spacing) {

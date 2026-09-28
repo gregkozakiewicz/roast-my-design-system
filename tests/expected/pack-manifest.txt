@@ -26,6 +26,7 @@ skills/roast-my-design-system/scripts/lib/feedback.mjs
 skills/roast-my-design-system/scripts/lib/fixprompt.mjs
 skills/roast-my-design-system/scripts/lib/gaps.mjs
 skills/roast-my-design-system/scripts/lib/guard-api.mjs
+skills/roast-my-design-system/scripts/lib/handmade.mjs
 skills/roast-my-design-system/scripts/lib/kitpaint.mjs
 skills/roast-my-design-system/scripts/lib/lasttouched.mjs
 skills/roast-my-design-system/scripts/lib/nearpairs.mjs

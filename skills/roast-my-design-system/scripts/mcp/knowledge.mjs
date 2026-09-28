@@ -19,6 +19,7 @@ import { findDuplicates } from '../harvest/duplicates.mjs';
 import { harvestContext } from '../harvest/context.mjs';
 import { loadExclusions } from '../lib/exclusions.mjs';
 import { resolveWorkspaces } from '../lib/workspaces.mjs';
+import { buttonCandidates } from '../lib/handmade.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { typefaceOf } from '../lib/typefaces.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
@@ -131,6 +132,18 @@ export function loadKnowledge(root) {
 
   const neverImported = neverImportedComponents(components, profile.uiDir);
 
+  // The Button the repo answers with, per package: the candidates, and what
+  // each workspace package depends on, so a file is pointed at a Button it
+  // can actually import (lib/handmade.mjs).
+  const readK = (f) => readSource(join(root, f));
+  const buttons = buttonCandidates(components, readK, workspaces);
+  const packageDeps = new Map();
+  for (const w of workspaces) {
+    let pj = null;
+    try { pj = JSON.parse(readK(`${w.dir}/package.json`) ?? 'null'); } catch { /* not a package after all */ }
+    packageDeps.set(w.dir, new Set(Object.keys({ ...pj?.dependencies, ...pj?.devDependencies, ...pj?.peerDependencies })));
+  }
+
   // The copies of each duplicated name with their usage, and the colours each
   // copy hard-codes: what the avoided-import check names (lib/avoidedimports).
   const read = (file) => readSource(join(root, file));
@@ -160,6 +173,8 @@ export function loadKnowledge(root) {
     workspaces,
     // indexes
     colorInfo,
+    buttons,
+    packageDeps,
     tokenNames,
     tokenSources,
     tokenColors,

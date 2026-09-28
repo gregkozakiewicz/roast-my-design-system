@@ -25,6 +25,8 @@ import { repoTokenDefs } from './tokentwins.mjs';
 import { dupeCopiesOf } from './avoidedimports.mjs';
 import { loadExclusions } from './exclusions.mjs';
 import { WIDGET_CONFIG_RE } from './exempt.mjs';
+import { buttonCandidates } from './handmade.mjs';
+import { resolveWorkspaces } from './workspaces.mjs';
 import { hexRgb } from './nearpairs.mjs';
 import { typefaceOf, GENERIC_FONTS } from './typefaces.mjs';
 
@@ -63,6 +65,9 @@ export { kitPaintFindings };
 export { tokenTwinFindings, tokenDefsOf } from './tokentwins.mjs';
 export { avoidedImportFindings, canonicalCopy } from './avoidedimports.mjs';
 export { isChartFile, chartSystemOf, chartTier, chartFindings } from './charts.mjs';
+// a button from scratch where the repo has a Button (9.2.0); learnSystem
+// hands over `buttons`, `workspaces` and `packageDeps` for buttonFor
+export { handmadeButtons, handmadeButtonFindings, buttonCandidates, buttonFor, BUTTON_MIN_USES } from './handmade.mjs';
 
 // Radius, font size, shadow and typeface: the patterns, so both checkers agree
 // on what a declaration is and what counts as a disciplined value.
@@ -137,8 +142,21 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     }
   }
 
+  // the Button the repo answers with, per package (lib/handmade.mjs)
+  const workspaces = resolveWorkspaces(repoRoot);
+  const buttons = buttonCandidates(ledger, read, workspaces);
+  const packageDeps = new Map();
+  for (const w of workspaces) {
+    let pj = null;
+    try { pj = JSON.parse(read(`${w.dir}/package.json`) ?? 'null'); } catch { /* not a package after all */ }
+    packageDeps.set(w.dir, new Set(Object.keys({ ...pj?.dependencies, ...pj?.devDependencies, ...pj?.peerDependencies })));
+  }
+
   return {
     tokenFile: t.tokenFile,
+    buttons,
+    workspaces,
+    packageDeps,
     // The files that state the palette: token stylesheets, a Tailwind config,
     // palette data, a kit theme. Only there is a token's raw value the
     // definition; in any other file it is a paste of the value where the

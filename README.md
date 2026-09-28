@@ -142,11 +142,11 @@ Eleven reports, hosted exactly as the tool writes them. Every number determinist
 
 The full report for vercel/ai-chatbot. The verdict answers what the agent will learn here, the gap section comes first, then "What the repo teaches the agent", Claude's read of the scan:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the verdict on where the agent will have to guess, the Where agents will invent section, the What the repo teaches the agent analysis written by Claude, priced Fix what makes agents guess moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.1.1)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then the verdict on where the agent will have to guess, the Where agents will invent section, the What the repo teaches the agent analysis written by Claude, priced Fix what makes agents guess moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.1.2)
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](assets/report-light-hero.png?v=9.1.1)
+![The diagnosis report in light mode](assets/report-light-hero.png?v=9.1.2)
 
 ## Why the numbers hold
 

@@ -2,6 +2,19 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.1.2 — 2026-09-28
+
+- **The verdict card says "No gaps found" and stops there.** 9.1.1 still
+  answered the question with a sentence about what the scan checks, and
+  the line under it said the repo was in good shape while the side panel
+  promised two fixes. The headline is now the answer alone: "No gaps
+  found", or "One gap: charts have no palette". The line under it says
+  what that means for the agent, then what the fixes below do to the
+  score ("Two fixes below make those answers easier to copy: 84 to 92").
+  The "Where agents will invent" card opens with "No gaps found" too, and
+  its note on how many gap kinds are measured is one sentence. Scores and
+  counts are unchanged. README screenshots reshot.
+
 ## 9.1.1 — 2026-09-28
 
 - **The report's first question is now "Where will your agent have to

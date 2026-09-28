@@ -357,10 +357,23 @@ let verdict = noSystemLikely
 // lib/gaps admitted after a fleet probe; nothing else is called a gap.
 const gapLead = (noSystemLikely || fresh) ? '' : (() => {
   const gaps = h.gaps ?? [];
-  if (!gaps.length) return 'Nowhere that this scan checks: your repo gives the agent a clear answer to copy.';
+  if (!gaps.length) return 'No gaps found.';
   const named = gaps.map((g) => g.title.charAt(0).toLowerCase() + g.title.slice(1));
-  return `${gaps.length === 1 ? 'In one place' : `In ${gaps.length} places`} your repo gives the agent no clear answer: ${esc(named.join('; '))}. Asked to build there, it has to decide for itself.`;
+  return `${gaps.length === 1 ? 'One gap' : `${gaps.length} gaps`}: ${esc(named.join('; '))}.`;
 })();
+// Under the headline: what a gap means for the agent, then what the fixes
+// below do to the score. The measured verdict stands in when there is no
+// projection to quote, so the card never contradicts the side panel.
+function gapSub() {
+  const gaps = h.gaps ?? [];
+  const meaning = gaps.length
+    ? `There your repo gives the agent no clear answer. When it needs to build there, it has to decide for itself.`
+    : `Wherever your agent needs to build here, your repo gives it a clear answer to copy.`;
+  const lift = startProjection && healthScore !== null && startProjection.after > healthScore
+    ? ` ${['One fix', 'Two fixes', 'Three fixes'][startProjection.count - 1] ?? 'The fixes'} below make${startProjection.count === 1 ? 's' : ''} those answers easier to copy: ${healthScore} to ${startProjection.after}.`
+    : ` ${esc(verdict)}`;
+  return meaning + lift;
+}
 if (bench && findings.length && !fresh) {
   const core = [['colors', tokenLed ? colorStrays : colors.length], ['greys', tokenLed ? greyStrays : greys.length],
     ['spacing', spacingTotal], ['typefaces', typefaces.length], ['exactDuplicates', hardDupes.length], ['inlineStyles', inline.count]];
@@ -1263,10 +1276,10 @@ function gapsSection() {
   const gaps = h.gaps ?? [];
   if (!gaps.length) {
     return `<section class="glass pad" style="margin-top:16px">
-    ${sectionHead('Where agents will invent', 'No gap found: the gaps where a design system has no answer yet are all closed here. This scan checks for one kind of gap so far, a chart palette, and this repo either has one or has no charts. The list grows as more gap kinds are measured on real agent runs; a clean result here says the known gaps are closed, and no more than that.')}
+    ${sectionHead('Where agents will invent', 'No gaps found. One kind of gap is measured so far, a chart palette, and this repo either has one or has no charts. The list grows as more kinds are proven on real agent runs.')}
 </section>`;
   }
-  const head = `The gaps where your design system has no answer yet. ${gaps.length === 1 ? 'One place' : `${gaps.length} places`} where this repo gives an agent nothing to copy; asked to build there, an agent invents, because that is what the repo taught it. Nothing here is a violation: there is no rule yet to break. Define the answer once and every agent after that inherits it.`;
+  const head = `The gaps where your design system has no answer yet. Asked to build there, an agent invents, because that is what the repo taught it. Nothing here is a violation: there is no rule yet to break. Define the answer once and every agent after that inherits it.`;
   return `<section class="glass pad" style="margin-top:16px">
     ${sectionHead('Where agents will invent', head)}
     <div class="ledger">${gaps.map((g, i) => `
@@ -2112,7 +2125,7 @@ ${sidePanel()}
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     ${eyebrow(noSystemLikely || fresh ? 'Summary' : 'Where will your agent have to guess?')}
-    ${gapLead ? `<div class="verdict">${gapLead}</div><div class="verdict-sub">${esc(verdict)}</div>` : `<div class="verdict">${esc(verdict)}</div>`}
+    ${gapLead ? `<div class="verdict">${gapLead}</div><div class="verdict-sub">${gapSub()}</div>` : `<div class="verdict">${esc(verdict)}</div>`}
   </div>
 
 ${gapsSection()}

@@ -351,14 +351,15 @@ let verdict = noSystemLikely
     ? 'This repo is in good shape, and your agent has rules to read. Keep them in step with the code.'
     : 'This repo is in good shape. The gap is documentation: your agent still can\'t see the system.')
   : findings.slice(0, 3).join('. ') + '.';
-// The lead line answers the report's question before the measured verdict
-// does: does this repo give an agent something to copy, and where does it
-// not. A gap named here is one lib/gaps admitted after a fleet probe.
+// The lead line answers the report's first question, where will the agent
+// have to guess, before the measured verdict does. A repo with an answer gets
+// copied; a repo with no answer gets guessed at. A gap named here is one
+// lib/gaps admitted after a fleet probe; nothing else is called a gap.
 const gapLead = (noSystemLikely || fresh) ? '' : (() => {
   const gaps = h.gaps ?? [];
-  if (!gaps.length) return 'This repo gives an agent something to copy everywhere this scan can measure.';
+  if (!gaps.length) return 'Nowhere that this scan checks: your repo gives the agent a clear answer to copy.';
   const named = gaps.map((g) => g.title.charAt(0).toLowerCase() + g.title.slice(1));
-  return `Most of this repo gives an agent something to copy. ${gaps.length === 1 ? 'One gap remains' : `${gaps.length} gaps remain`}: ${esc(named.join('; '))}.`;
+  return `${gaps.length === 1 ? 'In one place' : `In ${gaps.length} places`} your repo gives the agent no clear answer: ${esc(named.join('; '))}. Asked to build there, it has to decide for itself.`;
 })();
 if (bench && findings.length && !fresh) {
   const core = [['colors', tokenLed ? colorStrays : colors.length], ['greys', tokenLed ? greyStrays : greys.length],
@@ -1262,10 +1263,10 @@ function gapsSection() {
   const gaps = h.gaps ?? [];
   if (!gaps.length) {
     return `<section class="glass pad" style="margin-top:16px">
-    ${sectionHead('Where agents will invent', 'No gap found. This scan checks for one kind of gap so far, a chart palette, and this repo either has one or has no charts. The list grows as more gap kinds are measured on real agent runs; a clean result here says the known gaps are closed, and no more than that.')}
+    ${sectionHead('Where agents will invent', 'No gap found: the gaps where a design system has no answer yet are all closed here. This scan checks for one kind of gap so far, a chart palette, and this repo either has one or has no charts. The list grows as more gap kinds are measured on real agent runs; a clean result here says the known gaps are closed, and no more than that.')}
 </section>`;
   }
-  const head = `${gaps.length === 1 ? 'One place' : `${gaps.length} places`} where this repo gives an agent nothing to copy. Asked to build there, an agent invents, because that is what the repo taught it. Nothing here is a violation: there is no rule yet to break. Define the answer once and every agent after that inherits it.`;
+  const head = `The gaps where your design system has no answer yet. ${gaps.length === 1 ? 'One place' : `${gaps.length} places`} where this repo gives an agent nothing to copy; asked to build there, an agent invents, because that is what the repo taught it. Nothing here is a violation: there is no rule yet to break. Define the answer once and every agent after that inherits it.`;
   return `<section class="glass pad" style="margin-top:16px">
     ${sectionHead('Where agents will invent', head)}
     <div class="ledger">${gaps.map((g, i) => `
@@ -2110,7 +2111,7 @@ ${sidePanel()}
     : `There is most likely <b>no design system in this repo</b>: almost no colour or spacing values were found. Styling may live outside this codebase (CDN stylesheets, a parent repo, or generated output). No score is given.`}</span></div>` : ''}
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
-    ${eyebrow(noSystemLikely || fresh ? 'Summary' : 'What will your agent learn here?')}
+    ${eyebrow(noSystemLikely || fresh ? 'Summary' : 'Where will your agent have to guess?')}
     ${gapLead ? `<div class="verdict">${gapLead}</div><div class="verdict-sub">${esc(verdict)}</div>` : `<div class="verdict">${esc(verdict)}</div>`}
   </div>
 

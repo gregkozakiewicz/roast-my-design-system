@@ -2,6 +2,21 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.1.1 — 2026-09-28
+
+- **The report's first question is now "Where will your agent have to
+  guess?"** The verdict card asked "what will your agent learn here?" and
+  answered with "this repo gives an agent something to copy everywhere
+  this scan can measure", which read as a limit of the scan rather than a
+  diagnosis of the repo. The card now opens with the new question and a
+  lead line that answers it directly: "Nowhere that this scan checks: your
+  repo gives the agent a clear answer to copy", or "In one place your repo
+  gives the agent no clear answer: charts have no palette. Asked to build
+  there, it has to decide for itself." The "Where agents will invent"
+  section opens with "the gaps where your design system has no answer
+  yet", so the page reads in order: where the agent guesses, what makes it
+  guess, how to fix it. Scores and counts are unchanged.
+
 ## 9.1.0 — 2026-09-26
 
 - **The report answers one question first: what will your agent learn

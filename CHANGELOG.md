@@ -25,6 +25,18 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   list of checks in a result gains "hand-made buttons where the repo has a
   Button" when the repo has one. The guard doorway exports the same
   functions and lists the Button candidates.
+- **A use imported by package name is credited to that package's copy
+  only.** When two components share a name across a monorepo (an old and
+  a new design-system package, an app and its marketing site), a file
+  importing by the workspace package name used to credit every copy. On
+  Twenty the marketing site's Button carried the app's 274 uses; on
+  cal.com the new design-system package's Alert showed 65 uses when no
+  file imports it. The copy inside the named package now takes the
+  credit. Measured on 17 repos, the 11 hosted examples included: no score
+  moved. Counts can move where names are shared: cal.com's "never
+  imported" rises from 101 to 142, which is where its migration stands.
+  Which copy the report calls canonical, and the import the rules file
+  names, follow the corrected counts.
 - **A token's value pasted into a component is now a finding.** The live
   check (the edit hook, the MCP validate tool and the review) used to
   skip any hardcoded colour whose value matched a token, on the grounds

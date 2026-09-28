@@ -6,6 +6,7 @@
  */
 import { join, basename, posix } from 'node:path';
 import { readSource } from './walk.mjs';
+import { resolveWorkspaces } from '../lib/workspaces.mjs';
 
 const QUOTES = new Set(['"', "'", '`']);
 
@@ -169,7 +170,7 @@ const stripExt = (f) => f.replace(/\.[cm]?[jt]sx?$/, '');
  * (`../ui` → ui/index.ts) resolves to the copy inside that folder. A file that
  * defines the name itself means its own. Returns [def] or null when unsure.
  */
-function importedDef(src, file, name, defs) {
+function importedDef(src, file, name, defs, workspaces = []) {
   const own = defs.find((d) => d.file === file);
   if (own) return [own];
   for (const m of src.matchAll(/import\s+(?:type\s+)?([^'";]*?)\s+from\s*['"]([^'"]+)['"]/g)) {
@@ -181,7 +182,19 @@ function importedDef(src, file, name, defs) {
     const spec = m[2];
     let target = null, suffix = null;
     if (spec.startsWith('.')) target = posix.normalize(posix.join(posix.dirname(file), spec));
-    else { const a = /^(?:@|~|#)\/(.+)$/.exec(spec); if (a) suffix = a[1]; else return null; }
+    else {
+      const a = /^(?:@|~|#)\/(.+)$/.exec(spec);
+      if (a) suffix = a[1];
+      else {
+        // A workspace package by name (twenty-ui/input, @calcom/ui): the copy
+        // inside that package's folder. Until now every copy was credited,
+        // so Twenty's marketing-site Button carried the app's 274 uses too.
+        const ws = workspaces.find((w) => spec === w.name || spec.startsWith(`${w.name}/`));
+        if (!ws) return null;
+        const inside = defs.filter((d) => d.file.startsWith(`${ws.dir}/`));
+        return inside.length === 1 ? inside : null;
+      }
+    }
     const hit = defs.filter((d) => {
       const f = stripExt(d.file);
       if (target !== null) return f === target || f === `${target}/index` || d.file.startsWith(`${target}/`);
@@ -226,6 +239,7 @@ export function harvestComponents(root, codeFiles) {
   }
 
   // Pass 2: usages (skip the defining file's own render of itself is fine to count)
+  const workspaces = resolveWorkspaces(root);
   const byName = new Map();
   for (const c of components) {
     if (!byName.has(c.name)) byName.set(c.name, []);
@@ -244,7 +258,7 @@ export function harvestComponents(root, codeFiles) {
       // features/invoices each "used 12x" (8 and 4 in truth), so neither read
       // as the canon (Ledgerly, 2026-09-24). Unresolved imports keep the old
       // rule and credit every copy.
-      const owners = defs.length > 1 ? importedDef(src, file, name, defs) ?? defs : defs;
+      const owners = defs.length > 1 ? importedDef(src, file, name, defs, workspaces) ?? defs : defs;
       for (const def of owners) {
         if (def.file === file) continue; // internal render/recursion, not adoption
         def.usageCount += n;

@@ -12,6 +12,7 @@ import { tmpdir } from 'node:os';
 import { walkRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
 import { harvestComponents, tsconfigAliases } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
 import { loadExclusions } from '../../skills/roast-my-design-system/scripts/lib/exclusions.mjs';
+import { resolveWorkspaces } from '../../skills/roast-my-design-system/scripts/lib/workspaces.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
 
@@ -67,5 +68,30 @@ test('a tsconfig path alias credits the copy under the folder it names', () => {
   const uses = (file) => components.find((c) => c.name === 'Button' && c.file === file)?.usageCount;
   assert.equal(uses('static/app/components/core/button/button.tsx'), 6);
   assert.equal(uses('static/app/views/settings/Button.tsx'), 2);
+  rmSync(root, { recursive: true, force: true });
+});
+
+test('workspaces declared one level down (a Go root with webapp/) are found and credited', () => {
+  const root = mkdtempSync(join(tmpdir(), 'roast-attribution-sub-'));
+  const F = {
+    'go.mod': 'module example.com/app\n',
+    'webapp/package.json': JSON.stringify({ name: 'webapp', private: true, workspaces: ['channels', 'platform/shared'] }),
+    'webapp/platform/shared/package.json': JSON.stringify({ name: '@acme/shared', dependencies: { react: '^19.0.0' } }),
+    'webapp/platform/shared/src/components/button/button.tsx': comp('Button'),
+    'webapp/channels/package.json': JSON.stringify({ name: 'channels', dependencies: { '@acme/shared': '*', react: '^19.0.0' } }),
+    'webapp/channels/src/components/threading/button.tsx': comp('Button'),
+  };
+  for (let i = 0; i < 3; i++) F[`webapp/channels/src/Page${i}.tsx`] = page(i, '@acme/shared/components/button');
+  F['webapp/channels/src/Thread.tsx'] = page(8, './components/threading/button');
+  for (const [f, body] of Object.entries(F)) {
+    mkdirSync(join(root, dirname(f)), { recursive: true });
+    writeFileSync(join(root, f), body);
+  }
+  assert.deepEqual(resolveWorkspaces(root).map((w) => w.dir), ['webapp/channels', 'webapp/platform/shared']);
+  const files = walkRepo(root, 14, loadExclusions(root, []));
+  const { components } = harvestComponents(root, files.code);
+  const uses = (file) => components.find((c) => c.name === 'Button' && c.file === file)?.usageCount;
+  assert.equal(uses('webapp/platform/shared/src/components/button/button.tsx'), 6);
+  assert.equal(uses('webapp/channels/src/components/threading/button.tsx'), 2);
   rmSync(root, { recursive: true, force: true });
 });

@@ -44,6 +44,16 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   (Sentry's Button: 1166 uses, `@sentry/scraps/button`). Comments and
   trailing commas in tsconfig are tolerated; a bare `*` catch-all is
   ignored. Measured on Sentry, Grafana and Excalidraw: no score moved.
+- **Workspaces declared one level down are found.** A repo whose root
+  is Go or Python often keeps its JavaScript in a subfolder, with the
+  workspaces declared there. Mattermost's root has no package.json and
+  webapp/package.json declares its packages. When the root declares none,
+  the first subfolder that does is read, and its packages are reported
+  with the subfolder in their path. On Mattermost the shared package's
+  Button now reads 294 uses and the two local copies 16 and 12, where all
+  three read about 300 before. The report shows Mattermost's three
+  packages; the score is unchanged. Measured on the same 17 repos: no
+  other repo changed.
 - **A token's value pasted into a component is now a finding.** The live
   check (the edit hook, the MCP validate tool and the review) used to
   skip any hardcoded colour whose value matched a token, on the grounds

@@ -57,12 +57,35 @@ const memo = new Map();
 const mtime = (p) => { try { return statSync(p).mtimeMs; } catch { return 0; } };
 
 export function resolveWorkspaces(root) {
-  const key = `${mtime(join(root, 'package.json'))}:${mtime(join(root, 'pnpm-workspace.yaml'))}`;
+  const sub = workspaceSubroot(root);
+  const at = sub ? join(root, sub) : root;
+  const key = `${sub ?? ''}:${mtime(join(at, 'package.json'))}:${mtime(join(at, 'pnpm-workspace.yaml'))}`;
   const hit = memo.get(root);
   if (hit && hit.key === key) return hit.value.map((w) => ({ ...w }));
-  const value = resolveWorkspacesUncached(root);
+  const value = resolveWorkspacesUncached(at).map((w) => (sub ? { ...w, dir: `${sub}/${w.dir}` } : w));
   memo.set(root, { key, value });
   return value.map((w) => ({ ...w }));
+}
+
+const declaresWorkspaces = (dir) => {
+  const pkg = readJSON(join(dir, 'package.json'));
+  return !!(Array.isArray(pkg?.workspaces) || Array.isArray(pkg?.workspaces?.packages) || existsSync(join(dir, 'pnpm-workspace.yaml')));
+};
+/**
+ * A polyglot repo keeps its JavaScript one level down: Mattermost's root is
+ * Go and webapp/package.json declares the workspaces (2026-09-29). When the
+ * root declares none, the first immediate subfolder that does is the
+ * workspace root, and every package dir is reported under it.
+ */
+function workspaceSubroot(root) {
+  if (declaresWorkspaces(root)) return null;
+  let entries;
+  try { entries = readdirSync(root, { withFileTypes: true }); } catch { return null; }
+  for (const e of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+    if (!e.isDirectory() || e.name.startsWith('.') || e.name === 'node_modules') continue;
+    if (declaresWorkspaces(join(root, e.name))) return e.name;
+  }
+  return null;
 }
 
 function resolveWorkspacesUncached(root) {

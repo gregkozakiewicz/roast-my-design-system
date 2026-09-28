@@ -37,6 +37,13 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   imported" rises from 101 to 142, which is where its migration stands.
   Which copy the report calls canonical, and the import the rules file
   names, follow the corrected counts.
+- **Import aliases declared in tsconfig are resolved the same way.** A
+  path such as `"@sentry/scraps/*": ["./static/app/components/core/*"]`
+  now credits the copy under that folder, and the hand-made button check
+  can name the import line on repos that alias their components folder
+  (Sentry's Button: 1166 uses, `@sentry/scraps/button`). Comments and
+  trailing commas in tsconfig are tolerated; a bare `*` catch-all is
+  ignored. Measured on Sentry, Grafana and Excalidraw: no score moved.
 - **A token's value pasted into a component is now a finding.** The live
   check (the edit hook, the MCP validate tool and the review) used to
   skip any hardcoded colour whose value matched a token, on the grounds

@@ -20,6 +20,7 @@ import { harvestContext } from '../harvest/context.mjs';
 import { loadExclusions } from '../lib/exclusions.mjs';
 import { resolveWorkspaces } from '../lib/workspaces.mjs';
 import { buttonCandidates } from '../lib/handmade.mjs';
+import { tsconfigAliases } from '../harvest/components.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { typefaceOf } from '../lib/typefaces.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
@@ -136,7 +137,7 @@ export function loadKnowledge(root) {
   // each workspace package depends on, so a file is pointed at a Button it
   // can actually import (lib/handmade.mjs).
   const readK = (f) => readSource(join(root, f));
-  const buttons = buttonCandidates(components, readK, workspaces);
+  const buttons = buttonCandidates(components, readK, workspaces, tsconfigAliases(root));
   const packageDeps = new Map();
   for (const w of workspaces) {
     let pj = null;

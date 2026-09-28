@@ -19,7 +19,7 @@ import { KITS } from '../profiles/kit-common.mjs';
 import { kitPaintFindings } from './kitpaint.mjs';
 import { PALETTE_CLASS_RE, blankComments } from '../harvest/paint.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
-import { harvestComponents, definedComponents } from '../harvest/components.mjs';
+import { harvestComponents, definedComponents, tsconfigAliases } from '../harvest/components.mjs';
 import { findDuplicates } from '../harvest/duplicates.mjs';
 import { repoTokenDefs } from './tokentwins.mjs';
 import { dupeCopiesOf } from './avoidedimports.mjs';
@@ -144,7 +144,7 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
 
   // the Button the repo answers with, per package (lib/handmade.mjs)
   const workspaces = resolveWorkspaces(repoRoot);
-  const buttons = buttonCandidates(ledger, read, workspaces);
+  const buttons = buttonCandidates(ledger, read, workspaces, tsconfigAliases(repoRoot));
   const packageDeps = new Map();
   for (const w of workspaces) {
     let pj = null;

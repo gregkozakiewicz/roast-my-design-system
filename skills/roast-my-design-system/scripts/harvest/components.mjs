@@ -8,6 +8,36 @@ import { join, basename, posix } from 'node:path';
 import { readSource } from './walk.mjs';
 import { resolveWorkspaces } from '../lib/workspaces.mjs';
 
+/**
+ * Import aliases a tsconfig declares: "@sentry/scraps/*": ["./static/app/
+ * components/core/*"] means a file importing @sentry/scraps/button means the
+ * copy under static/app/components/core. Read tolerantly (tsconfig is JSON
+ * with comments and trailing commas); a bare "*" catch-all is not an alias.
+ * @returns [{ prefix, dir }] longest prefix first
+ */
+export function tsconfigAliases(root) {
+  let text;
+  try { text = readSource(join(root, 'tsconfig.json')); } catch { return []; }
+  if (!text) return [];
+  let cfg;
+  try {
+    cfg = JSON.parse(text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '').replace(/,(\s*[}\]])/g, '$1'));
+  } catch { return []; }
+  const paths = cfg?.compilerOptions?.paths;
+  if (!paths || typeof paths !== 'object') return [];
+  const base = (cfg.compilerOptions.baseUrl ?? '.').replace(/^\.\/?/, '').replace(/\/$/, '');
+  const out = [];
+  for (const [key, targets] of Object.entries(paths)) {
+    if (key === '*' || !Array.isArray(targets) || typeof targets[0] !== 'string') continue;
+    const prefix = key.replace(/\/?\*$/, '');
+    if (!prefix) continue;
+    const target = targets[0].replace(/^\.\/?/, '').replace(/\/?\*$/, '').replace(/\/$/, '');
+    const dir = posix.normalize(base ? `${base}/${target}` : target).replace(/^\.\/?/, '');
+    if (dir && dir !== '.') out.push({ prefix, dir });
+  }
+  return out.sort((a, b) => b.prefix.length - a.prefix.length);
+}
+
 const QUOTES = new Set(['"', "'", '`']);
 
 // ---- brace/string-aware helpers (verbatim from 1.0) ----
@@ -170,7 +200,7 @@ const stripExt = (f) => f.replace(/\.[cm]?[jt]sx?$/, '');
  * (`../ui` → ui/index.ts) resolves to the copy inside that folder. A file that
  * defines the name itself means its own. Returns [def] or null when unsure.
  */
-function importedDef(src, file, name, defs, workspaces = []) {
+function importedDef(src, file, name, defs, workspaces = [], aliases = []) {
   const own = defs.find((d) => d.file === file);
   if (own) return [own];
   for (const m of src.matchAll(/import\s+(?:type\s+)?([^'";]*?)\s+from\s*['"]([^'"]+)['"]/g)) {
@@ -184,7 +214,13 @@ function importedDef(src, file, name, defs, workspaces = []) {
     if (spec.startsWith('.')) target = posix.normalize(posix.join(posix.dirname(file), spec));
     else {
       const a = /^(?:@|~|#)\/(.+)$/.exec(spec);
-      if (a) suffix = a[1];
+      // a tsconfig alias first: it is the repo's own statement of where the
+      // specifier points, and it can name a folder no workspace declares
+      const al = aliases.find((x) => spec === x.prefix || spec.startsWith(`${x.prefix}/`));
+      if (al) {
+        const rest = spec === al.prefix ? '' : spec.slice(al.prefix.length + 1);
+        target = posix.normalize(rest ? `${al.dir}/${rest}` : al.dir).replace(/\.[cm]?[jt]sx?$/, '');
+      } else if (a) suffix = a[1];
       else {
         // A workspace package by name (twenty-ui/input, @calcom/ui): the copy
         // inside that package's folder. Until now every copy was credited,
@@ -240,6 +276,7 @@ export function harvestComponents(root, codeFiles) {
 
   // Pass 2: usages (skip the defining file's own render of itself is fine to count)
   const workspaces = resolveWorkspaces(root);
+  const aliases = tsconfigAliases(root);
   const byName = new Map();
   for (const c of components) {
     if (!byName.has(c.name)) byName.set(c.name, []);
@@ -258,7 +295,7 @@ export function harvestComponents(root, codeFiles) {
       // features/invoices each "used 12x" (8 and 4 in truth), so neither read
       // as the canon (Ledgerly, 2026-09-24). Unresolved imports keep the old
       // rule and credit every copy.
-      const owners = defs.length > 1 ? importedDef(src, file, name, defs, workspaces) ?? defs : defs;
+      const owners = defs.length > 1 ? importedDef(src, file, name, defs, workspaces, aliases) ?? defs : defs;
       for (const def of owners) {
         if (def.file === file) continue; // internal render/recursion, not adoption
         def.usageCount += n;

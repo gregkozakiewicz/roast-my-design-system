@@ -128,12 +128,18 @@ export function handmadeButtons(text) {
  * Button holds app files importing twenty-ui/input; asking "which spec
  * resolves to this file" is what keeps the answer honest.
  */
-function importSpecOf(def, read, workspaces) {
+function importSpecOf(def, read, workspaces, aliases = []) {
   const counts = new Map();
   const stem = stripExt(def.file);
   const resolves = (spec, from) => {
     if (spec.startsWith('.')) {
       const target = posix.normalize(posix.join(posix.dirname(from), spec));
+      return stem === target || stem === `${target}/index` || def.file.startsWith(`${target}/`);
+    }
+    // a tsconfig path alias (@sentry/scraps/button → static/app/components/core/button)
+    const al = aliases.find((x) => spec === x.prefix || spec.startsWith(`${x.prefix}/`));
+    if (al) {
+      const target = posix.normalize(spec === al.prefix ? al.dir : `${al.dir}/${spec.slice(al.prefix.length + 1)}`).replace(/\.[cm]?[jt]sx?$/, '');
       return stem === target || stem === `${target}/index` || def.file.startsWith(`${target}/`);
     }
     const alias = /^[@~#]\/(.+)$/.exec(spec);
@@ -158,10 +164,10 @@ function importSpecOf(def, read, workspaces) {
  * Button, in the team's own code, imported at least BUTTON_MIN_USES times.
  * @returns [{ file, usageCount, spec }]  spec: how the repo imports it, proven
  */
-export function buttonCandidates(components, read, workspaces = []) {
+export function buttonCandidates(components, read, workspaces = [], aliases = []) {
   return components
     .filter((c) => c.name === 'Button' && !c.isPage && c.usageCount >= BUTTON_MIN_USES && !NOT_OWN_CODE_RE.test(c.file))
-    .map((c) => ({ file: c.file, usageCount: c.usageCount, spec: importSpecOf(c, read, workspaces) }))
+    .map((c) => ({ file: c.file, usageCount: c.usageCount, spec: importSpecOf(c, read, workspaces, aliases) }))
     // no file provably imports it (an alias the repo resolves elsewhere, or a
     // name the harvest credited from other copies): no answer to point at
     .filter((c) => c.spec)

@@ -10,7 +10,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { walkRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
-import { harvestComponents } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
+import { harvestComponents, tsconfigAliases } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
 import { loadExclusions } from '../../skills/roast-my-design-system/scripts/lib/exclusions.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
@@ -43,5 +43,29 @@ test('a workspace package import credits the copy inside that package only', () 
   assert.equal(uses('packages/ui/src/Button.tsx'), 10);
   // 2 site pages x 2 uses by relative path, plus the same unresolvable 2
   assert.equal(uses('packages/site/src/ui/Button.tsx'), 6);
+  rmSync(root, { recursive: true, force: true });
+});
+
+test('a tsconfig path alias credits the copy under the folder it names', () => {
+  const root = mkdtempSync(join(tmpdir(), 'roast-attribution-alias-'));
+  const F = {
+    'package.json': JSON.stringify({ name: 'sentry', private: true, dependencies: { react: '^19.0.0' } }),
+    // comments and a trailing comma, the way tsconfig files are written
+    'tsconfig.json': '{\n  // the app\n  "compilerOptions": {\n    "paths": {\n      "@sentry/scraps/*": ["./static/app/components/core/*"],\n      "sentry/*": ["./static/app/*"],\n      "*": ["./public/*"],\n    },\n  },\n}\n',
+    'static/app/components/core/button/button.tsx': comp('Button'),
+    'static/app/views/settings/Button.tsx': comp('Button'),
+  };
+  for (let i = 0; i < 3; i++) F[`static/app/views/Page${i}.tsx`] = page(i, '@sentry/scraps/button');
+  F['static/app/views/Old.tsx'] = page(7, 'sentry/views/settings/Button');
+  for (const [f, body] of Object.entries(F)) {
+    mkdirSync(join(root, dirname(f)), { recursive: true });
+    writeFileSync(join(root, f), body);
+  }
+  assert.deepEqual(tsconfigAliases(root), [{ prefix: '@sentry/scraps', dir: 'static/app/components/core' }, { prefix: 'sentry', dir: 'static/app' }]);
+  const files = walkRepo(root, 14, loadExclusions(root, []));
+  const { components } = harvestComponents(root, files.code);
+  const uses = (file) => components.find((c) => c.name === 'Button' && c.file === file)?.usageCount;
+  assert.equal(uses('static/app/components/core/button/button.tsx'), 6);
+  assert.equal(uses('static/app/views/settings/Button.tsx'), 2);
   rmSync(root, { recursive: true, force: true });
 });

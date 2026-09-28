@@ -80,6 +80,14 @@ export function loadKnowledge(root) {
   const colorInfo = new Map(); // value → { count, isToken }
   for (const c of tokens.colors) colorInfo.set(c.value, { count: c.count, isToken: c.isToken });
   const tokenColors = [...colorInfo.entries()].filter(([, i]) => i.isToken).map(([v]) => v);
+  // value → the custom-property names that hold it, so a check can say
+  // "use var(--color-brand)" rather than only "use the token"
+  const tokenNames = new Map();
+  for (const c of tokens.colors) if (c.names?.length) tokenNames.set(c.value, c.names);
+  // the files that state the palette (token stylesheets, a Tailwind config,
+  // a kit theme, palette data): the only files where a token's raw value is
+  // the definition rather than a paste of it
+  const tokenSources = new Set([...(tokens.tokenSources ?? []), ...(kit?.themeFiles ?? []), tokens.tokenFile].filter(Boolean));
 
   // spacing the repo already uses: raw CSS values with counts, plus whether
   // the repo styles spacing through Tailwind at all (decides what "on-scale" means)
@@ -152,6 +160,8 @@ export function loadKnowledge(root) {
     workspaces,
     // indexes
     colorInfo,
+    tokenNames,
+    tokenSources,
     tokenColors,
     tokenColorRgb: tokenColors.map((v) => ({ value: v, rgb: hexRgb(v) })).filter((t) => t.rgb),
     spacingSeen,

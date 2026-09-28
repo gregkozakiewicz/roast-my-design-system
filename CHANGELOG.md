@@ -2,6 +2,22 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.1.3 — 2026-09-29
+
+- **A token's value pasted into a component is now a finding.** The live
+  check (the edit hook, the MCP validate tool and the review) used to
+  skip any hardcoded colour whose value matched a token, on the grounds
+  that the system already knew the value. That let an agent write
+  `background: #4a38f5` in a new component and pass with no findings,
+  which is what happened five times on Twenty on 29 September. The skip
+  now applies only inside the files that state the palette (a token
+  stylesheet, a Tailwind config, a kit theme, a palette file). Anywhere
+  else the check says which token holds the value, by name: "Use
+  --color-brand (defined in src/styles/tokens.css)", or `var(--color-brand)`
+  in a stylesheet. Scan scores and report counts are unchanged. The guard
+  doorway now lists the same token-source files as `tokenSources`, so
+  guard-my-design-system can apply the same rule.
+
 ## 9.1.2 — 2026-09-28
 
 - **The verdict card says "No gaps found" and stops there.** 9.1.1 still

@@ -197,18 +197,27 @@ export function validateContent(content, k) {
 
   // ---------- colours ----------
   const seenHere = new Set();
+  const statesTokens = !!file && k.tokenSources?.has(file);
   for (const c of got.colors) {
     if (seenHere.has(`${c.value}:${c.index}`)) continue;
     seenHere.add(`${c.value}:${c.index}`);
     if (kitOwnsColours || chartFile) continue; // the kit judge or the chart rule said it, or judged it not paint
     const info = k.colorInfo.get(c.value);
-    if (info?.isToken) continue; // it IS the token's value — the system can see it
+    // A token's raw value is the definition only inside a file that states
+    // the palette (a token stylesheet, a Tailwind config, a kit theme). In a
+    // component it is the value pasted where the name belongs: the system
+    // cannot see it, and the next reader copies the hex. Until 9.1.3 every
+    // exact match walked free, and hooked agents on Twenty wrote
+    // background: #4a38f5 with a clean bill (2026-09-29).
+    if (info?.isToken && statesTokens) continue;
     const near = nearestToken(c.value, k);
     const priors = discount(info?.count, localColor, c.value);
     if (near && near.d === 0) {
+      const names = k.tokenNames?.get(c.value) ?? [];
+      const by = names.length ? `${css ? `var(${names[0]})` : names[0]}` : `the token that already holds ${near.value}`;
       add('hardcoded-colour', 'violation', c.index,
         `Hardcoded colour ${c.value} duplicates an existing token value.`,
-        `Use the token that already holds ${near.value}${k.tokens.tokenFile ? ` (defined in ${k.tokens.tokenFile})` : ''}.`);
+        `Use ${by}${k.tokens.tokenFile ? ` (defined in ${k.tokens.tokenFile})` : ''}.`);
     } else if (near && near.d <= 8) {
       add('near-token-twin', 'violation', c.index,
         `${c.value} is visually identical to the token ${near.value}.`,

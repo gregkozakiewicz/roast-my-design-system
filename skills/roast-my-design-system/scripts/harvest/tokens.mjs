@@ -377,6 +377,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     return owner;
   };
   const paletteFiles = new Set();
+  const tailwindConfigs = new Set();
   const listShare = new Map();   // code file → share of its colour literals inside 8+ colour arrays
   const nsDefs = new Map();  // --telekom-x: value  → 'telekom' (definitions)
   const nsRefs = new Map();  // var(--telekom-x)    → 'telekom' (references)
@@ -536,6 +537,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
     // equivalent of --var definitions). Its fontFamily block is the typeface
     // declaration for the whole app.
     if (/(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f)) {
+      tailwindConfigs.add(f);
       for (const m of src.matchAll(HEX_RE)) { tokenDefined.add(normalizeHex(m[0])); colors.add(normalizeHex(m[0]), f); }
       const famBlock = src.match(/fontFamily\s*:\s*\{([\s\S]*?)\n\s*\}/);
       if (famBlock) {
@@ -708,6 +710,11 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // stylesheet is never a list, whatever shape its values take.
   const isList = (f) => /\.[jt]sx?$/.test(f) && !/(^|\/)tailwind\.config\.[mc]?[jt]s$/.test(f) && (listShare.get(f) ?? 0) >= 0.5;
   const candidates = new Set([...tokenColorDefsPerFile.keys(), ...paletteFiles]);
+  // Every file that states a token colour: a stylesheet defining --vars, a
+  // Tailwind config, a palette file. A checker reading one of these must not
+  // tell it to use itself; anywhere else a token's raw value is a paste of
+  // the value where the name belongs (Twenty, Haiku with the hook, 2026-09-29).
+  const tokenSources = [...new Set([...candidates, ...tailwindConfigs])].sort();
   const tokenFile = [...candidates]
     .map((f) => ({ f, tokens: tokenColoursIn.get(f) ?? 0, strays: straysIn.get(f) ?? 0, list: isList(f) ? 1 : 0 }))
     .filter((c) => c.tokens >= 3)
@@ -773,6 +780,7 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   }
   return {
     tokenFile,
+    tokenSources,
     foreignStyles,
     namespaces,
     colors: colorList,

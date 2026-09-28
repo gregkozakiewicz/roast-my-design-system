@@ -139,6 +139,11 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
 
   return {
     tokenFile: t.tokenFile,
+    // The files that state the palette: token stylesheets, a Tailwind config,
+    // palette data, a kit theme. Only there is a token's raw value the
+    // definition; in any other file it is a paste of the value where the
+    // name belongs, and a guard should say so (9.1.3).
+    tokenSources: [...new Set([...(t.tokenSources ?? []), ...(kit?.themeFiles ?? []), t.tokenFile].filter(Boolean))],
     colors: t.colors,
     // Every named colour, variants included — not the counted palette. The
     // report counts a token's base statement only, because a dark theme is

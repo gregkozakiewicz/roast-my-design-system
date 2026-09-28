@@ -354,25 +354,19 @@ let verdict = noSystemLikely
 // The lead line answers the report's first question, where will the agent
 // have to guess, before the measured verdict does. A repo with an answer gets
 // copied; a repo with no answer gets guessed at. A gap named here is one
-// lib/gaps admitted after a fleet probe; nothing else is called a gap.
+// lib/gaps admitted after a fleet probe; nothing else is called a gap. The
+// card never talks about the scan's reach: a reader came for a diagnosis,
+// not for the limits of the instrument (Greg, 28 Sep 2026).
 const gapLead = (noSystemLikely || fresh) ? '' : (() => {
   const gaps = h.gaps ?? [];
-  if (!gaps.length) return 'No gaps found.';
-  const named = gaps.map((g) => g.title.charAt(0).toLowerCase() + g.title.slice(1));
-  return `${gaps.length === 1 ? 'One gap' : `${gaps.length} gaps`}: ${esc(named.join('; '))}.`;
+  return gaps.length ? `${gaps.length} gap${gaps.length === 1 ? '' : 's'} found.` : 'No gaps found.';
 })();
-// Under the headline: what a gap means for the agent, then what the fixes
-// below do to the score. The measured verdict stands in when there is no
-// projection to quote, so the card never contradicts the side panel.
+// Under the headline: the condition, and nothing about the scan's reach.
+// What the fixes do to the score is said once, in the fixes section.
 function gapSub() {
-  const gaps = h.gaps ?? [];
-  const meaning = gaps.length
-    ? `Your repo gives the agent no clear answer there. When it needs to build there, it has to decide for itself.`
-    : `Your repo gives the agent a clear answer for every check in this scan.`;
-  const lift = startProjection && healthScore !== null && startProjection.after > healthScore
-    ? ` ${['One fix', 'Two fixes', 'Three fixes'][startProjection.count - 1] ?? 'The fixes'} below could raise your design system health score from ${healthScore} to ${startProjection.after}.`
-    : ` ${esc(verdict)}`;
-  return meaning + lift;
+  return (h.gaps ?? []).length
+    ? 'The agent has no clear answer for these parts of the system.'
+    : 'Your repo gives the agent a clear answer for every check in this scan.';
 }
 if (bench && findings.length && !fresh) {
   const core = [['colors', tokenLed ? colorStrays : colors.length], ['greys', tokenLed ? greyStrays : greys.length],
@@ -1227,9 +1221,9 @@ function whereToStartSection() {
   for (const item of top3) if (item.metric && item.after !== undefined && item.delta > 0) applied.set(item.metric, item.after);
   const after = projectedScore(applied);
   startProjection = { count: top3.length, after };
-  const words = ['One tweak', 'Two tweaks', 'Three tweaks'][top3.length - 1];
+  const words = ['One fix', 'Two fixes', 'Three fixes'][top3.length - 1];
   const head = healthScore !== null && after > healthScore
-    ? `${words} · <b class="proj">${healthScore} &rarr; ${after}</b>`
+    ? `${words} could raise the design system health score from <b class="proj">${healthScore} to ${after}</b>.`
     : `${words} to increase your score.`;
   const chip = (item) => item.delta > 0
     ? `<span class="delta" title="once all of them are done">+${item.delta}</span>`
@@ -1271,24 +1265,17 @@ function whereToStartSection() {
 // A gap is a place where the next piece of UI has nothing to reuse (lib/gaps).
 // The September 2026 runs showed agents inventing exactly there; the section
 // names the gap, the files that prove it and the one move that closes it.
-function gapsSection() {
+function gapsList() {
   if (noSystemLikely || fresh) return '';
   const gaps = h.gaps ?? [];
-  if (!gaps.length) {
-    return `<section class="glass pad" style="margin-top:16px">
-    ${sectionHead('Where agents will invent', 'No gaps found. One kind of gap is measured so far, a chart palette, and this repo either has one or has no charts. The list grows as more kinds are proven on real agent runs.')}
-</section>`;
-  }
-  const head = `The gaps where your design system has no answer yet. Asked to build there, an agent invents, because that is what the repo taught it. Nothing here is a violation: there is no rule yet to break. Define the answer once and every agent after that inherits it.`;
-  return `<section class="glass pad" style="margin-top:16px">
-    ${sectionHead('Where agents will invent', head)}
-    <div class="ledger">${gaps.map((g, i) => `
+  if (!gaps.length) return '';
+  return `<div class="ledger gaps-list">${gaps.map((g, i) => `
       <div class="ledger-row gap-row">
         <span class="ledger-idx">${String(i + 1).padStart(2, '0')}</span>
         <div class="start-body"><div class="start-head"><div class="start-title">${esc(g.title)}</div></div><div class="sub">${esc(g.detail)}</div>
         <div class="sub" style="margin-top:6px"><b>Close it:</b> ${esc(g.fix)}</div>
         ${g.files?.length ? `<div class="chips-row" style="margin-top:8px">${g.files.map((f) => `<span class="chip mono">${esc(f)}</span>`).join('')}</div>` : ''}</div>
-      </div>`).join('')}</div></section>`;
+      </div>`).join('')}</div>`;
 }
 
 // ---------- package by package ----------
@@ -1581,9 +1568,9 @@ function sidePanel() {
   const bd = breakdown.ownScore !== null && breakdown.installedPoints > 0 && rp
     ? `<div class="bd">Of which <b>${breakdown.installedPoints} point${breakdown.installedPoints === 1 ? '' : 's'}</b> come from installed code you did not write: ${esc(rp.dirs.map((d) => basename(d)).join(', '))} (${n(rp.files)} file${rp.files === 1 ? '' : 's'}, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}). Your own code alone would score <b>${breakdown.ownScore}</b>. Kept in the score because your agent reads those files like everything else; left out of the fixes because they are not yours to edit.</div>` : '';
   const scoreBlock = healthScore !== null
-    ? `<div class="score">${eyebrow('Health score')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div><div class="def">${def}${lift}</div>${bd}</div>`
+    ? `<div class="score">${eyebrow('Design system health')}<div class="val">${healthScore}<span class="slash">/</span><span class="of">100</span></div><div class="def">${def}${lift}</div>${bd}</div>`
     : noSystemLikely
-    ? `<div class="score muted">${eyebrow('Health score')}<div class="val">&mdash;</div><div class="note">nothing here was measured · see the note</div><div class="def">${def}</div></div>` : '';
+    ? `<div class="score muted">${eyebrow('Design system health')}<div class="val">&mdash;</div><div class="note">nothing here was measured · see the note</div><div class="def">${def}</div></div>` : '';
   const chips = `<div class="chips">${stack.map((c) => `<span class="chip">${esc(c)}</span>`).join('')}${(P.shadcn?.sheet?.tweakcnPresent ?? 0) >= 10 ? '<span class="chip">tweakcn theme</span>' : ''}${P.shadcn?.lint ? '<span class="chip">shadcn/lint</span>' : ''}${dsUnrecognised ? '<span class="chip chip-dim">design system: unrecognised</span>' : ''}${legacyChip ? `<span class="chip chip-dim">${esc(legacyChip)}</span>` : ''}${agentFiles.map((c) => `<span class="chip chip-agent">${esc(c.file)}</span>`).join('')}</div>`;
   const facts = [
     shadcnReceipt(),
@@ -1801,6 +1788,7 @@ ${ogTags()}
   .verdict-card .b2 { left:-40px; bottom:-80px; width:224px; height:224px; background:var(--blob2); filter:blur(48px); }
   .verdict { position:relative; font:600 clamp(18px,2.6vw,24px)/1.45 var(--disp); letter-spacing:-.01em; margin-top:10px; }
   .verdict-sub { position:relative; margin-top:12px; font-size:14.5px; line-height:1.6; color:var(--dim); }
+  .verdict-card .gaps-list { position:relative; margin-top:18px; }
   .gap-empty { padding:0 26px 22px; color:var(--dim); font-size:14px; line-height:1.6; }
   .gap-why { margin-top:6px; color:var(--dim); font-size:13.5px; }
 
@@ -2125,10 +2113,8 @@ ${sidePanel()}
   <div class="glass verdict-card">
     <div class="blob b1"></div><div class="blob b2"></div>
     ${eyebrow(noSystemLikely || fresh ? 'Summary' : 'Where will your agent have to guess?')}
-    ${gapLead ? `<div class="verdict">${gapLead}</div><div class="verdict-sub">${gapSub()}</div>` : `<div class="verdict">${esc(verdict)}</div>`}
+    ${gapLead ? `<div class="verdict">${gapLead}</div><div class="verdict-sub">${gapSub()}</div>${gapsList()}` : `<div class="verdict">${esc(verdict)}</div>`}
   </div>
-
-${gapsSection()}
 
 ${notesSection()}
 

@@ -63,7 +63,7 @@ test('the gap reaches summary.json, the report, the MCP context and the guard do
   assert.deepEqual(summary.gaps[0].files.sort(), ['components/SalesChart.tsx', 'components/UsageChart.tsx']);
   assert.ok(existsSync(out));
   const html = readFileSync(out, 'utf8');
-  assert.match(html, /Where agents will invent/);
+  assert.match(html, /1 gap found\./);
   assert.match(html, /Charts have no palette/);
   const k = loadKnowledge(dir);
   assert.equal(k.gaps[0].id, 'chart-palette');

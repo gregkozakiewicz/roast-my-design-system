@@ -17,7 +17,12 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   system rules Roast checks", with "Three fixes could raise it to 71" under
   it, and the verdict card uses the same words: the score is evidence, the
   gaps are the finding. Scores and counts are unchanged. README screenshots
-  reshot.
+  reshot. The separate "Where agents will invent" section is gone: a gap
+  is listed inside the opening card under "2 gaps found", and a clean repo
+  gets "No gaps found" and nothing about how many gap kinds are measured.
+  "Fix what makes agents guess" says "Three fixes could raise the design
+  system health score from 47 to 71" instead of "Three tweaks · 47 → 71",
+  and the score's eyebrow reads "Design system health".
 
 ## 9.1.1 — 2026-09-28
 

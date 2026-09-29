@@ -1201,17 +1201,22 @@ function whereToStartSection() {
   }
 
   // What each move is actually worth, then rank by payoff for real.
+  // A move with no points says why, so the list never promises what the
+  // score cannot give: the thing it fixes is not scored, or its tile is
+  // already green, or the move lands inside the band it started in.
   for (const item of c) {
-    item.delta = 0; item.target = null;
+    item.delta = 0; item.target = null; item.why = 'not part of the score';
     if (!item.metric) continue;
-    const now = bigStats.find((st) => st.metric === item.metric)?.healthValue;
-    if (now === undefined) continue;
+    const tile = bigStats.find((st) => st.metric === item.metric);
+    const now = tile?.healthValue;
+    if (now === undefined || !(tile.health in SCORE_OF)) continue;
     if (item.after !== undefined) {
       const gain = bandPoints(item.metric, now, item.after);
       if (gain > 0) { item.delta = gain; continue; }
     }
     const nb = nextBand(item.metric, now);
     if (nb && nb.gain > 0) item.target = nb;
+    else item.why = healthOf(item.metric, now) === 'good' ? 'already green' : 'no points on its own';
   }
   const top3 = c.sort((a, b) => (b.delta - a.delta) || (b.score - a.score)).slice(0, 3);
   if (!top3.length) return '';
@@ -1220,16 +1225,32 @@ function whereToStartSection() {
   const applied = new Map();
   for (const item of top3) if (item.metric && item.after !== undefined && item.delta > 0) applied.set(item.metric, item.after);
   const after = projectedScore(applied);
-  startProjection = { count: top3.length, after };
-  const words = ['One fix', 'Two fixes', 'Three fixes'][top3.length - 1];
-  const head = healthScore !== null && after > healthScore
-    ? `${words} could raise the design system health score from <b class="proj">${healthScore} to ${after}</b>.`
-    : `${words} to increase your score.`;
+  // The line under the heading counts only the moves that pay, and says what
+  // the others are. "Three fixes to increase your score" stood over a list
+  // where 1 of the 3 could, by 4 points (shadcn-admin, 2026-09-29).
+  const paying = healthScore !== null && after > healthScore ? top3.filter((item) => item.delta > 0) : [];
+  const later = top3.filter((item) => !paying.includes(item) && item.target);
+  startProjection = { count: paying.length, after };
+  const COUNT = ['one', 'two', 'three'];
+  const cap = (s) => s[0].toUpperCase() + s.slice(1);
+  const total = top3.length;
+  const none = total - paying.length - later.length;
+  const ofThese = (k) => (k === total
+    ? `${cap(COUNT[k - 1])} ${k === 1 ? 'fix' : 'fixes'}`
+    : `${cap(COUNT[k - 1])} of these ${COUNT[total - 1]} fixes`);
+  const inFull = (k) => `once ${k === 1 ? 'it is' : 'they are'} done in full`;
+  const rest = none ? ` The remaining ${none === 1 ? 'one does' : `${COUNT[none - 1]} do`} not move the score.` : '';
+  const head = paying.length
+    ? `${ofThese(paying.length)} could raise the design system health score from <b class="proj">${healthScore} to ${after}</b>.${later.length ? ` ${cap(COUNT[later.length - 1])} more ${later.length === 1 ? 'pays' : 'pay'} ${inFull(later.length)}.` : ''}${rest}`
+    : later.length
+      ? `${ofThese(later.length)} ${later.length === 1 ? `raises the score, by ${later[0].target.gain},` : 'raise the score'} ${inFull(later.length)}.${rest}`
+      : `${total === 1 ? 'It does' : 'They do'} not move the score. ${total === 1 ? 'It is' : 'They are'} here because ${total === 1 ? 'it stops' : 'each one stops'} the agent guessing.`;
+  const title = paying.length || later.length ? 'Fixes you can make right now to increase the health score' : 'Fixes you can make right now';
   const chip = (item) => item.delta > 0
     ? `<span class="delta" title="once all of them are done">+${item.delta}</span>`
     : item.target
       ? `<span class="delta delta-target">${item.target.target === 0 ? 'clear them all' : `under ${n(item.target.target)}`} · +${item.target.gain}</span>`
-      : '';
+      : `<span class="delta delta-none">${item.why}</span>`;
   // The copy button beside each move hands the finding to whatever agent the
   // reader pastes it into: one move per prompt, so progress stays visible and
   // finishable. Prompt text is composed from the same title/sub the row shows
@@ -1251,7 +1272,7 @@ function whereToStartSection() {
     delta: item.delta || 0, prompt: promptFor(item),
   }));
   return `<section class="glass pad">
-    ${sectionHead('Fixes you can make right now to increase the health score', head)}
+    ${sectionHead(title, head)}
     <div class="ledger">${top3.map((item, i) => `
       <div class="ledger-row start-row">
         <span class="ledger-idx">${String(i + 1).padStart(2, '0')}</span>
@@ -1651,7 +1672,7 @@ function exceptionsBlock() {
 function addIndex(page) {
   // heading text is already HTML-escaped; strip tags and leading counts only
   const short = (t) => t.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().replace(/^[\d,]+ /, '')
-    .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^Give the agent the answers$/, 'Agent rules').replace(/^What the repo teaches the agent$/, 'What it teaches').replace(/^Fixes you can make right now to increase the health score$/, 'What to fix')
+    .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^Give the agent the answers$/, 'Agent rules').replace(/^What the repo teaches the agent$/, 'What it teaches').replace(/^Fixes you can make right now( to increase the health score)?$/, 'What to fix')
     .replace(/^The shadcn theme and the 2 shadcn checks$/, 'shadcn theme and checks')
     .replace(/^Your Tailwind theme, and what goes around it$/, 'Your Tailwind theme').replace(/^Your (\w+) theme, and what is written around it$/, 'Your $1 theme').replace(/, declared .*$/, '')
     .replace(/^off-scale spacing values$/, 'Off-scale spacing').replace(/^inline style blocks?$/, 'Inline styles').replace(/^typefaces?$/, 'Typefaces');
@@ -2047,6 +2068,7 @@ ${ogTags()}
   .delta { font:700 11px/1 var(--sans); letter-spacing:.04em; padding:5px 9px; border-radius:99px;
     background:var(--ok-soft); color:var(--ok); white-space:nowrap; }
   .delta-target { background:var(--amber-soft); color:var(--amber); font-weight:600; }
+  .delta-none { background:transparent; box-shadow:inset 0 0 0 1px var(--line-soft); color:var(--dim); font-weight:500; letter-spacing:0; }
   .proj { color:var(--accent); font-weight:700; }
   .ndot { display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:4px; vertical-align:-1px; box-shadow:inset 0 0 0 1px var(--cell-ring); }
   .nsim { color:var(--dim2); font-weight:400; padding:0 2px; }

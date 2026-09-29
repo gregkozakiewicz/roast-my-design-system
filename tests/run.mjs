@@ -231,6 +231,58 @@ console.log('fix prompts:');
   ok('buttons equal moves on every fixture');
 }
 
+// ---------- the fixes: what the heading promises, the list delivers ----------
+// "Three fixes to increase your score" stood over a list where 1 of the 3
+// could, by 4 points (shadcn-admin, 2026-09-29). The line under the heading
+// counts only the moves that pay, every move without points says why, and
+// the heading drops the promise when nothing in the list can keep it.
+console.log('fixes, the promise and the list:');
+{
+  const text = (h) => h.replace(/<[^>]+>/g, '');
+  const section = (fixture) => {
+    const html = readFileSync(join(tmp, `${fixture}.html`), 'utf8');
+    const m = html.match(/<h2>(Fixes you can make right now[^<]*)<\/h2><p class="sub">([\s\S]*?)<\/p>/);
+    const at = m ? html.indexOf(m[0]) : -1;
+    const body = at > -1 ? html.slice(at, html.indexOf('</section>', at)) : '';
+    return m ? {
+      heading: m[1], line: text(m[2]),
+      moves: (body.match(/class="ledger-row start-row"/g) ?? []).length,
+      points: (body.match(/<span class="delta"[ >]/g) ?? []).length,
+      targets: (body.match(/<span class="delta delta-target"/g) ?? []).length,
+      reasons: [...body.matchAll(/<span class="delta delta-none">([^<]*)</g)].map((x) => x[1]),
+      index: /<a href="#s-1"><i>01<\/i>What to fix<\/a>/.test(html),
+    } : null;
+  };
+
+  const all = section('trapped');
+  all.line === 'Three fixes could raise the design system health score from 40 to 70.' && all.points === 3 && all.reasons.length === 0
+    ? ok('when every fix pays, the line says so and nothing is labelled')
+    : bad('every fix pays', JSON.stringify(all));
+
+  const some = section('shadcncustom');
+  some.line === 'One of these three fixes could raise the design system health score from 82 to 91. The remaining two do not move the score.'
+    && some.points === 1 && some.reasons.join() === 'not part of the score,not part of the score'
+    ? ok('when 1 of 3 pays, the line counts 1 and the other 2 say why')
+    : bad('1 of 3 pays', JSON.stringify(some));
+
+  const none = section('clean');
+  none.heading === 'Fixes you can make right now' && /^It does not move the score\./.test(none.line) && none.reasons.join() === 'not part of the score'
+    ? ok('when nothing pays, the heading drops the promise')
+    : bad('nothing pays', JSON.stringify(none));
+
+  let wrong = 0;
+  for (const fixture of readdirSync(FIXTURES).sort()) {
+    const f = section(fixture);
+    if (!f) continue;
+    const labelled = f.points + f.targets + f.reasons.length;
+    const promises = /increase the health score$/.test(f.heading);
+    if (labelled !== f.moves) { wrong++; bad(`every move is labelled on ${fixture}`, `${f.moves} moves, ${labelled} labels`); }
+    if (promises !== (f.points + f.targets > 0)) { wrong++; bad(`the heading matches the list on ${fixture}`, JSON.stringify(f)); }
+    if (!f.index) { wrong++; bad(`the index names the section on ${fixture}`, 'no "What to fix" entry'); }
+  }
+  if (!wrong) ok('on every fixture each move is labelled, and the heading promises only what the list pays');
+}
+
 // ---------- shadcn tokens: bare HSL triplets are colours ----------
 // ---------- both variant axes at once ----------
 // A system with a theme switch AND a density switch states every token three

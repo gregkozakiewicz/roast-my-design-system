@@ -10,6 +10,23 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   headed "Fixes you can make right now to increase the health score". The
   index still calls it "What to fix". The README and the landing page use
   the new name.
+- **The list promises only what it pays.** On a repo that scores well,
+  most tiles are already green and a fix can be real work worth no points.
+  The line under the heading said "Three fixes to increase your score"
+  over a list where 1 of the 3 could, by 4.
+  - The line counts the fixes that pay: "One of these three fixes could
+    raise the design system health score from 80 to 88. One more pays once
+    it is done in full. The remaining one does not move the score." When
+    every fix pays it reads as before.
+  - A fix with no points says why, in a grey label beside its title: "not
+    part of the score" (the agent rules file, a leftover theme variable),
+    "already green", or "no points on its own".
+  - When nothing in the list moves the score, the heading is "Fixes you
+    can make right now", and the line says the fixes are there because each
+    one stops the agent guessing.
+  - The side panel counts the same way: "One fix could raise it to 88",
+    where it said three.
+  No score and no count changes. 4 checks, 1 of them over every fixture.
 
 ## 9.2.1 — 2026-09-29
 

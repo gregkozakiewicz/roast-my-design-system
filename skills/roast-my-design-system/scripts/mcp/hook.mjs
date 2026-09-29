@@ -114,7 +114,8 @@ function judge(real, root, k, warned = new Set()) {
   const text = readFileSync(real, 'utf8');
   const before = beforeOf(k, rel);
   const { findings: all, exempt } = validateContent({ text, file: rel, before }, k);
-  if (exempt || !all.length) return null;
+  // an exempt file is judged on duplicates only; with none, there is nothing to say
+  if (!all.length) return null;
   // Only what this edit added. A legacy file carries its old findings on
   // every touch; repeating them after each edit is noise, and the review
   // (--check, roast_review) already reports them once at the end. Same rule
@@ -129,5 +130,5 @@ function judge(real, root, k, warned = new Set()) {
     return true;
   });
   if (!findings.length) return null;
-  return { text: `Design-system check of ${rel} (roast-my-design-system, the same engine as roast_validate): ${findingLines(findings, k).join('\n')}`, total: findings.length };
+  return { text: `Design-system check of ${rel} (roast-my-design-system, the same engine as roast_validate): ${findingLines(findings, k, exempt).join('\n')}`, total: findings.length };
 }

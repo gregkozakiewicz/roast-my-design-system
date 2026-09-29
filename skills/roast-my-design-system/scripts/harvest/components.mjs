@@ -158,7 +158,10 @@ export function definedComponents(src) {
   return [...names];
 }
 
-const looksLikeJSXFile = (src) => /<[A-Za-z][\w.]*[\s/>]/.test(src);
+// A file with no markup defines no component the report can count: a stub
+// returning null, a wrapper built with a factory call. Asked by the harvest
+// and by the live checks, so both read the same files as component files.
+export const looksLikeJSXFile = (src) => /<[A-Za-z][\w.]*[\s/>]/.test(src);
 
 // ---------- web components: the tag-registered world ----------
 // Stencil, Lit and raw customElements.define register components by TAG, and
@@ -241,6 +244,28 @@ function importedDef(src, file, name, defs, workspaces = [], aliases = []) {
   return null;
 }
 
+const JSX_FILE_RE = /\.(tsx|jsx|js)$/;
+
+/**
+ * Every component a file defines, by either door the harvest reads: a React
+ * component in a file with markup in it, and a web component registered by
+ * tag (Stencil, Lit, customElements.define), generated bindings left out.
+ * The live checks ask here, so a file defines for them what it defines for
+ * the report.
+ */
+export function componentNamesIn(src, file = null) {
+  // .js too, never .ts: a TypeScript generic reads like a tag, and the
+  // harvest takes React components from the same three extensions
+  const react = (!file || JSX_FILE_RE.test(file)) && looksLikeJSXFile(src) ? definedComponents(src) : [];
+  const web = GENERATED_RE.test(src.slice(0, 2000)) ? [] : webComponentDefs(src).map((d) => d.name);
+  return [...new Set([...react, ...web])];
+}
+
+// A page is a route, not a reusable part. Asked by the harvest for every file
+// it reads and by the live checks for the one file under review.
+export const isPageFile = (file) => /(^|\/)(app\/.*page|pages\/(?!_app|_document|api))/.test(file)
+  || /(^|\/)app\/.*\/(layout|template|error|loading)\.(tsx|jsx)$/.test(file);
+
 /**
  * Harvest all components: definitions (with variants/props) + usages across the
  * repo. `codeFiles` are relative paths; returns { components, totalDefined }.
@@ -248,7 +273,7 @@ function importedDef(src, file, name, defs, workspaces = [], aliases = []) {
 export function harvestComponents(root, codeFiles) {
   // .js too — CRA-era repos (a big slice of the messy-repo audience) put JSX in
   // plain .js files; requiring .tsx/.jsx made whole repos read as empty.
-  const jsxFiles = codeFiles.filter((f) => /\.(tsx|jsx|js)$/.test(f));
+  const jsxFiles = codeFiles.filter((f) => JSX_FILE_RE.test(f));
   const sources = new Map();
   for (const f of jsxFiles) {
     const src = readSource(join(root, f));
@@ -259,8 +284,7 @@ export function harvestComponents(root, codeFiles) {
   const components = [];
   for (const [file, src] of sources) {
     if (!looksLikeJSXFile(src)) continue;
-    const isPage = /(^|\/)(app\/.*page|pages\/(?!_app|_document|api))/.test(file)
-      || /(^|\/)app\/.*\/(layout|template|error|loading)\.(tsx|jsx)$/.test(file);
+    const isPage = isPageFile(file);
     for (const name of definedComponents(src)) {
       components.push({
         name,

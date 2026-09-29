@@ -11,7 +11,8 @@
  *    in the repo means saying so, not inventing one.
  */
 import { extractStyling } from '../harvest/tokens.mjs';
-import { definedComponents } from '../harvest/components.mjs';
+import { componentNamesIn, isPageFile } from '../harvest/components.mjs';
+import { duplicateCopies } from '../harvest/duplicates.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
 import { exemptReason } from '../lib/exempt.mjs';
 import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
@@ -84,6 +85,29 @@ function nearestToken(value, k) {
 }
 
 /**
+ * The report's answer on duplicates, asked of one file: a name that repeats
+ * by design, a pair the report lists without counting and a file that
+ * defines nothing the report reads are not duplicates here either
+ * (harvest/duplicates.mjs).
+ */
+function duplicateFindings({ text, file, k, add }) {
+  for (const name of componentNamesIn(text, file)) {
+    const dupe = k.dupeByName.get(name);
+    const counted = dupe ? dupe.files.map((f) => (typeof f === 'string' ? f : f.file)) : null;
+    const existing = duplicateCopies({ name, file: file ?? '', isPage: !!file && isPageFile(file) }, k.byName.get(name), counted);
+    if (!existing.length) continue;
+    // the scan may already include this very file — count the OTHER copies
+    const otherCopies = counted ? counted.filter((f) => f !== file) : null;
+    const best = [...existing].sort((a, b) => b.usageCount - a.usageCount)[0];
+    add('duplicate-component', 'violation', text.indexOf(name),
+      otherCopies && otherCopies.length > 1
+        ? `Defines <${name}>, which already exists in ${otherCopies.length} other places. This makes ${otherCopies.length + 1} competing copies, and every wrong pick becomes the example the next agent copies.`
+        : `Defines <${name}>, but ${best.file} already defines it${best.usageCount ? ` (used ${best.usageCount}x)` : ''}.`,
+      `Import ${best.file} instead of creating a copy.`);
+  }
+}
+
+/**
  * Validate one piece of content against the repo's knowledge.
  * @param content { text, file?, before? } — file name decides css-vs-code
  *   mode and lets the duplicate check excuse a component's own existing file;
@@ -91,7 +115,8 @@ function nearestToken(value, k) {
  *   unknown), so a token or an import the change ADDS can be told from one
  *   that was already there
  * @returns { findings: [{ rule, severity, line, message, fix? }], checked,
- *   exempt? } — exempt is a sentence saying why the file was not judged
+ *   exempt? } — exempt is a sentence saying why the file's styling was not
+ *   judged; its findings are then duplicates only, and checked says so
  */
 export function validateContent(content, k) {
   const { text, file = null, before } = content;
@@ -99,13 +124,20 @@ export function validateContent(content, k) {
   // checker earns its reputation for crying wolf, and a checker people
   // distrust gets switched off. Say nothing, and say why nothing was said.
   const exempt = exemptReason(file, text);
-  if (exempt) return { findings: [], checked: checksFor(k), exempt };
   const css = file ? CSS_FILE_RE.test(file) : looksLikeCss(text);
-  const got = extractStyling(text, { css });
   const findings = [];
   const add = (rule, severity, index, message, fix) => findings.push({
     rule, severity, line: lineOf(text, index), message, ...(fix ? { fix } : {}),
   });
+  // The exemption is about styling: what an email, a drawing or a crash page
+  // cannot take from the system. A second copy of a component is a second
+  // copy in any medium, and the report counts it, so that one check still
+  // runs and the result says it was the only one.
+  if (exempt) {
+    if (!css) duplicateFindings({ text, file, k, add });
+    return { findings, checked: css ? [] : ['duplicate component definitions'], exempt };
+  }
+  const got = extractStyling(text, { css });
 
   // The knowledge scan includes the working tree, so a file under review has
   // already leaked its own values into the repo counts — without a discount,
@@ -258,9 +290,13 @@ export function validateContent(content, k) {
     // a raw value the repo already uses, in a non-Tailwind repo, is consistency,
     // not a new offence — silence
   }
+  // Bracket values inside installed code (the shadcn catalogue, kit blocks,
+  // registries) are the kit's own choices. The report names them and keeps
+  // them out of the count; a file under review is judged by the same line.
+  const installed = !!file && (k.installedDirs ?? []).some((d) => file === d || file.startsWith(`${d}/`));
   const localArb = new Map();
   for (const a of got.arbitrary) localArb.set(a.value, (localArb.get(a.value) ?? 0) + 1);
-  for (const a of got.arbitrary) {
+  for (const a of installed ? [] : got.arbitrary) {
     const repoArb = (k.tokens.tailwind?.arbitrary ?? []).find((x) => x.value === a.value);
     const priorArb = discount(repoArb?.count, localArb, a.value);
     add('arbitrary-value', 'violation', a.index,
@@ -345,23 +381,7 @@ export function validateContent(content, k) {
   }
 
   // ---------- duplicate components ----------
-  if (!css) {
-    for (const name of definedComponents(text)) {
-      const existing = (k.byName.get(name) ?? []).filter((c) => !file || c.file !== file);
-      if (!existing.length) continue;
-      const dupe = k.dupeByName.get(name);
-      // the scan may already include this very file — count the OTHER copies
-      const otherCopies = dupe
-        ? dupe.files.map((f) => (typeof f === 'string' ? f : f.file)).filter((f) => f !== file)
-        : null;
-      const best = [...existing].sort((a, b) => b.usageCount - a.usageCount)[0];
-      add('duplicate-component', 'violation', text.indexOf(name),
-        otherCopies && otherCopies.length > 1
-          ? `Defines <${name}>, which already exists in ${otherCopies.length} other places. This makes ${otherCopies.length + 1} competing copies, and every wrong pick becomes the example the next agent copies.`
-          : `Defines <${name}>, but ${best.file} already defines it${best.usageCount ? ` (used ${best.usageCount}x)` : ''}.`,
-        `Import ${best.file} instead of creating a copy.`);
-    }
-  }
+  if (!css) duplicateFindings({ text, file, k, add });
 
   // ---------- an import of the copy the canon replaces ----------
   if (!css) {

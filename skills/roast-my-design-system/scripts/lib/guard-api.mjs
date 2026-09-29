@@ -35,6 +35,21 @@ export { extractStyling, normalizeHex, isGrey, hexRgb, typefaceOf, GENERIC_FONTS
 // The components a piece of text defines. With the ledger below, a guard can
 // tell a second <Button> from an edit to the first one.
 export { definedComponents };
+// Duplicates, by the report's own answer (9.2.1). duplicateCopies(def,
+// copies, counted, same) returns the other copies that make one definition a
+// duplicate, or none: `copies` is the ledger's entries for the name
+// (learnSystem's components), `counted` the files of the duplicate the report
+// counts under it (the copies in learnSystem's duplicates), `same` how two
+// paths compare. canBeDuplicate({ name, file, isPage }) is the first question
+// it asks: a framework's Route, a page, a route file, the crash page, a story
+// and an email template repeat by design. isPageFile(file) answers isPage for
+// a file not in the ledger. componentNamesIn(text, file) lists what a whole
+// file defines for the report: React components in a .tsx, .jsx or .js file
+// with markup in it, and web components registered by tag. The exemptions
+// (exemptReason) are about styling, so a duplicate is still a duplicate in
+// an exempt file.
+export { canBeDuplicate, duplicateCopies } from '../harvest/duplicates.mjs';
+export { isPageFile, looksLikeJSXFile, componentNamesIn } from '../harvest/components.mjs';
 
 // The files no checker should judge. Exported so a guard reads the same list
 // as the engine rather than keeping a copy that drifts.
@@ -115,7 +130,7 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   // the same two lists the MCP knowledge builds (mcp/knowledge.mjs), from the
   // same helpers, for tokenTwinFindings and avoidedImportFindings (8.6.1)
   const read = (f) => readSource(join(repoRoot, f));
-  const hardDupes = (findDuplicates(ledger, profile.uiDir, repoRoot).exactDuplicates ?? []).filter((d) => !d.wrapped);
+  const hardDupes = (findDuplicates(ledger, profile.uiDir, repoRoot, profile.uiDirs ?? null).exactDuplicates ?? []).filter((d) => !d.wrapped);
   const P = profileOf(profile);
   const installedNow = installedDirs(P);
   const charts = chartSystemOf(files, read, { own: (f) => !installedNow.some((d) => f === d || f.startsWith(`${d}/`)) });

@@ -54,8 +54,59 @@ const ROUTE_FRAGMENT_RE = /(^|\/)app\/.*\/(form|header|footer|nav|page|layout|lo
 // and _dashboard.analytics.tsx both export Page, 2026-09-17). A story is a
 // demo of a component, not a second implementation of it (medplum keeps a
 // MockDateWrapper in two stories folders).
-const ROUTE_FILE_RE = /(^|\/)routes\/[^/]+\.[jt]sx?$|(^|\/)(page|layout|route|loading|error|not-found|template|default)\.[jt]sx?$/;
+// Next.js's crash page is one more of these: every app in a monorepo has its
+// own global-error, and a starter keeps a second one in its templates folder
+// (9.2.1).
+const ROUTE_FILE_RE = /(^|\/)routes\/[^/]+\.[jt]sx?$|(^|\/)(page|layout|route|loading|error|global-error|not-found|template|default)\.[jt]sx?$/;
 const STORY_FILE_RE = /(^|\/)(stories|__stories__|\.storybook)\/|\.stories\.[jt]sx?$/;
+// Email templates legitimately mirror web component names (email Footer !=
+// web Footer); cross-matching them manufactures duplicates. An email folder
+// or file is one whose name carries "email" as a word of its own: emails/,
+// email-templates/, twenty-emails/, welcome-email.tsx. A screen about email
+// (ConfirmUserEmail, EmailInput) is interface and stays in (9.2.1: the rule
+// asked for the word at the start of the name and missed twenty-emails/).
+const EMAIL_PATH_RE = /(^|\/)(?:[a-z0-9]+[-_.])*emails?(?:[-_][a-z0-9]+)*(?:\/|\.[jt]sx?$)/i;
+// Same-name components living in different icons/ directories are ONE
+// problem — two icon libraries colliding — not N separate duplicates.
+const ICON_DIR_RE = /(^|\/)icons?\//i;
+
+/**
+ * Whether a definition can be a duplicate at all. The report's finder and the
+ * live checks both ask here, so a name the report lets repeat by design is
+ * never a finding on the file an agent just wrote (9.2.1: every TanStack
+ * route file was told its Route already existed in 40 places).
+ */
+export function canBeDuplicate({ name, file = '', isPage = false }) {
+  return !isPage && !NOT_DUPLICATES.has(name)
+    && !ROUTE_FRAGMENT_RE.test(file) && !ROUTE_FILE_RE.test(file)
+    && !STORY_FILE_RE.test(file) && !EMAIL_PATH_RE.test(file);
+}
+
+/**
+ * The other copies that make one definition a duplicate, or none. The live
+ * checks and the guard ask here, so their answer is the report's answer.
+ *
+ * A file the scan has read is settled by the report: the definition is a
+ * duplicate when the report counts the name and this file is one of the
+ * copies it counts. A wrapper, shadcn's own overlap inside the catalogue and
+ * two icon libraries colliding are listed by the report and never counted,
+ * so they are not findings on the file either. A file the scan has not read
+ * (content validated before it is saved) is judged on the copies that exist.
+ *
+ * @param def     { name, file, isPage } the definition under review
+ * @param copies  the ledger's entries for the name: [{ file, isPage, usageCount }]
+ * @param counted the files of the duplicate the report counts under the name,
+ *                or null when it counts none
+ * @param same    how two paths are compared (a guard matches on path tails)
+ */
+export function duplicateCopies({ name, file = '', isPage = false }, copies, counted = null, same = (a, b) => a === b) {
+  if (!canBeDuplicate({ name, file, isPage })) return [];
+  const others = (copies ?? []).filter((c) => !same(c.file, file) && canBeDuplicate({ ...c, name }));
+  if (!others.length) return [];
+  if ((copies ?? []).some((c) => same(c.file, file))) return (counted ?? []).some((f) => same(f, file)) ? others : [];
+  if (ICON_DIR_RE.test(file) && others.every((c) => ICON_DIR_RE.test(c.file))) return [];
+  return others;
+}
 
 /**
  * @param components output of harvestComponents (non-page components matter most)
@@ -66,12 +117,7 @@ const STORY_FILE_RE = /(^|\/)(stories|__stories__|\.storybook)\/|\.stories\.[jt]
  */
 export function findDuplicates(components, uiDir = null, root = null, uiDirs = null) {
   const catalogueDirs = uiDirs ?? (uiDir ? [uiDir] : []);
-  // Email templates legitimately mirror web component names (email Footer !=
-  // web Footer); cross-matching them manufactures duplicates.
-  const EMAIL_PATH_RE = /(^|\/)emails?(\/|-)/i;
-  const comps = components.filter((c) => !c.isPage && !NOT_DUPLICATES.has(c.name)
-    && !ROUTE_FRAGMENT_RE.test(c.file) && !ROUTE_FILE_RE.test(c.file)
-    && !STORY_FILE_RE.test(c.file) && !EMAIL_PATH_RE.test(c.file));
+  const comps = components.filter(canBeDuplicate);
 
   // 1. exact same component name defined in >1 file
   const byName = new Map();
@@ -88,9 +134,6 @@ export function findDuplicates(components, uiDir = null, root = null, uiDirs = n
     }))
     .sort((a, b) => b.files.length - a.files.length);
 
-  // Same-name components living in different icons/ directories are ONE
-  // problem — two icon libraries colliding — not N separate duplicates.
-  const ICON_DIR_RE = /(^|\/)icons?\//i;
   const iconCollisions = exactDuplicates.filter((d) => d.files.every((f) => ICON_DIR_RE.test(f)));
   exactDuplicates = exactDuplicates.filter((d) => !iconCollisions.includes(d));
 

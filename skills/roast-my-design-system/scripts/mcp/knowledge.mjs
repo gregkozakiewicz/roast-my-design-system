@@ -74,7 +74,10 @@ export function loadKnowledge(root) {
     // same shape as a harvested colour, so every reader of `files` keeps working
     for (const v of themeSet) if (!tokens.colors.some((c) => c.value === v)) tokens.colors.push({ value: v, count: 1, files: [{ file: kit.themeFiles[0] ?? '', count: 1 }], isToken: true });
   }
-  const duplicates = findDuplicates(components, profile.uiDir, root);
+  // every catalogue folder, as the report passes them (harvest/index.mjs): a
+  // monorepo with two installs has two, and shadcn's own overlap in the
+  // second is no more the team's than in the first
+  const duplicates = findDuplicates(components, profile.uiDir, root, profile.uiDirs ?? null);
   const context = harvestContext(root);
   const workspaces = resolveWorkspaces(root);
 
@@ -196,6 +199,10 @@ export function loadKnowledge(root) {
     neverImported,
     // stock, not debt: see profiles/index.mjs
     vendoredUi: P.vendoredUi,
+    // folders the team did not write, by the same line the guard doorway
+    // draws (lib/guard-api.mjs): only a shadcn kit has installed code, and a
+    // registry's published folders are its own work
+    installedDirs: P.isShadcn && !P.isRegistry ? installed : [],
     // the kit the product is built on, and the Tailwind theme it names its
     // colours in: null when the repo is neither (see profiles/)
     kit,

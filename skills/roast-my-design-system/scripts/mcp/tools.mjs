@@ -306,19 +306,22 @@ export function validate(k, { code, file = null } = {}) {
   if (file != null && typeof file !== 'string') return invalidInput('file is optional, but when sent it must be a repo-relative path as a string.');
   if (code.length > MAX_VALIDATE_CHARS) return invalidInput(`That is ${Math.round(code.length / 1000)}k characters; send the part you changed (up to ${MAX_VALIDATE_CHARS / 1000}k).`);
   const { findings, exempt } = validateContent({ text: code, file, before: beforeOf(k, file) }, k);
-  if (exempt) return `Not judged: ${file} is exempt because ${exempt}. Nothing here was checked.`;
+  if (exempt && !findings.length) return `Not judged: ${file} is exempt because ${exempt}. Nothing here was checked.`;
   if (!findings.length) return cleanResultText(k);
-  return findingLines(findings, k).join('\n');
+  return findingLines(findings, k, exempt).join('\n');
 }
 
 /** The finding list as roast_validate prints it; the edit hook prints the same. */
-export function findingLines(findings, k) {
+export function findingLines(findings, k, exempt = null) {
   const L = [`${findings.length} finding${findings.length === 1 ? '' : 's'}:`];
   for (const f of findings.slice(0, 12)) {
     L.push(`${f.severity === 'violation' ? '✕' : '⚠'} L${f.line} ${f.message}${f.fix ? `\n   Fix: ${f.fix}` : ''}`);
   }
   if (findings.length > 12) L.push(`(+${findings.length - 12} more of the same kinds)`);
-  L.push(`Checked: ${checksFor(k).join(', ')}.`);
+  // an exempt file is judged on one thing, and the reader is told which
+  L.push(exempt
+    ? `Checked: duplicate component definitions. The styling was not judged, because ${exempt}.`
+    : `Checked: ${checksFor(k).join(', ')}.`);
   return L;
 }
 
@@ -355,12 +358,12 @@ export function reviewData(k) {
     try { text = readFileSync(join(gitRoot, f), 'utf8'); } catch { continue; }
     // knowledge paths are scanned-root-relative; git paths are toplevel-relative
     const { findings, exempt } = validateContent({ text, file: relative(realRoot, join(gitRoot, f)), before: headVersion(gitRoot, f) }, k);
-    if (exempt) { exemptCount++; continue; }
+    if (exempt) exemptCount++;
     if (findings.length) { perFile.push({ f, findings }); total += findings.length; }
   }
   // Skipped is not the same as clean, and the reader is owed the difference.
   const exemptNote = exemptCount
-    ? ` ${exemptCount} file${exemptCount === 1 ? ' was' : 's were'} left unjudged: email, print, artwork or pictures drawn with code.`
+    ? ` The styling of ${exemptCount} file${exemptCount === 1 ? ' was' : 's were'} left unjudged: email, print, artwork or pictures drawn with code.`
     : '';
   if (!total) {
     return { text: `Reviewed ${changed.length} changed file${changed.length === 1 ? '' : 's'}. ${cleanResultText(k)}${exemptNote}`, total: 0 };

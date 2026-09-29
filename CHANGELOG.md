@@ -2,6 +2,68 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.2.1 — 2026-09-29
+
+The report and the live check (the edit hook, the MCP validate tool and the
+review) are two judges reading one repo, and each kept its own idea of what
+a duplicate is. They now ask one function, and on 17 repos they name
+exactly the same duplicates, file by file. Before, the live check named 759
+the report does not count, and stayed silent on 17 it does.
+
+- **The live check stops flagging what the report never counts.** An agent
+  adding a page to a TanStack Router app was told "Defines <Route>, which
+  already exists in 40 other places" and to import another page's route.
+  - A name that repeats by design: a framework's `Route`, `Layout`, `App`
+    or `Provider`, a page, a route file, a story, an email template. On
+    shadcn-admin 31 of 99 live findings were this one; on ryot, 36 of 108.
+  - A pair the report lists without counting: a wrapper built on the
+    component it shares a name with, shadcn's own overlap inside the
+    catalogue, two icon libraries carrying the same glyph.
+  - A file the report does not read as a component file: a stub returning
+    null, a TypeScript file whose generics read like tags.
+  - shadcn's overlap in a second catalogue folder. The report was told
+    about every catalogue folder in a monorepo, the live check about the
+    first only.
+- **The live check starts flagging what the report counts.**
+  - A second copy inside a file whose styling is exempt. A drawing, a
+    crash page or a render-to-image surface is excused its colours, because
+    the medium allows nothing else. The exemption used to silence the whole
+    file, so a second `Logo` passed. The duplicate check now runs there, the
+    styling stays unjudged, and the result says which of the two was
+    checked.
+  - A web component registered a second time. Stencil, Lit and
+    `customElements.define` components were in the report's ledger and
+    invisible to the live check.
+- **Two rules in the report were wrong, and its counts move.**
+  - An email folder is one whose name carries "email" as a word of its own:
+    `emails/`, `email-templates/`, `twenty-emails/`, `welcome-email.tsx`.
+    The rule asked for the word at the start of the name, so the templates
+    in Twenty's `twenty-emails` package were counted as duplicates of the
+    web components they mirror. Twenty: 36 duplicates to 33, score
+    unchanged at 40. A screen about email (`ConfirmUserEmail`) is interface
+    and stays in.
+  - Next.js's crash page, `global-error`, is a framework file like `error`
+    and `not-found`. A starter that keeps a template of it had the pair
+    counted. Kiranism's dashboard starter: 3 duplicates to 2, score 87 to
+    91.
+  None of the 11 hosted examples moved, in score or in any count.
+- **Bracket values inside installed shadcn code are shadcn's own.** The
+  report has named them and kept them out of the count since 7.4. The live
+  check told the catalogue's own tooltip off for its `[2px]`. A file inside
+  the catalogue, a kit block or an installed registry is no longer judged
+  on its brackets; the same value in own code still is.
+- A file the scan has read is settled by what the report counts. Content
+  validated before it is saved is judged on the copies that exist, so a
+  third `EmptyState` beside a wrapped pair is still a copy.
+- Live findings across the 17 repos: 7,199 to 6,425. shadcn-admin 99 to 67,
+  ryot 108 to 72, Dub 1,288 to 1,186.
+- **The guard doorway answers the same questions.** It exports
+  `duplicateCopies`, `canBeDuplicate`, `componentNamesIn`, `isPageFile` and
+  `looksLikeJSXFile`, and its duplicates now read every catalogue folder.
+  New exports only.
+- 17 unit checks. The last runs both judges over the same 2 repos and
+  fails unless they name exactly the same duplicates.
+
 ## 9.2.0 — 2026-09-29
 
 - **A button built from scratch is now a warning when the repo already

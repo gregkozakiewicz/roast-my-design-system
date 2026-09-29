@@ -2,6 +2,15 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.2.2 — 2026-09-29
+
+- **The list of fixes has a plainer heading.** "Fix what makes agents guess"
+  sat directly under the card that asks "Where will your agent have to
+  guess?", and the two read as one question asked twice. The list is now
+  headed "Fixes you can make right now to increase the health score". The
+  index still calls it "What to fix". The README and the landing page use
+  the new name.
+
 ## 9.2.1 — 2026-09-29
 
 The report and the live check (the edit hook, the MCP validate tool and the

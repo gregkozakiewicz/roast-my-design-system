@@ -73,7 +73,7 @@ The first thing the report says: the places where the repo has no answer yet, or
 
 One gap is known for certain today, because the runs found it: charts hardcoding colours in a repo with no chart palette. 43 of 126 public repos look like that. A gap joins the list when it has been measured.
 
-### Fix what makes agents guess
+### Fixes you can make right now to increase the health score
 
 The mess the agent will copy, ranked by what fixing it is worth.
 
@@ -142,7 +142,7 @@ Eleven reports, hosted exactly as the tool writes them. Every number determinist
 
 The full report for vercel/ai-chatbot. The verdict answers what the agent will learn here, the gap section comes first, then "What the repo teaches the agent", Claude's read of the scan:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then where the agent will have to guess, the What the repo teaches the agent analysis written by Claude, priced Fix what makes agents guess moves each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.1.2)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then where the agent will have to guess, the What the repo teaches the agent analysis written by Claude, priced fixes you can make right now, each with its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.1.2)
 
 The same report in light mode (one file, built-in toggle):
 
@@ -347,7 +347,7 @@ You get the roast in chat plus `design-system-roast.html` at your repo root, a s
 - stat tiles comparing you to all 3 yardsticks
 - a **light/dark theme toggle** in one file
 - the usage-weighted palette bar, the grey ramp, the off-scale spacing receipts, the duplicate-component receipts with clickable file paths, and the worst-offenders ledger
-- a **Fix what makes agents guess** list: up to 3 moves derived from your repo's own numbers, each with a file-path receipt
+- a **Fixes you can make right now to increase the health score** list: up to 3 moves derived from your repo's own numbers, each with a file-path receipt
 - **Where will your agent have to guess?** opens the report: the gaps where the repo has no answer yet, with the files that prove each one and the move that closes it, or "No gaps found"
 - **Give the agent the answers**: `design-system-rules.md` wrapped inside the report as a present. Unwrap, then copy or download the agent rules generated from your scan
 

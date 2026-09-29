@@ -1251,7 +1251,7 @@ function whereToStartSection() {
     delta: item.delta || 0, prompt: promptFor(item),
   }));
   return `<section class="glass pad">
-    ${sectionHead('Fix what makes agents guess', head)}
+    ${sectionHead('Fixes you can make right now to increase the health score', head)}
     <div class="ledger">${top3.map((item, i) => `
       <div class="ledger-row start-row">
         <span class="ledger-idx">${String(i + 1).padStart(2, '0')}</span>
@@ -1651,7 +1651,7 @@ function exceptionsBlock() {
 function addIndex(page) {
   // heading text is already HTML-escaped; strip tags and leading counts only
   const short = (t) => t.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().replace(/^[\d,]+ /, '')
-    .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^Give the agent the answers$/, 'Agent rules').replace(/^What the repo teaches the agent$/, 'What it teaches').replace(/^Fix what makes agents guess$/, 'What to fix')
+    .replace(/^What your AI agent sees today$/, 'What your agent sees').replace(/^Give the agent the answers$/, 'Agent rules').replace(/^What the repo teaches the agent$/, 'What it teaches').replace(/^Fixes you can make right now to increase the health score$/, 'What to fix')
     .replace(/^The shadcn theme and the 2 shadcn checks$/, 'shadcn theme and checks')
     .replace(/^Your Tailwind theme, and what goes around it$/, 'Your Tailwind theme').replace(/^Your (\w+) theme, and what is written around it$/, 'Your $1 theme').replace(/, declared .*$/, '')
     .replace(/^off-scale spacing values$/, 'Off-scale spacing').replace(/^inline style blocks?$/, 'Inline styles').replace(/^typefaces?$/, 'Typefaces');

@@ -2,6 +2,26 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.2.6 — 2026-09-30
+
+- **A project generator's templates are left out of the scan.** Some repos
+  keep code they hand to other people: the files a "create a new app" tool
+  copies into someone else's project, or a starter kit. The dashboard
+  starter keeps a spare sidebar in `scripts/cleanup-templates`, for people
+  removing its sign-in service, and the scan counted it as a duplicate. A
+  `starters` folder, a templates folder kept by a project generator (such
+  as `create-app` or a `cli`), a script or a dev tool, and a codemod's test
+  fixtures are now left out. Each one is named in the report's "Left out by
+  design" line with the number of files in it.
+- A templates folder anywhere else stays in. Inside a product, "templates"
+  is usually a feature: Backstage's form templates, OpenCTI's case templates
+  and nocobase's block templates are real screens.
+- Measured on 205 repos: 12 changed, and every folder left out held a
+  generator's or a starter's code. Scores that moved: adobe react-spectrum
+  40 to 45 (262 interface files of starter kits) and fumadocs 50 to 55.
+  The hosted Airflow example counts 17 duplicated components, not 18; its
+  score is unchanged.
+
 ## 9.2.5 — 2026-09-30
 
 - **An icon in an icon folder is artwork, whatever it is called.** Icon

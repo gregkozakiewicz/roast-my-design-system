@@ -7,6 +7,7 @@
 import { join, basename, posix } from 'node:path';
 import { readSource } from './walk.mjs';
 import { resolveWorkspaces } from '../lib/workspaces.mjs';
+import { isDrawing, SVG_MARKUP_RE } from '../lib/exempt.mjs';
 
 /**
  * Import aliases a tsconfig declares: "@sentry/scraps/*": ["./static/app/
@@ -285,11 +286,15 @@ export function harvestComponents(root, codeFiles) {
   for (const [file, src] of sources) {
     if (!looksLikeJSXFile(src)) continue;
     const isPage = isPageFile(file);
+    const drawing = isDrawing(file, src);
+    const draws = SVG_MARKUP_RE.test(src);
     for (const name of definedComponents(src)) {
       components.push({
         name,
         file,
         isPage,
+        drawing,
+        draws,
         variants: extractVariants(src),
         propsHint: extractPropsHint(src, name),
         usageCount: 0,

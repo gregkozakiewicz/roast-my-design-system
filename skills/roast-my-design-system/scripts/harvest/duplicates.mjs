@@ -69,6 +69,23 @@ const EMAIL_PATH_RE = /(^|\/)(?:[a-z0-9]+[-_.])*emails?(?:[-_][a-z0-9]+)*(?:\/|\
 // Same-name components living in different icons/ directories are ONE
 // problem — two icon libraries colliding — not N separate duplicates.
 const ICON_DIR_RE = /(^|\/)icons?\//i;
+// The icon folder a file belongs to, up to and including icons/. Names that
+// repeat inside ONE icon folder are variants of one set (likec4's aws/, gcp/
+// and tech/ batch icons; nodejs.org's Logo and Favicon for each partner), not
+// two sets colliding: 121 of 180 icon collisions on 205 repos (2026-09-30).
+const iconSetOf = (f) => { const m = f.match(/^(.*?(?:^|\/)icons?\/)/i); return m ? m[1] : null; };
+// An icon is left out of a name's copies when nothing else of that name
+// draws: a Switch icon is not a second Switch component (teable), a Setting
+// icon not a second settings page (cloudreve). When another copy draws too, the
+// icon stays in: the same checkmark or logo drawn twice is two copies
+// (remotion's Checkmark, Typebot's logo in four places). Measured 2026-09-30.
+// A copy with no answer (a guard that does not say) leaves the set as it is.
+export function competing(defs) {
+  if (defs.some((d) => d.drawing === undefined)) return defs;
+  const icons = defs.filter((d) => d.drawing);
+  const rest = defs.filter((d) => !d.drawing);
+  return icons.length && rest.length && !rest.some((d) => d.draws) ? rest : defs;
+}
 
 /**
  * Whether a definition can be a duplicate at all. The report's finder and the
@@ -99,9 +116,12 @@ export function canBeDuplicate({ name, file = '', isPage = false }) {
  *                or null when it counts none
  * @param same    how two paths are compared (a guard matches on path tails)
  */
-export function duplicateCopies({ name, file = '', isPage = false }, copies, counted = null, same = (a, b) => a === b) {
+export function duplicateCopies({ name, file = '', isPage = false, drawing, draws }, copies, counted = null, same = (a, b) => a === b) {
   if (!canBeDuplicate({ name, file, isPage })) return [];
-  const others = (copies ?? []).filter((c) => !same(c.file, file) && canBeDuplicate({ ...c, name }));
+  const self = { name, file, isPage, drawing, draws };
+  const pool = competing([self, ...(copies ?? []).filter((c) => !same(c.file, file) && canBeDuplicate({ ...c, name }))]);
+  if (!pool.includes(self)) return [];
+  const others = pool.filter((c) => c !== self);
   if (!others.length) return [];
   if ((copies ?? []).some((c) => same(c.file, file))) return (counted ?? []).some((f) => same(f, file)) ? others : [];
   if (ICON_DIR_RE.test(file) && others.every((c) => ICON_DIR_RE.test(c.file))) return [];
@@ -126,6 +146,7 @@ export function findDuplicates(components, uiDir = null, root = null, uiDirs = n
     byName.get(c.name).push(c);
   }
   let exactDuplicates = [...byName.entries()]
+    .map(([name, defs]) => [name, competing(defs)])
     .filter(([, defs]) => new Set(defs.map((d) => d.file)).size > 1)
     .map(([name, defs]) => ({
       name,
@@ -134,8 +155,9 @@ export function findDuplicates(components, uiDir = null, root = null, uiDirs = n
     }))
     .sort((a, b) => b.files.length - a.files.length);
 
-  const iconCollisions = exactDuplicates.filter((d) => d.files.every((f) => ICON_DIR_RE.test(f)));
-  exactDuplicates = exactDuplicates.filter((d) => !iconCollisions.includes(d));
+  const inIcons = exactDuplicates.filter((d) => d.files.every((f) => ICON_DIR_RE.test(f)));
+  exactDuplicates = exactDuplicates.filter((d) => !inIcons.includes(d));
+  const iconCollisions = inIcons.filter((d) => new Set(d.files.map(iconSetOf)).size > 1);
 
   // A "duplicate" where one file imports the same identifier from the other is
   // a wrapper/composition (memoized variant, styled passthrough) — still an

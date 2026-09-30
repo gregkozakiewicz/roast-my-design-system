@@ -123,6 +123,15 @@ export const svgHeavy = (text) =>
   (text.match(/<(?:svg|path|rect|circle|ellipse|polygon|mask|defs)\b/g) ?? []).length >= 15;
 
 /**
+ * Whether a file is a drawing kept in an icons, logos or illustrations folder.
+ * The duplicate finder uses it: a Switch icon is not a second Switch component
+ * (teable, 2026-09-30). The folder, not the name: two files called Logo or
+ * Badge are two versions of one thing (dub, cal.com), and not "mostly SVG": a
+ * demo page full of drawings still defines real Buttons (json-render).
+ */
+export const isDrawing = (file, text = '') => ARTWORK_DIR_RE.test(file) && SVG_MARKUP_RE.test(text);
+
+/**
  * Why this file is exempt from judgement, as a sentence, or null when it is
  * fair game. Needs the text as well as the name: the artwork exemption is
  * earned by drawing, not by being called Icon, and the email one by being an

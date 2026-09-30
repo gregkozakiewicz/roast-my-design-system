@@ -42,6 +42,15 @@ const FILES = {
   // two icon libraries carrying the same glyph
   'src/icons/Check.tsx': 'export function Check() { return <svg viewBox="0 0 16 16"><path d="M2 8l4 4 8-8" /></svg>; }\n',
   'src/brand/icons/Check.tsx': 'export function Check() { return <svg viewBox="0 0 24 24"><path d="M3 12l6 6 12-12" /></svg>; }\n',
+  // an icon named for what it shows, beside the component of the same name
+  'src/icons/Switch.tsx': 'export function Switch() { return <svg viewBox="0 0 16 16"><path d="M4 8h8" /></svg>; }\n',
+  'src/ui/Switch.tsx': 'export function Switch(props) { return <button role="switch" className="switch" {...props} />; }\n',
+  // the same glyph twice: an icon, and a control that draws its own
+  'src/icons/Checkmark.tsx': 'export function Checkmark() { return <svg viewBox="0 0 16 16"><path d="M2 8l4 4 8-8" /></svg>; }\n',
+  'src/player/RateControl.tsx': 'export function Checkmark() { return <svg viewBox="0 0 16 16"><path d="M2 8l4 4 8-8" /></svg>; }\nexport function RateControl() { return <button className="rate"><Checkmark /></button>; }\n',
+  // one icon set in subfolders: aws/ and gcp/ each draw a Batch
+  'src/icons/aws/Batch.tsx': 'export function Batch() { return <svg viewBox="0 0 16 16"><path d="M1 1h14" /></svg>; }\n',
+  'src/icons/gcp/Batch.tsx': 'export function Batch() { return <svg viewBox="0 0 16 16"><path d="M2 2h12" /></svg>; }\n',
   // a stub with no markup in it
   'src/templates/Card.tsx': 'export function Card() {\n  return null;\n}\n',
   // a drawing, twice: the styling is exempt, the second copy is still a copy
@@ -105,6 +114,33 @@ test('two icon libraries colliding are one problem, not a finding per icon', () 
   // an icon not saved yet, joining the collision
   const { findings } = validateContent({ text: FILES['src/icons/Check.tsx'], file: 'src/marketing/icons/Check.tsx', before: null }, k);
   assert.deepEqual(dupes(findings), []);
+});
+
+test('an icon is not a second copy of the component it is named after', () => {
+  assert.ok(!k.duplicates.exactDuplicates.some((d) => d.name === 'Switch'), 'the report must not count the pair');
+  assert.deepEqual(dupes(judge(k, root, 'src/icons/Switch.tsx')), []);
+  assert.deepEqual(dupes(judge(k, root, 'src/ui/Switch.tsx')), []);
+  // an icon not saved yet, named like the component
+  const { findings } = validateContent({ text: FILES['src/icons/Switch.tsx'], file: 'src/icons/Toggle/Switch.tsx', before: null }, k);
+  assert.deepEqual(dupes(findings), []);
+  // and a second component of that name is still a copy
+  const second = validateContent({ text: FILES['src/ui/Switch.tsx'], file: 'src/features/settings/Switch.tsx', before: null }, k);
+  assert.equal(dupes(second.findings).length, 1);
+});
+
+test('one icon set in subfolders is not two sets colliding', () => {
+  assert.ok(!k.duplicates.iconCollisions.some((d) => d.name === 'Batch'), 'aws/ and gcp/ are one set');
+  assert.ok(!k.duplicates.exactDuplicates.some((d) => d.name === 'Batch'));
+  assert.deepEqual(dupes(judge(k, root, 'src/icons/aws/Batch.tsx')), []);
+});
+
+test('the same logo drawn twice is still two copies', () => {
+  assert.ok(k.duplicates.exactDuplicates.some((d) => d.name === 'Logo'));
+});
+
+test('an icon and a component drawing the same glyph are two copies', () => {
+  assert.ok(k.duplicates.exactDuplicates.some((d) => d.name === 'Checkmark'), 'remotion kept a Checkmark icon and drew one again in a control');
+  assert.equal(dupes(judge(k, root, 'src/player/RateControl.tsx')).length, 1);
 });
 
 test('a file with no markup holds no component, as in the report', () => {

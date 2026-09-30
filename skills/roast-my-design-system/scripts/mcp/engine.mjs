@@ -14,7 +14,7 @@ import { extractStyling } from '../harvest/tokens.mjs';
 import { componentNamesIn, isPageFile } from '../harvest/components.mjs';
 import { duplicateCopies } from '../harvest/duplicates.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
-import { exemptReason } from '../lib/exempt.mjs';
+import { exemptReason, isDrawing, SVG_MARKUP_RE } from '../lib/exempt.mjs';
 import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
 import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
 import { kitPaintFindings } from '../lib/kitpaint.mjs';
@@ -94,7 +94,7 @@ function duplicateFindings({ text, file, k, add }) {
   for (const name of componentNamesIn(text, file)) {
     const dupe = k.dupeByName.get(name);
     const counted = dupe ? dupe.files.map((f) => (typeof f === 'string' ? f : f.file)) : null;
-    const existing = duplicateCopies({ name, file: file ?? '', isPage: !!file && isPageFile(file) }, k.byName.get(name), counted);
+    const existing = duplicateCopies({ name, file: file ?? '', isPage: !!file && isPageFile(file), drawing: isDrawing(file ?? '', text), draws: SVG_MARKUP_RE.test(text) }, k.byName.get(name), counted);
     if (!existing.length) continue;
     // the scan may already include this very file — count the OTHER copies
     const otherCopies = counted ? counted.filter((f) => f !== file) : null;

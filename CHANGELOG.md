@@ -2,6 +2,31 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.3.0 — 2026-09-30
+
+- **A review when the agent finishes its turn.** The plugin already checks
+  every file the agent edits, but the agent can read the findings and carry
+  on: with that check on, Haiku still left invented values in 1 of 5 runs
+  (September 2026). Now, when the agent says it is done, the plugin reviews
+  every interface and style file the session changed. If the agent added a
+  problem that is still there, it is sent back once, with the list and the
+  fixes, before it can finish.
+  - Only problems that break a rule send it back. Advice (a chart with no
+    palette) never does.
+  - Only files this session changed. Work that was uncommitted before the
+    session started is left alone.
+  - A problem is sent back once a session. A value the agent keeps on
+    purpose, with a comment saying why, does not come back at the end of
+    every turn.
+  - It is on when the plugin is installed. To turn it off, add
+    `"env": { "ROAST_STOP_REVIEW": "off" }` to your Claude Code settings.
+- Tried in a real Claude Code session: asked for a banner in #ff00ff that
+  "the client insists on", Haiku wrote the colour inline and said it was
+  done. The review sent it back; it moved the colour into a class in the
+  stylesheet with a comment saying the client requires it, and finished.
+- For hand-installed setups: `--stop-hook` reads the Stop event and
+  `--session-start` notes the work that was already there. Both always exit 0.
+
 ## 9.2.6 — 2026-09-30
 
 - **A project generator's templates are left out of the scan.** Some repos

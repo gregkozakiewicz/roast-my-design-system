@@ -17,7 +17,7 @@ npx roast-my-design-system@latest
 Run it at the root of a UI repo. One second later, a report opens.
 No account. No network. No telemetry. Nothing in your repo changes.
 
-**Current release: 9.2.** Version history in [CHANGELOG.md](CHANGELOG.md).
+**Current release: 9.3.** Version history in [CHANGELOG.md](CHANGELOG.md).
 
 ## The idea
 

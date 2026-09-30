@@ -2,6 +2,24 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.3.1 — 2026-09-30
+
+- **A templates screen in the product is judged.** The colour check on
+  shadcn and Tailwind repos treated every folder called `templates` as demo
+  code, so colours from outside the theme there were never counted in the
+  report and never flagged when an agent edited them. In a product such a
+  folder is usually a screen: teable's admin templates, the template pickers
+  in documenso and formbricks, onlook's project templates, papermark's
+  templates feature. They are now judged like any other screen. Email
+  templates stay unjudged, through the email rule.
+- **A command-line tool's templates are left out of the scan.** The files a
+  tool copies into someone else's new project (novu's `init` and `connect`
+  commands) join the starter and generator templates from 9.2.6, and are
+  named in the report's "Left out by design" line.
+- Measured on 205 repos: 9 changed, no score moved. novu's counts fall with
+  its tool's templates left out (duplicated components 88 to 64, distinct
+  colours 396 to 357). No hosted example changed.
+
 ## 9.3.0 — 2026-09-30
 
 - **A review when the agent finishes its turn.** The plugin already checks

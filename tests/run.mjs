@@ -273,6 +273,14 @@ console.log('fixes, the promise and the list:');
     ? ok('when nothing pays, the heading drops the promise')
     : bad('nothing pays', JSON.stringify(none));
 
+  // An unscored report promised "+10" and "raises the score, by 5" on
+  // commerce, strapi and three more (2026-09-30).
+  const unscored = section('unscored');
+  unscored.heading === 'Fixes you can make right now' && /^This repo gets no score/.test(unscored.line)
+    && unscored.points === 0 && unscored.targets === 0 && unscored.reasons.every((r) => r === 'no score here')
+    ? ok('with no score, no fix claims points')
+    : bad('unscored fixes', JSON.stringify(unscored));
+
   !/Write the agent rules file/.test(readFileSync(join(tmp, 'clean.html'), 'utf8'))
     ? ok('the agent rules file has its own section, never a place in the fixes')
     : bad('rules file in the fixes', 'clean lists "Write the agent rules file"');

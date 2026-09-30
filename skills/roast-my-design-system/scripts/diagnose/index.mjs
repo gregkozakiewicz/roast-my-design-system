@@ -1207,6 +1207,9 @@ function whereToStartSection() {
   // already green, or the move lands inside the band it started in.
   for (const item of c) {
     item.delta = 0; item.target = null; item.why = 'not part of the score';
+    // No score, no points: an unscored report promised "+10" and "raises the
+    // score, by 5" on commerce, strapi and three more (2026-09-30).
+    if (healthScore === null) { item.why = 'no score here'; continue; }
     if (!item.metric) continue;
     const tile = bigStats.find((st) => st.metric === item.metric);
     const now = tile?.healthValue;
@@ -1250,7 +1253,9 @@ function whereToStartSection() {
     ? `${ofThese(paying.length)} could raise the design system health score from <b class="proj">${healthScore} to ${after}</b>.${later.length ? ` ${cap(COUNT[later.length - 1])} more ${later.length === 1 ? 'pays' : 'pay'} ${inFull(later.length)}.` : ''}${rest}`
     : later.length
       ? `${ofThese(later.length)} ${later.length === 1 ? `raises the score, by ${later[0].target.gain},` : 'raise the score'} ${inFull(later.length)}.${rest}`
-      : `${total === 1 ? 'It does' : 'They do'} not move the score. ${total === 1 ? 'It is' : 'They are'} here because ${total === 1 ? 'it stops' : 'each one stops'} the agent guessing.`;
+      : healthScore === null
+        ? `This repo gets no score, so there is no score to raise. ${total === 1 ? 'This fix is' : 'These fixes are'} here because ${total === 1 ? 'it stops' : 'each one stops'} the agent guessing.`
+        : `${total === 1 ? 'It does' : 'They do'} not move the score. ${total === 1 ? 'It is' : 'They are'} here because ${total === 1 ? 'it stops' : 'each one stops'} the agent guessing.`;
   const title = paying.length || later.length ? 'Fixes you can make right now to increase the health score' : 'Fixes you can make right now';
   const chip = (item) => item.delta > 0
     ? `<span class="delta" title="once all of them are done">+${item.delta}</span>`

@@ -2,6 +2,31 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.2.5 — 2026-09-30
+
+- **An icon in an icon folder is artwork, whatever it is called.** Icon
+  sets name their files after what they show (ActionSendEmail, Server), not
+  after being an icon, so their colours were judged as interface. A file
+  that draws SVG inside an icons, logos or illustrations folder is now
+  treated as artwork. A plain component in one of those folders is still
+  judged. The edit check stops flagging icon colours: on teable, 245
+  findings on its icons fell to 5; on openstatus, 132 fell to 6.
+- **An icon is not a second copy of a component.** teable's Switch icon was
+  counted as a second Switch, and medusa's icon package as second copies of
+  its Button, Text, Calendar and Code. An icon now counts as a copy only
+  against another drawing of the same thing: remotion's Checkmark icon and
+  the checkmark a player control draws are still two copies. Only an icon
+  folder decides this, so two files called Logo or Badge still count.
+- **One icon set in subfolders is not two sets.** likec4's AWS and Google
+  Cloud icons, and nodejs.org's Logo and Favicon for each partner, no
+  longer read as two icon sets colliding. nodejs.org loses the "Merge the
+  two icon sets" fix. Two separate icon folders still get it.
+- Measured on 205 repos. 17 duplicate counts fell and none rose. Scores
+  that moved: taipy 92 to 96, and teable 28 to 24, because its 250 icons no
+  longer count as interface files and its per-100-files rates rose. The
+  hosted dub example shows 21 duplicated components, not 22; its score is
+  unchanged.
+
 ## 9.2.4 — 2026-09-30
 
 - **Fixes that raise the score come first.** The list of fixes was sorted

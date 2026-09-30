@@ -93,7 +93,7 @@
 <ul class="lead-list">
 <li><b>Roast</b> the repo to find its real design system, the mess in it, and the gaps.</li>
 <li><b>Teach</b> the agent, through generated rules and a local MCP server.</li>
-<li><b>Guard</b> every edit, so the agent does not have to remember to ask.</li>
+<li><b>Guard</b> every edit, so the agent does not have to remember to ask. When the agent says it is done, a last review looks at everything the session changed and sends it back once if a problem it added is still there.</li>
 </ul>
 
 <h2>The mess an agent adds is a map of the gaps in your system</h2>
@@ -131,7 +131,7 @@
 
 <div class="kicker" style="margin-top:30px">Install the Claude Code plugin</div>
 <div class="install"><b>/plugin marketplace add</b> gregkozakiewicz/roast-my-design-system<br><b>/plugin install</b> roast-my-design-system@roast-my-design-system</div>
-<p class="sub">What it installs: two skills, one local MCP server and one edit hook, nothing else. <b>roast</b> (<code>/roast-my-design-system</code>) scans the whole repo, writes the report with Claude's read of the numbers inside it, then walks the fixes with you. <b>review</b> (<code>/roast-my-design-system:review</code>) checks only what changed, in about a second. Older Claude Code without the marketplace: clone the repo and copy skills/roast-my-design-system into ~/.claude/skills/ (or ~/.codex/skills/ for OpenAI Codex).</p>
+<p class="sub">What it installs: two skills, one local MCP server and two checks that run on their own, nothing else. <b>roast</b> (<code>/roast-my-design-system</code>) scans the whole repo, writes the report with Claude's read of the numbers inside it, then walks the fixes with you. <b>review</b> (<code>/roast-my-design-system:review</code>) checks only what changed, in about a second. Older Claude Code without the marketplace: clone the repo and copy skills/roast-my-design-system into ~/.claude/skills/ (or ~/.codex/skills/ for OpenAI Codex).</p>
 <p class="lead-close">Read only, no network, no telemetry, one shareable HTML report. Every release is provenance signed on npm and passes a 332-check test suite before it ships.</p>
 
 <h2>What it works on</h2>

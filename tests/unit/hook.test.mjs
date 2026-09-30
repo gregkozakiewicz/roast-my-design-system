@@ -142,3 +142,91 @@ test('newSince subtracts prior findings kind by kind', () => {
   assert.deepEqual(newSince(now, prior).map((x) => x.line), [9, 9]);
   assert.deepEqual(newSince(prior, now), []);
 });
+
+// ---------- the review at the end of the turn ----------
+// Stop: judge what this session changed, send the agent back once when it
+// added violations. SessionStart notes the work that was already there.
+const stop = (dir, ev, env = {}) => spawnSync(process.execPath, [BIN, '--stop-hook'], {
+  cwd: dir, input: JSON.stringify({ cwd: dir, hook_event_name: 'Stop', stop_hook_active: false, ...ev }), encoding: 'utf8',
+  env: { ...process.env, ROAST_STOP_REVIEW: '', ...env },
+});
+const start = (dir, session) => spawnSync(process.execPath, [BIN, '--session-start'], {
+  cwd: dir, input: JSON.stringify({ cwd: dir, hook_event_name: 'SessionStart', session_id: session }), encoding: 'utf8',
+});
+const sid = () => `stop-test-${process.pid}-${Math.random().toString(36).slice(2)}`;
+const DRIFT = "export const P = () => <div style={{ color: '#ff00ff' }}>p</div>;\n";
+
+test('the end-of-turn review sends the agent back once with what it added', () => {
+  const dir = repo(); const session = sid();
+  start(dir, session);
+  writeFileSync(join(dir, 'components/Probe.tsx'), DRIFT);
+  hook(dir, { ...event(dir, 'components/Probe.tsx'), session_id: session });
+  const r = stop(dir, { session_id: session });
+  assert.equal(r.status, 0);
+  const out = JSON.parse(r.stdout);
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /Before you finish/);
+  assert.match(out.reason, /components\/Probe\.tsx/);
+  assert.match(out.reason, /Hardcoded colour #ff00ff/);
+  // the stop right after a block always goes through: one round, never a loop
+  const again = stop(dir, { session_id: session, stop_hook_active: true });
+  assert.equal(again.stdout, '');
+  // and a problem the agent kept on purpose is not sent back at the end of
+  // every later turn: once a session
+  assert.equal(stop(dir, { session_id: session }).stdout, '');
+  // a new problem in a later turn still is
+  writeFileSync(join(dir, 'components/Later.tsx'), DRIFT.replace('#ff00ff', '#00ffaa').replace('P =', 'L ='));
+  hook(dir, { ...event(dir, 'components/Later.tsx'), session_id: session });
+  const later = JSON.parse(stop(dir, { session_id: session }).stdout);
+  assert.match(later.reason, /Later\.tsx/);
+  assert.doesNotMatch(later.reason, /Probe\.tsx/);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test('once the agent fixes it, the end-of-turn review is silent', () => {
+  const dir = repo(); const session = sid();
+  start(dir, session);
+  writeFileSync(join(dir, 'components/Probe.tsx'), DRIFT);
+  hook(dir, { ...event(dir, 'components/Probe.tsx'), session_id: session });
+  writeFileSync(join(dir, 'components/Probe.tsx'), 'export const P = () => <div className="probe">p</div>;\n');
+  hook(dir, { ...event(dir, 'components/Probe.tsx', 'Edit'), session_id: session });
+  assert.equal(stop(dir, { session_id: session }).stdout, '');
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test('work that was uncommitted before the session is not the agent\'s to fix', () => {
+  const dir = repo(); const session = sid();
+  writeFileSync(join(dir, 'components/Before.tsx'), DRIFT);
+  start(dir, session);
+  // a shell command in the session: the hook looks at every changed file,
+  // the one that was already there included
+  writeFileSync(join(dir, 'components/After.tsx'), DRIFT.replace('P =', 'A ='));
+  hook(dir, { cwd: dir, tool_name: 'Bash', hook_event_name: 'PostToolUse', tool_input: { command: 'cat > components/After.tsx' }, session_id: session });
+  const out = JSON.parse(stop(dir, { session_id: session }).stdout);
+  assert.match(out.reason, /components\/After\.tsx/);
+  assert.doesNotMatch(out.reason, /Before\.tsx/);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test('the off switch, a session with no edits and a broken event all stay silent', () => {
+  const dir = repo(); const session = sid();
+  start(dir, session);
+  writeFileSync(join(dir, 'components/Probe.tsx'), DRIFT);
+  hook(dir, { ...event(dir, 'components/Probe.tsx'), session_id: session });
+  assert.equal(stop(dir, { session_id: session }, { ROAST_STOP_REVIEW: 'off' }).stdout, '');
+  assert.equal(stop(dir, { session_id: sid() }).stdout, '');
+  const broken = spawnSync(process.execPath, [BIN, '--stop-hook'], { cwd: dir, input: '{not json', encoding: 'utf8' });
+  assert.equal(broken.status, 0);
+  assert.equal(broken.stdout, '');
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test('a warning alone never sends the agent back', () => {
+  const dir = repo(); const session = sid();
+  start(dir, session);
+  // on-system code: nothing a violation could come from
+  writeFileSync(join(dir, 'components/Quiet.tsx'), 'export const Q = () => <div className="quiet">q</div>;\n');
+  hook(dir, { ...event(dir, 'components/Quiet.tsx'), session_id: session });
+  assert.equal(stop(dir, { session_id: session }).stdout, '');
+  rmSync(dir, { recursive: true, force: true });
+});

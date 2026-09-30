@@ -92,6 +92,10 @@ Run it yourself
                   number of files it removed, so a scoped scan says so
   --json          print the scan summary as JSON on stdout (implies --no-open)
   --check         check the working tree's changed files (git diff + untracked)
+  --stop-hook     Claude Code end-of-turn review: reads the Stop event on stdin
+                  and sends the agent back once when the files this session
+                  changed carry new violations. ROAST_STOP_REVIEW=off turns it
+                  off. --session-start notes the work that was already there
   --hook          Claude Code edit hook: reads the PostToolUse event on stdin,
                   checks the one file that changed, answers with findings
                   against the design system and print the findings; exits 1
@@ -139,6 +143,24 @@ if (argv.includes('--mcp')) {
     if (r) console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: r.text } }));
   } catch (e) {
     console.error(`roast-my-design-system --hook: ${e.message}`);
+  }
+  process.exit(0);
+} else if (argv.includes('--stop-hook') || argv.includes('--session-start')) {
+  // Claude Code's Stop and SessionStart hooks, same rules as --hook: read the
+  // event on stdin, exit 0 whatever happens. Stop answers with a block and the
+  // findings when the agent should go back and fix what it added.
+  let raw = '';
+  try { raw = readFileSync(0, 'utf8'); } catch { /* no stdin */ }
+  try {
+    const { stopResult, sessionStart } = await import(pathToFileURL(join(SCRIPTS, 'mcp/hook.mjs')).href);
+    const event = raw.trim() ? JSON.parse(raw) : {};
+    if (argv.includes('--session-start')) sessionStart(event);
+    else {
+      const r = stopResult(event);
+      if (r) console.log(JSON.stringify({ decision: 'block', reason: r.text }));
+    }
+  } catch (e) {
+    console.error(`roast-my-design-system ${argv.includes('--session-start') ? '--session-start' : '--stop-hook'}: ${e.message}`);
   }
   process.exit(0);
 } else if (argv.includes('--check')) {

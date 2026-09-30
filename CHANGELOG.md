@@ -2,6 +2,25 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.2.4 — 2026-09-30
+
+- **Fixes that raise the score come first.** The list of fixes was sorted
+  by the points a fix pays straight away, so a fix that pays only once it is
+  finished ("clear them all · +4") counted as nothing. On shadcn-admin the
+  one fix worth points sat second, behind one worth none. The list now puts
+  fixes that pay first, then fixes that pay once finished, then the rest.
+- **The agent rules file is no longer one of the fixes.** It took one of
+  the three places without raising the score. The report already offers it
+  in its own section, Give the agent the answers, and it stays there.
+- **A report with no score promises no points.** When a repo shows no sign
+  of a design system, the report gives no score, but its fixes still claimed
+  "+10" or "raises the score, by 5". Now each fix there says "no score here"
+  and the heading makes no promise.
+- Measured on 205 repos. No score moved. 25 lists changed order, 9 repos
+  whose only fix was the rules file no longer show a list of fixes, and 4
+  unscored reports stopped claiming points. Three hosted examples show their
+  fixes in a new order: ai-chatbot, telekom-scale and spectrum-web-components.
+
 ## 9.2.3 — 2026-09-30
 
 - **A screen about email is judged like any screen.** Until now any file

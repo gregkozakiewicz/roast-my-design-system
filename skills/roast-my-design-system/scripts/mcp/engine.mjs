@@ -18,9 +18,7 @@ import { exemptReason, isDrawing, SVG_MARKUP_RE } from '../lib/exempt.mjs';
 import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
 import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
 import { kitPaintFindings } from '../lib/kitpaint.mjs';
-import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
-import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
-import { oklab } from '../lib/color.mjs';
+import { paletteFindings } from '../lib/palette.mjs';
 import { tokenTwinFindings } from '../lib/tokentwins.mjs';
 import { avoidedImportFindings } from '../lib/avoidedimports.mjs';
 import { isChartFile, chartFindings } from '../lib/charts.mjs';
@@ -47,7 +45,7 @@ export const KIT_CHECK = 'colours and pixel sizes written onto kit components wh
 export const PALETTE_CHECK = 'palette classes where the theme names a colour';
 export const BUTTON_CHECK = 'hand-made buttons where the repo has a Button';
 export function checksFor(k) {
-  const list = k?.kit ? [...CHECKS, KIT_CHECK] : (k?.tailwind || k?.shadcn) ? [...CHECKS, PALETTE_CHECK] : [...CHECKS];
+  const list = k?.kit ? [...CHECKS, KIT_CHECK] : k?.palette ? [...CHECKS, PALETTE_CHECK] : [...CHECKS];
   if (k?.buttons?.length) list.push(BUTTON_CHECK);
   return list;
 }
@@ -180,57 +178,12 @@ export function validateContent(content, k) {
   }
 
   // ---------- palette classes where the theme names its colours ----------
-  // A Tailwind theme names its colours (bg-surface, text-ink); a shadcn sheet
-  // names them too (bg-primary, text-muted-foreground). A palette class
-  // (text-gray-500, ring-green-500) where a name of that kind exists is paint
-  // from the tin. Same rule as the report's tile, from harvest/paint.mjs.
-  // On a shadcn repo the catalogue and kit blocks are the kit's own doors
-  // (editing them is the intended use) and a demo folder is not own code,
-  // exactly the files the tile leaves out.
-  const inShadcnDoors = (f) => !!f && k.shadcn.doors.some((d) => f === d || f.startsWith(`${d}/`));
-  // A demo folder is left out on a Tailwind theme too: the report's tile never
-  // counted one, and the live check flagged it (2026-09-30).
-  const demo = !!file && DEMO_PATH_RE.test(file);
-  const paletteRule = k.tailwind ? (demo ? null : 'tailwind')
-    : k.shadcn && !(file && (inShadcnDoors(file) || demo)) ? 'shadcn'
-    : null;
-  if (paletteRule && !css) {
-    const tw = k.tailwind ?? {};
-    const retuned = new Set(tw.retuned ?? []);
-    const fam = tw.families ?? null;
-    const hasFamily = (cls) => !fam || (GREY_HUE_RE.test(cls) ? fam.grey : fam.colour);
-    const themeFile = paletteRule === 'tailwind' ? tw.file : (k.shadcn.sheet ?? 'the theme sheet');
-    // the example name follows the utility: a text- class wants an ink or
-    // foreground name, a bg- class a surface or background name
-    const names = paletteRule === 'tailwind' ? (tw.names ?? []) : ['primary', 'foreground', 'muted-foreground', 'background', 'border'];
-    const pick = (re) => names.find((n) => re.test(n)) ?? names[0] ?? 'brand';
-    const values = paletteRule === 'tailwind' ? tw.values ?? {} : {};
-    // a class named in a comment paints nothing; blanked, not cut, so the
-    // line numbers below still hold
-    const code = blankComments(text);
-    const hits = [...code.matchAll(PALETTE_CLASS_RE)];
-    // the evening override painted by hand (dark:bg-black) is the same sin
-    // on a shadcn sheet, which always has a dark row of its own
-    if (paletteRule === 'shadcn') hits.push(...code.matchAll(DARK_WB_RE));
-    for (const m of hits.sort((a, b) => a.index - b.index)) {
-      const cls = m[0];
-      const util = cls.replace(/^((?:[\w-]+:)*[a-z]+)-.*$/, '$1');
-      const shade = cls.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, '');
-      const role = utilRole(util);
-      // the theme colour nearest by value among the names that suit the
-      // utility; the old pick by name alone only when none is close
-      const example = nearestThemeName(shade, role, values)
-        ?? (role === 'text' ? pick(/ink|text|fg|foreground/) : role === 'surface' ? pick(/surface|bg|background|canvas/) : pick(/border|edge|line|ring/));
-      if (retuned.has(shade)) continue;
-      if (!hasFamily(cls)) continue;
-      const word = hueWord(shade, names);
-      add('palette-class', 'violation', m.index,
-        `Palette class ${cls} where the theme names its colours (${themeFile}).`,
-        `Use a theme token as the class (${util}-${example}). ${names.includes(word)
-          ? `If no token fits, add ${/^[aeiou]/.test(word) ? 'an' : 'a'} ${word} shade to the theme once and use it by name.`
-          : `If no token fits, add one to the theme once, for example ${word}, and use ${util}-${word}.`}`);
-    }
-  }
+  // One rule for every door (lib/palette.mjs): which vocabulary applies, a
+  // Tailwind theme, shadcn's sheet or the repo's own theme under a shadcn
+  // kit, was decided once by the profile. The catalogue, kit blocks and demo
+  // folders are left out there, the same files the report's tile leaves out,
+  // and utility-class mode switches the rule off, as the report scores it.
+  for (const f of paletteFindings(text, k.palette, { file, css })) add(f.rule, f.severity, f.index, f.message, f.fix);
 
   // ---------- colours ----------
   const seenHere = new Set();
@@ -394,59 +347,6 @@ export function validateContent(content, k) {
   }
 
   return { findings, checked: checksFor(k) };
-}
-
-// ---------- the theme colour a palette class stands in for ----------
-// Which theme names suit a utility, read from the name: a text class wants an
-// ink, a bg class a surface, a border class an edge. A name that says none of
-// these (brand, warning, positive) is an accent and suits every utility.
-const TEXT_NAME_RE = /ink|text|fg|foreground/;
-const SURFACE_NAME_RE = /surface|(^|-)bg(-|$)|background|canvas|soft|tint|wash/;
-const EDGE_NAME_RE = /border|edge|line|ring|divider|outline/;
-function utilRole(util) {
-  if (/(^|:)(?:text|placeholder|caret|decoration|fill|stroke)$/.test(util)) return 'text';
-  if (/(^|:)bg$/.test(util)) return 'surface';
-  if (/(^|:)(?:border|ring|outline|divide)$/.test(util)) return 'edge';
-  return 'any';
-}
-function suits(name, role) {
-  const text = TEXT_NAME_RE.test(name), surface = SURFACE_NAME_RE.test(name), edge = EDGE_NAME_RE.test(name);
-  if (role === 'any' || (!text && !surface && !edge)) return true;
-  return role === 'text' ? text && !surface && !edge : role === 'surface' ? surface : edge;
-}
-// Distance in OKLab with the two colour axes doubled, so a pale amber lands on
-// the pale warning surface rather than on the near-white canvas beside it.
-const hueDistance = (x, y) => Math.hypot(x.L - y.L, 2 * (x.a - y.a), 2 * (x.b - y.b));
-// Past this, the nearest theme colour is a different colour, not a stand-in
-// (bg-blue-600 against a theme of greys), and the old pick by name answers.
-const CLOSE = 0.2;
-/** The suitable theme name nearest to a palette shade's Tailwind value, or null. */
-function nearestThemeName(shade, role, values) {
-  const from = oklab(TAILWIND_DEFAULTS[shade] ?? '');
-  if (!from) return null;
-  let best = null;
-  for (const [name, value] of Object.entries(values)) {
-    if (!suits(name, role)) continue;
-    const to = oklab(value);
-    if (!to) continue;
-    const d = hueDistance(from, to);
-    if (!best || d < best.d) best = { name, d };
-  }
-  return best && best.d <= CLOSE ? best.name : null;
-}
-// The word for a new token follows the hue, in the theme's own vocabulary when
-// it has one (Ledgerly says positive and negative, not success and danger).
-const HUE_WORDS = [
-  [/^(?:red|rose)-/, ['negative', 'danger', 'error', 'destructive']],
-  [/^(?:orange|amber|yellow)-/, ['warning', 'caution']],
-  [/^(?:green|emerald|lime)-/, ['positive', 'success']],
-  [/^(?:blue|sky|cyan)-/, ['info']],
-];
-function hueWord(shade, names) {
-  const words = HUE_WORDS.find(([re]) => re.test(shade))?.[1];
-  if (!words) return GREY_HUE_RE.test(`-${shade}`) ? 'muted' : 'accent';
-  return words.find((w) => names.some((n) => n === w || n.startsWith(`${w}-`)))
-    ?? { negative: 'danger', warning: 'warning', positive: 'success', info: 'info' }[words[0]];
 }
 
 function looksLikeCss(text) {

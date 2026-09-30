@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* the theme written straight into the block, the way formbricks does it:
+   nothing under :root in this file */
+@theme {
+  --color-brand: #00e6ca;
+  --color-brand-dark: #00c4b8;
+  --color-primary: #0f172a;
+  --color-primary-foreground: #fefefe;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-border: #e2e8f0;
+  --color-destructive: #ff6b6b;
+  --radius: 0.5rem;
+}

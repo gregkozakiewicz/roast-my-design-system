@@ -210,6 +210,9 @@ export function loadKnowledge(root) {
     // colours in: null when the repo is neither (see profiles/)
     kit,
     tailwind: P.isTailwind && profile.tailwind ? profile.tailwind : null,
+    // the vocabulary the palette rule judges against, decided once by the
+    // profile (lib/palette.mjs); null switches the rule off
+    palette: P.palette,
     // A shadcn kitchen: the sheet names the colours, so a palette class in
     // own code is paint from a tin (shadcn's own rule: semantic colours,
     // never bg-blue-500). The report's tile counts it over own code plus

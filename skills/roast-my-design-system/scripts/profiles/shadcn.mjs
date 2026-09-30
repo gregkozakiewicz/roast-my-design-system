@@ -328,6 +328,12 @@ export default {
     if (registryDirs.length) evidence.push(`${registryDirs.length} installed registr${registryDirs.length === 1 ? 'y' : 'ies'} beside it: ${registryDirs.map((d) => basename(d)).join(', ')}`);
     profile.shadcn = {
       installs: installs.map((i) => ({ config: i.config, uiDir: i.uiDir, catalogueNames: i.catalogueNames })),
+      // the theme contract: how many of shadcn's rows any stylesheet defines,
+      // and the file carrying most of them. The configured sheet can hold
+      // none under :root (formbricks writes its theme straight into @theme,
+      // a sibling package keeps the rows) while the contract still holds;
+      // the palette rule reads this, not the sheet alone (lib/palette.mjs)
+      contract: { rows: contract, file: themeContract.file ?? null },
       kit,
       sheet,
       blockFiles,

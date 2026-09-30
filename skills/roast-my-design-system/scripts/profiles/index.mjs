@@ -22,7 +22,8 @@ import { join, basename, dirname } from 'node:path';
  * fixture's expected output is byte-identical before and after.
  */
 import shadcn from './shadcn.mjs';
-import tailwind from './tailwind.mjs';
+import tailwind, { readTailwindTheme } from './tailwind.mjs';
+import { decidePalette } from '../lib/palette.mjs';
 import mui from './mui.mjs';
 import mantine from './mantine.mjs';
 import chakra from './chakra.mjs';
@@ -82,6 +83,12 @@ export function decideProfile(profile, components, files, root = null) {
   profile.kind = picked.kind;
   profile.kindConfidence = decision.confidence;
   profile.kindEvidence = decision.evidence;
+  // Which vocabulary a palette class is judged against, decided once here
+  // and read by the live checks and the guard (lib/palette.mjs): a Tailwind
+  // theme, shadcn's sheet when its contract holds, the repo's own theme
+  // under a shadcn kit with no rows, or nothing. The report's tile keeps
+  // its own gates (harvest/index.mjs) and no score reads this.
+  profile.palette = decidePalette(profile, profileOf(profile), () => readTailwindTheme({ ...profile }, ctx)?.facts ?? null);
   // A shadcn repo that PUBLISHES a registry is a registry: the fourth kind.
   // Every count still reads the shadcn facts (release (a): zero score change);
   // the kind, the receipt and the header line say what it is.
@@ -154,6 +161,8 @@ export function profileOf(h) {
     // a Tailwind repo with its own theme and no kit
     isTailwind: kind === 'tailwind',
     tailwind: p.tailwind ?? null,
+    // the vocabulary the palette rule judges against, or null when it is off
+    palette: p.palette ?? null,
     // a product built on a component kit installed from npm (mui)
     isKit: !!p.kit,
     kit: p.kit ?? null,

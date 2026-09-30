@@ -2,6 +2,41 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.4.0 — unreleased
+
+- **One palette rule for the live checks and the guard.** A palette class
+  (`text-gray-500`, `bg-amber-50`) where the theme names a colour of that
+  kind is flagged by the edit check, the end-of-turn review, `roast_validate`
+  and `--check`, and by guard-my-design-system on a pull request. The rule
+  lived in two places with two gates, and a probe of the fleet on 1 October
+  found each with a hole:
+  - The guard switched the rule on only for a shadcn repo whose configured
+    sheet held five of shadcn's rows under `:root`, and had no rule at all
+    on a repo with a Tailwind theme of its own. It was silent on 11 of 48
+    shadcn repos where the live checks spoke: a theme written straight into
+    a `@theme` block (formbricks, supabase), rows kept in a sibling package,
+    no sheet path in the config (documenso), or a theme of the repo's own
+    and none of shadcn's rows (Nango, Ghost).
+  - The live checks switched it on for any shadcn repo, including one in
+    utility-class mode (`cssVariables: false`), where the report says the
+    palette is the theme. On rybbit they flagged 1,394 palette classes in
+    the last 300 changes that are the kit's own style there.
+  The rule now lives once, in the engine, and which vocabulary a palette
+  class is judged against is decided once by the profile: a Tailwind theme
+  in use, its own names; a shadcn install in CSS-variable mode whose theme
+  contract holds (five or more of shadcn's ten rows in any stylesheet),
+  shadcn's names; a shadcn install with no contract but a v4 theme of its
+  own, that theme's names; utility-class mode, off. The guard reads the same
+  function through the doorway (`paletteFindings`, `profile.palette`), so
+  the two cannot disagree again. The MCP context on a shadcn repo shows the
+  example classes in the same vocabulary, and in utility-class mode no
+  longer says "never a palette class".
+- Measured on 204 repos: no score, tile or count moved. The report's tile
+  keeps its own gates; only the live checks and the doorway changed. On the
+  ten Tailwind-theme repos in the fleet, replaying their last 300 landed
+  changes, the rule fires on two changes in a hundred, a fifth of the rate
+  the shadcn rule already produces.
+
 ## 9.3.3 — 2026-09-30
 
 - **The report and the live checks skip the same files.** The report kept its

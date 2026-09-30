@@ -874,6 +874,26 @@ export const X = () => <Card className="border-green-500">x</Card>; // https://e
   nf[0]?.fix.includes('theme token') && nf[0].fix.includes('border-success') ? ok('the palette fix says token and shows the class that results') : bad('palette fix wording', nf[0]?.fix);
   const tnf = validateContent({ text: `// text-emerald-600 was the old accent\nexport const X = () => <span className="text-ink">x</span>;` }, tk).findings.filter((f) => f.rule === 'palette-class');
   tnf.length === 0 ? ok('tailwind theme: a class in a comment is not paint') : bad('tailwind comment palette', JSON.stringify(tnf));
+
+  // 9.4.0: one palette rule for every door, decided from what the theme
+  // holds rather than from the kind (lib/palette.mjs). Probed 2026-10-01:
+  // the guard was silent on 11 of 48 fleet shadcn repos where the live
+  // checks spoke, and the live checks flagged rybbit in utility-class mode.
+  const split = loadKnowledge(join(FIXTURES, 'shadcnsplit'));
+  split.palette?.source === 'shadcn' ? ok('shadcn: the contract holds when a sibling package keeps the rows and the configured sheet has none under :root') : bad('split sheet palette', JSON.stringify(split.palette));
+  const splitHit = validateContent({ text: tin, file: 'src/app/x.tsx' }, split).findings.filter((f) => f.rule === 'palette-class').map((f) => f.message.split(' ')[2]);
+  JSON.stringify(splitHit) === JSON.stringify(['ring-green-500', 'dark:bg-black']) ? ok('shadcn: a split sheet gets the same palette findings') : bad('split sheet findings', JSON.stringify(splitHit));
+  const util = loadKnowledge(join(FIXTURES, 'shadcnutil'));
+  util.palette === null ? ok('shadcn in utility-class mode: the palette is the theme, so the rule is off') : bad('utility palette', JSON.stringify(util.palette));
+  !validateContent({ text: tin, file: 'src/app/x.tsx' }, util).findings.some((f) => f.rule === 'palette-class') ? ok('utility-class mode: a palette class is not flagged') : bad('utility palette finding', 'flagged');
+  !mcpTools.validate(util, { code: `export const X = () => <span className="text-ink">x</span>;` }).includes('palette classes') ? ok('utility-class mode: the palette check is not listed as run') : bad('utility checked list', 'listed');
+  const ownk = loadKnowledge(join(FIXTURES, 'shadcnown'));
+  ownk.palette?.source === 'tailwind' && ownk.palette.names.includes('ink') ? ok('shadcn with no rows but a theme of its own: the theme is the vocabulary') : bad('own theme palette', JSON.stringify(ownk.palette));
+  const ownCode = `export const X = () => <span className="text-gray-500 bg-blue-500 dark:bg-black">x</span>;`;
+  const ownHit = validateContent({ text: ownCode, file: 'src/app/x.tsx' }, ownk).findings.filter((f) => f.rule === 'palette-class');
+  ownHit.map((f) => f.message.split(' ')[2]).join() === 'text-gray-500,bg-blue-500' ? ok('own theme under a shadcn kit: palette classes are flagged, the dark override is a Tailwind-theme matter') : bad('own theme findings', JSON.stringify(ownHit));
+  ownHit[0]?.fix.includes('text-ink') && ownHit[0].message.includes('src/app/globals.css') ? ok('own theme: the fix names the theme\'s own class and file') : bad('own theme fix', JSON.stringify(ownHit[0]));
+  !validateContent({ text: ownCode, file: 'src/components/ui/x.tsx' }, ownk).findings.some((f) => f.rule === 'palette-class') ? ok('own theme: the catalogue is still the kit\'s door') : bad('own theme catalogue', 'flagged inside the catalogue');
 }
 
 console.log('mcp server:');
@@ -1020,6 +1040,14 @@ if (existsSync(bin)) {
   // 8.4.6: the kit and the kit judgement go through the same doorway, so a
   // guard says about a kit line exactly what validate and review say
   const sys = api.learnSystem(join(FIXTURES, 'muikit'));
+  // 9.4.0: the palette rule through the doorway, decided as the live checks decide it
+  const twSys = api.learnSystem(join(FIXTURES, 'tailwindtheme'));
+  twSys.profile.palette?.source === 'tailwind' && twSys.profile.palette.names.includes('ink') ? ok('doorway: a Tailwind theme hands its names to the palette rule') : bad('doorway tailwind palette', JSON.stringify(twSys.profile.palette));
+  const twHits = api.paletteFindings('export const X = () => <span className="text-gray-500 text-ink">x</span>;', twSys.profile.palette, { file: 'components/x.tsx' });
+  twHits.length === 1 && twHits[0].value === 'text-gray-500' && twHits[0].example.startsWith('text-ink') && twHits[0].themeFile === 'app/globals.css' ? ok('doorway: paletteFindings words the hit as the live check does') : bad('doorway paletteFindings', JSON.stringify(twHits));
+  api.paletteFindings('export const X = () => <span className="text-gray-500">x</span>;', twSys.profile.palette, { file: 'src/stories/x.tsx' }).length === 0 ? ok('doorway: a demo folder is left out') : bad('doorway demo', 'flagged');
+  api.learnSystem(join(FIXTURES, 'shadcnutil')).profile.palette === null ? ok('doorway: utility-class mode switches the palette rule off') : bad('doorway utility palette', 'expected null');
+  api.learnSystem(join(FIXTURES, 'shadcnsplit')).profile.palette?.source === 'shadcn' ? ok('doorway: a split sheet still holds the contract') : bad('doorway split palette', 'expected shadcn');
   sys.profile.kit?.name === 'MUI' && sys.profile.kit.themeFiles[0] === 'src/theme/theme.ts'
     ? ok('the doorway names the kit and its theme file') : bad('doorway kit', JSON.stringify(sys.profile.kit));
   sys.tokens.includes('#667085') ? ok('the theme colours are the token set on a kit repo') : bad('doorway kit tokens', sys.tokens.join(','));

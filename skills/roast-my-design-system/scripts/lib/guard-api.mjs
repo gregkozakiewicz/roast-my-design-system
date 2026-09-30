@@ -17,6 +17,7 @@ export { designGaps } from './gaps.mjs';
 import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { kitPaintFindings } from './kitpaint.mjs';
+import { paletteFindings } from './palette.mjs';
 import { PALETTE_CLASS_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
 import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { harvestComponents, definedComponents, tsconfigAliases } from '../harvest/components.mjs';
@@ -67,6 +68,14 @@ export { WIDGET_CSS_RE, WIDGET_CONFIG_RE, LIBRARY_CLASS_RE, isLibraryClass } fro
 // examples and demos: a guard that skips them flags palette classes in the
 // same files the report counts.
 export { PALETTE_CLASS_RE, DEMO_PATH_RE, blankComments };
+// The palette rule itself (9.4.0): paletteFindings(fileText, system.profile
+// .palette, { file }) returns the worded findings the live checks give for
+// the same file, with the index of each in the text; empty when the rule is
+// off, on a stylesheet, in a demo folder or inside a kit door. Which
+// vocabulary applies was decided once by the profile (lib/palette.mjs), so
+// a guard that calls this agrees with the report's live checks by
+// construction, on a Tailwind theme and on a shadcn kit alike.
+export { paletteFindings };
 // A product built on a kit (MUI, Mantine, Chakra UI, Ant Design), 8.4.6: a
 // colour or a pixel size written onto a kit component where the theme has a
 // value. kitPaintFindings(fileText, system.profile.kit, { file }) returns the
@@ -225,8 +234,14 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
       // a product built on a kit: name, theme files and values, spacing step,
       // the team's own layers over it, and the definition kitPaintFindings reads
       kit,
-      // a shadcn kit whose theme file holds the variables, in CSS-variable
-      // mode: a palette class in own code is paint from a tin
+      // the vocabulary the palette rule judges against, or null when it is
+      // off: a Tailwind theme's own names, shadcn's names when the sheet's
+      // contract holds in CSS-variable mode, or the repo's own theme under a
+      // shadcn kit with no rows (lib/palette.mjs, 9.4.0). Hand it to
+      // paletteFindings.
+      palette: P.palette,
+      // superseded by `palette` in 9.4.0; kept one release for readers of the
+      // old shape. The old gate read the configured sheet's :root rows alone.
       paletteReady: P.isShadcn && (P.shadcn?.sheet?.shadcnPresent ?? 0) >= 5 && P.designSystem?.cssVariables !== false,
       sheetFile: P.shadcn?.sheet?.found ? P.shadcn.sheet.file : null,
       // packages whose Tailwind config scopes utilities under an id: widgets

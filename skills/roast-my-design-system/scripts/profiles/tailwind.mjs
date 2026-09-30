@@ -118,15 +118,16 @@ function countUses(root, codeFiles, styleFiles, own) {
   return { uses, files };
 }
 
-export default {
-  kind: 'tailwind',
-
-  /**
-   * @param profile the profiler's facts (mutated: designSystem, tailwind)
-   * @param counts reusable/pages/codeFiles
-   * @param ctx { root, files }
-   */
-  recognise(profile, counts, ctx) {
+/**
+ * The repo's own v4 theme, read without deciding anything: the facts the
+ * profile stores as `tailwind` and the evidence for the decision, or null
+ * when there is no theme worth judging. Exported so the palette rule can
+ * read the theme of a repo another kind claimed (a shadcn install with no
+ * shadcn rows but a theme of its own, lib/palette.mjs). Reads `profile`,
+ * never writes it.
+ * @returns {{ facts, decision } | null}
+ */
+export function readTailwindTheme(profile, ctx) {
     if (!ctx?.root || !ctx?.files) return null;
     const { root, files } = ctx;
     const twRaw = profile.stylingDeps?.includes('Tailwind CSS') || /tailwind/i.test((profile.stylingDeps ?? []).join(' '))
@@ -158,8 +159,7 @@ export default {
       twRaw ? `Tailwind ${twRaw}` : 'Tailwind v4 theme block',
     ];
     const values = resolveValues(root, files.styles, theme.own.map((x) => [x, theme.names.get(x)]));
-    profile.designSystem = { kind: 'tailwind', name: 'a Tailwind theme', confidence: 'high', cssVariables: true };
-    profile.tailwind = {
+    const facts = {
       file: theme.file,
       names: theme.own,
       restated: theme.names.size - theme.own.length,
@@ -175,6 +175,22 @@ export default {
       // a theme nobody uses is not the system yet: shown with receipts, not scored
       adopted: usedEnough(uses, theme.own.length),
     };
-    return { confidence: usedEnough(uses, theme.own.length) ? 'high' : 'medium', evidence };
+    return { facts, decision: { confidence: usedEnough(uses, theme.own.length) ? 'high' : 'medium', evidence } };
+}
+
+export default {
+  kind: 'tailwind',
+
+  /**
+   * @param profile the profiler's facts (mutated: designSystem, tailwind)
+   * @param counts reusable/pages/codeFiles
+   * @param ctx { root, files }
+   */
+  recognise(profile, counts, ctx) {
+    const read = readTailwindTheme(profile, ctx);
+    if (!read) return null;
+    profile.designSystem = { kind: 'tailwind', name: 'a Tailwind theme', confidence: 'high', cssVariables: true };
+    profile.tailwind = read.facts;
+    return read.decision;
   },
 };

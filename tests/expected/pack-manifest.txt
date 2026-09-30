@@ -31,6 +31,7 @@ skills/roast-my-design-system/scripts/lib/kitpaint.mjs
 skills/roast-my-design-system/scripts/lib/lasttouched.mjs
 skills/roast-my-design-system/scripts/lib/nearpairs.mjs
 skills/roast-my-design-system/scripts/lib/neverimported.mjs
+skills/roast-my-design-system/scripts/lib/palette.mjs
 skills/roast-my-design-system/scripts/lib/staleness.mjs
 skills/roast-my-design-system/scripts/lib/tokentwins.mjs
 skills/roast-my-design-system/scripts/lib/typefaces.mjs

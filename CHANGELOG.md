@@ -2,6 +2,29 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.3.3 — 2026-09-30
+
+- **The report and the live checks skip the same files.** The report kept its
+  own list of files not to judge, apart from the one the edit check, the
+  end-of-turn review and the guard use, and the two had drifted apart:
+  - A file named like artwork (Badge, Logo, IconButton) was skipped by the
+    report on its name alone, even when it draws nothing, while the edit
+    check judged it. 2,321 files in 173 repos, such as inbox-zero's Badge,
+    ballerine's status badges and Dispatcharr's table of logos. The report
+    now counts them.
+  - An icon in an icons folder (9.2.5) was left alone by the live checks but
+    still counted by the report. openstatus's icon set carried 114 of its 121
+    inline styles. The report now skips them too.
+- **Bracket values in installed shadcn code are split out exactly.** Each
+  value kept a list of only its first five files, and a use in any other file
+  was taken for the team's own, so some of shadcn's own values reached the
+  headline count (3 in ai-chatbot, 7 in next-forge, 12 in openstatus). The
+  count now keeps every file.
+- Measured on 205 repos: 107 changed a count and 4 scores moved, all up:
+  openstatus 64 to 69, chatbot-ui 69 to 73, next-forge 91 to 96. No hosted
+  example's score moved; the dub example now counts 642 bracket values (was
+  624) and the ai-chatbot example 71 (was 74).
+
 ## 9.3.2 — 2026-09-30
 
 - **Pages a headless browser prints to a PDF are not judged.** Some products

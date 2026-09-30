@@ -4,6 +4,7 @@
  * stylesheets of any flavor, and config — not just a happy-path shadcn layout.
  */
 import { CATALOGUE } from '../profiles/shadcn-data.mjs';
+import { emailContextOf } from '../lib/exempt.mjs';
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 
@@ -168,6 +169,9 @@ export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = ne
     again.readAnyway = { dir: biggest.dir, files: biggest.files };
     return again;
   }
+  // where the repo keeps its emails, read once here so every checker that
+  // is handed the walk judges an email the same way (lib/exempt.mjs)
+  files.email = emailContextOf(files, (f) => readSource(join(root, f)));
   return files;
 }
 

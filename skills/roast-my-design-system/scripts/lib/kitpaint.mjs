@@ -118,7 +118,7 @@ export function kitImportRe(def, layers = []) {
  * disagree about a line. Returns null when the file is not a kit file or is
  * the theme itself; { exempt } when the file is not judged, and why.
  */
-export function kitPaintInSource(src, def, { file = null, layers = [] } = {}) {
+export function kitPaintInSource(src, def, { file = null, layers = [], email = null } = {}) {
   const importRe = kitImportRe(def, layers);
   const code = src.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length)).replace(/(^|[^:'"`\\])\/\/[^\n]*/g, (m, pre) => pre + ' '.repeat(m.length - pre.length));
   if (!importRe.test(code)) return null;
@@ -129,7 +129,7 @@ export function kitPaintInSource(src, def, { file = null, layers = [] } = {}) {
   const colours = [...cleaned.matchAll(COLOUR_RE)]
     .map((m) => ({ value: m[2].toLowerCase().replace(/\s+/g, ''), index: m.index }))
     .filter((c) => !/,\s*0(?:\.0+)?\)$/.test(c.value) && c.value !== 'transparent');
-  const why = exemptReason(file, src)
+  const why = exemptReason(file, src, { email })
     ?? (colourTable(code, colours.length) ? 'the file is a colour table, data rather than styling' : null)
     ?? (colours.length && RENDERER_IMPORT_RE.test(code) ? 'the file drives a chart or a map, so its colours are the picture' : null);
   if (why) return { exempt: why, colours: [], px: [] };
@@ -141,7 +141,7 @@ export function kitPaintInSource(src, def, { file = null, layers = [] } = {}) {
   return { exempt: null, colours, px };
 }
 
-export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe, refRe, themeImportRe = kitImportRe, pxPropRes = [], pxMin = 0, reexportRe = null, spacingCustomRe = null }) {
+export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe, refRe, themeImportRe = kitImportRe, pxPropRes = [], pxMin = 0, reexportRe = null, spacingCustomRe = null }, { email = null } = {}) {
   const layers = reexportRe ? kitLayers(root, codeFiles, reexportRe) : [];
   const importRe = layers.length
     ? new RegExp(`${kitImportRe.source}|from\\s+['"](?:[^'"]*\\/)?(?:${layers.map(escapeRe).join('|')})(?:['"]|\\/)`)
@@ -184,7 +184,7 @@ export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe,
     kitFiles += 1;
     refs += (code.match(refRe) ?? []).length;
     if (isTheme || THEME_NAME_RE.test(f)) { if (!isTheme) for (const c of colours) themeValues.add(c); continue; }
-    const why = exemptReason(f, src)
+    const why = exemptReason(f, src, { email })
       ?? (colourTable(code, colours.length) ? 'the file is a colour table, data rather than styling' : null)
       ?? (colours.length && RENDERER_IMPORT_RE.test(code) ? 'the file drives a chart or a map, so its colours are the picture' : null);
     if (why) { if (colours.length) exempt.push({ file: f, reason: why }); continue; }
@@ -250,9 +250,9 @@ const plain = (html) => String(html ?? '').replace(/<\/?code>/g, '').replace(/&q
  * component"), note what the theme says about it or null, message the two
  * as one sentence for the live checks.
  */
-export function kitPaintFindings(src, kit, { file = null } = {}) {
+export function kitPaintFindings(src, kit, { file = null, email = null } = {}) {
   if (!kit?.def) return null;
-  const paint = kitPaintInSource(src, kit.def, { file, layers: kit.layers ?? [] });
+  const paint = kitPaintInSource(src, kit.def, { file, layers: kit.layers ?? [], email });
   if (!paint) return null;
   if (paint.exempt) return { exempt: paint.exempt, findings: [] };
   const adv = kit.def.advice, themeFile = kit.themeFiles?.[0] ?? null;

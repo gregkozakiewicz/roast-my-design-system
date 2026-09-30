@@ -57,7 +57,7 @@ export function loadKnowledge(root) {
   // library read as a product here. Same call, same answer, both doors.
   decideProfile(profile, components, files, root);
   const P = profileOf(profile);
-  let tokens = harvestTokens(root, files.styles, files.code);
+  let tokens = harvestTokens(root, files.styles, files.code, { email: files.email });
   // A product built on a kit (MUI, Mantine, Chakra, Ant Design): the theme
   // file is where colours are decided, and its values are the token set the
   // tools snap to. The report reads the same profile; see profiles/kit-common.
@@ -199,6 +199,9 @@ export function loadKnowledge(root) {
     neverImported,
     // stock, not debt: see profiles/index.mjs
     vendoredUi: P.vendoredUi,
+    // where the repo keeps its emails, so a file is judged an email by what it
+    // shows, the way the report judges it (lib/exempt.mjs)
+    email: files.email ?? null,
     // folders the team did not write, by the same line the guard doorway
     // draws (lib/guard-api.mjs): only a shadcn kit has installed code, and a
     // registry's published folders are its own work

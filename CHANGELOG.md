@@ -2,6 +2,42 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.2.3 — 2026-09-30
+
+- **A screen about email is judged like any screen.** Until now any file
+  with "email" in its path was skipped, on the grounds that emails have to
+  carry their styling inline. That skipped the sign-in form, the email
+  settings, the verify-email page and, on an email client, the whole app:
+  inbox-zero keeps its product under a route called `[emailAccountId]`, and
+  285 of its screens went unjudged. A file is now skipped as an email when
+  it shows it is one:
+  - it uses an email kit (react-email, jsx-email, mjml-react), wherever it
+    lives, as before;
+  - it carries markup only an email carries: MJML, Outlook conditionals,
+    table attributes such as `cellpadding`, react-email's `<Html>` and
+    `<Body>`, or an HTML `style=""` attribute written as text, the way a
+    server builds its emails;
+  - it sits in a folder named for email (`emails`, `email-templates`,
+    `twenty-emails`) that holds an email template, in code or in a template
+    language such as Handlebars or MJML;
+  - it is a preview of an email or a newsletter, or a stylesheet written for
+    emails;
+  - it is email-named and sits beside the templates it sends.
+  Print stylesheets are skipped as before. The rule only ever takes files off
+  the skipped list. The report, the edit hook and the review read it alike.
+- Measured on 45 repos, the 11 hosted examples included. No example's score
+  moved; three counts did, each from a screen: Dub 622 to 624 bracket values
+  (the email-domain settings), Unleash 97 to 99 inline styles (the
+  confirm-user-email screen), SigNoz 1,005 to 1,012 `!important`. Scores that
+  moved: inbox-zero 47 to 39, typebot 46 to 42 (its email input field), and
+  react-email's own site 28 to 24. Ghost's newsletter design screens are now
+  judged; its email templates stay skipped.
+- **The guard doorway hands over where the repo keeps its emails.**
+  `learnSystem` returns `email`, to pass as `exemptReason(file, text, {
+  email })`, and `isEmail` is exported. New fields and exports only.
+- 19 unit checks, one per shape found in the fleet, run through the report,
+  the live check and the guard doorway.
+
 ## 9.2.2 — 2026-09-29
 
 - **The list of fixes has a plainer heading.** "Fix what makes agents guess"

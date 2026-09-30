@@ -59,9 +59,11 @@ const outPath = resolve(arg('out', 'harvest.json'));
 const t0 = Date.now();
 const exclusions = loadExclusions(target, argAll('exclude'));
 let files = walkRepo(target, 14, exclusions);
+// where the repo keeps its emails (lib/exempt.mjs), kept past any rescoping
+const email = files.email;
 const profile = profileRepo(target, files);
 let { components } = harvestComponents(target, files.code);
-let tokens = harvestTokens(target, files.styles, files.code);
+let tokens = harvestTokens(target, files.styles, files.code, { email });
 // Repo kind and measurability, decided once in profiles/ and read everywhere
 // (a published components package with no app pages is a LIBRARY; a stack the
 // detector cannot read is NOT MEASURED, never scored as zeros). The decision
@@ -98,7 +100,7 @@ if (profileOf(profile).isRegistry) {
   const sheetFile = profile.shadcn?.sheet?.found ? profile.shadcn.sheet.file : null;
   if (sheetFile && !files.styles.includes(sheetFile)) files.styles.push(sheetFile);
   ({ components } = harvestComponents(target, files.code));
-  tokens = harvestTokens(target, files.styles, files.code);
+  tokens = harvestTokens(target, files.styles, files.code, { email });
   // published components are the project's own work, not installed code
   profile.uiDirs = []; profile.uiDir = null; profile.vendoredUi = false;
   profile.registry.counted = { code: files.code.length, styles: files.styles.length };
@@ -109,7 +111,7 @@ if (profileOf(profile).isRegistry) {
 {
   const P = profileOf(profile);
   if (P.isTailwind && profile.tailwind?.adopted) {
-    profile.tailwind.paint = countPaint(target, files.code, { uiDirs: [], kitNames: new Set(), retuned: profile.tailwind.retuned, families: profile.tailwind.families });
+    profile.tailwind.paint = countPaint(target, files.code, { uiDirs: [], kitNames: new Set(), retuned: profile.tailwind.retuned, families: profile.tailwind.families, email });
   }
 }
 // A shadcn kitchen gets the 2 paint checks from shadcn's own agent rules,
@@ -126,12 +128,12 @@ if (profileOf(profile).isRegistry) {
     // registries, because a palette colour in ai-elements teaches the same
     // wrong lesson as one in own code. The catalogue and kit blocks stay out:
     // editing them is the intended use.
-    profile.shadcn.paint = countPaint(target, files.code, { uiDirs: [...P.uiDirs, ...blocks], kitNames });
+    profile.shadcn.paint = countPaint(target, files.code, { uiDirs: [...P.uiDirs, ...blocks], kitNames, email });
     // Own code alone, for the breakdown line under the score.
-    profile.shadcn.paintOwn = regDirs.length ? countPaint(target, files.code, { uiDirs: allInstalled, kitNames }) : profile.shadcn.paint;
+    profile.shadcn.paintOwn = regDirs.length ? countPaint(target, files.code, { uiDirs: allInstalled, kitNames, email }) : profile.shadcn.paint;
     if (regDirs.length) {
       const regFiles = files.code.filter((f) => regDirs.some((d) => f.startsWith(`${d}/`)));
-      const rp = countPaint(target, regFiles, { uiDirs: [], kitNames });
+      const rp = countPaint(target, regFiles, { uiDirs: [], kitNames, email });
       profile.shadcn.registryPaint = { files: rp.ownFiles, tinUses: rp.tin.uses, doorUses: rp.doors.uses, dirs: regDirs };
     }
     // Bracket values inside installed code are shadcn's (or a registry's)
@@ -214,7 +216,7 @@ if (workspaces.length > 1) {
     const codeCount = own.code.length, styleCount = own.styles.length;
     const entry = { name: w.name, dir: w.dir, codeFiles: codeCount, styleFiles: styleCount, scored: false };
     if (!scanning.has(w.dir)) { packages.push(entry); continue; }
-    const t = harvestTokens(target, own.styles, own.code);
+    const t = harvestTokens(target, own.styles, own.code, { email });
     const comps = components.filter((c) => inDir(c.file, w.dir));
     const dupes = duplicates.exactDuplicates.filter((d) => !d.wrapped
       && d.files.every((f) => inDir(typeof f === 'string' ? f : f.file, w.dir)));

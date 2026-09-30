@@ -701,6 +701,11 @@ console.log('exemptions:');
   const EMAIL = `export function Welcome() {
   return <table style={{ background: '#3b81f5', padding: '27px' }}><tr><td>hi</td></tr></table>;
 }`;
+  // an email shows it: here by the table attributes only an email carries
+  // (9.2.3: a folder called email no longer makes a file one)
+  const MAIL = `export function Welcome() {
+  return <table cellPadding="0" style={{ background: '#3b81f5', padding: '27px' }}><tr><td>hi</td></tr></table>;
+}`;
   const ICON = `export function Icon() {
   return <svg viewBox="0 0 16 16"><path fill="#3b81f5" d="M0 0h16v16H0z" /></svg>;
 }`;
@@ -709,7 +714,7 @@ console.log('exemptions:');
     : bad('control case', `expected findings, got: ${judged.split('\n')[0]}`);
 
   for (const [file, code, label] of [
-    ['src/email/Welcome.tsx', EMAIL, 'email templates'],
+    ['src/email/Welcome.tsx', MAIL, 'email templates'],
     ['src/print/Invoice.tsx', EMAIL, 'print stylesheets'],
     ['src/components/Icon.tsx', ICON, 'SVG artwork'],
     ['app/global-error.tsx', EMAIL, 'the Next.js crash page'],
@@ -718,6 +723,11 @@ console.log('exemptions:');
     out.startsWith('Not judged:') ? ok(`${label} are exempt, and say why`)
       : bad(`${label} exempt`, `got: ${out.split('\n')[0]}`);
   }
+
+  // a screen about email is a screen: the path alone buys nothing
+  const aboutEmail = mcpTools.validate(ek, { code: EMAIL, file: 'src/settings/EmailSettings.tsx' });
+  !aboutEmail.startsWith('Not judged:') ? ok('a screen about email is judged like any screen')
+    : bad('email-named screen', 'a settings screen walked free because its name says email');
 
   // the name alone must not buy the exemption
   const fakeBadge = mcpTools.validate(ek, { code: EMAIL, file: 'src/components/Badge.tsx' });
@@ -753,7 +763,7 @@ export function GET() { return new ImageResponse(<div style={{ background: '#c0f
 
   // and the review must skip them without calling the result clean
   mkdirSync(join(gitFix, 'components/email'), { recursive: true });
-  writeFileSync(join(gitFix, 'components/email/Receipt.tsx'), EMAIL);
+  writeFileSync(join(gitFix, 'components/email/Receipt.tsx'), MAIL);
   const exemptReview = mcpTools.reviewData(loadKnowledge(gitFix));
   !exemptReview.text.includes('Receipt.tsx') && exemptReview.text.includes('left unjudged')
     ? ok('review skips exempt files and admits it')

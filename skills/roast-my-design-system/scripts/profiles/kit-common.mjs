@@ -51,7 +51,7 @@ export function kitProfile(def) {
       if (!listed) return null;
       const kitUse = importCounts(ctx.root, ctx.files.code);
       if (Object.entries(kitUse).some(([k, n]) => k !== def.name && n > kitUse[def.name])) return null;
-      const paint = countKitPaint(ctx.root, ctx.files.code, def);
+      const paint = countKitPaint(ctx.root, ctx.files.code, def, { email: ctx.files.email ?? null });
       if (paint.kitFiles < MIN_FILES) return null;
       profile.designSystem = { kind: 'kit', name: def.name, pkg: def.packages[0], confidence: 'high' };
       profile.kit = { name: def.name, ...paint };

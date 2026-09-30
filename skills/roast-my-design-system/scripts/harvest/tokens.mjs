@@ -8,7 +8,7 @@
  */
 import { existsSync } from 'node:fs';
 import {
-  EMAIL_PRINT_RE, EMAIL_KIT_RE, ARTWORK_NAME_RE, foreignStylesheet, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
+  isEmail, EMAIL_KIT_RE, ARTWORK_NAME_RE, foreignStylesheet, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
 import { canonical, parseColor } from '../lib/color.mjs';
@@ -311,7 +311,7 @@ export function colourListShare(src) {
   return inLists / all;
 }
 
-export function harvestTokens(root, styleFiles, codeFiles) {
+export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}) {
   const colors = new Tally(), spacing = new Tally(), radii = new Tally(),
         fontSizes = new Tally(), fontFamilies = new Tally(), shadows = new Tally();
   const twColors = new Tally(), twSpacing = new Tally(), twRadii = new Tally(), twTextSizes = new Tally();
@@ -487,9 +487,9 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // stylesheets the team did not write, named in the report and not counted
   const foreignStyles = [];
   for (const f of styleFiles) {
-    if (/email|(^|[/.])print([/.]|$)/i.test(f)) continue;
     const text = readSource(join(root, f));
     if (text === null) continue;
+    if (isEmail(f, text, email)) continue;
     const foreign = foreignStylesheet(f, text);
     if (foreign) { foreignStyles.push({ file: f, reason: foreign }); continue; }
     scanCssText(text, f);
@@ -500,18 +500,20 @@ export function harvestTokens(root, styleFiles, codeFiles) {
   // reason to discredit the whole report.
   // Email, artwork, mostly-SVG files and pixel renderers: all imported from
   // lib/exempt.mjs, the one list every checker reads.
-  const EXEMPT_RE = EMAIL_PRINT_RE, ARTWORK_RE = ARTWORK_NAME_RE;
+  const ARTWORK_RE = ARTWORK_NAME_RE;
   // every file a check skipped, with the reason, so the report can name them
   const exemptFiles = [];
-  const skip = (f, src) => { const r = exemptReason(f, src); if (r) exemptFiles.push({ file: f, reason: r }); return true; };
+  const skip = (f, src) => { const r = exemptReason(f, src, { email }); if (r) exemptFiles.push({ file: f, reason: r }); return true; };
   // Colour-picker palettes and design-field option lists are user-facing data.
   const PALETTE_FILE_RE = /(color-picker|colour-picker|palette|design-fields|swatch)/i;
 
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx|ts|js)$/.test(f)) continue;
-    if (EXEMPT_RE.test(f) || CRASH_PAGE_RE.test(f)) { skip(f, ''); continue; }
+    if (CRASH_PAGE_RE.test(f)) { skip(f, ''); continue; }
     let src = readSource(join(root, f));
     if (src === null) continue;
+    // an email is an email by what it shows, not by a path that mentions one
+    if (isEmail(f, src, email)) { skip(f, src); continue; }
     for (const m of src.matchAll(/[A-Za-z_][\w-]+/g)) ownClasses.add(m[0]);
     listShare.set(f, colourListShare(src));
 

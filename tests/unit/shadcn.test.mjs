@@ -121,6 +121,8 @@ test('paint from a tin and repainted doors are counted over own code only, never
       'components/ui/button.tsx': 'export function Button({ className }) { return <button className="bg-zinc-900 text-white dark:bg-white" /> }',
       'app/page.tsx': 'import { Card } from "@/components/ui/card"\nimport { Button } from "@/components/ui/button"\nexport default function Page() { return <main className="text-gray-500 dark:text-gray-400 bg-white dark:bg-black"><Card className="bg-blue-100 font-bold">x</Card><Button className="mt-2 w-full">ok</Button><Button className="text-red-600">no</Button><span className="text-emerald-600">+1</span></main> }',
       'components/shared/Thing.tsx': 'export function Thing() { return <p className="text-muted-foreground hover:text-blue-500/80">y</p> }',
+      // an email built on the team's own layout: its folder holds the layout, which uses an email kit
+      'emails/layout.tsx': 'import { Html, Body } from "@react-email/components"\nexport function Layout({ children }) { return <Html><Body>{children}</Body></Html> }',
       'emails/welcome.tsx': 'export default function Welcome() { return <p className="text-gray-900 bg-gray-100">mail</p> }',
       'stories/Button.stories.tsx': 'export const s = <div className="bg-red-500" />',
     });
@@ -129,7 +131,7 @@ test('paint from a tin and repainted doors are counted over own code only, never
     const doorFiles = new Set(files.code.filter((f) => f.startsWith('components/ui/')));
     const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
     assert.ok(kitNames.has('Card') && kitNames.has('Button'));
-    const paint = countPaint(root, files.code, { uiDirs: P.uiDirs, kitNames });
+    const paint = countPaint(root, files.code, { uiDirs: P.uiDirs, kitNames, email: files.email });
     // own files: app/page.tsx, components/shared/Thing.tsx (emails and stories are out)
     assert.equal(paint.ownFiles, 2);
     // page: text-gray-500, dark:text-gray-400, dark:bg-black, bg-blue-100 (on the Card), text-red-600, text-emerald-600 (6); Thing: hover:text-blue-500/80 (1)

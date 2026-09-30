@@ -4,7 +4,11 @@
  *
  * Email and print: mail clients strip stylesheets and print has no cascade to
  * inherit, so the styling has to be inline and hardcoded. That is the medium,
- * not a lapse.
+ * not a lapse. A screen ABOUT email is not an email, though: a sign-in form,
+ * the email settings, an inbox. Until 9.2.3 any path with "email" in it was
+ * skipped, and an email client (inbox-zero keeps its whole app under
+ * [emailAccountId]/) went unjudged. Now a file is an email when it shows it:
+ * see isEmail below.
  *
  * Artwork: a file named Icon, Logo, Badge or Illustration carries the colours
  * of the drawing itself, and a drawing is not interface. The name alone is not
@@ -23,10 +27,78 @@
  * Shared by the engine (whole files) and by guard-my-design-system (added
  * lines), so both give the same answer about the same file.
  */
+// Where an email or a print stylesheet may live: a path that mentions either.
+// A candidate only; isEmail decides.
 export const EMAIL_PRINT_RE = /email|(^|[/.])print([/.]|$)/i;
+const PRINT_RE = /(^|[/.])print([/.]|$)/i;
 // An email built with an email kit is an email wherever it lives: react-email
 // keeps 75 templates in folders like two-buttons/ (2026-09-16).
 export const EMAIL_KIT_RE = /from\s+['"](?:react-email|@react-email\/[\w-]+|jsx-email|@jsx-email\/[\w-]+|mjml-react|@faire\/mjml-react)['"]/;
+// Markup only an email carries, or a page sent outside the app: MJML, Outlook
+// conditionals, the old table attributes, react-email's roots, and an HTML
+// style="" attribute written as text, which JSX cannot hold (a server that
+// builds its emails as strings: lobe-chat, Ghost, novu).
+export const EMAIL_MARKUP_RE = /<mj-|mso-|<!--\[if|\bcellpadding=|\bcellspacing=|\bbgcolor=|<Html[\s>]|<Body[\s>]|\bstyle\s*=\s*\\?["'][^"'{}]*:[^"']*["']/i;
+// A folder named for email: email, emails, email-templates, twenty-emails,
+// email_service. Not [emailAccountId], which is a route holding an app.
+const EMAIL_FOLDER_RE = /^(?:[a-z0-9]+[-_.])*emails?(?:[-_.][a-z0-9]+)*$/i;
+// Email templates written in a template language rather than code
+const EMAIL_TEMPLATE_FILE_RE = /\.(hbs|handlebars|mjml|njk|ejs|pug|liquid|mustache|html)$/i;
+// A preview of an email draws the email's colours, not the product's
+const EMAIL_PREVIEW_RE = /(e?mail|newsletter).*(preview|frame)|(preview|frame).*(e?mail|newsletter)/i;
+// A stylesheet written for emails: email.css, emails.scss, email-pdf-styles.css
+const EMAIL_SHEET_RE = /^e?mails?(?:[-_.][a-z0-9-]+)*\.(css|scss|sass|less)$/i;
+const base = (f) => f.slice(f.lastIndexOf('/') + 1);
+const dir = (f) => (f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '');
+
+/**
+ * Where the repo keeps its emails, read once per scan: `homes` are folders
+ * named for email that hold an email template (a code file with an email kit
+ * or email markup, or a template-language file), and `templateDirs` are the
+ * folders the templates sit in. A template that builds on the team's own
+ * layout (twenty's billing emails import their BaseEmail) carries no kit
+ * itself; its home says what it is.
+ * @param files  the walk's { code, other } (repo-relative paths)
+ * @param read   (file) => text or null
+ */
+export function emailContextOf(files, read) {
+  const templates = [];
+  for (const f of [...(files.code ?? []), ...(files.other ?? [])]) {
+    if (!/email/i.test(f)) continue;
+    if (EMAIL_TEMPLATE_FILE_RE.test(f)) { templates.push(f); continue; }
+    if (!/\.(tsx|jsx|js|ts|mjs|cjs)$/.test(f)) continue;
+    const t = read(f) ?? '';
+    if (EMAIL_KIT_RE.test(t) || EMAIL_MARKUP_RE.test(t)) templates.push(f);
+  }
+  const homes = new Set();
+  for (const f of templates) {
+    const parts = f.split('/');
+    for (let i = 1; i < parts.length; i++) if (EMAIL_FOLDER_RE.test(parts[i - 1])) homes.add(parts.slice(0, i).join('/'));
+  }
+  return { homes: [...homes].sort(), templateDirs: [...new Set(templates.map(dir))].sort() };
+}
+
+/**
+ * Whether a file is an email or a print stylesheet. A path that mentions
+ * email is only a candidate: the file has to show it, by its kit, its markup,
+ * the email folder it sits in, being a preview of an email or a stylesheet
+ * written for one, or an email-named file beside the templates it sends
+ * (Ghost's gift-email-service.ts next to its .hbs files).
+ * @param email  emailContextOf's answer for this repo; without it, only what
+ *               the file shows by itself counts
+ */
+export function isEmail(file, text = '', email = null) {
+  if (!file) return false;
+  if (PRINT_RE.test(file) || EMAIL_KIT_RE.test(text)) return true;
+  if (!/email/i.test(file)) return false;
+  if (EMAIL_MARKUP_RE.test(text)) return true;
+  const name = base(file);
+  if (EMAIL_PREVIEW_RE.test(name) || EMAIL_SHEET_RE.test(name)) return true;
+  if (!email) return false;
+  if (email.homes.some((h) => file.startsWith(`${h}/`))) return true;
+  const here = dir(file);
+  return /e?mail/i.test(name) && email.templateDirs.some((d) => d === here || dir(d) === here);
+}
 // Next.js's crash page replaces the root layout, so the app's stylesheet
 // never loads there: Next.js tells developers to build it self-contained,
 // styling written on the elements. The medium, not a lapse (2026-09-13).
@@ -46,11 +118,13 @@ export const svgHeavy = (text) =>
 /**
  * Why this file is exempt from judgement, as a sentence, or null when it is
  * fair game. Needs the text as well as the name: the artwork exemption is
- * earned by drawing, not by being called Icon.
+ * earned by drawing, not by being called Icon, and the email one by being an
+ * email, not by mentioning one.
+ * @param email  emailContextOf's answer for this repo (see isEmail)
  */
-export function exemptReason(file, text = '') {
+export function exemptReason(file, text = '', { email = null } = {}) {
   if (!file) return null;
-  if (EMAIL_PRINT_RE.test(file) || EMAIL_KIT_RE.test(text)) return 'email and print styling has to be inline, because there is no cascade to inherit';
+  if (isEmail(file, text, email)) return 'email and print styling has to be inline, because there is no cascade to inherit';
   if (CRASH_PAGE_RE.test(file)) return 'the crash page replaces the root layout, so the stylesheet never loads there and its styling has to be inline';
   if (RENDERER_PATH_RE.test(file)) return 'a renderer draws pixels, so its colours are the picture rather than the interface';
   if (OG_ROUTE_RE.test(file) || RENDER_TO_IMAGE_RE.test(text)) return 'a render-to-image surface accepts nothing but inline styling, so there is no on-system way to write one';

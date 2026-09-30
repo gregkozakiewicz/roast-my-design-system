@@ -123,7 +123,7 @@ export function validateContent(content, k) {
   // Some files cannot be on-system by their nature. Judging them is how a
   // checker earns its reputation for crying wolf, and a checker people
   // distrust gets switched off. Say nothing, and say why nothing was said.
-  const exempt = exemptReason(file, text);
+  const exempt = exemptReason(file, text, { email: k.email });
   const css = file ? CSS_FILE_RE.test(file) : looksLikeCss(text);
   const findings = [];
   const add = (rule, severity, index, message, fix) => findings.push({
@@ -169,7 +169,7 @@ export function validateContent(content, k) {
     for (const f of chartFindings({ file, colours: paint, charts: k.charts, tokenFile: k.tokens.tokenFile })) add(f.rule, f.severity, f.index, f.message, f.fix);
   }
   if (k.kit?.def && !css && !chartFile) {
-    const judged = kitPaintFindings(text, k.kit, { file });
+    const judged = kitPaintFindings(text, k.kit, { file, email: k.email });
     if (judged && !judged.exempt) {
       kitOwnsColours = true;
       for (const f of judged.findings) {

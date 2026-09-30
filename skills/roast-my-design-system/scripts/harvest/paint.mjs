@@ -58,7 +58,7 @@ export const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demo
  * @param opts { uiDirs: string[], kitNames: Set<string> } — catalogue folders
  *   and the component names defined in them
  */
-export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(), retuned = [], families = null } = {}) {
+export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(), retuned = [], families = null, email = null } = {}) {
   const inCatalogue = (f) => uiDirs.some((d) => f === d || f.startsWith(`${d}/`));
   const names = [...kitNames].filter((n) => /^[A-Z][A-Za-z0-9]*$/.test(n));
   const doorOpen = names.length
@@ -79,7 +79,7 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(),
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx)$/.test(f) || inCatalogue(f) || DEMO_PATH_RE.test(f)) continue;
     const raw = readSource(join(root, f));
-    if (raw === null || exemptReason(f, raw)) continue;
+    if (raw === null || exemptReason(f, raw, { email })) continue;
     ownFiles += 1;
     const src = blankComments(raw);
 

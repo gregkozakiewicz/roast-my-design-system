@@ -53,7 +53,7 @@ export { isPageFile, looksLikeJSXFile, componentNamesIn } from '../harvest/compo
 
 // The files no checker should judge. Exported so a guard reads the same list
 // as the engine rather than keeping a copy that drifts.
-export { EMAIL_PRINT_RE, ARTWORK_NAME_RE, SVG_MARKUP_RE, exemptReason } from './exempt.mjs';
+export { EMAIL_PRINT_RE, ARTWORK_NAME_RE, SVG_MARKUP_RE, exemptReason, isEmail } from './exempt.mjs';
 // !important as the medium (7.5): a widget stylesheet that must beat its host
 // page, and a selector aimed at a library's own class names. The guard reads
 // the same patterns, so the two checkers agree about the same declaration.
@@ -122,7 +122,7 @@ export const isStyleFile = (p) => STYLE_EXTS.has(extname(p));
 export function learnSystem(repoRoot, { exclude = [] } = {}) {
   const exclusions = loadExclusions(repoRoot, exclude);
   const files = walkRepo(repoRoot, 14, exclusions);
-  const t = harvestTokens(repoRoot, files.styles, files.code);
+  const t = harvestTokens(repoRoot, files.styles, files.code, { email: files.email });
   const ledger = harvestComponents(repoRoot, files.code).components;
   const components = ledger.map(({ name, file, usageCount, isPage }) => ({ name, file, usageCount, isPage }));
   const profile = profileRepo(repoRoot, files);
@@ -168,6 +168,9 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   }
 
   return {
+    // where the repo keeps its emails: pass it to exemptReason(file, text,
+    // { email }) so a guard judges an email the way the report does (9.2.3)
+    email: files.email ?? null,
     tokenFile: t.tokenFile,
     buttons,
     workspaces,

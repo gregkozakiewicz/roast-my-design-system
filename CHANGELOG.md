@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.4.0 — unreleased
+## 9.4.0 — 2026-09-30
 
 - **One palette rule for the live checks and the guard.** A palette class
   (`text-gray-500`, `bg-amber-50`) where the theme names a colour of that

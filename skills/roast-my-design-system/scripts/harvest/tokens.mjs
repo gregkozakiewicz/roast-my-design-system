@@ -8,7 +8,7 @@
  */
 import { existsSync } from 'node:fs';
 import {
-  isEmail, EMAIL_KIT_RE, ARTWORK_NAME_RE, foreignStylesheet, RENDER_TO_IMAGE_RE, OG_ROUTE_RE, RENDERER_PATH_RE, CRASH_PAGE_RE, svgHeavy, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
+  isEmail, foreignStylesheet, CRASH_PAGE_RE, exemptReason, isLibraryClass, WIDGET_CSS_RE, WIDGET_CONFIG_RE,
 } from '../lib/exempt.mjs';
 import { join } from 'node:path';
 import { canonical, parseColor } from '../lib/color.mjs';
@@ -25,7 +25,10 @@ class Tally {
     e.count++;
     e.files.set(file, (e.files.get(file) ?? 0) + 1);
   }
-  toJSON(limitFiles = 5) {
+  // `every` keeps the whole per-file tally beside the capped list shown in
+  // the report, for a caller that has to split the count by folder exactly
+  // (profiles/splitArbitrary: installed code against the team's own).
+  toJSON(limitFiles = 5, { every = false } = {}) {
     return [...this.map.values()]
       .sort((a, b) => b.count - a.count)
       .map((e) => ({
@@ -33,6 +36,7 @@ class Tally {
         count: e.count,
         files: [...e.files.entries()].sort((a, b) => b[1] - a[1]).slice(0, limitFiles)
           .map(([file, count]) => ({ file, count })),
+        ...(every ? { every: [...e.files.entries()].map(([file, count]) => ({ file, count })) } : {}),
       }));
   }
 }
@@ -500,7 +504,6 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
   // reason to discredit the whole report.
   // Email, artwork, mostly-SVG files and pixel renderers: all imported from
   // lib/exempt.mjs, the one list every checker reads.
-  const ARTWORK_RE = ARTWORK_NAME_RE;
   // every file a check skipped, with the reason, so the report can name them
   const exemptFiles = [];
   const skip = (f, src) => { const r = exemptReason(f, src, { email }); if (r) exemptFiles.push({ file: f, reason: r }); return true; };
@@ -566,18 +569,14 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
       paletteFiles.add(f);
       for (const m of src.matchAll(HEX_RE)) tokenDefined.add(normalizeHex(m[0]));
     }
-    if (ARTWORK_RE.test(f) || RENDERER_PATH_RE.test(f) || svgHeavy(src)) { skip(f, src); continue; }
-    // A render-to-image surface (OG card, PDF invoice) is artwork drawn with
-    // code: its colours are the picture's, not the product's palette. Until
-    // 5.10.0 they were the only "strays" a clean shadcn repo had, and they
-    // triggered the "every single one is hardcoded" banner on it.
-    const renderToImage = RENDER_TO_IMAGE_RE.test(src) || OG_ROUTE_RE.test(f);
-    if (renderToImage) { skip(f, src); continue; }
-    // a page a headless browser prints to a PDF (rybbit's reports), found by
-    // the walk from the file that prints it (lib/exempt.mjs printedFilesOf)
-    if (email?.printed?.includes(f)) { skip(f, src); continue; }
-    // an email written with an email kit, wherever it lives (react-email)
-    if (EMAIL_KIT_RE.test(src)) { skip(f, src); continue; }
+    // Artwork, renderers, render-to-image surfaces (OG cards, PDF invoices),
+    // pages a headless browser prints, emails written with a kit: one rule,
+    // lib/exempt.mjs, the same answer the live checks and the guard give.
+    // Until 9.3.3 this counter kept its own list, and the two had drifted: a
+    // file named Badge or IconButton walked free here on its name alone
+    // (2,321 files in 173 repos) while an icon in an icons folder was
+    // counted here and exempt everywhere else (likec4's 12,203 icon colours).
+    if (exemptReason(f, src, { email })) { skip(f, src); continue; }
 
     // Tailwind classes
     for (const cls of classStrings(src)) {
@@ -603,7 +602,7 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
     // length inside them is still a hardcoded value — harvest those from every
     // non-trivial block; count only the all-literal blocks.
     const allBlocks = inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()));
-    const staticBlocks = renderToImage ? [] : allBlocks.filter(isStaticInline);
+    const staticBlocks = allBlocks.filter(isStaticInline);
     if (staticBlocks.length) {
       inlineStyleCount += staticBlocks.length;
       inlineStyleFiles.set(f, (inlineStyleFiles.get(f) ?? 0) + staticBlocks.length);
@@ -810,7 +809,7 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
       spacing: twSpacing.toJSON(),
       radii: twRadii.toJSON(),
       textSizes: twTextSizes.toJSON(),
-      arbitrary: twArbitrary.toJSON(),
+      arbitrary: twArbitrary.toJSON(5, { every: true }),
     },
     important: {
       // aimed at a library's own class names: kept out, named at the top

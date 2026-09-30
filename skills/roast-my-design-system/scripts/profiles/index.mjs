@@ -197,14 +197,18 @@ export function splitArbitrary(entries, dirs) {
   const installedValues = new Map();
   let installedUses = 0;
   for (const e of entries) {
-    const ownFiles = (e.files ?? []).filter((f) => !underAny(f.file, dirs));
-    const instFiles = (e.files ?? []).filter((f) => underAny(f.file, dirs));
-    const instCount = instFiles.reduce((s, f) => s + f.count, 0);
+    // the whole per-file tally when the harvest kept one (every), else the
+    // capped list: a use in a file that fell off the list of five was counted
+    // as the team's own, so ai-chatbot's installed badge put one of shadcn's
+    // [3px] values in the headline (2026-09-30)
+    const all = e.every ?? e.files ?? [];
+    const ownFiles = all.filter((f) => !underAny(f.file, dirs)).sort((a, b) => b.count - a.count).slice(0, 5);
+    const instCount = all.filter((f) => underAny(f.file, dirs)).reduce((s, f) => s + f.count, 0);
     if (instCount) { installedUses += instCount; installedValues.set(e.value, (installedValues.get(e.value) ?? 0) + instCount); }
-    // the file list under an entry is capped, so own is the remainder of the
-    // entry's total, never a sum of the files that happened to be listed
+    // own is the remainder of the entry's total, never a sum of the files
+    // that happened to be listed
     const ownCount = e.count - instCount;
-    if (ownCount > 0) own.push({ ...e, count: ownCount, files: ownFiles });
+    if (ownCount > 0) { const { every, ...rest } = e; own.push({ ...rest, count: ownCount, files: ownFiles }); }
   }
   own.sort((a, b) => b.count - a.count);
   const values = [...installedValues.entries()].sort((a, b) => b[1] - a[1]).map(([value, count]) => ({ value, count }));

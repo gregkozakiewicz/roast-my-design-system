@@ -764,10 +764,16 @@ export function GET() { return new ImageResponse(<div style={{ background: '#c0f
     ['components/two-buttons/tailwind.tsx', `import { Button } from 'react-email';\n${SCENE}`, 'an email built with an email kit is exempt by what it imports'],
     ['src/renderers/Board.tsx', SCENE, 'a pixel renderer is exempt'],
     ['src/components/Anything.tsx', DRAWING, 'a file that is mostly drawing is exempt whatever it is called'],
+    // teable's icon set names files for what they show (2026-09-30)
+    ['packages/icons/src/components/ActionSendEmail.tsx', ICON, 'an icon in an icon folder is exempt whatever it is called'],
   ]) {
     const out = mcpTools.validate(ek, { code, file });
     out.startsWith('Not judged:') ? ok(label) : bad(label, `got: ${out.split('\n')[0]}`);
   }
+  // the folder alone buys nothing: styled UI kept beside the icons is judged
+  const iconFolderUi = mcpTools.validate(ek, { code: SCENE, file: 'src/icons/IconPicker.tsx' });
+  !iconFolderUi.startsWith('Not judged:') ? ok('a component in an icon folder that draws nothing is judged')
+    : bad('icon folder', 'plain styled UI walked free because it sits beside the icons');
   // a component with a little SVG in it is still a component
   const someSvg = mcpTools.validate(ek, {
     code: 'export const Row = () => <div style={{ color: "#c0ffee" }}><svg><path /></svg></div>;',

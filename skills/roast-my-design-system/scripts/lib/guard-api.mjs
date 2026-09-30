@@ -53,7 +53,7 @@ export { isPageFile, looksLikeJSXFile, componentNamesIn } from '../harvest/compo
 
 // The files no checker should judge. Exported so a guard reads the same list
 // as the engine rather than keeping a copy that drifts.
-export { EMAIL_PRINT_RE, ARTWORK_NAME_RE, SVG_MARKUP_RE, exemptReason, isEmail } from './exempt.mjs';
+export { EMAIL_PRINT_RE, ARTWORK_NAME_RE, ARTWORK_DIR_RE, SVG_MARKUP_RE, exemptReason, isEmail } from './exempt.mjs';
 // !important as the medium (7.5): a widget stylesheet that must beat its host
 // page, and a selector aimed at a library's own class names. The guard reads
 // the same patterns, so the two checkers agree about the same declaration.

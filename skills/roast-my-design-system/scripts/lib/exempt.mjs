@@ -15,7 +15,9 @@
  * enough though, or every Badge component would walk free: the contents must
  * actually draw SVG. A Badge that is plain styled UI gets judged like anything
  * else. A file that is mostly SVG earns it on contents alone, whatever it is
- * called.
+ * called. So does a file that draws SVG inside an icons, logos or
+ * illustrations folder: an icon set names its files after what they show
+ * (ActionSendEmail.tsx, Server.tsx), not after being an icon.
  *
  * Render-to-image: an OG card or a PDF invoice is a picture drawn with code.
  * satori and react-pdf accept nothing but inline styles, so there is no
@@ -105,6 +107,11 @@ export function isEmail(file, text = '', email = null) {
 export const CRASH_PAGE_RE = /(^|\/)global-error\.(tsx|jsx)$/;
 export const ARTWORK_NAME_RE = /(^|\/)[\w.-]*(icon|logo|badge|illustration|shield|artwork|graphic|background)[\w.-]*\.(tsx|jsx)$/i;
 export const SVG_MARKUP_RE = /<(svg|path|rect|circle|ellipse|polygon|defs|mask)\b/i;
+// An icon set's folder. Measured on 205 repos (2026-09-30): 1,252 files freed
+// in 20 repos, every one an icon, a logo or a loader; none held state or a
+// click handler. teable fell 28 to 24: its 250 icons had padded the files
+// that the per-100-files rates divide by.
+export const ARTWORK_DIR_RE = /(^|\/)(icons?|logos?|illustrations?)\//i;
 // A picture drawn from the DOM (a shareable card, a receipt) is the same
 // medium: the tool reads the styling off the element (2026-09-17).
 export const RENDER_TO_IMAGE_RE = /ImageResponse|from ['"]satori['"]|from ['"]@react-pdf|next\/og|from ['"](?:html-to-image|html2canvas(?:-pro)?|dom-to-image(?:-more)?|modern-screenshot)['"]/;
@@ -129,7 +136,7 @@ export function exemptReason(file, text = '', { email = null } = {}) {
   if (RENDERER_PATH_RE.test(file)) return 'a renderer draws pixels, so its colours are the picture rather than the interface';
   if (OG_ROUTE_RE.test(file) || RENDER_TO_IMAGE_RE.test(text)) return 'a render-to-image surface accepts nothing but inline styling, so there is no on-system way to write one';
   if (svgHeavy(text)) return 'the file is mostly drawing rather than styling';
-  if (ARTWORK_NAME_RE.test(file) && SVG_MARKUP_RE.test(text)) return 'the colours belong to the artwork, not to the interface';
+  if ((ARTWORK_NAME_RE.test(file) || ARTWORK_DIR_RE.test(file)) && SVG_MARKUP_RE.test(text)) return 'the colours belong to the artwork, not to the interface';
   return null;
 }
 

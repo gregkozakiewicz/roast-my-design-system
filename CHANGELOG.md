@@ -2,6 +2,29 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.3.2 — 2026-09-30
+
+- **Pages a headless browser prints to a PDF are not judged.** Some products
+  build a report or an invoice as React components, turn them into HTML and
+  print them to a PDF with puppeteer or playwright. That page loads none of
+  the app's stylesheets, so its styling has to be written inline, the same
+  as an email. The templates carry no sign of it themselves; the file that
+  prints them does. Roast now finds that file (one that turns React into
+  HTML and drives a headless browser, in a package that needs one to run)
+  and leaves out the pages it prints. A shared component those pages borrow
+  from the rest of the app is still judged. The report names the files and
+  says why, and the edit check, the end-of-turn review and the guard give
+  the same answer.
+- Measured on 205 repos: found in one, rybbit, whose PDF reports held 31 of
+  its 52 inline styles. Its score moves from 40 to 50. Nothing else moved.
+- **Stories and demos on a Tailwind theme.** The report never counted palette
+  classes in a stories, examples or demo folder, but the edit check still
+  flagged them on a Tailwind-theme repo. It now leaves them out too, as it
+  already did on shadcn.
+- For the guard: the demo-folder rule is exported through the guard
+  doorway as `DEMO_PATH_RE`, and the exemption context carries the printed
+  pages. New exports and fields only.
+
 ## 9.3.1 — 2026-09-30
 
 - **A templates screen in the product is judged.** The colour check on

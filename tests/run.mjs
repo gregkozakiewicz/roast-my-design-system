@@ -848,6 +848,9 @@ console.log('kits in the mcp:');
   sp.findings[0].message.includes('src/styles/globals.css') && sp.findings[0].fix.includes('ring-border') ? ok('shadcn: the finding names the sheet and a theme class for the utility') : bad('shadcn palette fix', JSON.stringify(sp.findings[0]));
   validateContent({ text: tin, file: 'src/components/ui/x.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? bad('shadcn catalogue palette', 'flagged inside the catalogue') : ok('shadcn: the catalogue is the kit\'s own door, not judged for palette');
   validateContent({ text: tin, file: 'src/stories/x.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? bad('shadcn demo palette', 'flagged in a stories folder') : ok('shadcn: a demo folder is not own code');
+  // a templates folder in a product is a screen (teable's admin templates,
+  // documenso's template picker): judged like any screen (2026-09-30)
+  validateContent({ text: tin, file: 'src/features/templates/TemplatePicker.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? ok('shadcn: a templates screen in the product is own code') : bad('shadcn templates screen', 'a template picker went unjudged');
   const sclean = mcpTools.validate(sk, { code: `export const X = () => <span className="text-muted-foreground bg-card">x</span>;` });
   sclean.startsWith('No measured violations') && sclean.includes('palette classes') ? ok('shadcn: theme classes are clean, and the palette check is listed') : bad('shadcn clean', sclean.slice(0, 160));
 

@@ -87,6 +87,7 @@ test('walkRepo: a generator\'s templates are scaffolding, a product\'s templates
     'packages/create-app/templates/default-app/App.tsx': '<div/>',
     'packages/cli/src/templates/nextjs/page.tsx': '<div/>',
     'starters/nextjs/Header.tsx': '<header/>',
+    'packages/novu/src/commands/init/templates/app/page.tsx': '<main/>',
     'packages/upgrade/transforms/__testfixtures__/Button.input.tsx': '<button/>',
     // features of the product that happen to be called templates: read
     'plugins/scaffolder/src/components/templates/FieldTemplate.tsx': '<div/>',
@@ -102,6 +103,7 @@ test('walkRepo: a generator\'s templates are scaffolding, a product\'s templates
   ]);
   assert.deepEqual(files.skipped.map((s) => s.dir).sort(), [
     '__testfixtures__', 'packages/cli/src/templates', 'packages/create-app/templates',
+    'packages/novu/src/commands/init/templates',
     'scripts/cleanup-templates', 'starters',
   ]);
   rmSync(root, { recursive: true, force: true });

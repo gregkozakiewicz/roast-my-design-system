@@ -80,12 +80,13 @@ const LEGACY_DIR_RE = /^(?:old|legacy|deprecated|archive|archived)$|[-_](?:old|l
 
 // Scaffolding: the code a project generator copies into someone else's new
 // repo, not the product. A starters/ folder, or a templates folder kept by a
-// generator (create-app, a cli), a script or a dev tool: backstage's
-// create-app/templates, the dashboard starter's scripts/cleanup-templates,
-// BuilderIO's starters (133 duplicate copies). The name alone is not enough:
-// backstage's scaffolder form templates, OpenCTI's case templates and
-// nocobase's block templates are screens of the product (2026-09-30).
-const SCAFFOLD_DIR_RE = /(^|\/)starters$|(^|\/)(?:create-[\w-]+|cli|scripts|dev|generators?)\/(?:[^/]+\/)*[\w-]*templates?$/i;
+// generator (create-app, a cli, a command-line tool's commands), a script or
+// a dev tool: backstage's create-app/templates, the dashboard starter's
+// scripts/cleanup-templates, BuilderIO's starters (133 duplicate copies),
+// novu's commands/init/templates. The name alone is not enough: backstage's
+// scaffolder form templates, OpenCTI's case templates and nocobase's block
+// templates are screens of the product (2026-09-30).
+const SCAFFOLD_DIR_RE = /(^|\/)starters$|(^|\/)(?:create-[\w-]+|cli|commands|scripts|dev|generators?)\/(?:[^/]+\/)*[\w-]*templates?$/i;
 
 export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = new Set()) {
   const files = { code: [], styles: [], other: [] };

@@ -50,7 +50,12 @@ const DOOR_TYPO_RE = /(?<![\w-])(?:[\w-]+:)*(?:font-(?:thin|extralight|light|nor
 export const blankComments = (s) => s
   .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
   .replace(/(^|[^:'"`\\])(\/\/[^\n]*)/g, (m, pre, c) => pre + ' '.repeat(c.length));
-export const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demos?|templates?|playground|fixtures?|__tests__|__mocks__|e2e|cypress)\//i;
+// Not templates: in a product a templates folder is usually a screen
+// (teable's admin templates, documenso's and formbricks' template pickers),
+// and hiding it hid their colours from the report and the live checks. A
+// project generator's templates are left out by the walk instead, and email
+// templates by the email rule (2026-09-30).
+export const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demos?|playground|fixtures?|__tests__|__mocks__|e2e|cypress)\//i;
 
 /**
  * @param root repo root

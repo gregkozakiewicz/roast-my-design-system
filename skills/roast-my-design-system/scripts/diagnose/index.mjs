@@ -1066,8 +1066,9 @@ function whereToStartSection() {
     c.push({ score: 40, metric: null, title: `Delete the ${dead.length} theme variable${dead.length === 1 ? '' : 's'} nothing uses`,
       sub: `${dead.slice(0, 3).map((r) => `--${esc(r)}`).join(', ')}${dead.length > 3 ? ' and more' : ''} sit in ${esc(P.shadcn.sheet.file)} next to the real theme, and nothing in the repo reads them. An agent opening that file sees 2 colour systems and can not tell which one is dead. ${dead.length * 2} lines to delete; the cheapest fix on this page.` });
   }
-  if (agentFiles.length === 0) c.push({ score: 60, metric: null, title: 'Write the agent rules file',
-    sub: `No CLAUDE.md, no AGENTS.md. One page naming the canonical components and the tokens file stops your agent guessing on every UI change. Cheapest fix on this list.` });
+  // The agent rules file is not a fix here: it has its own section ("Give the
+  // agent the answers") and must not compete with fixes for the three places
+  // (Greg, 2026-09-30).
   if (componentsMeasured && hardDupes.length > 0) {
     // Pick the pair with the strongest copy-paste evidence: sibling files in
     // app code (same basename, neither in a shared package) are true

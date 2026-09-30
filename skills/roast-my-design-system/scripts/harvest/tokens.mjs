@@ -573,6 +573,9 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
     // triggered the "every single one is hardcoded" banner on it.
     const renderToImage = RENDER_TO_IMAGE_RE.test(src) || OG_ROUTE_RE.test(f);
     if (renderToImage) { skip(f, src); continue; }
+    // a page a headless browser prints to a PDF (rybbit's reports), found by
+    // the walk from the file that prints it (lib/exempt.mjs printedFilesOf)
+    if (email?.printed?.includes(f)) { skip(f, src); continue; }
     // an email written with an email kit, wherever it lives (react-email)
     if (EMAIL_KIT_RE.test(src)) { skip(f, src); continue; }
 

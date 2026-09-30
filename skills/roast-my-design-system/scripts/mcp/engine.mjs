@@ -188,8 +188,11 @@ export function validateContent(content, k) {
   // (editing them is the intended use) and a demo folder is not own code,
   // exactly the files the tile leaves out.
   const inShadcnDoors = (f) => !!f && k.shadcn.doors.some((d) => f === d || f.startsWith(`${d}/`));
-  const paletteRule = k.tailwind ? 'tailwind'
-    : k.shadcn && !(file && (inShadcnDoors(file) || DEMO_PATH_RE.test(file))) ? 'shadcn'
+  // A demo folder is left out on a Tailwind theme too: the report's tile never
+  // counted one, and the live check flagged it (2026-09-30).
+  const demo = !!file && DEMO_PATH_RE.test(file);
+  const paletteRule = k.tailwind ? (demo ? null : 'tailwind')
+    : k.shadcn && !(file && (inShadcnDoors(file) || demo)) ? 'shadcn'
     : null;
   if (paletteRule && !css) {
     const tw = k.tailwind ?? {};

@@ -833,6 +833,10 @@ console.log('kits in the mcp:');
   const cls = pal.findings.filter((f) => f.rule === 'palette-class').map((f) => f.message.split(' ')[2]);
   JSON.stringify(cls) === JSON.stringify(['text-emerald-600', 'hover:text-gray-500']) ? ok('palette classes are flagged, a retuned name is not') : bad('palette-class', JSON.stringify(pal.findings));
   pal.findings[0].fix.includes('text-ink') ? ok('the fix names a theme class that fits the utility') : bad('palette fix', pal.findings[0].fix);
+  // a story is a demo on a Tailwind theme too: the report's tile never counted
+  // one, and the live check used to flag it (2026-09-30)
+  const tstory = validateContent({ text: `export const X = () => <span className="text-emerald-600">x</span>;`, file: 'src/stories/Badge.tsx' }, tk);
+  !tstory.findings.some((f) => f.rule === 'palette-class') ? ok('tailwind theme: a demo folder is not own code') : bad('tailwind demo palette', JSON.stringify(tstory.findings));
   const own = mcpTools.validate(tk, { code: `export const X = () => <span className="text-ink bg-surface border-edge">x</span>;` });
   own.startsWith('No measured violations') && own.includes('palette classes') ? ok('theme names as classes are clean, and the palette check is listed') : bad('tailwind clean', own.slice(0, 120));
 

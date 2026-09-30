@@ -116,6 +116,73 @@ export const ARTWORK_DIR_RE = /(^|\/)(icons?|logos?|illustrations?)\//i;
 // medium: the tool reads the styling off the element (2026-09-17).
 export const RENDER_TO_IMAGE_RE = /ImageResponse|from ['"]satori['"]|from ['"]@react-pdf|next\/og|from ['"](?:html-to-image|html2canvas(?:-pro)?|dom-to-image(?:-more)?|modern-screenshot)['"]/;
 export const OG_ROUTE_RE = /(^|\/)api\/og\//;
+
+// Printed by a headless browser: React turned into HTML (renderToStaticMarkup)
+// and handed to puppeteer or playwright for a PDF or a screenshot. The page
+// loads none of the app's stylesheets, so its styling is written inline, like
+// an email's. The templates carry no marker of their own; the file that
+// prints them does (rybbit's PDF reports: 31 of its 52 inline styles, score
+// 40 against 50 without them). Found in 1 of 205 repos (2026-09-30), and
+// nothing else has that shape: a file that renders React to HTML and drives
+// a headless browser is always making a picture or a PDF.
+const HEADLESS_DEP_RE = /^(?:puppeteer(?:-core)?|playwright(?:-core)?|@sparticuz\/chromium|chrome-aws-lambda)$/;
+const HEADLESS_IMPORT_RE = /(?:from\s+|require\(\s*|import\(\s*)['"](?:puppeteer(?:-core)?|playwright(?:-core)?|@sparticuz\/chromium|chrome-aws-lambda)['"]/;
+const SSR_RENDER_RE = /\brenderTo(?:StaticMarkup|String|StaticNodeStream)\s*\(/;
+const REL_IMPORT_RE = /(?:from\s+|import\(\s*)['"](\.{1,2}\/[^'"]+)['"]/g;
+
+/** A relative import, resolved against the walk's files, or null. */
+function resolveRelative(fromDir, spec, code) {
+  const parts = fromDir ? fromDir.split('/') : [];
+  for (const s of spec.split('/')) {
+    if (s === '.' || s === '') continue;
+    if (s === '..') parts.pop(); else parts.push(s);
+  }
+  const p = parts.join('/');
+  const stem = p.replace(/\.[cm]?[jt]sx?$/, '');
+  const exts = ['.tsx', '.ts', '.jsx', '.js'];
+  for (const c of [p, ...exts.map((e) => stem + e), ...exts.map((e) => `${stem}/index${e}`)]) if (code.has(c)) return c;
+  return null;
+}
+
+/**
+ * The component files a headless browser prints, for the exemption context.
+ * Only packages with a headless browser among their runtime dependencies are
+ * read (a test setup lists it as a devDependency), and only the printer's own
+ * folder is followed: a shared Button it imports from elsewhere stays judged.
+ * @param files  the walk's { code, other } (repo-relative paths)
+ * @param read   (file) => text or null
+ */
+export function printedFilesOf(files, read) {
+  const homes = [];
+  for (const f of (files.other ?? []).filter((x) => base(x) === 'package.json')) {
+    let pkg; try { pkg = JSON.parse(read(f) ?? ''); } catch { continue; }
+    if (Object.keys(pkg?.dependencies ?? {}).some((d) => HEADLESS_DEP_RE.test(d))) homes.push(dir(f));
+  }
+  if (!homes.length) return [];
+  const code = new Set(files.code ?? []);
+  const under = (f, h) => h === '' || f.startsWith(`${h}/`);
+  const printed = new Set();
+  for (const f of files.code ?? []) {
+    if (!/\.[cm]?[jt]sx?$/.test(f) || !homes.some((h) => under(f, h))) continue;
+    const text = read(f) ?? '';
+    if (!HEADLESS_IMPORT_RE.test(text) || !SSR_RENDER_RE.test(text)) continue;
+    if (/\.(tsx|jsx)$/.test(f)) printed.add(f);
+    const home = dir(f);
+    const seen = new Set([f]);
+    const queue = [[f, text]];
+    while (queue.length) {
+      const [from, src] = queue.shift();
+      for (const m of src.matchAll(REL_IMPORT_RE)) {
+        const target = resolveRelative(dir(from), m[1], code);
+        if (!target || seen.has(target) || !under(target, home)) continue;
+        seen.add(target);
+        if (/\.(tsx|jsx)$/.test(target)) printed.add(target);
+        queue.push([target, read(target) ?? '']);
+      }
+    }
+  }
+  return [...printed].sort();
+}
 export const RENDERER_PATH_RE = /(^|\/)(renderers?|scene|canvas)\/|renderElement|DebugCanvas/i;
 
 /** Mostly drawing rather than styling, whatever the file is called. */
@@ -144,6 +211,7 @@ export function exemptReason(file, text = '', { email = null } = {}) {
   if (CRASH_PAGE_RE.test(file)) return 'the crash page replaces the root layout, so the stylesheet never loads there and its styling has to be inline';
   if (RENDERER_PATH_RE.test(file)) return 'a renderer draws pixels, so its colours are the picture rather than the interface';
   if (OG_ROUTE_RE.test(file) || RENDER_TO_IMAGE_RE.test(text)) return 'a render-to-image surface accepts nothing but inline styling, so there is no on-system way to write one';
+  if (email?.printed?.includes(file)) return 'pages a headless browser prints to a PDF or an image load none of the app\'s stylesheets, so their styling has to be inline';
   if (svgHeavy(text)) return 'the file is mostly drawing rather than styling';
   if ((ARTWORK_NAME_RE.test(file) || ARTWORK_DIR_RE.test(file)) && SVG_MARKUP_RE.test(text)) return 'the colours belong to the artwork, not to the interface';
   return null;

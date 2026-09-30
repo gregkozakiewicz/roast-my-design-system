@@ -1218,7 +1218,12 @@ function whereToStartSection() {
     if (nb && nb.gain > 0) item.target = nb;
     else item.why = healthOf(item.metric, now) === 'good' ? 'already green' : 'no points on its own';
   }
-  const top3 = c.sort((a, b) => (b.delta - a.delta) || (b.score - a.score)).slice(0, 3);
+  // A fix that pays only once finished still outranks one that never pays:
+  // sorting on delta alone put shadcn-admin's one paying fix second, behind a
+  // fix worth nothing (2026-09-30).
+  const tier = (item) => (item.delta > 0 ? 2 : item.target ? 1 : 0);
+  const top3 = c.sort((a, b) => (tier(b) - tier(a)) || (b.delta - a.delta)
+    || ((b.target?.gain ?? 0) - (a.target?.gain ?? 0)) || (b.score - a.score)).slice(0, 3);
   if (!top3.length) return '';
   // The headline is the score with every move applied together, not the sum of
   // the parts: two moves on the same tile must not be counted twice.

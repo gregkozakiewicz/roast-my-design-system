@@ -78,3 +78,31 @@ test('workspaces: package.json globs, negation, pnpm yaml, and the memo notices 
   assert.deepEqual(resolveWorkspaces(pn).map((w) => w.name), ['a']);
   rmSync(pn, { recursive: true, force: true });
 });
+
+test('walkRepo: a generator\'s templates are scaffolding, a product\'s templates are screens', () => {
+  const root = scratch({
+    'src/App.tsx': '<div/>',
+    // copied out into someone else's new repo: left out, and named
+    'scripts/cleanup-templates/clerk/app-sidebar.tsx': '<nav/>',
+    'packages/create-app/templates/default-app/App.tsx': '<div/>',
+    'packages/cli/src/templates/nextjs/page.tsx': '<div/>',
+    'starters/nextjs/Header.tsx': '<header/>',
+    'packages/upgrade/transforms/__testfixtures__/Button.input.tsx': '<button/>',
+    // features of the product that happen to be called templates: read
+    'plugins/scaffolder/src/components/templates/FieldTemplate.tsx': '<div/>',
+    'src/settings/case_templates/CaseTemplateTasks.tsx': '<div/>',
+    'src/templates/Dashboard.tsx': '<div/>',
+  });
+  const files = walkRepo(root);
+  assert.deepEqual(files.code.sort(), [
+    'plugins/scaffolder/src/components/templates/FieldTemplate.tsx',
+    'src/App.tsx',
+    'src/settings/case_templates/CaseTemplateTasks.tsx',
+    'src/templates/Dashboard.tsx',
+  ]);
+  assert.deepEqual(files.skipped.map((s) => s.dir).sort(), [
+    '__testfixtures__', 'packages/cli/src/templates', 'packages/create-app/templates',
+    'scripts/cleanup-templates', 'starters',
+  ]);
+  rmSync(root, { recursive: true, force: true });
+});

@@ -36,7 +36,7 @@ const SKIP_DIRS = new Set([
   'examples', 'example', 'demos', 'demo', 'playground', 'fixtures',
   // Test/fixture surfaces are not the product's design language — counting a
   // story's `export const Default` 36× would poison the diagnosis numbers.
-  '__tests__', '__mocks__', '__fixtures__', '__snapshots__',
+  '__tests__', '__mocks__', '__fixtures__', '__testfixtures__', '__snapshots__',
   'cypress', 'e2e', 'playwright', 'test', 'tests', '.storybook',
 ]);
 
@@ -77,6 +77,15 @@ const STYLE_EXTS = new Set(['.css', '.scss', '.sass', '.less']);
 // keeps its old interface in web-old, and every count came from there
 // (2026-09-17). Named in the report like any other skipped folder.
 const LEGACY_DIR_RE = /^(?:old|legacy|deprecated|archive|archived)$|[-_](?:old|legacy|deprecated)$|^(?:old|legacy)[-_]/i;
+
+// Scaffolding: the code a project generator copies into someone else's new
+// repo, not the product. A starters/ folder, or a templates folder kept by a
+// generator (create-app, a cli), a script or a dev tool: backstage's
+// create-app/templates, the dashboard starter's scripts/cleanup-templates,
+// BuilderIO's starters (133 duplicate copies). The name alone is not enough:
+// backstage's scaffolder form templates, OpenCTI's case templates and
+// nocobase's block templates are screens of the product (2026-09-30).
+const SCAFFOLD_DIR_RE = /(^|\/)starters$|(^|\/)(?:create-[\w-]+|cli|scripts|dev|generators?)\/(?:[^/]+\/)*[\w-]*templates?$/i;
 
 export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = new Set()) {
   const files = { code: [], styles: [], other: [] };
@@ -135,6 +144,7 @@ export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = ne
       const p = join(dir, e.name);
       if (e.name === 'public' && e.isDirectory() && !hasComponentSource(p)) continue;
       const rel = relative(root, p).replaceAll('\\', '/');
+      if (e.isDirectory() && SCAFFOLD_DIR_RE.test(rel)) { countSkipped(p, rel); continue; }
       const hit = excluded(rel);
       if (hit) {
         if (e.isDirectory()) countExcluded(p, depth + 1, hit);

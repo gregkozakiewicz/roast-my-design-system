@@ -1534,7 +1534,7 @@ function skippedLine() {
   const parts = [];
   if (skippedDirs.length) {
     const list = skippedDirs.slice(0, 6).map((e) => `<span class="mono">${esc(e.dir)}/</span> (${n(e.files)} UI file${e.files === 1 ? '' : 's'})`).join(', ');
-    parts.push(`<div class="excl">Left out by design: ${list}${skippedDirs.length > 6 ? ` and ${n(skippedDirs.length - 6)} more` : ''}. A docs site, a demo, an examples folder or a replaced app carries its own styling, which is not the product's design language.</div>`);
+    parts.push(`<div class="excl">Left out by design: ${list}${skippedDirs.length > 6 ? ` and ${n(skippedDirs.length - 6)} more` : ''}. A docs site, a demo, an examples folder, a replaced app or the templates a project generator copies out carries its own styling, which is not the product's design language.</div>`);
   }
   const ra = h.files?.readAnyway;
   if (ra) parts.push(`<div class="excl"><span class="mono">${esc(ra.dir)}/</span> is normally left out, but it holds ${n(ra.files)} UI files, more than the rest of the repo, so it was read as the product.</div>`);

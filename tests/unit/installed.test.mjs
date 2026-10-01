@@ -65,3 +65,35 @@ test('a product repo counts every bracket', () => {
   const healthOf = makeHealthOf(benchHelpers(loadBenchmark(), 'product'));
   assert.equal(tileHealths(coreMetrics(h), healthOf).length, 9);
 });
+
+// 9.7.0: spacing values keep every file, as bracket values have since 9.3.3.
+// With only the top five files kept, a use in installed code that fell off
+// the list was counted as the team's own (onlook: 2 became 3, 2026-10-01).
+test('a spacing bracket in installed code is split out even when it is not among the top five files', async () => {
+  const { mkdtempSync, cpSync, writeFileSync, rmSync, readFileSync } = await import('node:fs');
+  const { join, dirname } = await import('node:path');
+  const { tmpdir } = await import('node:os');
+  const { execFileSync } = await import('node:child_process');
+  const { fileURLToPath } = await import('node:url');
+  const { ownSpacing } = await import('../../skills/roast-my-design-system/scripts/profiles/index.mjs');
+  const here = dirname(fileURLToPath(import.meta.url));
+  const root = mkdtempSync(join(tmpdir(), 'roast-spacing-every-'));
+  try {
+    cpSync(join(here, '../fixtures/shadcnfresh'), root, { recursive: true });
+    for (let i = 1; i <= 6; i++) writeFileSync(join(root, `app/own${i}.tsx`), `export const O${i} = () => <div className="p-[13px] m-[13px]">o</div>;\n`);
+    const button = join(root, 'components/ui/button.tsx');
+    writeFileSync(button, readFileSync(button, 'utf8').replace('cn("bg-card', 'cn("p-[13px] bg-card'));
+    const out = join(root, 'h.json');
+    execFileSync(process.execPath, [join(here, '../../skills/roast-my-design-system/scripts/harvest/index.mjs'), root, '--out', out], { stdio: 'ignore' });
+    const h = JSON.parse(readFileSync(out, 'utf8'));
+    const entry = h.tokens.tailwind.spacing.find((e) => e.value === '[13px]');
+    assert.equal(entry.count, 13);
+    assert.equal(entry.files.length, 5);
+    assert.equal(entry.every.length, 7);
+    // a scale step keeps no per-file tally: only brackets are ever split
+    assert.ok(h.tokens.tailwind.spacing.filter((e) => !e.value.startsWith('[')).every((e) => !e.every));
+    const own = ownSpacing(h).tw.find((e) => e.value === '[13px]');
+    assert.equal(own.count, 12);
+    assert.equal(ownSpacing(h).installed.uses, 1);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});

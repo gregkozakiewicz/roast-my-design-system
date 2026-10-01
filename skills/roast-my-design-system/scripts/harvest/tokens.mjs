@@ -27,8 +27,10 @@ class Tally {
   }
   // `every` keeps the whole per-file tally beside the capped list shown in
   // the report, for a caller that has to split the count by folder exactly
-  // (profiles/splitArbitrary: installed code against the team's own).
+  // (profiles/splitArbitrary: installed code against the team's own). It is
+  // true for every entry, or a test for the entries that need it.
   toJSON(limitFiles = 5, { every = false } = {}) {
+    const keep = typeof every === 'function' ? every : () => every;
     return [...this.map.values()]
       .sort((a, b) => b.count - a.count)
       .map((e) => ({
@@ -36,7 +38,7 @@ class Tally {
         count: e.count,
         files: [...e.files.entries()].sort((a, b) => b[1] - a[1]).slice(0, limitFiles)
           .map(([file, count]) => ({ file, count })),
-        ...(every ? { every: [...e.files.entries()].map(([file, count]) => ({ file, count })) } : {}),
+        ...(keep(e) ? { every: [...e.files.entries()].map(([file, count]) => ({ file, count })) } : {}),
       }));
   }
 }
@@ -842,7 +844,10 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
     tokenCollisions: tokenCollisions(baseDefs, workspaceMatcher(root)),
     offenders: offenderList,
     greyCount: colorList.filter((c) => c.value.startsWith('#') && isGrey(c.value)).length,
-    spacing: spacing.toJSON(),
+    // spacing is split into installed code and the team's own like bracket
+    // values (profiles/ownSpacing), so it keeps every file too: a use in a
+    // sixth file was counted as the team's own (onlook, 2026-10-01)
+    spacing: spacing.toJSON(5, { every: true }),
     radii: radii.toJSON(),
     fontSizes: fontSizes.toJSON(),
     fontFamilies: fontFamilies.toJSON(),
@@ -851,7 +856,8 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
     shadows: shadows.toJSON(),
     tailwind: {
       colors: twColors.toJSON(),
-      spacing: twSpacing.toJSON(),
+      // only the bracket values are split; a scale step (p-4) is never counted
+      spacing: twSpacing.toJSON(5, { every: (e) => e.value.startsWith('[') }),
       radii: twRadii.toJSON(),
       textSizes: twTextSizes.toJSON(),
       arbitrary: twArbitrary.toJSON(5, { every: true }),

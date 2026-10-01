@@ -108,3 +108,41 @@ test('walkRepo: a generator\'s templates are scaffolding, a product\'s templates
   ]);
   rmSync(root, { recursive: true, force: true });
 });
+
+// 9.7.0: one scan reads each file once; anything else always reads fresh
+test('readSource reads fresh unless the scan turned its memory on', async () => {
+  const { mkdtempSync, writeFileSync, rmSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { tmpdir } = await import('node:os');
+  const { readSource, cachedSource } = await import('../../skills/roast-my-design-system/scripts/harvest/walk.mjs');
+  const dir = mkdtempSync(join(tmpdir(), 'roast-read-'));
+  try {
+    const f = join(dir, 'a.tsx');
+    writeFileSync(f, 'one');
+    assert.equal(readSource(f), 'one');
+    writeFileSync(f, 'two');
+    assert.equal(readSource(f), 'two');
+    assert.equal(cachedSource(f), undefined);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('with the memory on, a file is read from disk once', async () => {
+  const { mkdtempSync, writeFileSync, rmSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { tmpdir } = await import('node:os');
+  const { execFileSync } = await import('node:child_process');
+  const dir = mkdtempSync(join(tmpdir(), 'roast-read-'));
+  try {
+    const f = join(dir, 'a.tsx');
+    writeFileSync(f, 'one');
+    const walk = new URL('../../skills/roast-my-design-system/scripts/harvest/walk.mjs', import.meta.url).href;
+    const out = execFileSync(process.execPath, ['--input-type=module', '-e', `
+      import { enableReadCache, readSource, cachedSource } from '${walk}';
+      import { writeFileSync } from 'node:fs';
+      enableReadCache();
+      const a = readSource(${JSON.stringify(f)});
+      writeFileSync(${JSON.stringify(f)}, 'two');
+      console.log(a, readSource(${JSON.stringify(f)}), cachedSource(${JSON.stringify(f)}));`], { encoding: 'utf8' }).trim();
+    assert.equal(out, 'one one one');
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

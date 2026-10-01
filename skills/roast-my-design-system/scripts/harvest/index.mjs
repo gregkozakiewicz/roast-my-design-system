@@ -14,7 +14,7 @@
  */
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { walkRepo, profileRepo, readSource } from './walk.mjs';
+import { walkRepo, profileRepo, readSource, enableReadCache } from './walk.mjs';
 import { chartSystemOf } from '../lib/charts.mjs';
 import { designGaps } from '../lib/gaps.mjs';
 import { headerLines, detailLines } from './summary.mjs';
@@ -35,6 +35,9 @@ import { countPaint, doorShades, blankComments } from './paint.mjs';
 import { colourUse } from './coloruse.mjs';
 import { countUses } from '../profiles/tailwind.mjs';
 import { sheetColourRows } from '../profiles/shadcn.mjs';
+
+// this process is one scan: read each file from disk once (harvest/walk.mjs)
+enableReadCache();
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);

@@ -16,12 +16,14 @@
  * documenso 442 against 2,369.
  */
 import { readFileSync } from 'node:fs';
+import { cachedSource } from '../harvest/walk.mjs';
 import { join } from 'node:path';
 import { PALETTE } from './shadcn-data.mjs';
 import { TAILWIND_DEFAULTS } from './tailwind-defaults.mjs';
 import { canonical, parseColor } from '../lib/color.mjs';
 
-const read = (p) => { try { return readFileSync(p, 'utf8'); } catch { return ''; } };
+// the scan's own copy when it has one (harvest/walk.mjs), the disk otherwise
+const read = (p) => { const t = cachedSource(p); if (t !== undefined) return t; try { return readFileSync(p, 'utf8'); } catch { return ''; } };
 // Tailwind's own palette names (plus the black, white and keyword colours it also
 // ships): a theme that restates them adds no vocabulary
 const PALETTE_NAME_RE = new RegExp(`^(?:(?:${PALETTE})(?:-(?:50|[1-9]00|950))?|black|white|transparent|current|inherit)$`);

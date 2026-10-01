@@ -16,11 +16,21 @@ export function read(p) { try { return readFileSync(p, 'utf8'); } catch { return
 // hostile repo could plant a very large file on purpose; either way the
 // scan should shrug. Two megabytes is far above any hand-written source.
 export const MAX_SOURCE_BYTES = 2_000_000;
+// One scan reads the same files in several passes (tokens, components,
+// paint, the colour bar, the theme receipt). The harvest process turns this
+// memory on so each file is read from disk once; the MCP server and the
+// live checks never do, so an edit is always read fresh there (9.7.0: the
+// colour bar had made the scan 12 to 25% slower).
+let CACHE = null;
+export function enableReadCache() { CACHE = new Map(); }
+/** a file's text when this scan has already read it, else undefined */
+export function cachedSource(p) { const t = CACHE?.get(p); return typeof t === 'string' ? t : undefined; }
 export function readSource(p) {
-  try {
-    if (statSync(p).size > MAX_SOURCE_BYTES) return null;
-    return readFileSync(p, 'utf8');
-  } catch { return null; }
+  if (CACHE?.has(p)) return CACHE.get(p);
+  let text;
+  try { text = statSync(p).size > MAX_SOURCE_BYTES ? null : readFileSync(p, 'utf8'); } catch { text = null; }
+  if (CACHE) CACHE.set(p, text);
+  return text;
 }
 
 // Skipped because they are output or machinery, never because they might

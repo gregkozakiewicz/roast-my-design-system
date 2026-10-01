@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.6.0 — unreleased
+## 9.6.0 — 2026-10-01
 
 - **The edit check and the guard read class lists the way the report does.**
   The report counts the classes inside shadcn's class helpers (`cn()`,

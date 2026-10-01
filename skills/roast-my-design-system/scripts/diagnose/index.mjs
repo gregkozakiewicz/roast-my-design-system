@@ -703,7 +703,9 @@ function colourUsage() {
   return {
     cells: cells + rest, legend,
     subtitle: 'Sized by how often the code uses each colour',
-    line: `<p class="sub use-line">${esc(sentences.join(' '))}</p>`,
+    // the shares in one line; how they were counted folded under it, the
+    // same fold as "why this matters" (Greg, 1 October)
+    line: `<p class="sub use-line">${esc(sentences[0])}</p>${sentences.length > 1 ? `<div class="whywrap"><button type="button" class="whybtn" data-why="colouruse">${WHY_ICON}<span class="why-lab">how this is counted</span></button><div class="whytext" hidden id="why-colouruse">${sentences.slice(1).map((x) => `<p>${esc(x)}</p>`).join('')}</div></div>` : ''}`,
   };
 }
 // "a", "a and b", "a, b and c"

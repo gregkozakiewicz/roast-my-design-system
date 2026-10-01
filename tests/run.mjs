@@ -715,7 +715,8 @@ console.log('colour-use bar, drawn:');
     'app/globals.css': '@import "tailwindcss";\n:root { --brand: #3355ff; }\n.note { color: #333333; }\n',
     'app/page.tsx': PALETTE_PAGE(12),
   });
-  const wcLine = (wc.html.match(/<p class="sub use-line">([^<]*)/) ?? [])[1] ?? '';
+  // the shares line and the fold under it ("how this is counted")
+  const wcLine = (wc.html.match(/<p class="sub use-line">[\s\S]*?<\/p>(?:<div class="whywrap">[\s\S]*?<\/div><\/div>)?/) ?? [''])[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
   wc.h.profile.palette === null && (wc.h.profile.shadcn?.paint?.tin?.uses ?? 0) > 0
     && wcLine.includes("The palette rule found no theme here it can check these classes against, so the bar keeps them as Tailwind's palette. The off-theme colours tile still counts palette classes as off-theme.")
     && !wcLine.includes('none of them count as strays')

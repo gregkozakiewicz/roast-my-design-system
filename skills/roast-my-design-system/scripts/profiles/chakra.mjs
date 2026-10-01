@@ -23,6 +23,9 @@ export const CHAKRA = {
   themeImportRe: /from\s*['"]@chakra-ui\/(?:react|theme-tools|styled-system|theme)['"]/,
   // a theme that replaces the space scale makes a step something else
   spacingCustomRe: /\b(?:space|spacing)\s*:\s*\{/,
+  // the colour reads alone, each matched whole so the report's colour-use bar
+  // can name it (harvest/coloruse.mjs)
+  colourRefRe: /['"`](?:gray|red|orange|yellow|green|teal|blue|cyan|purple|pink|brand|primary|secondary|accent|whiteAlpha|blackAlpha)\.\d{2,3}['"`]|['"`](?:fg|bg|border|colorPalette)(?:\.[a-z]+)?['"`]|var\(--chakra-colors-[\w-]+/g,
   refRe: /['"`](?:gray|red|orange|yellow|green|teal|blue|cyan|purple|pink|brand|primary|secondary|accent|whiteAlpha|blackAlpha)\.\d{2,3}['"`]|['"`](?:fg|bg|border|colorPalette)(?:\.[a-z]+)?['"`]|\buseColorModeValue\(|\btoken\(\s*['"`]|var\(--chakra-/g,
   advice: {
     // plain text for the MCP server: what to write instead of a pixel size

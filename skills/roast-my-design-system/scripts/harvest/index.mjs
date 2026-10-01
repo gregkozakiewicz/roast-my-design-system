@@ -31,7 +31,10 @@ import { lastTouchedDates } from '../lib/lasttouched.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
 import { decideProfile, decideFresh, profileOf, installedOf, doorFile, installedFile, splitArbitrary, scopeFiles } from '../profiles/index.mjs';
 import { publishesLine } from '../profiles/registry.mjs';
-import { countPaint, doorShades } from './paint.mjs';
+import { countPaint, doorShades, blankComments } from './paint.mjs';
+import { colourUse } from './coloruse.mjs';
+import { countUses } from '../profiles/tailwind.mjs';
+import { sheetColourRows } from '../profiles/shadcn.mjs';
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -68,7 +71,7 @@ let tokens = harvestTokens(target, files.styles, files.code, { email });
 // (a published components package with no app pages is a LIBRARY; a stack the
 // detector cannot read is NOT MEASURED, never scored as zeros). The decision
 // lands on the profile with its evidence, so the JSON says why.
-decideProfile(profile, components, files, target);
+decideProfile(profile, components, files, target, { themeRead: true });
 // A registry is counted on what it publishes, one variant of it. The rest
 // (docs site, demos, an installed catalogue for the site) is kept out and
 // named in the header like any exclusion; secondary variants likewise.
@@ -157,6 +160,53 @@ if (profileOf(profile).isRegistry) {
     decideFresh(profile, components, files, tokens, target);
   }
 }
+
+// The theme a shadcn repo names its colours in, and how often class names
+// matching those names appear: the same counter as the Tailwind receipt, over
+// the whole repo, comments blanked. The sentence says the names match, not
+// that every match reads this theme: formbricks' survey-ui uses the same
+// names against a theme of its own (2026-10-01). Counting only the theme's
+// own package hid true receipts on 10 monorepos whose theme sits in a shared
+// package (cal.com, Ghost, midday). shadcn's own components are counted, as
+// there. A v3 install keeps its names as sheet rows, not in @theme; a
+// registry is counted on what it publishes, and only when its theme file is
+// among them.
+{
+  const P = profileOf(profile);
+  const sc = profile.shadcn;
+  if (P.isShadcn && sc) {
+    const tr = sc.themeRead ?? null;
+    let file = null, names = null;
+    if (P.isRegistry) {
+      if (tr && files.styles.includes(tr.file)) ({ file, names } = tr);
+    } else if (tr) ({ file, names } = tr);
+    else {
+      file = sc.sheet?.found ? sc.sheet.file : sc.contract?.file ?? null;
+      names = file ? sheetColourRows(target, file) : [];
+      if (names.length < 3) names = null;
+    }
+    sc.themeUses = names ? { file, names, ...matchingUses(names) } : null;
+  }
+}
+function matchingUses(names) {
+  const clean = (text, style) => (style ? text.replace(/\/\*[\s\S]*?\*\//g, ' ') : blankComments(text));
+  const { uses, files: usedIn } = countUses(target, files.code, files.styles, names, { clean });
+  return { uses, usedIn };
+}
+
+// What the Colour usage bar is sized by: how often each colour is used, and
+// whether by name, as a Tailwind palette class or as a stray. Kept beside
+// the harvest, never inside tokens, so no count, score or check reads it.
+const colourUseOf = (() => {
+  const P = profileOf(profile);
+  return colourUse(target, files, tokens, {
+    email, P, palette: profile.palette ?? null, kit: P.kit?.name ?? null,
+    tailwind: (profile.stylingDeps ?? []).some((d) => /tailwind/i.test(d)),
+    // utility-class mode turns the rule off; the repo's own theme still
+    // retunes palette names there (rybbit's neutrals)
+    retuned: profile.palette?.retuned ?? profile.shadcn?.ownTheme?.retuned ?? [],
+  });
+})();
 
 const duplicates = findDuplicates(components, profile.uiDir, target, profile.uiDirs ?? null);
 // A registry's blocks are self-contained kits, each installed alone
@@ -284,6 +334,7 @@ const harvest = {
   },
   components,
   tokens,
+  colourUse: colourUseOf,
   duplicates,
   context,
   staleRules,

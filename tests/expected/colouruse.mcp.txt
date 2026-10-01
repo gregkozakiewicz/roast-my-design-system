@@ -1,0 +1,32 @@
+=== get_context ===
+Design system context for colouruse (scanned DATE). Rules derived from this repo's real code.
+TOKENS: 18 colour tokens in apps/web/modules/ui/globals.css. Use them as classes (bg-primary, text-muted-foreground); never a palette class (text-gray-500, ring-green-500) and never hardcode a colour. Do not add a token that duplicates an existing one; reuse it.
+USE THESE, DO NOT REBUILD THEM:
+  <Button> from apps/web/modules/ui/components/button.tsx (1x)
+SPACING: nothing on record yet. Whatever you pick, the next agent will copy; pick something divisible by 4.
+DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.
+NOTE: this repo has no agent rules file; these lines are the only guardrail. Suggest running npx roast-my-design-system@latest --apply.
+Before finishing: call roast_validate on what you wrote, then roast_review.
+=== find_component button ===
+Canonical: <Button> from apps/web/modules/ui/components/button.tsx (used 1x · props: variant, asChild)
+=== find_component date picker ===
+No component matching "date picker" is defined in this repo.
+=== find_token #3b81f5 ===
+#3b81f5 is not close to any token in this repo (nearest is #2563eb, 30 channel steps away). If this colour is a real decision, add it to apps/web/modules/ui/globals.css first; do not hardcode it.
+=== find_token 13px ===
+This repo has no spacing values on record to compare 13px against. Whatever you pick, the next agent will copy; pick something divisible by 4.
+=== validate bad snippet ===
+6 findings:
+✕ L2 Hardcoded colour #3b81f5 is new to this repo.
+   Fix: Nearest token: #2563eb (30 channel steps away). If that is not the intent, add a token first.
+✕ L2 New one-off spacing value 11px. The repo already carries 0 distinct spacing values.
+✕ L2 New one-off spacing value 27px. The repo already carries 0 distinct spacing values.
+✕ L2 Bracket value [13px].
+   Fix: If the value repeats it is a decision: name it as a token. If it does not, use the nearest scale step.
+✕ L2 Static inline style block. Styling in style={{ }} is invisible to the system and to every agent that reads it.
+   Fix: Move the values to classes or tokens.
+✕ L1 Defines <Button>, but apps/web/modules/ui/components/button.tsx already defines it (used 1x).
+   Fix: Import apps/web/modules/ui/components/button.tsx instead of creating a copy.
+Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, new colour tokens that twin an existing token, imports of a duplicate the canonical copy replaces, chart colours against the chart palette, palette classes where the theme names a colour.
+=== validate clean snippet ===
+No measured violations found. Checked: hardcoded colours vs the token set, near-identical colour twins, off-scale spacing, off-scale radii, font sizes and shadows, typefaces outside the system, arbitrary bracket values, static inline style blocks, !important, duplicate component definitions, new colour tokens that twin an existing token, imports of a duplicate the canonical copy replaces, chart colours against the chart palette, palette classes where the theme names a colour.

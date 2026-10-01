@@ -44,8 +44,8 @@ class Tally {
 }
 
 // ---------- colour parsing ----------
-const HEX_RE = /#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g;
-const FUNC_COLOR_RE = /\b(?:rgba?|hsla?|oklch|oklab|lab|lch)\(\s*[^)]{1,80}\)|\bcolor\(\s*(?:from|srgb|srgb-linear|display-p3|a98-rgb|prophoto-rgb|rec2020|xyz(?:-d(?:50|65))?)\b[^)]{0,80}\)/g;
+export const HEX_RE = /#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g;
+export const FUNC_COLOR_RE = /\b(?:rgba?|hsla?|oklch|oklab|lab|lch)\(\s*[^)]{1,80}\)|\bcolor\(\s*(?:from|srgb|srgb-linear|display-p3|a98-rgb|prophoto-rgb|rec2020|xyz(?:-d(?:50|65))?)\b[^)]{0,80}\)/g;
 
 /** Fully transparent values are the CSS word for "nothing here" — counting
  * rgba(0,0,0,0) as a palette colour 581 times (Siemens iX) inflates every
@@ -76,18 +76,18 @@ export const tripletToHsl = (v) => {
 // it expands to #11004422 and the review accuses an order id of being a
 // hardcoded colour (found on the demo repo, 2026-09-07). In a colour context
 // all four lengths still count; only the loose pass skips 4-digit.
-const isIdentifierHex = (raw) => /^#[0-9a-f]{4}$/i.test(raw);
+export const isIdentifierHex = (raw) => /^#[0-9a-f]{4}$/i.test(raw);
 
 // hsl(var(--primary)) is a reference to a colour, never a colour, and
 // oklch(0.35 0.08 ${hue}) is a template with a hole in it: neither may sit in
 // the palette as its own value.
-const isVarRef = (v) => /var\(|\$\{/.test(v);
+export const isVarRef = (v) => /var\(|\$\{/.test(v);
 
 // A functional colour is stored only if it parses as one. FUNC_COLOR_RE is a
 // net, not a parser: `rgb(0,0,0;position:fixed;inset:0;background:#000)` fits
 // the net, and a value like that rendered into the report's swatches would
 // cover the page (confirmed 2026-09-11). Parsed or dropped.
-const funcColour = (raw) => {
+export const funcColour = (raw) => {
   const v = raw.replace(/\s+/g, ' ').toLowerCase();
   return parseColor(v) ? v : null;
 };
@@ -106,7 +106,7 @@ export function normalizeHex(hex) {
 /** A hex in a stylesheet is a colour only inside a declaration value. `#face {`
  * and `#add, .x {` are id selectors that happen to spell hex; skip a match
  * when nothing between the last `{`, `}` or `;` and it is a `:`. */
-const inDeclaration = (text, i) => {
+export const inDeclaration = (text, i) => {
   const from = Math.max(text.lastIndexOf('{', i), text.lastIndexOf('}', i), text.lastIndexOf(';', i));
   return text.slice(from + 1, i).includes(':');
 };

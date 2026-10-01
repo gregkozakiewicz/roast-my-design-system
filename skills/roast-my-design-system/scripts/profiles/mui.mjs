@@ -22,6 +22,10 @@ export const MUI = {
   themeRe: /\b(?:createTheme|createMuiTheme|extendTheme|experimental_extendTheme|unstable_createMuiStrictModeTheme)\s*\(|<ThemeProvider[^>]*\btheme=\{\s*(?:\(|\{)/,
   // the theme call has to come from MUI: CodeMirror exports a createTheme too
   themeImportRe: /import\s*(?:\{[^}]*\b(?:createTheme|createMuiTheme|extendTheme|experimental_extendTheme|ThemeProvider)\b[^}]*\}|ThemeProvider|createTheme)\s*from\s*['"]@(?:mui|material-ui)\//,
+  // the colour reads alone, each matched whole so the report's colour-use bar
+  // can name it (harvest/coloruse.mjs); the mode, the helpers and the
+  // settings on theme.palette are not colours
+  colourRefRe: /\b(?:theme|vars)\.palette\.(?!(?:mode|getContrastText|augmentColor|tonalOffset|contrastThreshold)\b)[\w.]+(?:\[\d{2,3}\])?|['"](?:primary|secondary|error|warning|info|success|text|background|grey|divider|action|common)\.(?:main|light|dark|contrastText|primary|secondary|disabled|paper|default|hover|selected|black|white|\d{2,3})['"]|(?<![\w-])color=["'](?:primary|secondary|error|warning|info|success)["']/g,
   refRe: /theme\.palette\.|theme\.spacing\(|theme\.typography\.|theme\.shape\.|\bvars\.palette\.|['"](?:primary|secondary|error|warning|info|success|text|background|grey|divider|action|common)\.(?:main|light|dark|contrastText|primary|secondary|disabled|paper|default|hover|selected|black|white|\d{2,3})['"]/g,
   advice: {
     // plain text for the MCP server: what to write instead of a pixel size

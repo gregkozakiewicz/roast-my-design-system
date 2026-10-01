@@ -56,6 +56,8 @@ function normalizeSummary(s) {
 function normalizeHarvest(h) {
   const c = JSON.parse(JSON.stringify(h));
   c.repo = null; c.harvestedAt = null; c.tookMs = null;
+  // the colour-use pass times itself, like the harvest
+  if (c.colourUse) c.colourUse.ms = null;
   return c;
 }
 
@@ -593,6 +595,169 @@ console.log('component stacks:');
   vueHtml.includes('not measured: Vue single-file components') && vueHtml.includes('cannot read yet')
     ? ok('unmeasured tiles and ledger say why') : bad('not-measured copy', 'missing tile note or ledger sentence');
   !vueHtml.includes('class="amap"') ? ok('no map drawn from blindness') : bad('map on unmeasured repo', 'rendered');
+}
+
+// ---------- the colour-use bar (9.7.0): sized by use, three states ----------
+// Born on formbricks: an app with a v4 theme of its own and none of shadcn's
+// greys, a package with a v3 config and a sheet, palette classes everywhere.
+// The bar is sized by use, the receipt counts the theme's names used as
+// classes in the theme's own package, and the first move maps the palette
+// onto the theme the app already has instead of telling it there is no theme.
+//
+// NOT APPROVED, ONLY FROZEN: the colouruse expected files carry lines that
+// existing engine behaviour gets wrong on this shape, so a later --update
+// must not read them as checked (roadmap: the rules builder and the live
+// checks' context on a theme of the app's own beside a shadcn package):
+//   - colouruse.rules.md and colouruse.compact.md, the first bullet under
+//     "shadcn: the components and the theme": globals.css holds "background,
+//     foreground, primary, muted, border and the rest, each with a light and
+//     a dark value". It holds none of the greys and no light and dark pairs.
+//   - the next bullet: globals.css "defines none of shadcn's colour
+//     variables". It defines --color-primary and --color-primary-foreground.
+//   - colouruse.mcp.txt, the TOKENS line: "18 colour tokens in
+//     apps/web/modules/ui/globals.css. Use them as classes (bg-primary,
+//     text-muted-foreground)". Only 8 of the 18 are in that file, and the
+//     report's own move says text-muted-foreground leaves the text with no
+//     colour there.
+console.log('colour-use bar:');
+{
+  const html = readFileSync(join(tmp, 'colouruse.html'), 'utf8');
+  html.includes('Sized by how often the code uses each colour') ? ok('the bar says it is sized by use')
+    : bad('use bar subtitle', 'missing "Sized by how often the code uses each colour"');
+  // class names matching the theme's names, across the repo, never one named
+  // in a comment: 13 in 5 files, not 14 (survey-card.tsx matches the names
+  // too, so the sentence says they match, not that they read this theme)
+  html.includes('Its theme names 6 colours in apps/web/modules/ui/globals.css; class names matching them appear 13 times across 5 files.')
+    ? ok("the shadcn receipt counts class names matching the theme's names") : bad('theme uses receipt', (html.match(/Its theme names[^<]*/) ?? ['missing'])[0]);
+  html.includes('Map the palette onto the theme you already have') ? ok('a theme of its own without shadcn\'s greys is told to map the palette onto it')
+    : bad('map move', 'missing "Map the palette onto the theme you already have"');
+  const old = readFileSync(join(tmp, 'messy.html'), 'utf8');
+  const cu = JSON.parse(readFileSync(join(tmp, 'colouruse.json'), 'utf8')).colourUse;
+  cu.scope === 'own' && cu.doorFiles === 1 && cu.deadNames.top[0]?.[0] === 'ghost-ink'
+    ? ok("shadcn's button is left out and a class with no colour behind it is dead") : bad('colouruse scope', JSON.stringify({ scope: cu.scope, doors: cu.doorFiles, dead: cu.deadNames }));
+  !/Sized by how often each is used/.test(old) ? ok('no report says "each is used" any more') : bad('old subtitle', 'messy still says "Sized by how often each is used"');
+  // the page itself: palette cells marked as palette, and the legend says so
+  html.includes('<div class="uc pal"') ? ok('a palette class is drawn as a palette cell') : bad('palette cell', 'no class="uc pal" cell');
+  html.includes('<span><i class="lg lg-pal"></i> Tailwind palette</span>') ? ok('the legend names the Tailwind palette') : bad('palette legend', 'no "Tailwind palette" legend entry');
+  // a dark: override of white or black is a stray for its own reason
+  html.includes('title="black ×1 as dark: overrides written by hand · most in apps/web/app/page.tsx"')
+    ? ok('a dark: black is a stray with its own words') : bad('dark override tooltip', (html.match(/title="black ×[^"]*"/g) ?? ['none']).join(' | '));
+  // white and black apart, and which dark: overrides the rule calls strays
+  html.includes('Palette classes left out of the strays: plain white, apart from dark: backgrounds, text and borders;')
+    ? ok('the sentence names plain white alone, and the dark: overrides the rule flags') : bad('white and black', (html.match(/Palette classes left out[^.]*/) ?? ['missing'])[0]);
+  // a written value names a token only where the token holds it by day:
+  // #e2e8f0 is --app-label's dark-mode value only
+  html.includes('title="#e2e8f0 ×1 written by hand; a token already holds this value · most in apps/web/app/page.tsx"')
+    ? ok('a written value is never named after a dark-mode-only token') : bad('written stray names', (html.match(/title="#e2e8f0[^"]*"/) ?? ['missing'])[0]);
+  // at 375px the bar's cells must not widen the palette panels
+  html.includes('.usage-bar .uc { min-width:2px; }') && html.includes('.palette-grid > * { min-width:0; }')
+    ? ok('the bar fits a phone') : bad('phone width', 'missing .usage-bar .uc min-width:2px or .palette-grid > * min-width:0');
+  // utility-class mode: the own theme's retuned neutrals reach it by name (rybbit)
+  const util = JSON.parse(readFileSync(join(tmp, 'shadcnutiltheme.json'), 'utf8')).colourUse;
+  util.segments.find((x) => x.names.includes('neutral-900'))?.state === 'token'
+    ? ok("in utility-class mode a retuned neutral is the theme's, not the palette's") : bad('retuned in utility mode', JSON.stringify(util.segments.find((x) => x.names.includes('neutral-900'))));
+}
+
+// A repo written to the temp folder, harvested and diagnosed like a fixture;
+// and a fixture's harvest, changed, drawn again. No expected files: each
+// asserts one sentence.
+function scanTemp(name, fileMap) {
+  const root = join(tmp, `repo-${name}`);
+  for (const [f, body] of Object.entries(fileMap)) { mkdirSync(dirname(join(root, f)), { recursive: true }); writeFileSync(join(root, f), body); }
+  const hPath = join(tmp, `${name}.json`);
+  runEngine('harvest/index.mjs', [root, '--out', hPath]);
+  runEngine('diagnose/index.mjs', [hPath, '--out', join(tmp, `${name}.html`), '--summary', join(tmp, `${name}-s.json`)]);
+  return { h: JSON.parse(readFileSync(hPath, 'utf8')), html: readFileSync(join(tmp, `${name}.html`), 'utf8') };
+}
+function redraw(name, from, change) {
+  const h = JSON.parse(readFileSync(join(tmp, `${from}.json`), 'utf8'));
+  change(h);
+  const hPath = join(tmp, `${name}.json`);
+  writeFileSync(hPath, JSON.stringify(h));
+  runEngine('diagnose/index.mjs', [hPath, '--out', join(tmp, `${name}.html`), '--summary', join(tmp, `${name}-s.json`)]);
+  return readFileSync(join(tmp, `${name}.html`), 'utf8');
+}
+const SHADCN_DEPS = '{"name":"app","private":true,"dependencies":{"react":"19.0.0","class-variance-authority":"0.7.0","@radix-ui/react-slot":"1.1.0"},"devDependencies":{"tailwindcss":"^4.1.0"}}';
+const DOOR = (name) => `export function ${name}({ className }: { className?: string }) { return <div data-slot="${name.toLowerCase()}" className={className} />; }\n`;
+const CATALOGUE10 = Object.fromEntries(['button', 'card', 'dialog', 'input', 'label', 'select', 'tabs', 'tooltip', 'badge', 'avatar']
+  .map((c) => [`components/ui/${c}.tsx`, DOOR(c[0].toUpperCase() + c.slice(1))]));
+const PALETTE_PAGE = (n) => `export default function Page() { return <main>${Array.from({ length: n }, (_, i) => `<p className="text-slate-${(i % 9 + 1) * 100} bg-white">x</p>`).join('')}</main>; }\n`;
+
+console.log('colour-use bar, drawn:');
+{
+  // Folder names that are HTML: every path the bar prints is escaped. A
+  // class named in a comment is not a use, so the receipt keeps 11.
+  const hostile = join(tmp, 'repo-hostile');
+  cpSync(join(FIXTURES, 'colouruse'), hostile, { recursive: true });
+  renameSync(join(hostile, 'apps/web/app/settings'), join(hostile, 'apps/web/app/q"<s>&a'));
+  renameSync(join(hostile, 'apps/web/modules'), join(hostile, 'apps/web/mo<b>d"&x'));
+  const cj = join(hostile, 'apps/web/components.json');
+  writeFileSync(cj, readFileSync(cj, 'utf8').replace('"modules/ui/globals.css"', '"mo<b>d\\"&x/ui/globals.css"'));
+  const pg = join(hostile, 'apps/web/app/page.tsx');
+  writeFileSync(pg, `${readFileSync(pg, 'utf8')}// once: text-brand bg-brand text-info\n/* and text-error */\n`);
+  const hp = join(tmp, 'hostile.json');
+  runEngine('harvest/index.mjs', [hostile, '--out', hp]);
+  runEngine('diagnose/index.mjs', [hp, '--out', join(tmp, 'hostile.html'), '--summary', join(tmp, 'hostile-s.json')]);
+  const page = readFileSync(join(tmp, 'hostile.html'), 'utf8');
+  page.includes('Its theme names 6 colours in apps/web/mo&lt;b&gt;d&quot;&amp;x/ui/globals.css; class names matching them appear 13 times across 5 files.')
+    ? ok('the receipt escapes its path and counts no class in a comment') : bad('hostile receipt', (page.match(/Its theme names[^<]*/) ?? ['missing'])[0]);
+  page.includes('most in apps/web/app/q&quot;&lt;s&gt;&amp;a/page.tsx"') && !page.includes('q"<s>') && !page.includes('mo<b>d')
+    ? ok('every tooltip escapes its path') : bad('hostile tooltips', 'a raw or missing path in the bar');
+
+  // workout-cool: a shadcn repo whose rule has no theme to read, while the
+  // off-theme colours tile counts its palette classes
+  const wc = scanTemp('nosheet', {
+    'package.json': SHADCN_DEPS,
+    'tsconfig.json': '{"compilerOptions":{"baseUrl":".","paths":{"@/*":["./*"]}}}',
+    'components.json': '{"style":"new-york","tailwind":{"config":"","css":"app/css/globals.css","cssVariables":true},"aliases":{"components":"@/components","ui":"@/components/ui"}}',
+    ...CATALOGUE10,
+    // one stylesheet with a colour of its own, and no theme the rule can read
+    'app/globals.css': '@import "tailwindcss";\n:root { --brand: #3355ff; }\n.note { color: #333333; }\n',
+    'app/page.tsx': PALETTE_PAGE(12),
+  });
+  const wcLine = (wc.html.match(/<p class="sub use-line">([^<]*)/) ?? [])[1] ?? '';
+  wc.h.profile.palette === null && (wc.h.profile.shadcn?.paint?.tin?.uses ?? 0) > 0
+    && wcLine.includes("The palette rule found no theme here it can check these classes against, so the bar keeps them as Tailwind's palette. The off-theme colours tile still counts palette classes as off-theme.")
+    && !wcLine.includes('none of them count as strays')
+    ? ok('where the tile counts palette classes, the bar never says none of them count') : bad('rule off, tile on', wcLine || JSON.stringify(wc.h.profile.palette));
+
+  // documenso and taxonomy: shadcn's rows in a stylesheet no config names
+  const dm = scanTemp('contractonly', {
+    'package.json': SHADCN_DEPS,
+    ...CATALOGUE10,
+    'styles/theme.css': ':root {\n  --background: 0 0% 100%;\n  --foreground: 222 47% 11%;\n  --primary: 222 47% 11%;\n  --primary-foreground: 210 40% 98%;\n  --muted: 210 40% 96%;\n  --muted-foreground: 215 16% 47%;\n  --border: 214 32% 91%;\n  --ring: 222 84% 5%;\n}\n.dark {\n  --background: 222 84% 5%;\n}\n',
+    'app/page.tsx': PALETTE_PAGE(12),
+  });
+  dm.html.includes('Repaint the ') && !dm.html.includes('Decide what the product paints from')
+    ? ok("shadcn's rows in an unconfigured stylesheet are a theme to repaint onto") : bad('contract-only move', (dm.html.match(/(Repaint|Decide|Map)[^<]{0,80}/) ?? ['no move'])[0]);
+
+  // a theme read through Sass variables keeps the bar sized by written values
+  const sass = scanTemp('sassy', {
+    'package.json': '{"name":"sassy","private":true,"dependencies":{"react":"19.0.0","sass":"1.77.0"}}',
+    'src/theme.scss': `$ink: #222222;\n$paper: #fafafa;\n${Array.from({ length: 12 }, (_, i) => `.c${i} { color: $ink; background: $paper; }`).join('\n')}\n`,
+    'src/app.tsx': 'export const App = () => <p style={{ color: "#333333" }}>x</p>;\n',
+  });
+  sass.html.includes('go through Sass variables, which this bar cannot follow yet, so it is sized by written values instead.')
+    && sass.html.includes('Sized by how often each value is written')
+    ? ok('a Sass-read theme keeps the written bar and says why') : bad('fallback sentence', (sass.html.match(/<p class="sub use-line">[^<]*/) ?? ['missing'])[0]);
+
+  // The receipt says nothing when its count is under half the bar's own
+  // class uses: it read the wrong names (onlook, supabase)
+  const quiet = redraw('fewuses', 'colouruse', (h) => { h.profile.shadcn.themeUses.uses = 2; });
+  !quiet.includes('Its theme names') ? ok('a receipt the bar would contradict is left out') : bad('receipt guard', (quiet.match(/Its theme names[^<]*/) ?? [''])[0]);
+
+  // The legend's "token" is a cell drawn with its colour: a bar of kit
+  // reads alone (Unleash), its tail included, has none
+  const kitOnly = redraw('kitonly', 'colouruse', (h) => {
+    const cu = h.colourUse;
+    cu.segments = cu.segments.map((x) => (x.state === 'token' ? { ...x, named: 'kit' } : x));
+    cu.rest.token = { count: 3, weight: 3, named: { count: 3, weight: 3 } };
+  });
+  !kitOnly.includes('<i class="lg lg-tok"></i> token') && kitOnly.includes('<i class="lg lg-named"></i> named, colour not shown')
+    ? ok('no "token" legend where every token cell is drawn without a swatch') : bad('legend split', (kitOnly.match(/<div class="legend">.{0,300}/) ?? [''])[0]);
+  // the same bar with swatched colours folded into its tail keeps "token"
+  const kitTail = redraw('kittail', 'kitonly', (h) => { h.colourUse.rest.token = { count: 3, weight: 3, named: { count: 1, weight: 1 } }; });
+  kitTail.includes('<i class="lg lg-tok"></i> token') ? ok('a tail holding swatched tokens keeps the "token" legend') : bad('legend tail', (kitTail.match(/<div class="legend">.{0,300}/) ?? [''])[0]);
 }
 
 // ---------- MCP: the five tools, snapshotted per fixture ----------

@@ -100,18 +100,21 @@ function themeFamilies(values) {
 
 /** How often the repo writes its own names as classes (bg-surface, text-brand),
  *  in markup or in a stylesheet's @apply line (nodejs.org styles through CSS
- *  modules: 521 uses in @apply, almost none in its components, 2026-09-16). */
-function countUses(root, codeFiles, styleFiles, own) {
+ *  modules: 521 uses in @apply, almost none in its components, 2026-09-16).
+ *  `clean(text, isStylesheet)`, when given, prepares each file's text first
+ *  (the shadcn receipt blanks comments); the Tailwind receipt passes none. */
+export function countUses(root, codeFiles, styleFiles, own, { clean = null } = {}) {
   if (!own.length) return { uses: 0, files: 0 };
   const re = new RegExp(`(?<![\\w-])(?:[\\w-]+:)*(?:bg|text|border|ring|outline|from|to|via|fill|stroke|divide|decoration|placeholder|caret|accent|shadow)-(?:${own.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\w-])`, 'g');
+  const text = (f, style) => (clean ? clean(read(join(root, f)), style) : read(join(root, f)));
   let uses = 0, files = 0;
   for (const f of codeFiles) {
     if (!/\.(tsx|jsx|ts|js|mjs|vue|svelte|astro|html)$/.test(f)) continue;
-    const n = (read(join(root, f)).match(re) ?? []).length;
+    const n = (text(f, false).match(re) ?? []).length;
     if (n) { uses += n; files += 1; }
   }
   for (const f of styleFiles ?? []) {
-    const applies = read(join(root, f)).match(/@apply[^;}]*/g) ?? [];
+    const applies = text(f, true).match(/@apply[^;}]*/g) ?? [];
     const n = applies.reduce((sum, a) => sum + (a.match(re) ?? []).length, 0);
     if (n) { uses += n; files += 1; }
   }

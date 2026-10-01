@@ -1,0 +1,142 @@
+{
+  "repo": "colouruse",
+  "schemaVersion": 1,
+  "benchmark": {
+    "builtAt": "2026-09-25T20:59:26.746Z",
+    "repoCount": 34,
+    "referenceSystems": 10,
+    "slice": {
+      "kind": "shadcn",
+      "repoCount": 16,
+      "builtAt": "2026-09-25T20:59:45.044Z"
+    }
+  },
+  "score": 88,
+  "noSystemLikely": false,
+  "verdict": "No agent rules file, so your AI agent has nothing to follow.",
+  "role": "product",
+  "kind": "shadcn",
+  "shadcn": {
+    "confidence": "medium",
+    "evidence": [
+      "components.json in apps/web, 1 catalogue component in apps/web/modules/ui/components",
+      "components.json in packages/survey-ui, 0 catalogue components in packages/survey-ui/src/components",
+      "6 of shadcn's 10 theme variables defined",
+      "style new-york, base colour slate, Tailwind 4"
+    ],
+    "style": "new-york",
+    "baseColor": "slate",
+    "tailwind": "4",
+    "catalogues": [
+      "apps/web/modules/ui/components",
+      "packages/survey-ui/src/components"
+    ],
+    "registries": [],
+    "ownFiles": 4,
+    "fresh": false
+  },
+  "componentsMeasured": true,
+  "metrics": {
+    "colors": 18,
+    "colorTokens": 18,
+    "colorStrays": 0,
+    "greys": 8,
+    "greyStrays": 0,
+    "spacing": 0,
+    "exactDuplicates": 0,
+    "inlineStyles": 2,
+    "nearPairs": 0,
+    "important": 0,
+    "neverImported": 0,
+    "arbitrary": 0,
+    "tokenLed": true
+  },
+  "tiles": [
+    {
+      "metric": "colors",
+      "label": "distinct colours",
+      "value": 18,
+      "display": "18",
+      "health": "good"
+    },
+    {
+      "metric": "greys",
+      "label": "shades of grey",
+      "value": 8,
+      "display": "8",
+      "health": "good"
+    },
+    {
+      "metric": "spacing",
+      "label": "off-scale spacing values",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "exactDuplicates",
+      "label": "duplicated components",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "inlineStyles",
+      "label": "inline style blocks",
+      "value": 2,
+      "display": "2",
+      "health": "warn"
+    },
+    {
+      "metric": "nearPairs",
+      "label": "near-identical colour pairs",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "important",
+      "label": "!important declarations",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "neverImported",
+      "label": "components never imported",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "arbitrary",
+      "label": "arbitrary bracket values",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    },
+    {
+      "metric": "paintTin",
+      "label": "off-theme colours per 100 files",
+      "value": 400,
+      "display": "400",
+      "health": "bad"
+    },
+    {
+      "metric": "doorOverrides",
+      "label": "components recoloured from outside per 100 files",
+      "value": 0,
+      "display": "0",
+      "health": "good"
+    }
+  ],
+  "moves": [
+    {
+      "title": "Map the palette onto the theme you already have",
+      "sub": "text-slate-500 appears 7 times, and page.tsx alone carries 8 palette classes. apps/web/modules/ui/globals.css already names 6 colours of its own, from brand, primary and info to error, but not the greys that classes like text-slate-500 stand in for: no muted-foreground, border or background. Add those greys to the theme once, then repaint file by file. Swapping text-slate-500 for text-muted-foreground before that leaves the text with no colour.",
+      "delta": 8,
+      "prompt": "You are fixing one design-system finding in the colouruse repository, measured by roast-my-design-system.\n\nThe finding: Map the palette onto the theme you already have\n\nThe detail: text-slate-500 appears 7 times, and page.tsx alone carries 8 palette classes. apps/web/modules/ui/globals.css already names 6 colours of its own, from brand, primary and info to error, but not the greys that classes like text-slate-500 stand in for: no muted-foreground, border or background. Add those greys to the theme once, then repaint file by file. Swapping text-slate-500 for text-muted-foreground before that leaves the text with no colour.\n\nExpected payoff on the report's 0-100 score: about +8 points once all of them are done; fixing one file at a time lowers the count first and the score follows.\n\nHow to fix it, calmly and with respect for intent:\n- A value used many times is a decision without a name, not a mistake. Name it and consolidate; never blind-delete.\n- Small pixel nudges and one-off layout widths can be deliberate craft. Keep the deliberate exceptions; round the accidents to a neighbouring step.\n- Prefer the tokens, scale steps and canonical components this repository already has over inventing new ones.\n- Keep every change mechanical and reviewable. No redesigns, no drive-by refactors, no renamed files unless the finding asks for it.\n- A gradient, an illustration or a status colour keeps its colour. Add a variable for it rather than swapping it to a grey; the swap is for text, borders and surfaces.\n- A colour that identifies someone else's service stays where it is: an integration's brand colour, a provider's badge, a logo. Tokenise the colours your own interface uses.\n\nWork through the files named in the finding. When you are done, re-run the scan to verify the payoff:\n\nnpx roast-my-design-system@latest"
+    }
+  ],
+  "packages": []
+}

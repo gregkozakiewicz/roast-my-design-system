@@ -36,6 +36,8 @@ import { ownSpacing, profileOf, installedOf, splitArbitrary, installedByOwner } 
 import { KITS } from '../profiles/kit-common.mjs';
 import { rulesOn as lintRulesOn, describeRule as lintDescribe, entryMatcher as lintMatcher, RULE_TILE as LINT_TILE } from '../profiles/shadcn-lint.mjs';
 import { publishesLine } from '../profiles/registry.mjs';
+import { CONTRACT_MIN } from '../lib/palette.mjs';
+import { GREY_HUE_RE } from '../harvest/paint.mjs';
 
 // The benchmark and every judgement made against it live in score.mjs; this
 // file only draws. The same numbers reach summary.json through scoreHarvest.
@@ -538,16 +540,7 @@ function paletteSection() {
   const strays = colors.length - tokens;
   const tokenPct = Math.round((tokens / colors.length) * 100);
 
-  // Usage-weighted colour bar: every colour, width proportional to use.
-  // Beyond 60 segments the bar turns to noise; fold the tail into one cell.
-  const sorted = [...colors].sort((a, b) => b.count - a.count);
-  const shown = sorted.slice(0, 60);
-  const rest = sorted.slice(60);
-  const cells = shown.map((c) => {
-    const src = c.files?.[0] ? ` in ${c.files[0].file}` : '';
-    return `<div class="uc${c.isToken ? '' : ' stray'}" style="background:${swatch(c.value)};flex-grow:${Math.max(c.count, 1)}" title="${esc(c.value)} ×${c.count}${esc(src)}">${c.isToken ? '' : '<i></i>'}</div>`;
-  }).join('');
-  const restCell = rest.length ? `<div class="uc uc-rest" style="flex-grow:${Math.max(rest.reduce((s, c) => s + c.count, 0), 1)}" title="${rest.length} more colours">+${rest.length}</div>` : '';
+  const usage = colourUsage();
 
   const rampFor = (list) => `
     <div class="grey-strip">${list.map((c) => `<div class="grey-cell" style="background:${swatch(c.value)}" title="${esc(c.value)} ×${c.count}"></div>`).join('')}</div>
@@ -573,10 +566,11 @@ function paletteSection() {
   </div>
   <div class="glass pal-usage">
     <div class="pal-usage-head">
-      <div>${eyebrow('Colour usage')}<div class="h3d">Sized by how often each is used</div></div>
-      <div class="legend"><span><i class="lg lg-tok"></i> token</span><span><i class="lg lg-stray"></i> stray</span></div>
+      <div>${eyebrow('Colour usage')}<div class="h3d">${usage.subtitle}</div></div>
+      <div class="legend">${usage.legend}</div>
     </div>
-    <div class="usage-bar">${cells}${restCell}</div>
+    <div class="usage-bar">${usage.cells}</div>
+    ${usage.line}
     ${ramp}
     ${nearPairs.length ? `
     <div class="receipts">${eyebrow(`${nearPairs.length} nearly identical pair${nearPairs.length === 1 ? '' : 's'} · each pair is 1 colour recorded twice`)}
@@ -584,6 +578,137 @@ function paletteSection() {
     ${whyToggle('nearPairs')}</div>` : ''}
   </div>
 </section>`;
+}
+
+// The Colour usage bar. Since 9.7.0 it is sized by USE (harvest/coloruse.mjs):
+// a theme class, a var() read or a read of the kit's theme joins its colour's
+// segment, a Tailwind palette class is a palette cell or a stray as the one
+// palette rule says, and a definition is not a use. Until then it was sized by
+// literal writes, the theme's own definitions included, so bg-primary on every
+// button drew primary as one of the thinnest segments. Where the repo reads
+// its theme mostly through code the pass cannot follow, and for a harvest
+// written before 9.7.0, the bar stays sized by written values and says so.
+// Beyond 60 segments the bar turns to noise; the tail folds into one cell
+// per state, so the visible proportions stay true.
+function colourUsage() {
+  const use = h.colourUse ?? null;
+  const written = () => {
+    const sorted = [...colors].sort((a, b) => b.count - a.count);
+    const shown = sorted.slice(0, 60);
+    const rest = sorted.slice(60);
+    const cells = shown.map((c) => {
+      const src = c.files?.[0] ? ` in ${c.files[0].file}` : '';
+      return `<div class="uc${c.isToken ? '' : ' stray'}" style="background:${swatch(c.value)};flex-grow:${Math.max(c.count, 1)}" title="${esc(c.value)} ×${c.count}${esc(src)}">${c.isToken ? '' : '<i></i>'}</div>`;
+    }).join('');
+    const restCell = rest.length ? `<div class="uc uc-rest" style="flex-grow:${Math.max(rest.reduce((s, c) => s + c.count, 0), 1)}" title="${rest.length} more colours">+${rest.length}</div>` : '';
+    return { cells: cells + restCell, subtitle: 'Sized by how often each value is written',
+      legend: '<span><i class="lg lg-tok"></i> token</span><span><i class="lg lg-stray"></i> stray</span>' };
+  };
+  if (!use || !use.totals?.total) return { ...written(), line: '' };
+  if (use.fallback) {
+    const pct = Math.round(use.fallback.share * 100);
+    const words = { sass: 'Sass variables', less: 'Less variables', 'js-theme': 'JavaScript theme objects' };
+    const what = listWords(use.fallback.why.map((w) => words[w]).filter(Boolean));
+    return { ...written(), line: `<p class="sub use-line">Of every 100 colour uses here, ${pct} go through ${what}, which this bar cannot follow yet, so it is sized by written values instead.</p>` };
+  }
+
+  const kitName = P.kit?.name ?? 'kit';
+  // a dark: override on a theme whose configured sheet sets dark values
+  const darkRows = (P.shadcn?.sheet?.darkRows ?? 0) > 0;
+  const how = (c) => listWords([c.classes ? `${n(c.classes)} as classes` : '', c.vars ? `${n(c.vars)} through var()` : '', c.kit ? `${n(c.kit)} through the ${kitName} theme` : ''].filter(Boolean));
+  const label = (c) => {
+    if (c.named === 'kit') return `${c.names[0]} ×${n(c.weight)}, read by name from the ${kitName} theme`;
+    if (c.named === 'outside') return `${c.names[0]} ×${n(c.weight)}, read by name; its value is not a colour this scan can read`;
+    if (c.state === 'token') return `${c.value}${c.names.length ? ` (${c.names.join(', ')})` : ''} ×${n(c.weight)}: ${how(c)}`;
+    if (c.state === 'palette') return `${c.names[0]} ×${n(c.weight)} as Tailwind palette classes`;
+    if (c.written) return `${c.value} ×${n(c.weight)} written by hand${c.names.length ? `; the theme names it ${c.names[0]}` : c.token ? '; a token already holds this value' : ''}`;
+    if (c.dark) return `${c.names[0]} ×${n(c.weight)} as dark: overrides written by hand${darkRows ? ', where the theme already sets its own dark-mode colours' : ''}`;
+    return `${c.names[0]} ×${n(c.weight)} as palette classes where the theme names its own colours`;
+  };
+  const MARK = { token: '', palette: ' pal', stray: ' stray' };
+  const cells = use.segments.map((c) => {
+    const src = c.file ? ` · most in ${c.file}` : '';
+    const bg = c.named ? '' : `background:${swatch(c.value)};`;
+    return `<div class="uc${MARK[c.state]}${c.named ? ' named' : ''}" style="${bg}flex-grow:${Math.max(c.weight, 1)}" title="${esc(label(c))}${esc(src)}">${c.state === 'token' ? '' : '<i></i>'}</div>`;
+  }).join('');
+  const REST = { token: 'reached by name', palette: 'as Tailwind palette classes', stray: 'as strays' };
+  const rest = ['token', 'palette', 'stray'].filter((k) => use.rest[k].count)
+    .map((k) => `<div class="uc uc-rest${MARK[k]}" style="flex-grow:${Math.max(use.rest[k].weight, 1)}" title="${n(use.rest[k].count)} more colours ${REST[k]}, ${n(use.rest[k].weight)} uses">+${n(use.rest[k].count)}${k === 'token' ? '' : '<i></i>'}</div>`).join('');
+
+  // A legend entry for each kind of cell the bar holds. "token" is a colour
+  // drawn with its swatch, here or folded into the "+N" tail; a bar whose
+  // token cells and tail are all names with no colour shown has none
+  // (Unleash: every cell an MUI read). The dotted "named" entry stands for
+  // the dotted cells drawn.
+  const has = (state) => use.segments.some((c) => c.state === state) || use.rest[state].count > 0;
+  const restSwatched = use.rest.token.count - (use.rest.token.named?.count ?? 0);
+  const swatched = use.segments.some((c) => c.state === 'token' && !c.named) || restSwatched > 0;
+  const named = use.segments.some((c) => c.state === 'token' && c.named);
+  const legend = [
+    swatched ? '<span><i class="lg lg-tok"></i> token</span>' : '',
+    named ? '<span><i class="lg lg-named"></i> named, colour not shown</span>' : '',
+    has('palette') ? '<span><i class="lg lg-pal"></i> Tailwind palette</span>' : '',
+    has('stray') ? '<span><i class="lg lg-stray"></i> stray</span>' : '',
+  ].join('');
+
+  // Of every 100 uses: three shares that add up to 100 (largest remainder)
+  const raw = [use.share.token, use.share.palette, use.share.stray].map((x) => x * 100);
+  const [t, p, st] = (() => {
+    const out = raw.map(Math.floor);
+    const order = raw.map((x, i) => [x - Math.floor(x), i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
+    const short = 100 - out.reduce((a, b) => a + b, 0);
+    for (let k = 0; k < short; k++) out[order[k][1]] += 1;
+    return out;
+  })();
+  const T = use.totals;
+  const strayWhat = T.written && T.paletteStray
+    ? (st === 1 ? 'a value written by hand or a palette class where the theme names its own colours' : 'values written by hand, or palette classes where the theme names its own colours')
+    : T.written ? (st === 1 ? 'a value written by hand' : 'values written by hand')
+      : (st === 1 ? 'a palette class where the theme names its own colours' : 'palette classes where the theme names its own colours');
+  const parts = [
+    t ? `${t} reach${t === 1 ? 'es' : ''} the colour by name through the theme` : '',
+    p ? `${p} use${p === 1 ? 's' : ''} Tailwind's own palette` : '',
+    st ? `${st} ${st === 1 ? 'is a stray' : 'are strays'}: ${strayWhat}` : '',
+  ].filter(Boolean);
+  const sentences = [`Of every 100 colour uses, ${listWords(parts)}.`];
+  // why the palette cells are not strays, in the one rule's terms
+  if (p) {
+    const w = use.paletteWhy ?? {};
+    if (!P.palette && (w.off ?? 0) > 0) {
+      sentences.push(ds.kind === 'shadcn' && ds.cssVariables === false
+        ? "shadcn is set up without CSS variables here, so Tailwind's palette is the theme."
+        // a shadcn repo with no theme the rule can read still has its
+        // palette classes counted by the off-theme colours tile (workout-cool)
+        : P.isShadcn && (P.shadcn?.paint?.tin?.uses ?? 0) > 0
+          ? "The palette rule found no theme here it can check these classes against, so the bar keeps them as Tailwind's palette. The off-theme colours tile still counts palette classes as off-theme."
+          : 'The report does not check palette classes against a theme here, so none of them count as strays.');
+    }
+    const fam = P.palette?.families ?? null;
+    // white and black apart, and which dark: overrides are strays on the bar
+    const wb = [(w.white ?? 0) > 0 ? 'white' : '', (w.black ?? 0) > 0 ? 'black' : ''].filter(Boolean);
+    const left = [
+      // the rule flags dark: backgrounds, text and borders; every other
+      // dark: white or black (dark:via-white, dark:ring-white) stays plain
+      wb.length ? `plain ${listWords(wb)}${T.paletteStrayDark ? ', apart from dark: backgrounds, text and borders' : ''}` : '',
+      w.family && fam ? (!fam.grey ? 'greys (the theme names no grey)' : 'colours other than grey (the theme names only greys)') : '',
+      w.apply ? '@apply lines in stylesheets' : '',
+      w.sides ? `side borders and ring offsets${w.sidesTop ? ` such as ${w.sidesTop}` : ''}` : '',
+      w.installed ? "shadcn's own components" : '',
+    ].filter(Boolean);
+    // semicolons: "plain white and black" carries its own "and"
+    if (P.palette && left.length) sentences.push(`Palette classes left out of the strays: ${left.join('; ')}.`);
+  }
+  if (use.scope === 'installed') sentences.push("Your own code uses colour fewer than 20 times so far, so shadcn's installed components are counted too.");
+  else if (P.isShadcn && use.doorFiles) sentences.push("shadcn's own components are left out, as in the score.");
+  return {
+    cells: cells + rest, legend,
+    subtitle: 'Sized by how often the code uses each colour',
+    line: `<p class="sub use-line">${esc(sentences.join(' '))}</p>`,
+  };
+}
+// "a", "a and b", "a, b and c"
+function listWords(xs) {
+  return xs.length <= 1 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`;
 }
 
 // Agent traps: findings that do not just sit there but multiply, because an
@@ -1189,12 +1314,42 @@ function whereToStartSection() {
     const pt = P.shadcn.paint;
     if (pt.tin.uses >= 10) {
       const s0 = pt.tin.samples[0], f0 = productFirst(pt.tin.top)[0];
-      // The swap only works when the theme file holds the variables. A
-      // product whose sheet defines none of them (formbricks: brand rows
-      // only, slate as the palette) needs a decision first, not a prompt:
-      // swapping classes there leaves text with no colour.
-      const sheetHasRows = (P.shadcn?.sheet?.shadcnPresent ?? 0) >= 5 || P.shadcn?.kit?.cssVariables === false;
-      c.push(sheetHasRows
+      // The swap only works when the theme holds the variables. Which first
+      // move fits depends on where the theme lives (9.7.0). Until then the
+      // gate read the configured sheet alone, and sent documenso and
+      // taxonomy (shadcn's rows in a stylesheet no config names) and
+      // formbricks (a v4 theme of its own, written straight into @theme) to
+      // "Decide what the product paints from", telling the first two their
+      // theme defined none of shadcn's colour variables.
+      //   - a configured sheet holding shadcn's rows, or utility-class mode: repaint
+      //   - a configured sheet that is a theme of the repo's own (3 names or
+      //     more) lacking shadcn's greys: map the palette onto it first
+      //   - no configured sheet, but shadcn's rows in a stylesheet: repaint
+      //   - otherwise the palette is the system today: decide first
+      const sc = P.shadcn ?? {};
+      const tr = sc.themeRead ?? null;
+      const missing = tr ? ['muted-foreground', 'border', 'background', 'foreground'].filter((r) => !tr.names.includes(r)) : [];
+      const gate = sc.kit?.cssVariables === false ? 'repaint'
+        : sc.sheet?.found
+          ? ((sc.sheet.shadcnPresent ?? 0) >= CONTRACT_MIN ? 'repaint'
+            : tr && tr.file === sc.sheet.file && tr.count >= 3 ? (missing.length ? 'map' : 'repaint') : 'decide')
+          : (sc.contract?.rows ?? 0) >= CONTRACT_MIN ? 'repaint' : 'decide';
+      // a palette grey among the samples (white and black are not greys here)
+      const isGreyClass = (v) => GREY_HUE_RE.test(v) && !/-(?:white|black)(?:\/|$)/.test(v);
+      const grey = (pt.tin.samples ?? []).map((x) => x.value).find(isGreyClass) ?? null;
+      const textGrey = (pt.tin.samples ?? []).map((x) => x.value.replace(/^(?:[\w-]+:)*/, '').replace(/\/\d+$/, '')).find((v) => /^text-/.test(v) && isGreyClass(v)) ?? 'text-slate-500';
+      // a theme's names, one per family (brand, not brand-light and brand-dark),
+      // in the theme's own order
+      const families = tr ? [...tr.names.reduce((m, nm) => { const k = nm.split('-')[0]; if (!m.has(k) || nm.length < m.get(k).length) m.set(k, nm); return m; }, new Map()).values()] : [];
+      const themeNames = !tr ? ''
+        : tr.count <= 4 ? `${n(tr.count)} colours of its own (${listWords(tr.names)})`
+          : families.length >= 4 ? `${n(tr.count)} colours of its own, from ${listWords(families.slice(0, 3))} to ${families.at(-1)}`
+            : `${n(tr.count)} colours of its own, among them ${listWords(families)}`;
+      const orWords = (xs) => (xs.length <= 1 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} or ${xs.at(-1)}`);
+      if (gate === 'map') c.push({ score: 20 + pt.tin.per100 / 4, metric: 'paintTin', after: 0,
+        title: `Map the palette onto the theme you already have`,
+        sub: `${esc(s0.value)} appears ${s0.count} times${f0 ? `, and ${esc(basename(f0.file))} alone carries ${f0.count} palette classes` : ''}. ${esc(tr.file)} already names ${esc(themeNames)}, ${grey ? `but not the greys that classes like ${esc(grey)} stand in for` : "but none of shadcn's names for text, borders and surfaces"}: no ${orWords(missing.slice(0, 3))}. Add ${grey ? 'those greys' : 'them'} to the theme once, then repaint file by file.${missing.includes('muted-foreground') ? ` Swapping <code>${esc(textGrey)}</code> for <code>text-muted-foreground</code> before that leaves the text with no colour.` : ''}` });
+      else c.push(gate === 'repaint'
         ? { score: 20 + pt.tin.per100 / 4, metric: 'paintTin', after: 0,
           title: `Repaint the ${n(pt.tin.uses)} colours from outside the theme`,
           sub: `${esc(s0.value)} appears ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. The theme file already has a variable for each (a grey is <code>text-muted-foreground</code>, a status colour is a Badge variant or a variable you add). Swap the class, not the value.` }
@@ -1495,9 +1650,24 @@ function shadcnReceipt() {
     const counted = (r.counted?.code ?? 0) === 0 && r.themes?.total
       ? `<b>It publishes no code, so the themes check is the score</b>: the ${n(kept)} files of the app that makes them are not counted.`
       : `<b>Only what it publishes is counted</b>: ${n(r.counted?.code ?? 0)} code file${(r.counted?.code ?? 0) === 1 ? '' : 's'}${kept ? `, with ${n(kept)} more kept out as its site, demos and examples` : ''}.`;
-    return `<div class="excl fresh">Read as a shadcn registry: ${what}${r.variants.length ? `, the same components kept in ${r.variants.length} variants` : ''}. ${counted}${th}</div><div class="excl">Evidence: ${receipt}</div>`;
+    return `<div class="excl fresh">Read as a shadcn registry: ${what}${r.variants.length ? `, the same components kept in ${r.variants.length} variants` : ''}. ${counted}${th}</div><div class="excl">Evidence: ${receipt}</div>${themeUsesLine()}`;
   }
-  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${receipt}</div>`;
+  return `<div class="excl">Read as a shadcn install (${esc(P.confidence ?? 'medium')} confidence): ${receipt}</div>${themeUsesLine()}`;
+}
+// The theme's names, and how often class names matching them appear across
+// the repo, by the Tailwind receipt's counter with comments blanked (shadcn's
+// own components included, as there) (9.7.0). A count under half the bar's
+// own class uses means the receipt read the wrong names: onlook's @theme
+// holds only its 8 sidebar names (49 uses, the bar counts 1,926), and
+// supabase's reader took a comment saying "@theme inline block" for the
+// theme (551 against 5,869). Said nothing rather than something the bar
+// beside it contradicts.
+function themeUsesLine() {
+  const u = P.shadcn?.themeUses ?? null;
+  if (!u?.uses) return '';
+  if (h.colourUse?.totals && u.uses * 2 < h.colourUse.totals.classes) return '';
+  const N = u.names.length;
+  return `<div class="excl">Its theme names ${n(N)} colour${N === 1 ? '' : 's'} in ${esc(u.file)}; class names matching them appear ${n(u.uses)} time${u.uses === 1 ? '' : 's'} across ${n(u.usedIn)} file${u.usedIn === 1 ? '' : 's'}.</div>`;
 }
 
 // A Tailwind repo with its own theme: what the vocabulary is, how much of
@@ -1965,6 +2135,7 @@ ${ogTags()}
 
   /* palette */
   .palette-grid { display:grid; grid-template-columns:1fr 1.6fr; gap:16px; }
+  .palette-grid > * { min-width:0; }
   @media (max-width:860px) { .palette-grid { grid-template-columns:1fr; } }
   .pal-hero { position:relative; overflow:hidden; padding:26px 28px; }
   .pal-hero .b1 { right:-40px; top:-40px; width:160px; height:160px; background:var(--blob); filter:blur(32px); }
@@ -1984,8 +2155,13 @@ ${ogTags()}
   .lg-tok { background:var(--text); } .lg-stray { background:var(--coral); }
   .usage-bar { display:flex; height:96px; gap:2px; margin-top:18px; border-radius:16px; overflow:hidden; }
   .uc { position:relative; min-width:3px; box-shadow:0 0 0 1px var(--cell-ring) inset; }
+  .usage-bar .uc { min-width:2px; }
   .uc:first-child { border-radius:16px 0 0 16px; } .uc:last-child { border-radius:0 16px 16px 0; }
-  .uc.stray i { position:absolute; top:4px; right:4px; width:6px; height:6px; border-radius:99px; background:var(--coral); box-shadow:0 0 0 2px var(--card-solid); }
+  .uc.stray i, .uc.pal i { position:absolute; top:4px; right:4px; width:6px; height:6px; border-radius:99px; background:var(--coral); box-shadow:0 0 0 2px var(--card-solid); }
+  .uc.pal i { background:var(--dim); }
+  .uc.named { background:radial-gradient(var(--dim2) 1.2px, transparent 1.8px) 0 0/7px 7px, var(--deep); }
+  .lg-pal { background:var(--dim); } .lg-named { background:radial-gradient(var(--dim) 1px, transparent 1.4px) 0 0/4px 4px, var(--deep); }
+  .use-line { margin-top:12px; }
   .uc-rest { background:repeating-linear-gradient(45deg,var(--deep),var(--deep) 4px,var(--card-solid) 4px,var(--card-solid) 8px);
     display:flex; align-items:center; justify-content:center; font:600 10px var(--mono); color:var(--dim); }
   .ramp-head { margin-top:26px; }

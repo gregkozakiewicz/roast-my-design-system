@@ -25,6 +25,9 @@ export const MANTINE = {
   pxMin: 10,
   themeRe: /\b(?:createTheme|mergeMantineTheme)\s*\(|<MantineProvider[^>]*\btheme=\{|:\s*MantineThemeOverride\b/,
   themeImportRe: /from\s*['"]@mantine\/core['"]/,
+  // the colour reads alone, each matched whole so the report's colour-use bar
+  // can name it (harvest/coloruse.mjs); inherit and transparent are not colours
+  colourRefRe: /var\(--mantine-color-[\w-]+|\btheme\.colors\.\w+(?:\[\d\])?|(?<![\w-])(?:c|color|bg)=["'](?!(?:inherit|transparent|current|currentColor|none)["'])(?:dimmed|bright|[a-z]+(?:\.\d)?)["']/g,
   refRe: /var\(--mantine-(?:color|spacing|radius|font-size|shadow)-|theme\.colors\.|theme\.spacing\.|theme\.radius\.|theme\.other\.|(?<![\w-])(?:c|color|bg)=["'](?:dimmed|bright|[a-z]+(?:\.\d)?)["']|(?<![\w-])(?:p|m|px|py|pt|pb|pl|pr|mx|my|mt|mb|ml|mr|gap)=["'](?:xs|sm|md|lg|xl)["']/g,
   // p={10} and rem(10) in a spacing key are pixels in Mantine
   pxPropRes: [

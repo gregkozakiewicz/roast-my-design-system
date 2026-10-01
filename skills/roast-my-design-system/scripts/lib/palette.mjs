@@ -86,9 +86,6 @@ export function paletteFindings(text, palette, { file = null, css = null } = {})
   if (!palette || !text) return [];
   if (css ?? (file ? CSS_FILE_RE.test(file) : false)) return [];
   if (file && (DEMO_PATH_RE.test(file) || doorFile(palette.doors, file))) return [];
-  const retuned = new Set(palette.retuned ?? []);
-  const fam = palette.families ?? null;
-  const hasFamily = (cls) => !fam || (GREY_HUE_RE.test(cls) ? fam.grey : fam.colour);
   const themeFile = palette.file ?? 'the theme sheet';
   // the example name follows the utility: a text- class wants an ink or
   // foreground name, a bg- class a surface or background name
@@ -97,18 +94,11 @@ export function paletteFindings(text, palette, { file = null, css = null } = {})
   const values = palette.values ?? {};
   // a class named in a comment paints nothing; blanked, not cut, so the
   // indexes still point at their line
-  const code = blankComments(text);
-  const hits = [...code.matchAll(PALETTE_CLASS_RE)];
-  // the evening override painted by hand (dark:bg-black) is the same sin on a
-  // shadcn sheet, which always has a dark row of its own
-  if (palette.source === 'shadcn') hits.push(...code.matchAll(DARK_WB_RE));
   const out = [];
-  for (const m of hits.sort((a, b) => a.index - b.index)) {
+  for (const m of driftClasses(blankComments(text), palette)) {
     const cls = m[0];
     const util = cls.replace(/^((?:[\w-]+:)*[a-z]+)-.*$/, '$1');
     const shade = cls.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, '');
-    if (retuned.has(shade)) continue;
-    if (!hasFamily(cls)) continue;
     const role = utilRole(util);
     // the theme colour nearest by value among the names that suit the
     // utility; the pick by name alone only when none is close
@@ -124,6 +114,33 @@ export function paletteFindings(text, palette, { file = null, css = null } = {})
     });
   }
   return out;
+}
+
+/**
+ * The palette classes in already comment-blanked code that the rule calls
+ * drift, as regex matches in text order: the one filter paletteFindings words
+ * and the report's colour-use bar (harvest/coloruse.mjs) reads, so the bar
+ * calls a class a stray exactly where the live checks do. A palette name the
+ * theme gave its own colour is the theme, and a palette grey is only drift
+ * where the theme has a grey (families). The caller leaves out stylesheets,
+ * demo folders and kit doors, as paletteFindings does. `paletteHits`, when
+ * given, is PALETTE_CLASS_RE's own matches over `code`.
+ * @returns RegExpMatchArray[]
+ */
+export function driftClasses(code, palette, paletteHits = null) {
+  if (!palette || !code) return [];
+  const retuned = new Set(palette.retuned ?? []);
+  const fam = palette.families ?? null;
+  const hasFamily = (cls) => !fam || (GREY_HUE_RE.test(cls) ? fam.grey : fam.colour);
+  // a caller that already ran PALETTE_CLASS_RE over `code` hands its matches in
+  const hits = paletteHits ? [...paletteHits] : [...code.matchAll(PALETTE_CLASS_RE)];
+  // the evening override painted by hand (dark:bg-black) is the same sin on a
+  // shadcn sheet, which always has a dark row of its own
+  if (palette.source === 'shadcn') hits.push(...code.matchAll(DARK_WB_RE));
+  return hits.sort((a, b) => a.index - b.index).filter((m) => {
+    const shade = m[0].replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, '');
+    return !retuned.has(shade) && hasFamily(m[0]);
+  });
 }
 
 /**

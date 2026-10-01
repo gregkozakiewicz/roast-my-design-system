@@ -62,7 +62,7 @@ export const PROFILES = [mui, mantine, chakra, antd, shadcn, tailwind, library, 
 // under 30, supabase at 312).
 const PRODUCT_PAGES = 60;
 
-export function decideProfile(profile, components, files, root = null) {
+export function decideProfile(profile, components, files, root = null, { themeRead = false } = {}) {
   const reusable = components.filter((c) => !c.isPage);
   const counts = {
     reusable: reusable.length,
@@ -89,13 +89,26 @@ export function decideProfile(profile, components, files, root = null) {
   // theme, shadcn's sheet when its contract holds, the repo's own theme
   // under a shadcn kit with no rows, or nothing. The report's tile keeps
   // its own gates (harvest/index.mjs) and no score reads this.
-  profile.palette = decidePalette(profile, profileOf(profile), () => readTailwindTheme({ ...profile }, ctx)?.facts ?? null);
+  // The repo's own v4 theme, read at most once: the palette rule, the
+  // utility-mode rules and the report's receipt all read the same answer.
+  let ownTheme;
+  const readOwnTheme = () => (ownTheme === undefined ? (ownTheme = readTailwindTheme({ ...profile }, ctx)?.facts ?? null) : ownTheme);
+  profile.palette = decidePalette(profile, profileOf(profile), readOwnTheme);
   // shadcn in utility-class mode (components.json: cssVariables false) paints
   // with Tailwind classes by design. A theme of the repo's own beside it
   // (rybbit retunes the whole neutral scale) is what the rules file points
   // the agent at. Kept as facts: no score and no check reads it (9.5.0).
   if (profile.shadcn && profile.designSystem?.cssVariables === false) {
-    profile.shadcn.ownTheme = readTailwindTheme({ ...profile }, ctx)?.facts ?? null;
+    profile.shadcn.ownTheme = readOwnTheme();
+  }
+  // The theme a shadcn repo names its colours in, for the report alone (the
+  // receipt's "used as classes" sentence and the first move's words). Only
+  // the harvest asks for it: the live checks and the guard decide the
+  // profile too, and must not pay for a read of every file. How often its
+  // names are used is counted in the harvest, in the theme's own package.
+  if (themeRead && profile.shadcn) {
+    const t = readOwnTheme();
+    profile.shadcn.themeRead = t ? { file: t.file, names: t.names, values: t.values, families: t.families, count: t.names.length } : null;
   }
   // A shadcn repo that PUBLISHES a registry is a registry: the fourth kind.
   // Every count still reads the shadcn facts (release (a): zero score change);

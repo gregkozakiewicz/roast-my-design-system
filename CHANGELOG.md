@@ -49,6 +49,35 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   theirs. Neither list is scored, as before.
 - Spacing values in installed shadcn code are set aside exactly, as
   bracket values have been since 9.3.3. No report number moves.
+- **The colour bar counts how often each colour is used.** The Colour
+  usage bar was sized by how often each value is written, the theme's own
+  definitions included, so the colour a repo uses most (`bg-primary` on
+  every button) was drawn as one of its thinnest segments. It now counts
+  uses: a theme class, a `var()` read and a read of the kit's theme count
+  towards their colour, and a definition is not a use. Each use is drawn in
+  one of three states: reached by name through the theme, a Tailwind
+  palette class, or a stray. A palette class is a stray only where the
+  live checks and the guard already flag it, so plain white and black, and
+  greys where the theme names no grey, are not strays. A token's value
+  written by hand is a stray, as the live checks have said since 9.1.3.
+  shadcn's own components and demo folders are left out, as in the score.
+  Classes are counted only where the repo uses Tailwind, so Bootstrap's
+  `text-white` is not drawn as Tailwind's palette.
+  A sentence under the bar gives the three shares: dub 15 by name, 84
+  Tailwind palette and 1 stray; formbricks 9, 11 and 80; vercel-ai-chatbot
+  80, 6 and 14. On 19 of 204 repos a fifth or more of colour uses go
+  through Sass or Less variables or a JavaScript theme object, which the
+  bar cannot follow yet, so there it stays sized by written values and
+  says why.
+  The shadcn receipt now also says how often class names matching the
+  theme's colours appear, leaving out class names in comments. It is left
+  out where that count is under half the theme classes the bar counts,
+  which means the theme was read wrongly (onlook, supabase). documenso and taxonomy keep shadcn's colour
+  variables in a stylesheet no config names, and were told their theme
+  defined none; their colour fix now reads "Repaint the colours from
+  outside the theme". formbricks keeps 37 colours of its own but none of
+  shadcn's greys; its first fix is now "Map the palette onto the theme you
+  already have". No score moves.
 - Measured on 204 repos: only nhost's score moves.
 
 ## 9.6.1 — 2026-10-01

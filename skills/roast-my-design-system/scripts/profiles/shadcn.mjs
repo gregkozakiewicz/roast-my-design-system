@@ -27,6 +27,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
+import { canonical } from '../lib/color.mjs';
 import { CATALOGUE, BLOCK_COMPONENTS, REGISTRY_DIRS, KNOWN_ROWS, TWEAKCN_ROWS, LIGHT_ONLY_ROWS, FACTORY_SPACING,
   FRONTS, LEGACY_FRONTS, BASES, BASE_COLORS, ICON_LIBRARIES, RADIUS_MAP, THEMES, SHADCN_ROWS } from './shadcn-data.mjs';
 
@@ -135,12 +136,9 @@ function rowsUnder(css, selector) {
 
 const norm = (v) => (v ?? '').replace(/\s+/g, ' ').trim();
 
-/** Read the sheet: the CSS file the config names. */
-function readSheet(root, wsRoot, cssPath, files = null) {
-  if (!cssPath) return null;
-  const file = [join(wsRoot, cssPath), join(wsRoot, 'src', cssPath)].find((p) => existsSync(p));
-  if (!file) return { file: cssPath, found: false };
-  const css = read(file);
+/** The sheet's daylight and evening rows: under :root and .dark, or under the
+ *  first scoped block holding --background (a theme picker's [data-theme]). */
+function sheetRows(css) {
   let light = rowsUnder(css, ':root'), dark = rowsUnder(css, '\\.dark');
   // Rows under a scoped selector instead of :root (a theme picker's
   // [data-theme='x'] blocks, a widget's #id): the first block holding
@@ -157,6 +155,27 @@ function readSheet(root, wsRoot, cssPath, files = null) {
       if (light.has('background') && dark.has('background')) break;
     }
   }
+  return { light, dark, scope };
+}
+
+/**
+ * The colour rows a sheet names in daylight, for the report's receipt (a v3
+ * install keeps no @theme, so its class vocabulary is these rows). Rows whose
+ * value is not a colour (--radius, --font-sans) are left out.
+ */
+export function sheetColourRows(root, file) {
+  if (!file) return [];
+  const { light } = sheetRows(read(join(root, file)));
+  return [...light].filter(([n]) => !/^(font|shadow|tracking|spacing|radius|ease|breakpoint|typeset)/.test(n)).filter(([, v]) => /^(?:var\(|hsla?\(|rgba?\(|oklch\(|oklab\(|lab\(|lch\(|color\(|#[0-9a-f]{3})/i.test(v.trim()) || canonical(v) !== null).map(([n]) => n);
+}
+
+/** Read the sheet: the CSS file the config names. */
+function readSheet(root, wsRoot, cssPath, files = null) {
+  if (!cssPath) return null;
+  const file = [join(wsRoot, cssPath), join(wsRoot, 'src', cssPath)].find((p) => existsSync(p));
+  if (!file) return { file: cssPath, found: false };
+  const css = read(file);
+  const { light, dark, scope } = sheetRows(css);
   const themeInline = rowsUnder(css, '@theme\\s+inline');
   const rows = [...light.keys()];
   const known = rows.filter((r) => KNOWN_ROWS.has(r));

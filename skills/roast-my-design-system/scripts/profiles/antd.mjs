@@ -26,6 +26,10 @@ export const ANTD = {
   // v5 ConfigProvider theme, a ThemeConfig object, or the theme algorithm
   themeRe: /<ConfigProvider[^>]*\btheme=\{|\bThemeConfig\b|\btheme\s*:\s*\{\s*(?:token|algorithm|components|cssVar|hashed)\b|\balgorithm\s*:\s*(?:\[|theme\.)/,
   themeImportRe: /from\s*['"]antd(?:\/[\w/-]+)?['"]/,
+  // the colour reads alone, each matched whole so the report's colour-use bar
+  // can name it (harvest/coloruse.mjs). antd-style and emotion read the same
+  // tokens as cssVar.colorX and theme.colorX (lobe-chat, superset)
+  colourRefRe: /\b(?:token|theme|cssVar)\.color[A-Z]\w*|var\(--ant-color[\w-]*/g,
   refRe: /\btoken\.(?:color|padding|margin|size|borderRadius|fontSize|lineHeight|controlHeight|boxShadow|motion)\w*|\btheme\.useToken\(|var\(--ant-/g,
   // a number in a React style object is pixels
   pxPropRes: [new RegExp(`\\b(${SPACING_KEYS})\\s*:\\s*(\\d+(?:\\.\\d+)?)(?![\\w.%])`, 'g')],

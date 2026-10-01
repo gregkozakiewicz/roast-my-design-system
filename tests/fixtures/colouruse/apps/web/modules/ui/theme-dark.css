@@ -1,0 +1,6 @@
+/* The evening theme in its own file, under a plain :root. Never the
+   daylight value of a name. */
+:root {
+  --color-brand: #00ffee;
+  --app-label: #e2e8f0;
+}

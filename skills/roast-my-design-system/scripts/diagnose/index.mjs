@@ -55,6 +55,13 @@ const h = JSON.parse(readFileSync(inPath, 'utf8'));
 // the shadcn repos in the fleet).
 const B = benchHelpers(bench, profileOf(h).kind);
 const { percentile, cleanerPct, ideal, median, displayAvg, refMedian } = B;
+// The group the medians come from, by name: a registry is compared with the
+// shadcn repos, an MUI product with the MUI ones. The verdict said "the
+// median of 34 scanned repos" when the medians came from a kit's own group,
+// on 51 of 204 fleet scans, and the tiles said "Avg registry repo" for a
+// group that does not exist (2026-10-01).
+const GROUP_NAMES = { shadcn: 'shadcn', registry: 'shadcn', tailwind: 'Tailwind', mui: 'MUI', mantine: 'Mantine', chakra: 'Chakra', antd: 'Ant Design' };
+const benchGroup = B.sliceInfo ? { name: GROUP_NAMES[B.sliceInfo.kind] ?? B.sliceInfo.kind, repoCount: B.sliceInfo.repoCount } : null;
 const healthOf = makeHealthOf(B);
 const M = coreMetrics(h);
 
@@ -372,7 +379,8 @@ if (bench && findings.length && !fresh) {
   const core = [['colors', tokenLed ? colorStrays : colors.length], ['greys', tokenLed ? greyStrays : greys.length],
     ['spacing', spacingTotal], ['typefaces', typefaces.length], ['exactDuplicates', hardDupes.length], ['inlineStyles', inline.count]];
   const worse = core.filter(([m, v]) => median(m) !== null && v > median(m)).length;
-  if (worse >= 3) verdict += ` Messier than the median of ${bench.repoCount} scanned repos on ${worse} of ${core.length} core metrics. And the median repo is already a mess.`;
+  const pool = benchGroup ? `${benchGroup.repoCount} scanned ${benchGroup.name} repos` : `${bench.repoCount} scanned repos`;
+  if (worse >= 3) verdict += ` Messier than the median of ${pool} on ${worse} of ${core.length} core metrics. And the median repo is already a mess.`;
 }
 
 // ---------- health scoring ----------
@@ -429,7 +437,7 @@ function tile(t, pLabel, pMetric, pFallback) {
   const avgNote = pct !== null && pct >= 60 && health !== 'good' ? ` · messier than ${pct}%`
     : clean !== null && clean >= 60 ? ` · cleaner than ${clean}%` : '';
   const av = displayAvg(metric);
-  if (av !== null) rows.push(row(B.sliceInfo ? `Avg ${B.sliceInfo.kind} repo` : 'Avg Design System', `${n(av)}${avgNote}`, av, value));
+  if (av !== null) rows.push(row(benchGroup ? `Avg ${benchGroup.name} repo` : 'Avg Design System', `${n(av)}${avgNote}`, av, value));
   if (rm !== null && (rm > 0 || ZERO_IDEAL.has(metric) || metric === 'arbitrary')) rows.push(row('Reputable systems', n(rm), rm, value));
   // A vendored catalogue is never judged for what it left on the shelf, and a
   // library's internal use says nothing about adoption: shown, not scored.

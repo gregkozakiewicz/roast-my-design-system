@@ -267,6 +267,14 @@ const fresh = P.isShadcn && P.shadcn?.fresh?.fresh === true;
 if (P.isShadcn) arbitrary = splitArbitrary(arbitrary, installedOf(P)).own;
 const breakdown = scoreBreakdown(h, bench);
 const neverImported = neverImportedComponents(h.components, P.uiDir);
+// In a shadcn catalogue folder the unused list holds two things: shadcn's
+// stock, installed and waiting to be used, and components the team wrote
+// itself that nothing imports. Both were called stock until 9.7.0: 178 of
+// 2,182 such components in 16 shadcn repos are the team's own (cal.com 38,
+// 2026-10-01). Neither is scored; the words now tell them apart.
+const isInstalled = installedOf(P);
+const neverStock = P.vendoredUi ? neverImported.filter((c) => isInstalled(c.file)) : [];
+const neverOwn = P.vendoredUi ? neverImported.filter((c) => !isInstalled(c.file)) : neverImported;
 
 // Measurability and kind, decided once in profiles/ (telekom/scale, 2026-09-01):
 // when the component detector could not read this repo's stack, the component
@@ -444,6 +452,8 @@ function tile(t, pLabel, pMetric, pFallback) {
   if (health === 'info' && metric === 'neverImported') {
     rows.push({ label: isLibrary
       ? 'library: internal use only, downstream consumers invisible'
+      : neverOwn.length
+      ? `${neverStock.length ? `${n(neverStock.length)} installed by the shadcn CLI and ` : ''}${n(neverOwn.length)} of the team's own, not used yet; not scored`
       : 'catalogue stock: installed by the shadcn CLI, not used yet', val: '', dir: '' });
   }
   if (health === 'info' && metric === 'paintTin') {
@@ -922,12 +932,12 @@ function adoptionMap(tiled) {
 // the obituary column. "Untouched since 2023" needs no decoding, and a heavy
 // year reads as what it is, the fossil of one abandoned effort. Orphans
 // without a date (no git) fall back to one plain row, exactly as before.
-function orphanRows() {
-  const shown = neverImported.slice(0, 16);
+function orphanRows(list = neverImported) {
+  const shown = list.slice(0, 16);
   const chip = (c) => `<span class="vchip" title="${esc(c.file)}${c.lastTouched ? ` · untouched since ${esc(c.lastTouched)}` : ''}">&lt;${esc(c.name)}&gt;</span>`;
-  const more = neverImported.length > 16 ? `<span class="vchip dim">+${neverImported.length - 16} more</span>` : '';
+  const more = list.length > 16 ? `<span class="vchip dim">+${list.length - 16} more</span>` : '';
   const dated = shown.filter((c) => c.lastTouched);
-  if (dated.length < 2) return `<div class="chips-row">${shown.slice(0, 8).map(chip).join('')}${neverImported.length > 8 ? `<span class="vchip dim">+${neverImported.length - 8} more</span>` : ''}</div>`;
+  if (dated.length < 2) return `<div class="chips-row">${shown.slice(0, 8).map(chip).join('')}${list.length > 8 ? `<span class="vchip dim">+${list.length - 8} more</span>` : ''}</div>`;
   const byYear = new Map();
   for (const c of shown) {
     const k = c.lastTouched ? c.lastTouched.slice(0, 4) : 'no git date';
@@ -967,11 +977,18 @@ function componentsSection() {
     ${fresh ? '<p class="sub">No code of your own uses the kit yet. The counts below are the components using each other.</p>' : ''}
     ${onceUsed.length && !fresh ? `<p class="sub">${n(onceUsed.length)} component${onceUsed.length === 1 ? ' is' : 's are'} imported exactly once: ${onceUsed.slice(0, 6).map((c) => `&lt;${esc(c.name)}&gt;`).join(', ')}${onceUsed.length > 6 ? ` and ${onceUsed.length - 6} more` : ''}. Quiet corners, not yet a system.</p>` : ''}
     ${top.length ? `<div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div>` : ''}
-    ${neverImported.length >= 2 ? `
-    <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : vendoredUi ? `${n(neverImported.length)} catalogue components not used yet · installed by the shadcn CLI and waiting to be used, not written by this team` : `${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
+    ${neverImported.length >= 2 && vendoredUi ? `${neverStock.length ? `
+    <div class="receipts">${eyebrow(`${n(neverStock.length)} catalogue component${neverStock.length === 1 ? '' : 's'} not used yet · installed by the shadcn CLI and waiting to be used, not written by this team`)}
+    ${orphanRows(neverStock)}
+    <p class="sub" style="margin-top:8px">Reach for one before building anything new. This list is counted and shown, and takes nothing off the score.</p></div>` : ''}${neverOwn.length ? `
+    <div class="receipts">${eyebrow(`${n(neverOwn.length)} component${neverOwn.length === 1 ? '' : 's'} of the team's own in ${esc(P.uiDir)} defined but never imported · ${neverOwn.length === 1 ? 'it sits' : 'they sit'} in the system as ${neverOwn.length === 1 ? 'a wrong answer' : 'wrong answers'} waiting to be picked`)}
+    ${orphanRows(neverOwn)}
+    <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order. Counted and shown, not scored.</p>
+    ${whyToggle('neverImported')}</div>` : ''}` : neverImported.length >= 2 ? `
+    <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : `${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
     ${orphanRows()}
-    <p class="sub" style="margin-top:8px">${vendoredUi ? 'Reach for one before building anything new. This list is counted and shown, and takes nothing off the score.' : 'Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.'}</p>
-    ${isLibrary || vendoredUi ? '' : whyToggle('neverImported')}` : ''}</section>`;
+    <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>
+    ${isLibrary ? '' : whyToggle('neverImported')}` : ''}</section>`;
 }
 
 // "Where to start" — at most three moves, every one derived from this repo's
@@ -1692,7 +1709,8 @@ function exceptionsBlock() {
       const vd = r.variantsDropped ?? [];
       if (vd.length) lines.push(`${vd.length} variant${vd.length === 1 ? '' : 's'} of the same components (${vd.map((e) => esc(basename(dirname(e.dir)) === 'bases' ? basename(dirname(e.dir)) + '/' + basename(e.dir) : e.dir)).join(', ')}, ${n(vd.reduce((a, e) => a + e.files, 0))} files) counted once, through the variant the registry file names.`);
     }
-    if (vendoredUi && neverImported.length) lines.push(`${n(neverImported.length)} catalogue component${neverImported.length === 1 ? '' : 's'} not used yet: stock on the shelf, not scored.`);
+    if (vendoredUi && neverStock.length) lines.push(`${n(neverStock.length)} catalogue component${neverStock.length === 1 ? '' : 's'} not used yet: stock on the shelf, not scored.`);
+    if (vendoredUi && neverOwn.length) lines.push(`${n(neverOwn.length)} component${neverOwn.length === 1 ? '' : 's'} of the team's own in the same folder ${neverOwn.length === 1 ? 'is' : 'are'} never imported either: listed under the adoption map, not scored.`);
     const rp = P.shadcn?.registryPaint;
     if (rp) lines.push(`Installed registr${rp.dirs.length === 1 ? 'y' : 'ies'} ${esc(rp.dirs.map((d) => basename(d)).join(', '))}: ${n(rp.files)} file${rp.files === 1 ? '' : 's'}${rp.tinUses ? `, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}` : ''}. Kept in the score, left out of the fixes. Your agent reads them like everything else.`);
   } else if (isLibrary) {

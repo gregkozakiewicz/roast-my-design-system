@@ -149,13 +149,21 @@ const neverImported = neverImportedComponents(h.components, profileOf(h).uiDir);
 if (neverImported.length >= 3) {
   // A vendored catalogue is stock, not debt: the rule points the agent AT it
   // rather than telling it to prune. An unused Calendar beats a hand-rolled
-  // date picker written under time pressure.
-  if (profileOf(h).vendoredUi) {
+  // date picker written under time pressure. A component the team wrote
+  // itself in the same folder is not stock (9.7.0): it gets the words any
+  // unused component of the team's own gets.
+  const vendored = profileOf(h).vendoredUi;
+  const isInstalled = installedOf(profileOf(h));
+  const stock = vendored ? neverImported.filter((c) => isInstalled(c.file)) : [];
+  const own = vendored ? neverImported.filter((c) => !isInstalled(c.file)) : neverImported;
+  const names = (list) => `${list.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…`;
+  if (stock.length) {
     section('Catalogue components already installed');
-    rule(`${neverImported.length} components sit installed and unused in \`${profileOf(h).uiDir}\` (${neverImported.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…). Reach for one of these before building your own version of the same thing. Do not delete them to tidy up.`);
-  } else {
+    rule(`${stock.length} component${stock.length === 1 ? ' sits' : 's sit'} installed and unused in \`${profileOf(h).uiDir}\` (${names(stock)}). Reach for one of these before building your own version of the same thing. Do not delete them to tidy up.`);
+  }
+  if (own.length) {
     section('Components nobody imports');
-    rule(`${neverImported.length} components are defined but never imported (${neverImported.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…). Before writing any new component, check this list first; adopt one or flag it for deletion instead of adding another.`);
+    rule(`${own.length} component${own.length === 1 ? ' is' : 's are'} defined but never imported (${names(own)}). Before writing any new component, check this list first; adopt one or flag it for deletion instead of adding another.`);
   }
 }
 

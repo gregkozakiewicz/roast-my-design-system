@@ -167,15 +167,69 @@ export function arbitraryLengths(cls) {
   return out;
 }
 
-/** Extract string contents of className=/class= attributes + template classes. */
-function classStrings(src) {
+/**
+ * Class strings with where each one starts in the source: className="…",
+ * className='…' and className={`…`}, then the string arguments of cva(),
+ * cn(), clsx(), classnames() and twMerge(). One reader for the report and
+ * the live checks (9.6.0): until then the live checks read className only,
+ * so cn("text-[13px]") was counted by the report and never flagged on an
+ * edit or a pull request (3,794 values in 66 fleet repos, 2026-10-01). The
+ * reading itself is unchanged, the report's: a call is read up to its first
+ * closing bracket, so the report counts exactly what it counted before.
+ */
+export function classStringSpans(src) {
   const out = [];
   for (const m of src.matchAll(/class(?:Name)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`\})/g)) {
-    out.push(m[1] ?? m[2] ?? m[3] ?? '');
+    const text = m[1] ?? m[2] ?? m[3] ?? '';
+    // the text ends just before the closing quote, or before `} for a template
+    out.push({ text, index: m.index + m[0].length - (m[3] !== undefined ? 2 : 1) - text.length });
   }
   // cva()/cn()/clsx() string args also carry classes
   for (const m of src.matchAll(/\b(?:cva|cn|clsx|classnames|twMerge)\s*\(([\s\S]{0,2000}?)\)/g)) {
-    for (const s of m[1].matchAll(/["'`]([^"'`]+)["'`]/g)) out.push(s[1]);
+    const argsAt = m.index + m[0].length - 1 - m[1].length;
+    for (const s of m[1].matchAll(/["'`]([^"'`]+)["'`]/g)) out.push({ text: s[1], index: argsAt + s.index + 1 });
+  }
+  return out;
+}
+/** Extract string contents of className=/class= attributes + template classes. */
+function classStrings(src) {
+  return classStringSpans(src).map((s) => s.text);
+}
+
+/**
+ * What the class strings in a piece of code carry, each value placed where
+ * it sits: bracket colours, spacing brackets (p-[13px] is off-scale spacing,
+ * not also an arbitrary value) and bracket lengths. A value read twice (a
+ * cn() inside a className template) is kept once. Exported for the guard,
+ * which reads class strings on the whole file: a cn() call usually runs over
+ * several lines, and a line read on its own never shows the call it is in.
+ * @returns { colors, spacing, arbitrary } each [{ value, index }]
+ */
+export function classStringStyling(src) {
+  const out = { colors: [], spacing: [], arbitrary: [] };
+  const seen = new Set();
+  const once = (kind, index) => { const k = `${kind}${index}`; if (seen.has(k)) return false; seen.add(k); return true; };
+  for (const { text: cls, index: at } of classStringSpans(src)) {
+    for (const c of cls.matchAll(TW_COLOR_RE)) {
+      // the colour itself, not the class: the raw-hex pass in extractStyling
+      // dedupes by position
+      if (!c[1]) continue;
+      const i = at + c.index + c[0].indexOf(c[1]);
+      if (once('c', i)) out.colors.push({ value: c[1].startsWith('#') ? normalizeHex(c[1]) : c[1], index: i });
+    }
+    for (const a of arbitraryLengths(cls)) {
+      const i = at + a.index;
+      if (once('a', i)) out.arbitrary.push({ value: a.value, index: i });
+    }
+    // A bracket on a spacing utility (p-[13px]) is an off-scale spacing value
+    // and is judged by the spacing rule, not as an arbitrary bracket as well:
+    // one class, one finding, the same split the harvest makes.
+    for (const c of cls.matchAll(TW_SPACING_RE)) {
+      const inner = c[1].startsWith('[') ? c[1].slice(1, -1) : null;
+      if (!inner || !/^-?\d*\.?\d+(?:px|rem|em|%|vh|vw|ch)$/.test(inner)) continue;
+      const i = at + c.index;
+      if (once('s', i)) out.spacing.push({ value: inner, index: i });
+    }
   }
   return out;
 }
@@ -258,24 +312,15 @@ export function extractStyling(src, { css = false } = {}) {
     }
     return out;
   }
-  // component code: class strings, inline style blocks, raw hex
-  for (const m of src.matchAll(/class(?:Name)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`\})/g)) {
-    const cls = m[1] ?? m[2] ?? m[3] ?? '';
-    for (const c of cls.matchAll(TW_COLOR_RE)) {
-      // Index the colour itself, not the attribute: the raw-hex pass below
-      // dedupes by position, and the attribute's start was 20+ chars away, so
-      // every bracket colour used to be reported twice.
-      if (c[1]) out.colors.push({ value: c[1].startsWith('#') ? normalizeHex(c[1]) : c[1], index: m.index + m[0].indexOf(c[1]) });
-    }
-    for (const a of arbitraryLengths(cls)) out.arbitrary.push({ value: a.value, index: m.index });
-    // A bracket on a spacing utility (p-[13px]) is an off-scale spacing value
-    // and is judged by the spacing rule, not as an arbitrary bracket as well:
-    // one class, one finding, the same split the harvest makes.
-    for (const c of cls.matchAll(TW_SPACING_RE)) {
-      const inner = c[1].startsWith('[') ? c[1].slice(1, -1) : null;
-      if (inner && /^-?\d*\.?\d+(?:px|rem|em|%|vh|vw|ch)$/.test(inner)) out.spacing.push({ value: inner, index: m.index });
-    }
-  }
+  // component code: class strings, inline style blocks, raw hex. The class
+  // strings are the report's own (classStringStyling, 9.6.0): className and
+  // the arguments of cn(), cva(), clsx(), classnames() and twMerge(), each
+  // value placed at the class itself, so a class on the third line of a
+  // multi-line list is reported on the third line.
+  const cs = classStringStyling(src);
+  out.colors.push(...cs.colors);
+  out.arbitrary.push(...cs.arbitrary);
+  out.spacing.push(...cs.spacing);
   const blocks = inlineStyleBlocks(src).filter((b) => !TRIVIAL_INLINE_RE.test(b.trim()));
   for (const b of blocks) {
     const at = src.indexOf(b);

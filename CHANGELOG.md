@@ -2,6 +2,37 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.6.0 — unreleased
+
+- **The edit check and the guard read class lists the way the report does.**
+  The report counts the classes inside shadcn's class helpers (`cn()`,
+  `cva()`, `clsx()`, `classnames()`, `twMerge()`), but the edit check, the
+  end-of-turn review, `roast_validate`, `roast_review` and `--check` read
+  only classes written straight into `className`. So `cn("text-[13px]")`
+  was counted in the report and never flagged when an agent wrote it. One
+  reader now serves both, and it reads exactly what the report read before,
+  so no report number moves. In the fleet that is 3,794 bracket values and
+  spacing brackets in 66 repos that the checks now see.
+- **Each finding sits on the line where the class is.** A class on the third
+  line of a long class list is reported on the third line, not on the line
+  where the list opens.
+- **A registry's own components are no longer read as installed code.**
+  magicui publishes its components from a folder named magicui, the same
+  name as the third-party registry, so the report called them installed,
+  left their bracket and spacing values out, and said 9 points came from
+  code the team did not write. The score is unchanged at 78; those values
+  now count as magicui's own. The blocks shadcn's own repo publishes are its
+  own work too (score unchanged at 84).
+- **The note on installed bracket and spacing values names the right folder
+  and owner.** It said every value was shadcn's and inside the ui folder,
+  even when it sat in a registry such as ai-elements or in a shadcn block
+  elsewhere. On a registry, the folder name was missing. The hosted
+  ai-chatbot example now reads: 22 bracket values inside ui and the
+  app-sidebar block are shadcn's own, and 8 inside the ai-elements registry
+  are the registry's own.
+- Measured on 204 repos: no score moves; magicui and shadcn's own repo
+  change counts, as above.
+
 ## 9.5.0 — 2026-10-01
 
 - **A component of the team's own in the shadcn folder is the team's.** The

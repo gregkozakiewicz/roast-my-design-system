@@ -9,7 +9,7 @@ import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { nearColorPairs } from './../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { VERSION } from '../lib/version.mjs';
-import { profileOf, installedOf, splitArbitrary, ownSpacing } from '../profiles/index.mjs';
+import { profileOf, installedOf, splitArbitrary, ownSpacing, installedByOwner } from '../profiles/index.mjs';
 import { themeClassFor } from '../lib/palette.mjs';
 import { rulesOn as lintRulesOn, describeRule as lintDescribe } from '../profiles/shadcn-lint.mjs';
 
@@ -232,7 +232,8 @@ if (neverImported.length >= 3) {
       const on = lintRulesOn(sc.lint);
       rule(`This repo runs shadcn/lint (\`${sc.lint.file}\`${on.length ? `: ${on.map((r) => lintDescribe(r, sc.lint.rules[r])).join('; ')}` : ': no rule on yet'}). Run the project's lint after every change; its errors name the variant or theme variable to use.`);
     }
-    const ai = sc.arbitraryInstalled ?? null;
+    // shadcn's own values only (9.6.0): a registry's brackets are not shadcn's
+    const ai = installedByOwner(t.tailwind?.arbitrary ?? [], P).find((o) => o.kind === 'shadcn') ?? null;
     if (ai?.uses) rule(`Bracket values in \`${P.uiDir ?? 'components/ui'}\` are shadcn's, not a pattern to copy. The installed components use a few values Tailwind's scale does not have (${ai.values.slice(0, 3).map((v) => `\`${v.value}\``).join(', ')}), written by shadcn's authors for those components only. In your own code, do not write a bracket value: use a step from the scale, or a variable from the theme file. If a value you need is missing, add it to the theme file once and use it by name.`);
     else rule('In your own code, do not write a bracket value: use a step from the scale, or a variable from the theme file. If a value you need is missing, add it to the theme file once and use it by name.');
     if (sc.sheet?.customUnused?.length) rule(`${sc.sheet.customUnused.slice(0, 3).map((r) => `\`--${r}\``).join(', ')} in \`${sc.sheet.file}\` ${sc.sheet.customUnused.length === 1 ? 'is' : 'are'} defined and used nowhere. Do not use ${sc.sheet.customUnused.length === 1 ? 'it' : 'them'}; ${sc.sheet.customUnused.length === 1 ? 'it is' : 'they are'} a leftover next to the real theme.`);

@@ -14,7 +14,7 @@
  * from the days of two repos.)
  */
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync, mkdtempSync, mkdirSync, rmSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdtempSync, mkdirSync, rmSync, readdirSync, cpSync, renameSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -942,6 +942,94 @@ console.log('utility-class shadcn in the rules file (9.5.0):');
   plain.includes('so the components paint with Tailwind\'s palette classes by design. Stay with the shades they already use (`bg-zinc-900`, `text-zinc-50`). Never a hex, an rgb() or a bracket colour.')
     ? ok('no theme of its own: the approved words, with the shades the components use') : bad('utility plain words', plain.slice(plain.indexOf('shadcn is installed'), plain.indexOf('shadcn is installed') + 400));
   !/palette colours? already sit in own code/.test(plain) ? ok('the palette is the system there, so no "do not add palette colours" line') : bad('utility plain count', 'line still there');
+}
+
+// 9.6.0: one class reader for the report and the live checks. Until then
+// the live checks read className only, and cn("text-[13px]") was counted by
+// the report and never flagged (3,794 values in 66 fleet repos, 2026-10-01).
+console.log('class strings, one reader (9.6.0):');
+{
+  const { validateContent } = await import(pathToFileURL(join(ENGINE, 'mcp/engine.mjs')).href);
+  const { classStringSpans, extractStyling } = await import(pathToFileURL(join(ENGINE, 'harvest/tokens.mjs')).href);
+  const k = loadKnowledge(join(FIXTURES, 'shadcncustom'));
+  const code = [
+    'import { cn } from "@/lib/utils";',                       // 1
+    'import { cva } from "class-variance-authority";',          // 2
+    'const v = cva("inline-flex h-[2.5rem]");',                 // 3
+    'export const X = ({ a }) => (',                            // 4
+    '  <p className={cn(',                                      // 5
+    '    "flex items-center",',                                 // 6
+    '    "text-[15px] p-[7px] bg-[#1a1a1a]",',                  // 7
+    '    a && "rounded-[9px]",',                                // 8
+    '  )}>',                                                    // 9
+    '    <span className={`gap-2',                              // 10
+    '      w-[137px]`} />',                                     // 11
+    '  </p>',                                                   // 12
+    ');',                                                       // 13
+  ].join('\n');
+  const f = validateContent({ text: code, file: 'src/app/probe.tsx' }, k).findings;
+  const at = (rule) => f.filter((x) => x.rule === rule).map((x) => `${x.message.match(/\[[^\]]+\]|\d+(?:\.\d+)?(?:px|rem)|#[0-9a-f]{3,8}/i)?.[0]}@${x.line}`).sort().join(' ');
+  at('arbitrary-value') === '[137px]@11 [15px]@7 [2.5rem]@3 [9px]@8'
+    ? ok('bracket values inside cva() and a multi-line cn() are flagged, each on its own line') : bad('class reader: brackets', at('arbitrary-value') + ' | ' + JSON.stringify(f.map((x) => x.rule + '@' + x.line)));
+  f.some((x) => x.rule === 'off-scale-spacing' && x.line === 7) ? ok('a spacing bracket inside cn() is judged by the spacing rule') : bad('class reader: spacing', JSON.stringify(f.map((x) => x.rule + '@' + x.line)));
+  f.filter((x) => /#1a1a1a/i.test(x.message)).length === 1 ? ok('a hex bracket colour inside cn() is reported once, not twice') : bad('class reader: hex once', JSON.stringify(f.filter((x) => /1a1a1a/.test(x.message))));
+  f.some((x) => x.rule === 'arbitrary-value' && x.line === 11) ? ok('a class on the second line of a className template is reported on that line') : bad('class reader: template line', 'wrong line');
+  // the report reads exactly what it read before: the strings and their order
+  const old = (src) => {
+    const out = [];
+    for (const m of src.matchAll(/class(?:Name)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`\})/g)) out.push(m[1] ?? m[2] ?? m[3] ?? '');
+    for (const m of src.matchAll(/\b(?:cva|cn|clsx|classnames|twMerge)\s*\(([\s\S]{0,2000}?)\)/g)) for (const s of m[1].matchAll(/["'`]([^"'`]+)["'`]/g)) out.push(s[1]);
+    return out;
+  };
+  const sample = code + '\n<div className="" />\n<b className={``} />\n<i class=\'a b\' />\ncn("x", rgba(0,0,0), "y")';
+  const spans = classStringSpans(sample);
+  JSON.stringify(spans.map((x) => x.text)) === JSON.stringify(old(sample)) ? ok('the report reads the same class strings, in the same order, as before') : bad('class reader: same strings', JSON.stringify(spans.map((x) => x.text)));
+  spans.every((x) => sample.slice(x.index, x.index + x.text.length) === x.text) ? ok('every class string knows where it starts') : bad('class reader: positions', JSON.stringify(spans.filter((x) => sample.slice(x.index, x.index + x.text.length) !== x.text)));
+  extractStyling('<div className="p-2 text-[13px]" />').arbitrary.length === 1 ? ok('a plain className is read as before') : bad('class reader: className', 'changed');
+}
+
+// 9.6.0: a registry's own work is never installed code, and installed values
+// are named by their owner. magicui publishes from a folder named magicui,
+// also the name of a third-party registry, and the report called its own
+// components installed; ai-chatbot's "30 inside ui" were 20 in ui, 2 in a
+// kit block and 8 in the ai-elements registry (2026-10-01).
+console.log('a registry\'s own work, and installed values by owner (9.6.0):');
+{
+  const work = mkdtempSync(join(tmpdir(), 'roast-owner-'));
+  // a registry that publishes from a folder named like a third-party registry
+  const reg = join(work, 'named');
+  cpSync(join(FIXTURES, 'registry'), reg, { recursive: true });
+  rmSync(join(reg, 'registry/base'), { recursive: true, force: true });
+  renameSync(join(reg, 'registry/radix/ui'), join(reg, 'registry/magicui'));
+  rmSync(join(reg, 'registry/radix'), { recursive: true, force: true });
+  writeFileSync(join(reg, 'registry.json'), readFileSync(join(reg, 'registry.json'), 'utf8').replaceAll('registry/radix/ui/', 'registry/magicui/'));
+  writeFileSync(join(reg, 'registry/magicui/tag.tsx'), readFileSync(join(reg, 'registry/magicui/tag.tsx'), 'utf8') + '\nexport const TagWide = () => <span className="text-[11px] w-[280px]" />;\n');
+  runEngine('harvest/index.mjs', [reg, '--out', join(work, 'named.json')]);
+  const rh = JSON.parse(readFileSync(join(work, 'named.json'), 'utf8'));
+  rh.profile.kind === 'registry' && !(rh.profile.shadcn.registryDirs ?? []).includes('registry/magicui')
+    ? ok('a registry\'s published folder is its own work, whatever it is called') : bad('registry own folder', JSON.stringify({ kind: rh.profile.kind, regs: rh.profile.shadcn?.registryDirs }));
+  (rh.profile.shadcn.arbitraryInstalled?.uses ?? 0) === 0 && (rh.tokens.tailwind.arbitrary ?? []).some((a) => a.value === '[11px]')
+    ? ok('its bracket values count as its own, none kept out as installed') : bad('registry own values', JSON.stringify(rh.profile.shadcn.arbitraryInstalled));
+  !(rh.profile.kindEvidence ?? []).some((e) => /installed registr/.test(e)) ? ok('the evidence no longer calls its own folder an installed registry') : bad('registry evidence', JSON.stringify(rh.profile.kindEvidence));
+
+  // a shadcn app with installed values in ui, a kit block and a registry
+  const app = join(work, 'app');
+  cpSync(join(FIXTURES, 'shadcncustom'), app, { recursive: true });
+  const add = (f, line) => writeFileSync(join(app, f), readFileSync(join(app, f), 'utf8') + `\n${line}\n`);
+  add('src/components/ui/badge.tsx', 'export const BadgeRing = () => <span className="ring-[3px] ring-[3px]" />;');
+  writeFileSync(join(app, 'src/components/app-sidebar.tsx'), 'export function AppSidebar() { return <nav className="text-[13px]" />; }\n');
+  add('src/components/ai-elements/message.tsx', 'export const Bubble = () => <div className="max-w-[280px]" />;');
+  runEngine('harvest/index.mjs', [app, '--out', join(work, 'app.json')]);
+  runEngine('diagnose/index.mjs', [join(work, 'app.json'), '--out', join(work, 'app.html'), '--summary', join(work, 'app-s.json')]);
+  const html = readFileSync(join(work, 'app.html'), 'utf8').replace(/&#39;/g, "'");
+  html.includes('3 bracket values inside ui and the app-sidebar block are shadcn\'s own ([3px], [13px]) and are not counted.')
+    ? ok('shadcn\'s values are named with the folder and the block they sit in') : bad('owner shadcn sentence', (html.match(/[^>]*inside ui[^<]*/) ?? ['none'])[0]);
+  html.includes('1 bracket value inside the ai-elements registry is the registry\'s own ([280px]) and is not counted. It was written for those components, not as a pattern for your own code.')
+    ? ok('a registry\'s value is named as the registry\'s own, with its own reason') : bad('owner registry sentence', (html.match(/[^>]*ai-elements registry[^<]*/) ?? ['none'])[0]);
+  const rules = rulesMarkdown(JSON.parse(readFileSync(join(work, 'app.json'), 'utf8'))).text;
+  /are shadcn's, not a pattern to copy\. The installed components use a few values Tailwind's scale does not have \(`\[3px\]`, `\[13px\]`\)/.test(rules)
+    ? ok('the rules file quotes only shadcn\'s own values') : bad('rules shadcn values', (rules.match(/Bracket values in[^\n]*/) ?? ['none'])[0]);
+  rmSync(work, { recursive: true, force: true });
 }
 
 console.log('mcp server:');

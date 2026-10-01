@@ -19,7 +19,7 @@ import { KITS } from '../profiles/kit-common.mjs';
 import { kitPaintFindings } from './kitpaint.mjs';
 import { paletteFindings } from './palette.mjs';
 import { PALETTE_CLASS_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
-import { harvestTokens, extractStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
+import { harvestTokens, extractStyling, classStringStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { harvestComponents, definedComponents, tsconfigAliases } from '../harvest/components.mjs';
 import { findDuplicates } from '../harvest/duplicates.mjs';
 import { repoTokenDefs } from './tokentwins.mjs';
@@ -32,6 +32,13 @@ import { hexRgb } from './nearpairs.mjs';
 import { typefaceOf, GENERIC_FONTS } from './typefaces.mjs';
 
 export { extractStyling, normalizeHex, isGrey, hexRgb, typefaceOf, GENERIC_FONTS };
+// The class strings in a piece of code, read the report's way (9.6.0):
+// className and the arguments of cn(), cva(), clsx(), classnames() and
+// twMerge(), each value placed at the class. classStringStyling(fileText)
+// returns { colors, spacing, arbitrary }; a guard reads it on the whole file
+// and keeps the hits on added lines, because a cn() call usually runs over
+// several lines and a line read alone never shows the call it is in.
+export { classStringStyling };
 
 // The components a piece of text defines. With the ledger below, a guard can
 // tell a second <Button> from an edit to the first one.

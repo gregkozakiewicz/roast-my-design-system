@@ -32,7 +32,7 @@ import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
-import { ownSpacing, profileOf, installedOf, splitArbitrary } from '../profiles/index.mjs';
+import { ownSpacing, profileOf, installedOf, splitArbitrary, installedByOwner } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { rulesOn as lintRulesOn, describeRule as lintDescribe, entryMatcher as lintMatcher, RULE_TILE as LINT_TILE } from '../profiles/shadcn-lint.mjs';
 import { publishesLine } from '../profiles/registry.mjs';
@@ -1632,11 +1632,26 @@ function sidePanel() {
 function exceptionsBlock() {
   const lines = [];
   if (P.isShadcn) {
-    const ai = P.shadcn?.arbitraryInstalled;
-    if (ai?.uses) lines.push(`${n(ai.uses)} bracket value${ai.uses === 1 ? '' : 's'} inside ${esc(P.uiDirs.map((d) => basename(d)).join(', '))} are shadcn's own (${ai.values.slice(0, 3).map((v) => esc(v.value)).join(', ')}) and are not counted. shadcn's docs allow brackets for one-off values, so your agent will treat them as normal; the rules file tells it otherwise for your own code.`);
-    const si = spacingOwn.installed;
-    const sv = si.values.length;
-    if (sv) lines.push(`${n(sv)} off-scale spacing value${sv === 1 ? '' : 's'} inside ${esc(P.uiDirs.map((d) => basename(d)).join(', '))} ${sv === 1 ? 'is' : 'are'} shadcn's own (${si.values.slice(0, 3).map((v) => esc(v.value)).join(', ')}) and ${sv === 1 ? 'is' : 'are'} not counted, for the same reason as the bracket values.`);
+    // Installed values by owner (9.6.0, words approved by Greg 2026-10-01):
+    // shadcn's components and kit blocks, or a registry by name. Until then
+    // every value was called shadcn's and placed "inside ui", wherever it sat.
+    const andList = (xs) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`);
+    const ownersOf = (entries) => installedByOwner(entries, P);
+    const where = (o) => (o.kind === 'registry'
+      ? `the ${esc(o.name)} registry`
+      : andList([...o.folders.map(esc), ...(o.blocks.length ? [`the ${andList(o.blocks.map(esc))} block${o.blocks.length === 1 ? '' : 's'}`] : [])]));
+    const top3 = (o) => o.values.slice(0, 3).map((v) => esc(v.value)).join(', ');
+    for (const o of ownersOf(h.tokens?.tailwind?.arbitrary ?? [])) {
+      const one = o.uses === 1;
+      lines.push(o.kind === 'registry'
+        ? `${n(o.uses)} bracket value${one ? '' : 's'} inside ${where(o)} ${one ? 'is' : 'are'} the registry's own (${top3(o)}) and ${one ? 'is' : 'are'} not counted. ${one ? 'It was' : 'They were'} written for those components, not as a pattern for your own code.`
+        : `${n(o.uses)} bracket value${one ? '' : 's'} inside ${where(o)} ${one ? 'is' : 'are'} shadcn's own (${top3(o)}) and ${one ? 'is' : 'are'} not counted. shadcn's docs allow brackets for one-off values, so your agent will treat them as normal; the rules file tells it otherwise for your own code.`);
+    }
+    for (const o of ownersOf([...(h.tokens?.spacing ?? []), ...(h.tokens?.tailwind?.spacing ?? []).filter((v) => v.value.startsWith('['))])) {
+      const sv = o.values.length;
+      const one = sv === 1;
+      lines.push(`${n(sv)} off-scale spacing value${one ? '' : 's'} inside ${where(o)} ${one ? 'is' : 'are'} ${o.kind === 'registry' ? "the registry's own" : "shadcn's own"} (${top3(o)}) and ${one ? 'is' : 'are'} not counted, for the same reason as the bracket values.`);
+    }
     if (P.isRegistry && P.registry) {
       const r = P.registry;
       const sc = r.showcase ?? [];

@@ -24,7 +24,7 @@ import { join, basename, dirname } from 'node:path';
 import shadcn from './shadcn.mjs';
 import tailwind, { readTailwindTheme } from './tailwind.mjs';
 import { decidePalette } from '../lib/palette.mjs';
-import { installedFile } from './installed.mjs';
+import { installedFile, componentName } from './installed.mjs';
 import mui from './mui.mjs';
 import mantine from './mantine.mjs';
 import chakra from './chakra.mjs';
@@ -126,6 +126,23 @@ export function decideProfile(profile, components, files, root = null) {
       // consumers of what it publishes live in other repos: library semantics
       profile.role = 'library';
       profile.registry = reg;
+      // What a registry publishes is its own work, never installed code
+      // (9.6.0). magicui publishes from a folder named magicui, which is also
+      // the name of a third-party registry the engine knows, so its own
+      // components were read as installed: their bracket values were called
+      // shadcn's and 9 points were put down to code it did not write. The
+      // kit blocks shadcn's own repo publishes are its own work too.
+      if (profile.shadcn) {
+        const inPublished = (f) => published.some((d) => f === d || f.startsWith(`${d}/`));
+        const before = profile.shadcn.registryDirs ?? [];
+        profile.shadcn.registryDirs = before.filter((d) => !inPublished(d));
+        profile.shadcn.blockFiles = (profile.shadcn.blockFiles ?? []).filter((f) => !inPublished(f));
+        if (profile.shadcn.registryDirs.length !== before.length) {
+          const left = profile.shadcn.registryDirs;
+          decision.evidence = decision.evidence.filter((e) => !/installed registr(y|ies) beside it/.test(e));
+          if (left.length) decision.evidence.push(`${left.length} installed registr${left.length === 1 ? 'y' : 'ies'} beside it: ${left.map((d) => basename(d)).join(', ')}`);
+        }
+      }
       profile.kindEvidence = [
         reg.builtFrom ? `registry built from ${reg.items} packages by ${reg.source}` : `${reg.source} publishes ${publishesLine(reg)}`,
         ...(reg.variants.length ? [`the same components kept in ${reg.variants.length} variants (${reg.variants.map((d) => basename(d)).join(', ')})`] : []),
@@ -247,6 +264,44 @@ export function splitArbitrary(entries, installed) {
   own.sort((a, b) => b.count - a.count);
   const values = [...installedValues.entries()].sort((a, b) => b[1] - a[1]).map(([value, count]) => ({ value, count }));
   return { own, installed: { uses: installedUses, values } };
+}
+
+/**
+ * Installed values by owner (9.6.0): shadcn's own components and kit blocks,
+ * or a third-party registry by its folder. Reads the same files and counts
+ * splitArbitrary reads, so the totals agree with the split; the report and
+ * the rules file name the owner from this instead of calling every value
+ * shadcn's (ai-chatbot: 20 in ui, 2 in the app-sidebar block, 8 in
+ * ai-elements, all once called "inside ui").
+ * @returns [{ kind: 'shadcn'|'registry', name, dir, uses, values: [{ value, count }], folders, blocks }]
+ */
+export function installedByOwner(entries, P) {
+  const regDirs = P?.shadcn?.registryDirs ?? [];
+  const under = (f, d) => f === d || f.startsWith(`${d}/`);
+  const owners = new Map();
+  for (const e of entries ?? []) {
+    for (const f of (e.every ?? e.files ?? [])) {
+      if (!installedFile(P, f.file)) continue;
+      const reg = regDirs.find((d) => under(f.file, d)) ?? null;
+      const key = reg ?? '';
+      if (!owners.has(key)) owners.set(key, { kind: reg ? 'registry' : 'shadcn', name: reg ? basename(reg) : 'shadcn', dir: reg, uses: 0, values: new Map(), folders: new Set(), blocks: new Set() });
+      const o = owners.get(key);
+      o.uses += f.count;
+      o.values.set(e.value, (o.values.get(e.value) ?? 0) + f.count);
+      if (!reg) {
+        const ui = (P.uiDirs ?? []).find((d) => under(f.file, d));
+        if (ui) o.folders.add(basename(ui));
+        else o.blocks.add(componentName(f.file));
+      }
+    }
+  }
+  const rank = (o) => (o.kind === 'shadcn' ? -1 : regDirs.indexOf(o.dir));
+  return [...owners.values()].sort((a, b) => rank(a) - rank(b)).map((o) => ({
+    ...o,
+    values: [...o.values.entries()].sort((x, y) => y[1] - x[1]).map(([value, count]) => ({ value, count })),
+    folders: [...o.folders],
+    blocks: [...o.blocks],
+  }));
 }
 
 /**

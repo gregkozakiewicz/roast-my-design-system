@@ -28,7 +28,7 @@ import { CATALOGUE, BLOCK_COMPONENTS } from './shadcn-data.mjs';
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/_/g, '-').toLowerCase();
 
 /** The component a file holds, by shadcn's naming: index files take their folder's name. */
-function componentName(file) {
+export function componentName(file) {
   const stem = basename(file).replace(/\.[cm]?[jt]sx?$/, '');
   return kebab(stem === 'index' ? basename(dirname(file)) : stem);
 }

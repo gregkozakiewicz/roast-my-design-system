@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.5.0 — unreleased
+## 9.5.0 — 2026-10-01
 
 - **A component of the team's own in the shadcn folder is the team's.** The
   report treated every file in the shadcn catalogue folder (`components/ui`,

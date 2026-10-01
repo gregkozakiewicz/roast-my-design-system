@@ -32,6 +32,23 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
   product. It now reads it as shadcn, and its score goes from 35 to 18:
   the shadcn tiles (palette classes in own code, and colours added to
   shadcn components through className) replace the two MUI tiles.
+- **The verdict names the group it compares with.** On a shadcn, Tailwind
+  or kit product the medians come from repos of the same kind, but the
+  sentence said "Messier than the median of 34 scanned repos", the count of
+  the whole benchmark. It now says, for example, "the median of 16 scanned
+  shadcn repos". The tiles name the group the same way ("Avg MUI repo",
+  "Avg Ant Design repo"), and a registry, which is compared with shadcn
+  repos, no longer reads "Avg registry repo". The sentence changes on 51
+  of 204 reports.
+- **Unused components in a shadcn folder are told apart.** The report and
+  the rules file called every unused component in the shadcn folder stock
+  "installed by the shadcn CLI, not written by this team". In 16 repos
+  some of them are the team's own (cal.com 38, workout-cool 27, midday
+  19, rallly 19). Those now get the words and the rule any unused
+  component of the team's own gets. shadcn's own unused components keep
+  theirs. Neither list is scored, as before.
+- Spacing values in installed shadcn code are set aside exactly, as
+  bracket values have been since 9.3.3. No report number moves.
 - Measured on 204 repos: only nhost's score moves.
 
 ## 9.6.1 — 2026-10-01

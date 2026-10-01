@@ -45,8 +45,6 @@ export const MANTINE = {
     colourHow: 'On a Mantine component, point at it: <code>c="dimmed"</code> or <code>color="blue.6"</code> as a prop, <code>theme.colors.blue[6]</code> in code, <code>var(--mantine-color-blue-6)</code> in a CSS module.',
     spacingHow: () => 'In Mantine a number is pixels: <code>p={10}</code> is 10px, while <code>p="md"</code> is the theme\'s step. A spacing that matches a theme step becomes the step name (<code>xs</code> to <code>xl</code>); one that does not stays.',
     rulesTheme: (file) => `Colours, spacing and radius are decided in \`${file}\`. On a component, read them by name: \`c="dimmed"\`, \`color="blue.6"\`, \`p="md"\`, \`gap="sm"\`; in a CSS module, \`var(--mantine-spacing-md)\` and \`var(--mantine-color-blue-6)\`.`,
-    // what does not reach another kit's components, in a repo with two kits
-    idiom: 'Mantine style props (`p="md"`) and the Mantine theme',
     rulesSpacing: 'Use the theme\'s spacing names (`p="md"`), not numbers (`p={10}` is pixels)',
     promptColour: '- Read the theme where Mantine reads it: color props (c="dimmed", color="blue.6"), theme.colors in code, var(--mantine-color-*) in CSS modules. Never import the theme file into a component just to read a hex.',
     promptSpacing: '- Check the theme\'s spacing sizes before converting: the defaults are xs 10px, sm 12px, md 16px, lg 20px, xl 32px, and a theme can change them. Convert only an exact match.',

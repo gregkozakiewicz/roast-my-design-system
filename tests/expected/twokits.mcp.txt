@@ -1,9 +1,9 @@
 === get_context ===
 Design system context for two-kits (scanned DATE). Rules derived from this repo's real code.
 KITS: two in use. MUI (35 files) and Backstage UI (14 files in src/plugins); 3 files import both. Follow the kit the file already uses; never put one kit's styling on the other's components. A new file follows its neighbours.
-  On MUI components: A colour, a spacing step or a radius is decided in src/theme/theme.ts. On a component, read it: sx paths (color: 'text.secondary', p: 2) or theme.palette / theme.spacing() in styled().
-  Already written onto MUI components: 12 colours (#667085, #3355ff) and 13 pixel sizes; do not add more.
-  On Backstage UI components (@backstage/ui): style them the way the files around them do; sx, styled() and the MUI theme do not reach them.
+  On MUI components: a colour, a spacing step or a radius is decided in src/theme/theme.ts. On a component, read it: sx paths (color: 'text.secondary', p: 2) or theme.palette / theme.spacing() in styled().
+  Already written onto components in MUI files: 12 colours (#667085, #3355ff) and 13 pixel sizes; do not add more.
+  On Backstage UI components (@backstage/ui): style them the way the files around them do.
 SPACING on MUI components: Use spacing steps (p: 2), not pixels.
 GAP: charts have no palette. Name the series once (--chart-1, --chart-2 … in src/theme/theme.ts) and point that chart at them. From then on a chart that writes a colour by hand is a finding the checks catch.
 DISCIPLINE: no static style={{ }}, no !important, no new arbitrary values. Match the neighbouring component.

@@ -1216,13 +1216,13 @@ function whereToStartSection() {
       const s0 = k.colour.samples[0], f0 = productFirst(k.colour.top)[0];
       c.push({ score: 20 + k.colour.per100 / 4, metric: 'kitColour', after: 0,
         title: `Move the ${n(k.colour.uses)} colours written on components into the ${esc(k.name)} theme`,
-        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}.${s0.inTheme ? ` ${esc(s0.value)} is already in your theme: read it from there, from the entry that holds it in every mode.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with ${KITS[k.name]?.advice.themeCall ?? "the kit's theme call"} and put the palette there`}. ${KITS[k.name]?.advice.colourHow ?? ''}${secondKitMoveNote(k)}` });
+        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}.${s0.inTheme ? ` ${esc(s0.value)} is already in your theme: read it from there, from the entry that holds it in every mode.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with ${KITS[k.name]?.advice.themeCall ?? "the kit's theme call"} and put the palette there`}. ${KITS[k.name]?.advice.colourHow ?? ''}${secondKitMoveNote(k, 'colours')}` });
     }
     if (k.px.uses >= 10) {
       const s0 = k.px.samples[0], f0 = productFirst(k.px.top)[0];
       c.push({ score: 15 + k.px.per100 / 4, metric: 'kitPx', after: 0,
         title: `Put the ${n(k.px.uses)} pixel spacings on the theme's spacing steps`,
-        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}. ${KITS[k.name]?.advice.spacingHow(k) ?? ''}${secondKitMoveNote(k)}` });
+        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}. ${KITS[k.name]?.advice.spacingHow(k) ?? ''}${secondKitMoveNote(k, 'px')}` });
     }
   }
 
@@ -1516,25 +1516,34 @@ function kitReceipt() {
   const k = P.kit;
   const sk = k.second;
   // a second kit: named, and why its own files are not in the counts
-  const second = sk ? ` ${esc(sk.name)} is imported in ${n(sk.files)} files too, ${sk.withoutFirst ? `${n(sk.withoutFirst)} of them without ${esc(k.name)}. Those ${n(sk.withoutFirst)} files are not counted here: ${esc(sk.name)} components do not read the ${esc(k.name)} theme.` : `each of them beside ${esc(k.name)}.`}` : '';
+  // the files without the first kit stay out of the kit counts; they still
+  // count in the repo-wide tiles like any other file
+  const without = !sk?.withoutFirst ? '' : sk.withoutFirst === sk.files ? `, none of them with ${esc(k.name)}` : `, ${n(sk.withoutFirst)} of them without ${esc(k.name)}`;
+  const second = !sk ? '' : ` ${esc(sk.name)} is imported in ${n(sk.files)} files too${sk.withoutFirst
+    ? `${without}. ${sk.withoutFirst === 1 ? 'That file is' : `Those ${n(sk.withoutFirst)} files are`} not in the kit counts: ${esc(sk.name)} components do not read the ${esc(k.name)} theme.`
+    : `, each of them beside ${esc(k.name)}.`}`;
   return `<div class="excl fresh">Read as a product built on ${esc(k.name)}: imported in ${n(k.kitFiles)} files, ${k.themeFiles.length ? `theme defined in ${esc(k.themeFiles[0])}` : `no theme of its own, so the ${esc(k.name)} defaults are the theme`}. The kit's own code is installed from npm and not counted; what is counted is what the repo writes onto its components.${second}</div><div class="excl">Evidence: ${esc(P.evidence.join(' · '))}</div>`;
 }
 
-// A second kit, on the two kit moves: change only the first kit's components
-function secondKitMoveNote(k) {
+// A second kit, on the two kit moves: change only the first kit's
+// components, said only where some of that card's values sit in files that
+// use both kits
+function secondKitMoveNote(k, part) {
   const sk = k.second;
-  return sk?.mixed ? ` In the ${n(sk.mixed)} file${sk.mixed === 1 ? '' : 's'} that also use${sk.mixed === 1 ? 's' : ''} ${esc(sk.name)}, change only what sits on ${esc(k.name)} components.` : '';
+  return sk?.mixed && sk.mixedPaint?.[part] ? ` In the ${n(sk.mixed)} file${sk.mixed === 1 ? '' : 's'} that also use${sk.mixed === 1 ? 's' : ''} ${esc(sk.name)}, change only what sits on ${esc(k.name)} components.` : '';
 }
 
+const aKitName = (name) => `${/^(?:[AEIOU]|MUI)/.test(name) ? 'an' : 'a'} ${esc(name)}`;
 // A second kit, in the kit section: which files are counted and which are not
 function secondKitBlock(k) {
   const sk = k.second;
   if (!sk) return '';
   const mp = sk.mixedPaint ?? { colours: 0, px: 0 };
   const inThem = [mp.colours ? `${n(mp.colours)} of the colours` : '', mp.px ? `${n(mp.px)} of the pixel sizes` : ''].filter(Boolean).join(' and ');
+  const one = mp.colours + mp.px === 1;
   const parts = [
-    sk.withoutFirst ? `${n(sk.withoutFirst)} file${sk.withoutFirst === 1 ? ' uses' : 's use'} only ${esc(sk.name)} and ${sk.withoutFirst === 1 ? 'is' : 'are'} not in the counts above.` : '',
-    sk.mixed ? `${n(sk.mixed)} file${sk.mixed === 1 ? ' uses' : 's use'} both kits and ${sk.mixed === 1 ? 'is' : 'are'} counted${inThem ? `: ${inThem} above ${mp.colours + mp.px === 1 ? 'is' : 'are'} in ${sk.mixed === 1 ? 'it' : 'them'}, so some may sit on ${esc(sk.name)} components` : ''}.` : '',
+    sk.withoutFirst ? `${n(sk.withoutFirst)} file${sk.withoutFirst === 1 ? ' uses' : 's use'} ${esc(sk.name)} without ${esc(k.name)} and ${sk.withoutFirst === 1 ? 'is' : 'are'} not in the counts above.` : '',
+    sk.mixed ? `${n(sk.mixed)} file${sk.mixed === 1 ? ' uses' : 's use'} both kits and ${sk.mixed === 1 ? 'is' : 'are'} counted${inThem ? `: ${inThem} above ${one ? 'is' : 'are'} in ${sk.mixed === 1 ? 'it' : 'them'}, so ${one ? `it may sit on ${aKitName(sk.name)} component` : `some may sit on ${esc(sk.name)} components`}` : ''}.` : '',
     "Follow the kit the file already uses, and never put one kit's styling on the other's components.",
   ].filter(Boolean);
   return `<div class="receipts">${eyebrow(`Two kits · ${esc(sk.name)} in ${n(sk.files)} files`)}<p class="sub">${parts.join(' ')}</p></div>`;

@@ -39,9 +39,15 @@ export function fixPrompt({ title, sub, deltaText, repoName, metric = null, kit 
   const adv = kit ? KITS[kit]?.advice : null;
   const kitLine = adv && { kitColour: adv.promptColour, kitPx: adv.promptSpacing, inlineStyles: adv.promptInline }[metric];
   // a second kit in the repo ({ name, pkg }): the first kit's fix stays off
-  // its components (2026-10-01)
-  const secondLine = adv && second && ['kitColour', 'kitPx', 'inlineStyles'].includes(metric)
-    ? `- This repo also uses ${second.name}${second.pkg ? ` (${second.pkg})` : ''}. Make these changes only on ${kit} components and the wrappers around them. On ${second.name} components, style them the way the files around them do; ${String(adv.idiom ?? `the ${kit} theme`).replace(/`/g, '')} do not reach them.`
+  // its components (2026-10-01). Inline styles are a repo-wide finding, so
+  // there the line only keeps the first kit's props off the second kit's
+  // components; plain elements and other files stay in scope.
+  const also = second ? `- This repo also uses ${second.name}${second.pkg ? ` (${second.pkg})` : ''}.` : '';
+  const secondLine = !adv || !second ? null
+    : ['kitColour', 'kitPx'].includes(metric)
+    ? `${also} Make these changes only on ${kit} components and the wrappers around them. On ${second.name} components, style them the way the files around them do.`
+    : metric === 'inlineStyles'
+    ? `${also} On ${second.name} components, move a style the way the files around them do. Never put one kit's styling on the other's components.`
     : null;
   const lines = [TRAP_LINES[metric], kitLine, secondLine].filter(Boolean);
   const trap = lines.length ? `\n${lines.join('\n')}` : '';

@@ -4,7 +4,7 @@
  * Output: { text, ruleCount } — paste-ready agent-rules markdown, every rule
  * with a receipt from the scanned repo.
  */
-import { KITS } from '../profiles/kit-common.mjs';
+import { KITS, withoutWords } from '../profiles/kit-common.mjs';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { nearColorPairs } from './../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
@@ -78,12 +78,9 @@ const repoName = h.profile?.name ?? 'this repo';
     const near = nearColorPairs(t.colors ?? []);
     if (near.length) rule(`Never eyeball a colour from memory: the scan found ${near.length} nearly identical pair${near.length === 1 ? '' : 's'} (like ${near[0].a.value} next to ${near[0].b.value}). Look the exact value up, or better, use its token.`);
     const ds = h.profile?.designSystem;
-    const two = profileOf(h).kit?.second ? kitPair(profileOf(h).kit) : null;
-    // two kits: both named, biggest first, and no word about which way the
-    // repo is moving; SigNoz's own rules say the opposite of "prefer Ant
-    // Design" (2026-10-01)
-    if (two) rule(`This repo uses two kits: ${two.map(kitCount).join(' and ')}. Follow the kit the file already uses and extend it rather than building parallel pieces. Never put one kit's styling on the other's components.`);
-    else if (ds?.kind && !['none', 'custom'].includes(ds.kind) && ds.confidence !== 'low') {
+    // two kits are named in the kit's own section instead (secondKitLead),
+    // where every such repo gets them, colours or not
+    if (ds?.kind && !['none', 'custom'].includes(ds.kind) && ds.confidence !== 'low' && !profileOf(h).kit?.second) {
       rule(`This repo uses ${ds.name ?? ds.kind}${profileOf(h).uiDir ? `; its components live in \`${profileOf(h).uiDir}\`` : ''}. Prefer extending it over building parallel pieces.`);
     }
   }
@@ -195,7 +192,16 @@ if (neverImported.length >= 3) {
   if (P.isKit && P.kit) {
     const k = P.kit;
     section(`${k.name}: the theme and the components`);
-    rule(k.themeFiles.length
+    // two kits: both named first, biggest first, and no word about which way
+    // the repo is moving; nothing calls one of them what the product is
+    // "built on" (SigNoz's own rules say the opposite of "prefer Ant Design",
+    // 2026-10-01)
+    if (k.second) rule(secondKitLead(k));
+    rule(k.second
+      ? (k.themeFiles.length
+        ? `On ${k.name} components: ${lowerFirst(KITS[k.name]?.advice.rulesTheme(k.themeFiles[0]) ?? '')}`
+        : `On ${k.name} components: the default theme. Before adding a colour to a component, add it to a theme with ${KITS[k.name]?.advice.themeCall ?? 'the kit\'s theme call'} and read it from there.`)
+      : k.themeFiles.length
       ? `This product is built on ${k.name}. ${KITS[k.name]?.advice.rulesTheme(k.themeFiles[0]) ?? ''}`
       : `This product is built on ${k.name} with its default theme. Before adding a colour to a component, add it to a theme with ${KITS[k.name]?.advice.themeCall ?? 'the kit\'s theme call'} and read it from there.`);
     if (k.second) rule(secondKitRule(k));
@@ -286,7 +292,7 @@ if (neverImported.length >= 3) {
 }
 
 // ---------- a second kit beside the first (2026-10-01) ----------
-const fmt = (x) => Number(x).toLocaleString('en-GB');
+const lowerFirst = (t) => t.replace(/^[A-Z](?=[a-z ])/, (c) => c.toLowerCase());
 /** the two kits, biggest first, each with its package and folder where known */
 export function kitPair(k) {
   return [
@@ -294,11 +300,17 @@ export function kitPair(k) {
     { name: k.second.name, pkg: k.second.pkg, files: k.second.files, dir: k.second.dir },
   ].sort((a, b) => b.files - a.files);
 }
-const kitCount = (x) => `${x.name} (${x.pkg ? `\`${x.pkg}\`, ` : ''}${fmt(x.files)} files${x.dir ? ` in \`${x.dir}\`` : ''})`;
+const kitCount = (x) => `${x.name} (${x.pkg ? `\`${x.pkg}\`, ` : ''}${x.files} files${x.dir ? ` in \`${x.dir}\`` : ''})`;
+// a further kit the scan saw in earnest, named so "two kits" is never untrue
+const alsoWords = (k) => ((k.alsoSeen ?? []).length ? `, and also ${andList(k.alsoSeen.map((a) => `${a.name} (${a.files} files)`))}` : '');
+/** the opening rule on a repo with two kits */
+export function secondKitLead(k) {
+  return `This repo uses ${(k.alsoSeen ?? []).length ? 'more than one kit' : 'two kits'}: ${kitPair(k).map(kitCount).join(' and ')}${alsoWords(k)}. Follow the kit the file already uses and extend it rather than building parallel pieces. Never put one kit's styling on the other's components.`;
+}
 /** the kit section's own rules are the first kit's; this says so */
 export function secondKitRule(k) {
   const s = k.second;
-  return `The rules in this section are for ${k.name} components. ${s.name}${s.pkg ? ` (\`${s.pkg}\`)` : ''} is imported in ${fmt(s.files)} files${s.withoutFirst ? `, ${fmt(s.withoutFirst)} of them without ${k.name}` : ''}. On ${s.name} components, style them the way the files around them do; ${KITS[k.name]?.advice.idiom ?? `the ${k.name} theme`} do not reach them.`;
+  return `The rules in this section are for ${k.name} components. ${s.name}${s.pkg ? ` (\`${s.pkg}\`)` : ''} is imported in ${s.files} files${withoutWords(s, k.name)}. On ${s.name} components, style them the way the files around them do.`;
 }
 
 // ---------- shadcn in utility-class mode (words approved by Greg, 2026-10-01) ----------

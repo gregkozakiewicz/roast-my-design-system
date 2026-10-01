@@ -13,6 +13,7 @@ import { validateContent, cleanResultText, checksFor } from './engine.mjs';
 import { freshKnowledge } from './knowledge.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
+import { kitPair } from '../rules/build.mjs';
 
 const CONTEXT_BUDGET = 1600; // chars ≈ 400 tokens
 // the files a review or an edit hook judges; everything else is not UI
@@ -46,15 +47,17 @@ export function getContext(k, { path = null } = {}) {
     // kit's theme advice is said to be for its own components (2026-10-01)
     const kit = k.kit, adv = kit.def?.advice, sk = kit.second;
     const theme = kit.themeFiles?.[0];
-    const pair = [{ name: kit.name, files: kit.kitFiles, dir: sk.firstDir }, { name: sk.name, files: sk.files, dir: sk.dir }].sort((a, b) => b.files - a.files);
     const one = (x) => `${x.name} (${x.files} files${x.dir ? ` in ${x.dir}` : ''})`;
-    L.push(`KITS: two in use. ${one(pair[0])} and ${one(pair[1])}${sk.mixed ? `; ${sk.mixed} file${sk.mixed === 1 ? ' imports' : 's import'} both` : ''}. Follow the kit the file already uses; never put one kit's styling on the other's components. A new file follows its neighbours.`);
+    const also = kit.alsoSeen ?? [];
+    L.push(`KITS: ${['two', 'three', 'four'][also.length] ?? 2 + also.length} in use. ${[...kitPair(kit), ...also].map(one).join(', ').replace(/, ([^,]*)$/, ' and $1')}${sk.mixed ? `; ${sk.mixed} file${sk.mixed === 1 ? ' imports' : 's import'} both` : ''}. Follow the kit the file already uses; never put one kit's styling on the other's components. A new file follows its neighbours.`);
     L.push(theme
-      ? `  On ${kit.name} components: ${plain(adv?.rulesTheme?.(theme))}`
+      ? `  On ${kit.name} components: ${plain(adv?.rulesTheme?.(theme)).replace(/^[A-Z](?=[a-z ])/, (c) => c.toLowerCase())}`
       : `  On ${kit.name} components: the default theme. Before adding a colour, add it with ${adv?.themeCall ?? 'the theme call'} and read it from there.`);
     const c = kit.colour?.uses ?? 0, p = kit.px?.uses ?? 0;
-    if (c || p) L.push(`  Already written onto ${kit.name} components: ${[c ? `${c} colour${c === 1 ? '' : 's'} (${kit.colour.samples.slice(0, 3).map((x) => x.value).join(', ')})` : '', p ? `${p} pixel size${p === 1 ? '' : 's'}` : ''].filter(Boolean).join(' and ')}; do not add more.`);
-    L.push(`  On ${sk.name} components${sk.pkg ? ` (${sk.pkg})` : ''}: style them the way the files around them do; ${plain(adv?.idiom ?? `the ${kit.name} theme`)} do not reach them.`);
+    // counted in the first kit's files: some may sit on the second kit's
+    // components, which the live checks name one by one
+    if (c || p) L.push(`  Already written onto components in ${kit.name} files: ${[c ? `${c} colour${c === 1 ? '' : 's'} (${kit.colour.samples.slice(0, 3).map((x) => x.value).join(', ')})` : '', p ? `${p} pixel size${p === 1 ? '' : 's'}` : ''].filter(Boolean).join(' and ')}; do not add more.`);
+    L.push(`  On ${sk.name} components${sk.pkg ? ` (${sk.pkg})` : ''}: style them the way the files around them do.`);
   } else if (k.kit) {
     const kit = k.kit, adv = kit.def?.advice;
     const theme = kit.themeFiles?.[0];
@@ -145,7 +148,15 @@ export function getContext(k, { path = null } = {}) {
     }
   }
   const TRIM = '\n(trimmed to budget; ask roast_find_component / roast_find_token for specifics)';
-  if (text.length > CONTEXT_BUDGET) text = `${text.slice(0, text.lastIndexOf('\n', k.kit?.second ? CONTEXT_BUDGET - TRIM.length : CONTEXT_BUDGET))}${TRIM}`;
+  if (text.length > CONTEXT_BUDGET && k.kit?.second) {
+    // still over: cut the middle, never the KITS lines at the top nor
+    // DISCIPLINE and the closing roast_validate line at the end
+    const tailAt = text.indexOf('\nDISCIPLINE:');
+    const tail = tailAt >= 0 ? text.slice(tailAt) : '';
+    const room = CONTEXT_BUDGET - tail.length - TRIM.length;
+    const head = tailAt >= 0 ? text.slice(0, tailAt) : text;
+    text = `${head.slice(0, Math.max(0, head.lastIndexOf('\n', room)))}${TRIM}${tail}`;
+  } else if (text.length > CONTEXT_BUDGET) text = `${text.slice(0, text.lastIndexOf('\n', CONTEXT_BUDGET))}${TRIM}`;
   // No credit line here (8.1.1): a tool answers the question and nothing
   // else. Attribution lives on the report and in the skill's citation rule.
   return text;
@@ -260,7 +271,9 @@ export function findToken(k, args = {}) {
   const sk = k.kit?.second;
   if (!sk || typeof answer !== 'string') return answer;
   const v = String(args.value ?? '').trim();
-  if (hexRgb(v.toLowerCase())) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, set colour the way the files around them do.`;
+  // only an answer that points at the kit's theme is the kit's advice; "no
+  // token scale here" is true of the whole repo
+  if (hexRgb(v.toLowerCase()) && k.tokenColorRgb?.length) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, set colour the way the files around them do.`;
   if (toPxLocal(v) !== null && k.kit.def?.advice?.step) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, set sizes the way the files around them do.`;
   return answer;
 }

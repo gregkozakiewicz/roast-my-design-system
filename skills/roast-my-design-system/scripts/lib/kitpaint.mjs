@@ -121,18 +121,72 @@ const layerImportSource = (layers) => `from\\s+['"](?:[^'"]*\\/)?(?:${layers.map
 // open at the value, or the component handed to styled(); anything else
 // (plain HTML, the team's own components, a style object outside JSX) stays
 // with the first kit, as before.
-const IMPORT_RE = /import\s+(?:type\s+)?([\s\S]*?)\s+from\s+['"]([^'"]+)['"]/g;
-/** local name -> import source, for every name a file imports */
+// one statement at a time: a side-effect import (import './x.css') never
+// runs on into the next statement's names
+const IMPORT_RE = /\bimport\s+(?:type\s+)?([^'";]*?)\s+from\s+['"]([^'"]+)['"]/g;
+const REQUIRE_RE = /\b(?:const|let|var)\s+(\{[^}]*\}|[A-Za-z_$][\w$]*)\s*=\s*require\(\s*['"]([^'"]+)['"]\s*\)/g;
+/** local name -> import source, for every name a file imports or requires */
 function importMap(code) {
   const m = new Map();
+  const names = (list, from) => {
+    for (const part of list.split(',')) {
+      const p = part.trim().replace(/^type\s+/, '');
+      if (!p) continue;
+      const [a, b] = p.split(/\s+as\s+|\s*:\s*/);
+      m.set((b ?? a).trim(), from);
+    }
+  };
   for (const [, what, from] of code.matchAll(IMPORT_RE)) {
     const d = what.match(/^([A-Za-z_$][\w$]*)/); if (d && d[1] !== 'type') m.set(d[1], from);
     const ns = what.match(/\*\s+as\s+([\w$]+)/); if (ns) m.set(ns[1], from);
-    const br = what.match(/\{([\s\S]*)\}/);
-    if (br) for (const part of br[1].split(',')) { const p = part.trim().replace(/^type\s+/, ''); if (!p) continue; const [a, b] = p.split(/\s+as\s+/); m.set((b ?? a).trim(), from); }
+    const br = what.match(/\{([\s\S]*)\}/); if (br) names(br[1], from);
+  }
+  for (const [, what, from] of code.matchAll(REQUIRE_RE)) {
+    if (what.startsWith('{')) names(what.slice(1, -1), from); else m.set(what, from);
   }
   return m;
 }
+// the index just past a quoted string or template that opens at i
+function pastString(code, i) {
+  const q = code[i];
+  for (let j = i + 1; j < code.length; j++) {
+    if (code[j] === '\\') { j++; continue; }
+    if (code[j] === q) return j + 1;
+  }
+  return code.length;
+}
+// the index just past the balanced group that opens at i: ( ) or < >
+function pastGroup(code, i, open, close, limit = code.length) {
+  let d = 0;
+  for (let j = i; j < limit; j++) {
+    const ch = code[j];
+    if (ch === '"' || ch === "'" || ch === '`') { j = pastString(code, j) - 1; continue; }
+    if (ch === open) d++;
+    else if (ch === close && --d === 0) return j + 1;
+  }
+  return -1;
+}
+/**
+ * Is the JSX tag that opens at i still open at index? 'open' when the value
+ * sits in its attributes, 'closed' when a > ends it first, 'body' when the
+ * value sits inside a function written in one of its props (a render prop
+ * building a style for another element): then nothing is said about it.
+ * Quoted text and a tag's type arguments (<Select<Option>) are skipped.
+ */
+function tagState(code, i, name, index) {
+  let j = i + 1 + name.length;
+  if (code[j] === '<') { const past = pastGroup(code, j, '<', '>', index); if (past < 0) return 'closed'; j = past; }
+  const stack = [];
+  for (; j < index; j++) {
+    const ch = code[j];
+    if (ch === '"' || ch === "'" || ch === '`') { j = pastString(code, j) - 1; continue; }
+    if (ch === '{') stack.push(stack.length && /(?:=>|\))\s*$/.test(code.slice(Math.max(i, j - 40), j)) ? 'body' : 'expr');
+    else if (ch === '}') stack.pop();
+    else if (ch === '>' && !stack.length && code[j - 1] !== '=') return 'closed';
+  }
+  return stack.includes('body') ? 'body' : 'open';
+}
+const STYLED_RE = /\bstyled(?:\(\s*(['"]?)([A-Za-z][\w.]*)\1|\.(\w+))/g;
 /** the element a value sits on: the JSX tag still open at index, or the component handed to styled() */
 function elementAt(code, index) {
   let i = index;
@@ -141,20 +195,23 @@ function elementAt(code, index) {
     if (i < 0) break;
     const m = /^<([A-Za-z][\w.]*)/.exec(code.slice(i, i + 80));
     if (!m) continue;
-    // still open when no > closes it at brace depth 0 before the value: a
-    // prop holding JSX (title={<Box sx={...} />}) belongs to the inner tag
-    let depth = 0, open = true;
-    for (let j = i + 1; j < index; j++) {
-      const ch = code[j];
-      if (ch === '{') depth++;
-      else if (ch === '}') depth--;
-      else if (ch === '>' && depth === 0 && code[j - 1] !== '=') { open = false; break; }
-    }
-    if (open && depth >= 0) return m[1];
+    const state = tagState(code, i, m[1], index);
+    if (state === 'open') return m[1];
+    if (state === 'body') return null;
   }
-  const back = code.slice(Math.max(0, index - 600), index);
-  const st = [...back.matchAll(/\bstyled\(\s*([A-Z][\w.]*)/g)].pop();
-  return st ? st[1] : null;
+  // styled(Component)(...) or styled(Component)`...`: only when the value sits
+  // inside the styles handed to that call, never after it, and never for
+  // styled('div') or styled.div
+  const from = Math.max(0, index - 600);
+  const last = [...code.slice(from, index).matchAll(STYLED_RE)].pop();
+  if (!last || last[1] || last[3] || !/^[A-Z]/.test(last[2])) return null;
+  const call = code.indexOf('(', from + last.index);
+  let j = pastGroup(code, call, '(', ')');
+  if (j < 0) return null;
+  while (/\s/.test(code[j] ?? '')) j++;
+  if (code[j] === '<') { j = pastGroup(code, j, '<', '>'); if (j < 0) return null; }
+  const end = code[j] === '(' ? pastGroup(code, j, '(', ')') : code[j] === '`' ? pastString(code, j) : -1;
+  return end > index && j < index ? last[2] : null;
 }
 /** the other kit that owns the element at index, as { name, from }, or null */
 function otherKitAt(code, index, imports, def, ownRe) {

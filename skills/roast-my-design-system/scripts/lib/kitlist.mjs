@@ -20,22 +20,24 @@
  */
 
 export const KIT_LIST = [
-  { name: 'MUI', re: /^@(?:mui|material-ui)\/(?!icons-material|icons(?:\/|$)|utils|types)/ },
+  // @mui/base is MUI's unstyled layer, headless like Radix
+  { name: 'MUI', re: /^@(?:mui|material-ui)\/(?!icons-material|icons(?:\/|$)|utils|types|base(?:\/|$))/ },
   { name: 'Mantine', re: /^@mantine\/(?!hooks|form(?:\/|$)|colors-generator)/ },
-  { name: 'Chakra', re: /^@chakra-ui\/(?!icons|utils)/ },
+  { name: 'Chakra', re: /^@chakra-ui\/(?!icons|utils|hooks|theme-tools|anatomy)/ },
   // ProComponents are Ant Design's own (APISIX imports them in 13 of 16 files)
   { name: 'Ant Design', re: /^(?:antd(?:\/|$)|@ant-design\/pro-)/ },
   { name: 'Backstage UI', re: /^@backstage\/ui(?:\/|$)/ },
-  { name: 'Akamai CDS', re: /^@akamai\/cds-/ },
+  { name: 'Akamai CDS', re: /^@akamai\/cds-(?!icons|tokens)/ },
   { name: 'Filigran Design System', re: /^@filigran\/design-system(?:\/|$)/ },
   { name: 'SigNoz UI', re: /^@signozhq\/ui(?:\/|$)/ },
   { name: 'Cube UI Kit', re: /^@cube-dev\/ui-kit(?:\/|$)/ },
-  { name: 'TiDB Cloud UIKit', re: /^@tidbcloud\/uikit(?:\/|$)/ },
+  // a design system's own icons, hooks, utilities and theme are not its components
+  { name: 'TiDB Cloud UIKit', re: /^@tidbcloud\/uikit(?:\/(?!icons|hooks|utils|theme|emotion)|$)/ },
   { name: 'Grafana UI', re: /^@grafana\/ui(?:\/|$)/ },
   { name: 'Bootstrap', re: /^(?:reactstrap|react-bootstrap)(?:\/|$)/ },
   { name: 'NativeBase', re: /^native-base(?:\/|$)/ },
   { name: 'React Native Paper', re: /^react-native-paper(?:\/|$)/ },
-  { name: 'Agenta UI', re: /^@agenta\/ui(?:\/|$)/ },
+  { name: 'Agenta UI', re: /^@agenta\/ui(?:\/(?!hooks|utils|theme|styles)|$)/ },
 ];
 
 /** The kit an import source belongs to, or null. */

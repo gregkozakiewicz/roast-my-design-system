@@ -1032,6 +1032,32 @@ console.log('a registry\'s own work, and installed values by owner (9.6.0):');
   rmSync(work, { recursive: true, force: true });
 }
 
+// 9.6.1: a file that imports only the team's layer over the kit is a kit
+// file for the live checks too. The live checks built the layer pattern in a
+// template string with a single backslash, so it never matched: they judged
+// 750 of Linode's 1,487 kit files (2026-10-01).
+console.log('a kit layer in the live checks (9.6.1):');
+{
+  const { validateContent } = await import(pathToFileURL(join(ENGINE, 'mcp/engine.mjs')).href);
+  const { kitImportRe } = await import(pathToFileURL(join(ENGINE, 'lib/kitpaint.mjs')).href);
+  const re = kitImportRe({ importRe: /from\s+['"]@mui\//, themeRe: /x/ }, ['@acme/ui']);
+  re.test("import { Box } from '@acme/ui';") && re.test('import { Box } from "@acme/ui/box";') && !re.test("import { y } from '@acme/uix';")
+    ? ok('the layer pattern matches an import of the layer, and only the layer') : bad('layer pattern', re.source);
+  const work = mkdtempSync(join(tmpdir(), 'roast-layer-'));
+  const app = join(work, 'app');
+  cpSync(join(FIXTURES, 'muikit'), app, { recursive: true });
+  mkdirSync(join(app, 'packages/ui/src'), { recursive: true });
+  writeFileSync(join(app, 'packages/ui/package.json'), '{ "name": "@acme/ui", "private": true }\n');
+  for (const c of ['Box', 'Stack', 'Typography']) writeFileSync(join(app, `packages/ui/src/${c}.ts`), `export { default as ${c} } from '@mui/material/${c}';\n`);
+  const banner = "import { Box } from '@acme/ui';\nexport const Banner = () => <Box sx={{ bgcolor: '#ff0000', p: '13px' }}>x</Box>;\n";
+  writeFileSync(join(app, 'src/components/Banner.tsx'), banner);
+  const k = loadKnowledge(app);
+  (k.kit?.layers ?? []).includes('@acme/ui') ? ok('the team\'s layer over the kit is recognised') : bad('layer recognised', JSON.stringify(k.kit?.layers));
+  const rules = validateContent({ text: banner, file: 'src/components/Banner.tsx' }, k).findings.map((f) => f.rule).sort().join(',');
+  rules === 'kit-colour,kit-px' ? ok('a file that imports only the layer is judged by the kit rule') : bad('layer file judged', rules || 'nothing');
+  rmSync(work, { recursive: true, force: true });
+}
+
 console.log('mcp server:');
 {
   const msgs = [

@@ -2,6 +2,19 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.6.1 — unreleased
+
+- **The edit check and the guard judge files that use a team's own layer
+  over its kit.** On a product built on MUI, Mantine, Chakra UI or Ant
+  Design, the report counts the files that import the team's own wrapper
+  around the kit (Linode's `@linode/ui`, Metabase's `metabase/ui`) as kit
+  files. A slip in one line meant the edit check, the end-of-turn review,
+  `roast_validate`, `--check` and the guard never recognised those imports,
+  so a colour or a pixel size written onto a kit component in such a file
+  was not flagged. On Linode they judged 750 of the 1,487 kit files the
+  report counts, on Metabase 344 of 2,679. They now find every colour and
+  pixel size the report counts on both. No report number or score moves.
+
 ## 9.6.0 — 2026-10-01
 
 - **The edit check and the guard read class lists the way the report does.**

@@ -104,11 +104,17 @@ const SPACING_CUSTOM_RE = /\bspacing(?:Config)?\s*:\s*(?:\([^)]*\)\s*=>|\w+\s*=>
 const blank = (s, re) => s.replace(re, (m) => ' '.repeat(m.length));
 const blankPalettes = (code) => code.replace(ARRAY_RE, (a) => ((a.match(QUOTED_COLOUR_RE) ?? []).length >= 8 ? ' '.repeat(a.length) : a));
 
+// An import of the team's own layer over the kit (@linode/ui, metabase/ui).
+// One builder for the report's count and the live checks: until 9.6.1 the
+// live checks built their own copy in a template string with a single
+// backslash, which JavaScript drops, so it looked for "froms" and never
+// matched. The live checks and the guard judged 750 of Linode's 1,487 kit
+// files and 344 of Metabase's 2,679 (2026-10-01).
+const layerImportSource = (layers) => `from\\s+['"](?:[^'"]*\\/)?(?:${layers.map(escapeRe).join('|')})(?:['"]|\\/)`;
+
 /** The import test a kit's files pass, the team's own layer included. */
 export function kitImportRe(def, layers = []) {
-  return layers.length
-    ? new RegExp(`${def.importRe.source}|from\s+['"](?:[^'"]*\/)?(?:${layers.map(escapeRe).join('|')})(?:['"]|\/)`)
-    : def.importRe;
+  return layers.length ? new RegExp(`${def.importRe.source}|${layerImportSource(layers)}`) : def.importRe;
 }
 
 /**
@@ -143,9 +149,7 @@ export function kitPaintInSource(src, def, { file = null, layers = [], email = n
 
 export function countKitPaint(root, codeFiles, { importRe: kitImportRe, themeRe, refRe, themeImportRe = kitImportRe, pxPropRes = [], pxMin = 0, reexportRe = null, spacingCustomRe = null }, { email = null } = {}) {
   const layers = reexportRe ? kitLayers(root, codeFiles, reexportRe) : [];
-  const importRe = layers.length
-    ? new RegExp(`${kitImportRe.source}|from\\s+['"](?:[^'"]*\\/)?(?:${layers.map(escapeRe).join('|')})(?:['"]|\\/)`)
-    : kitImportRe;
+  const importRe = layers.length ? new RegExp(`${kitImportRe.source}|${layerImportSource(layers)}`) : kitImportRe;
   const themeFiles = [];
   const themeValues = new Set();
   const spacingUnits = new Set();

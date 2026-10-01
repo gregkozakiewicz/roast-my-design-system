@@ -60,11 +60,13 @@ export const DEMO_PATH_RE = /(^|\/)(stories|storybook|__stories__|examples?|demo
 /**
  * @param root repo root
  * @param codeFiles relative code paths from the walk
- * @param opts { uiDirs: string[], kitNames: Set<string> } — catalogue folders
+ * @param opts { uiDirs: string[], kitNames: Set<string> } — catalogue folders;
+ *   `isDoor(file)` in place of uiDirs decides file by file (9.5.0: a team
+ *   component kept in the catalogue folder is own code, profiles/installed.mjs)
  *   and the component names defined in them
  */
-export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(), retuned = [], families = null, email = null } = {}) {
-  const inCatalogue = (f) => uiDirs.some((d) => f === d || f.startsWith(`${d}/`));
+export function countPaint(root, codeFiles, { uiDirs = [], isDoor = null, kitNames = new Set(), retuned = [], families = null, email = null } = {}) {
+  const inCatalogue = isDoor ?? ((f) => uiDirs.some((d) => f === d || f.startsWith(`${d}/`)));
   const names = [...kitNames].filter((n) => /^[A-Z][A-Za-z0-9]*$/.test(n));
   const doorOpen = names.length
     ? new RegExp(`<(${names.join('|')})\\b[^>]*?className=(?:"([^"]*)"|\\{cn\\(\\s*["'\`]([^"'\`]*)["'\`])`, 'g')
@@ -140,4 +142,23 @@ export function countPaint(root, codeFiles, { uiDirs = [], kitNames = new Set(),
     samples: [...b.samples.entries()].sort((a, b2) => b2[1] - a[1]).slice(0, 10).map(([value, count]) => ({ value, count })),
   });
   return { ownFiles, tin: finish(tin), doors: finish(doors), typo: finish(typo) };
+}
+
+/**
+ * The palette shades shadcn's own components paint with, most used first,
+ * with variant prefixes and opacity dropped (hover:bg-zinc-900/90 is
+ * bg-zinc-900). On a utility-class install these are the system: the rules
+ * file tells the agent to stay with them (9.5.0).
+ */
+export function doorShades(root, doorFiles) {
+  const tally = new Map();
+  for (const f of doorFiles) {
+    const raw = readSource(join(root, f));
+    if (raw === null) continue;
+    for (const m of blankComments(raw).matchAll(PALETTE_CLASS_RE)) {
+      const cls = m[0].replace(/^(?:[\w-]+:)*/, '').replace(/\/\d+$/, '');
+      tally.set(cls, (tally.get(cls) ?? 0) + 1);
+    }
+  }
+  return [...tally.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8).map(([value, count]) => ({ value, count }));
 }

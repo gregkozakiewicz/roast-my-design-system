@@ -850,7 +850,9 @@ console.log('kits in the mcp:');
   const spc = sp.findings.filter((f) => f.rule === 'palette-class').map((f) => f.message.split(' ')[2]);
   JSON.stringify(spc) === JSON.stringify(['ring-green-500', 'dark:bg-black']) ? ok('shadcn: palette classes and a hand-painted dark override are flagged, a theme class is not') : bad('shadcn palette-class', JSON.stringify(sp.findings));
   sp.findings[0].message.includes('src/styles/globals.css') && sp.findings[0].fix.includes('ring-border') ? ok('shadcn: the finding names the sheet and a theme class for the utility') : bad('shadcn palette fix', JSON.stringify(sp.findings[0]));
-  validateContent({ text: tin, file: 'src/components/ui/x.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? bad('shadcn catalogue palette', 'flagged inside the catalogue') : ok('shadcn: the catalogue is the kit\'s own door, not judged for palette');
+  validateContent({ text: tin, file: 'src/components/ui/card.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? bad('shadcn catalogue palette', 'flagged inside the catalogue') : ok('shadcn: the catalogue is the kit\'s own door, not judged for palette');
+  // 9.5.0: a component of the team's own kept in the catalogue folder is not a door
+  validateContent({ text: tin, file: 'src/components/ui/status-banner.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? ok('shadcn: a team component kept in the catalogue folder is judged like own code') : bad('team component in catalogue', 'not judged');
   validateContent({ text: tin, file: 'src/stories/x.tsx' }, sk).findings.some((f) => f.rule === 'palette-class') ? bad('shadcn demo palette', 'flagged in a stories folder') : ok('shadcn: a demo folder is not own code');
   // a templates folder in a product is a screen (teable's admin templates,
   // documenso's template picker): judged like any screen (2026-09-30)
@@ -893,7 +895,53 @@ export const X = () => <Card className="border-green-500">x</Card>; // https://e
   const ownHit = validateContent({ text: ownCode, file: 'src/app/x.tsx' }, ownk).findings.filter((f) => f.rule === 'palette-class');
   ownHit.map((f) => f.message.split(' ')[2]).join() === 'text-gray-500,bg-blue-500' ? ok('own theme under a shadcn kit: palette classes are flagged, the dark override is a Tailwind-theme matter') : bad('own theme findings', JSON.stringify(ownHit));
   ownHit[0]?.fix.includes('text-ink') && ownHit[0].message.includes('src/app/globals.css') ? ok('own theme: the fix names the theme\'s own class and file') : bad('own theme fix', JSON.stringify(ownHit[0]));
-  !validateContent({ text: ownCode, file: 'src/components/ui/x.tsx' }, ownk).findings.some((f) => f.rule === 'palette-class') ? ok('own theme: the catalogue is still the kit\'s door') : bad('own theme catalogue', 'flagged inside the catalogue');
+  !validateContent({ text: ownCode, file: 'src/components/ui/card.tsx' }, ownk).findings.some((f) => f.rule === 'palette-class') ? ok('own theme: the catalogue is still the kit\'s door') : bad('own theme catalogue', 'flagged inside the catalogue');
+}
+
+// 9.5.0: the catalogue folder is not all shadcn's. A component of the team's
+// own kept there is own code for every tile, the live checks and the guard.
+// Probed 2026-10-01: 33 of 44 fleet shadcn repos keep their own components in
+// the folder, 1,014 of 2,709 files, with 1,285 palette classes nothing counted.
+console.log('the catalogue folder, file by file (9.5.0):');
+{
+  const { validateContent } = await import(pathToFileURL(join(ENGINE, 'mcp/engine.mjs')).href);
+  const { isShadcnFile, installedFile } = await import(pathToFileURL(join(ENGINE, 'profiles/installed.mjs')).href);
+  isShadcnFile('components/ui/button.tsx') && isShadcnFile('src/ui/Avatar.tsx') && isShadcnFile('components/ui/alert-dialog/index.tsx') && isShadcnFile('components/app-sidebar.tsx')
+    ? ok('shadcn\'s components are known however they are spelt (button, Avatar, a folder index, a kit block)') : bad('shadcn names', 'a shadcn component was not recognised');
+  !isShadcnFile('components/ui/status-banner.tsx') && !isShadcnFile('components/ui/InvoiceTable.tsx') ? ok('a name shadcn never shipped is not shadcn\'s') : bad('team names', 'a team component read as shadcn\'s');
+  const P = { uiDirs: ['components/ui'], shadcn: { blockFiles: ['components/app-sidebar.tsx'], registryDirs: ['components/ai-elements'] } };
+  installedFile(P, 'components/ui/card.tsx') && installedFile(P, 'components/app-sidebar.tsx') && installedFile(P, 'components/ai-elements/message.tsx') && !installedFile(P, 'components/ui/status-banner.tsx') && !installedFile(P, 'app/page.tsx')
+    ? ok('installed: shadcn\'s components, kit blocks and registries; the team\'s own file in the folder is not') : bad('installedFile', 'wrong split');
+
+  const mh = JSON.parse(readFileSync(join(tmp, 'shadcnmixed.json'), 'utf8'));
+  const inst = (mh.profile.shadcn.arbitraryInstalled?.values ?? []).map((v) => v.value).sort().join(',');
+  inst === '[2.25rem],[3px]' ? ok('bracket values in shadcn\'s components (Avatar.tsx included) stay out of the count') : bad('installed brackets', inst);
+  (mh.tokens.tailwind.arbitrary ?? []).some((a) => a.value === '[13px]') && !(mh.profile.shadcn.arbitraryInstalled?.values ?? []).some((v) => v.value === '[13px]')
+    ? ok('a bracket value in the team\'s own component in the folder is the team\'s') : bad('team bracket', 'not counted as own');
+  const tin = (mh.profile.shadcn.paint?.tin?.samples ?? []).map((x) => x.value).sort().join(',');
+  tin === 'bg-amber-50,text-amber-600' ? ok('palette classes in the team\'s own component in the folder are counted') : bad('team paint', tin);
+  const mk = loadKnowledge(join(FIXTURES, 'shadcnmixed'));
+  const snippet = 'export const X = () => <div className="px-3 text-[13px] text-amber-600">x</div>;';
+  const bf = validateContent({ text: snippet, file: 'components/ui/status-banner.tsx' }, mk).findings.map((f) => f.rule);
+  bf.includes('palette-class') && bf.includes('arbitrary-value') ? ok('the live check judges the team\'s own component in the folder') : bad('live check team file', JSON.stringify(bf));
+  const sf = validateContent({ text: snippet, file: 'components/ui/button.tsx' }, mk).findings.map((f) => f.rule);
+  !sf.includes('arbitrary-value') && !sf.includes('palette-class') ? ok('the live check leaves shadcn\'s own component alone') : bad('live check shadcn file', JSON.stringify(sf));
+}
+
+// 9.5.0: shadcn in utility-class mode gets the words Greg approved on
+// 2026-10-01, not "use the theme variables, never a palette colour".
+console.log('utility-class shadcn in the rules file (9.5.0):');
+{
+  const rt = (fx) => rulesMarkdown(JSON.parse(readFileSync(join(tmp, `${fx}.json`), 'utf8'))).text;
+  const own = rt('shadcnutiltheme');
+  own.includes('so the components paint with Tailwind classes. The theme file, `src/app/globals.css`, gives neutral-50 to neutral-950 this repo\'s own values, and names destructive, accent and the chart colours. Use those classes. Never a palette colour the theme does not own, such as `text-red-500`; use `text-destructive`, or add the colour to the theme once.')
+    ? ok('a theme of its own: the approved words, filled from the repo') : bad('utility own-theme words', own.slice(own.indexOf('shadcn is installed'), own.indexOf('shadcn is installed') + 500));
+  !own.includes('never a palette colour like') && !own.includes('The theme is a set of CSS variables') ? ok('no "theme variables, never a palette colour" on a utility install') : bad('utility contradiction', 'old words still there');
+  /palette colours the theme does not own already sit in own code, `text-red-500` ×2/.test(own) ? ok('the count names only the colours the theme does not own') : bad('utility own-theme count', own);
+  const plain = rt('shadcnutil');
+  plain.includes('so the components paint with Tailwind\'s palette classes by design. Stay with the shades they already use (`bg-zinc-900`, `text-zinc-50`). Never a hex, an rgb() or a bracket colour.')
+    ? ok('no theme of its own: the approved words, with the shades the components use') : bad('utility plain words', plain.slice(plain.indexOf('shadcn is installed'), plain.indexOf('shadcn is installed') + 400));
+  !/palette colours? already sit in own code/.test(plain) ? ok('the palette is the system there, so no "do not add palette colours" line') : bad('utility plain count', 'line still there');
 }
 
 console.log('mcp server:');
@@ -1048,6 +1096,13 @@ if (existsSync(bin)) {
   api.paletteFindings('export const X = () => <span className="text-gray-500">x</span>;', twSys.profile.palette, { file: 'src/stories/x.tsx' }).length === 0 ? ok('doorway: a demo folder is left out') : bad('doorway demo', 'flagged');
   api.learnSystem(join(FIXTURES, 'shadcnutil')).profile.palette === null ? ok('doorway: utility-class mode switches the palette rule off') : bad('doorway utility palette', 'expected null');
   api.learnSystem(join(FIXTURES, 'shadcnsplit')).profile.palette?.source === 'shadcn' ? ok('doorway: a split sheet still holds the contract') : bad('doorway split palette', 'expected shadcn');
+  // 9.5.0: installed code, file by file, through the doorway
+  const mixed = api.learnSystem(join(FIXTURES, 'shadcnmixed')).profile;
+  mixed.installedFrom && api.installedFile(mixed.installedFrom, 'components/ui/button.tsx') && !api.installedFile(mixed.installedFrom, 'components/ui/status-banner.tsx')
+    ? ok('doorway: installedFile leaves shadcn\'s components out and the team\'s own file in') : bad('doorway installedFile', JSON.stringify(mixed.installedFrom));
+  api.paletteFindings('export const X = () => <p className="text-amber-600">x</p>;', mixed.palette, { file: 'components/ui/status-banner.tsx' }).length === 1
+    && api.paletteFindings('export const X = () => <p className="text-amber-600">x</p>;', mixed.palette, { file: 'components/ui/card.tsx' }).length === 0
+    ? ok('doorway: the palette rule judges the team\'s own file in the folder and leaves shadcn\'s alone') : bad('doorway palette doors', 'wrong');
   sys.profile.kit?.name === 'MUI' && sys.profile.kit.themeFiles[0] === 'src/theme/theme.ts'
     ? ok('the doorway names the kit and its theme file') : bad('doorway kit', JSON.stringify(sys.profile.kit));
   sys.tokens.includes('#667085') ? ok('the theme colours are the token set on a kit repo') : bad('doorway kit tokens', sys.tokens.join(','));

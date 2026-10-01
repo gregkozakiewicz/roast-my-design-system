@@ -32,7 +32,7 @@ import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
 import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
-import { ownSpacing, profileOf, installedDirs, splitArbitrary } from '../profiles/index.mjs';
+import { ownSpacing, profileOf, installedOf, splitArbitrary } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { rulesOn as lintRulesOn, describeRule as lintDescribe, entryMatcher as lintMatcher, RULE_TILE as LINT_TILE } from '../profiles/shadcn-lint.mjs';
 import { publishesLine } from '../profiles/registry.mjs';
@@ -257,7 +257,7 @@ const P = profileOf(h);
 const fresh = P.isShadcn && P.shadcn?.fresh?.fresh === true;
 // On a shadcn repo the bracket list is the team's own; installed brackets are
 // named in the side panel instead (see coreMetrics for the count).
-if (P.isShadcn) arbitrary = splitArbitrary(arbitrary, installedDirs(P)).own;
+if (P.isShadcn) arbitrary = splitArbitrary(arbitrary, installedOf(P)).own;
 const breakdown = scoreBreakdown(h, bench);
 const neverImported = neverImportedComponents(h.components, P.uiDir);
 

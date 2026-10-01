@@ -9,7 +9,8 @@ import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { nearColorPairs } from './../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { VERSION } from '../lib/version.mjs';
-import { profileOf, installedDirs, splitArbitrary, ownSpacing } from '../profiles/index.mjs';
+import { profileOf, installedOf, splitArbitrary, ownSpacing } from '../profiles/index.mjs';
+import { themeClassFor } from '../lib/palette.mjs';
 import { rulesOn as lintRulesOn, describeRule as lintDescribe } from '../profiles/shadcn-lint.mjs';
 
 export function rulesMarkdown(h, opts = {}) {
@@ -157,7 +158,7 @@ if (neverImported.length >= 3) {
   // On a kit the values inside installed folders are shadcn's own: the
   // counts here are the team's, the shadcn section explains the rest.
   const P0 = profileOf(h);
-  const arbitrary = P0.isShadcn ? splitArbitrary(t.tailwind?.arbitrary ?? [], installedDirs(P0)).own : (t.tailwind?.arbitrary ?? []);
+  const arbitrary = P0.isShadcn ? splitArbitrary(t.tailwind?.arbitrary ?? [], installedOf(P0)).own : (t.tailwind?.arbitrary ?? []);
   const arbCount = arbitrary.reduce((s, a) => s + a.count, 0);
   const offScale = ownSpacing(h).css.length;
   if (t.tailwind?.spacing?.length || offScale || arbCount) {
@@ -205,10 +206,21 @@ if (neverImported.length >= 3) {
     const paint = sc.paint ?? null;
     section('shadcn: the components and the theme');
     if (P.isRegistry) rule(`This repo publishes a shadcn registry${P.registry?.publishes ? ` (${[['components', P.registry.publishes.components], ['blocks', P.registry.publishes.blocks], ['styles', P.registry.publishes.styles]].filter(([, v]) => v).map(([k, v]) => `${v} ${k}`).join(', ')})` : ''}. A palette colour, a bracket value or a hand-written dark: colour written here ships into every repo that installs it. Hold published code to the theme variables and the scale harder than app code, and keep demos and examples out of published files.`);
-    rule(`This is a shadcn install${sc.kit?.style ? ` (style \`${sc.kit.style}\`${sc.kit.baseColor ? `, base colour ${sc.kit.baseColor}` : ''})` : ''}. The theme is a set of CSS variables${sheetFile ? ` in \`${sheetFile}\`` : ''}: background, foreground, primary, muted, border and the rest, each with a light and a dark value. Change a colour there, never in a component.`);
-    if ((sc.sheet?.shadcnPresent ?? 0) >= 5 || sc.kit?.cssVariables === false) rule('Use the semantic classes the theme gives you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The variables already carry both modes.');
-    else rule(`${sheetFile ? `\`${sheetFile}\` defines` : 'The theme file defines'} none of shadcn's colour variables, so \`bg-background\` and \`text-muted-foreground\` have nothing behind them here. Until the theme variables are adopted, stay with the palette classes the surrounding file already uses; do not introduce semantic classes with no variable behind them, and do not add a second palette.`);
-    if (paint?.tin?.uses) lines.push(`  (${paint.tin.uses} palette colour${paint.tin.uses === 1 ? '' : 's'} already sit in own code, ${paint.tin.samples.slice(0, 3).map((s) => `\`${s.value}\` ×${s.count}`).join(', ')}; do not add to them.)`);
+    const styleNote = sc.kit?.style ? ` (style \`${sc.kit.style}\`${sc.kit.baseColor ? `, base colour ${sc.kit.baseColor}` : ''})` : '';
+    if (sc.kit?.cssVariables === false) {
+      // Utility-class mode (9.5.0, words approved by Greg 2026-10-01): the
+      // components paint with Tailwind classes by design, so "use the theme
+      // variables, never a palette colour" was wrong advice here.
+      rule(`This is a shadcn install${styleNote}.`);
+      rule(utilityModeRule(sc));
+      const op = sc.ownTheme ? sc.ownThemePaint : null;
+      if (op?.uses) lines.push(`  (${op.uses} palette colour${op.uses === 1 ? '' : 's'} the theme does not own already sit in own code, ${op.samples.slice(0, 3).map((s) => `\`${s.value}\` ×${s.count}`).join(', ')}; do not add to them.)`);
+    } else {
+      rule(`This is a shadcn install${styleNote}. The theme is a set of CSS variables${sheetFile ? ` in \`${sheetFile}\`` : ''}: background, foreground, primary, muted, border and the rest, each with a light and a dark value. Change a colour there, never in a component.`);
+      if ((sc.sheet?.shadcnPresent ?? 0) >= 5) rule('Use the semantic classes the theme gives you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The variables already carry both modes.');
+      else rule(`${sheetFile ? `\`${sheetFile}\` defines` : 'The theme file defines'} none of shadcn's colour variables, so \`bg-background\` and \`text-muted-foreground\` have nothing behind them here. Until the theme variables are adopted, stay with the palette classes the surrounding file already uses; do not introduce semantic classes with no variable behind them, and do not add a second palette.`);
+      if (paint?.tin?.uses) lines.push(`  (${paint.tin.uses} palette colour${paint.tin.uses === 1 ? '' : 's'} already sit in own code, ${paint.tin.samples.slice(0, 3).map((s) => `\`${s.value}\` ×${s.count}`).join(', ')}; do not add to them.)`);
+    }
     rule('Before adding classes to a shadcn component, use one of its variants (`variant="outline"`, `size="sm"`). `className` on a shadcn component is for layout only: width, margin, position. Never colour, never typography.');
     if (paint?.typo?.uses) lines.push(`  (${paint.typo.uses} shadcn component${paint.typo.uses === 1 ? '' : 's'} get a text size or weight through className, like ${paint.typo.samples.slice(0, 2).map((s) => `\`${s.value}\``).join(' and ')}; add a size variant instead.)`);
     if (paint?.doors?.uses) lines.push(`  (${paint.doors.uses} shadcn component${paint.doors.uses === 1 ? '' : 's'} already recoloured through className, like ${paint.doors.samples.slice(0, 2).map((s) => `\`${s.value}\``).join(' and ')}; do not add to them.)`);
@@ -256,4 +268,57 @@ if (neverImported.length >= 3) {
   }
   const ruleCount = text.split('\n').filter((l) => l.startsWith('- ')).length;
   return { text, ruleCount };
+}
+
+// ---------- shadcn in utility-class mode (words approved by Greg, 2026-10-01) ----------
+const andList = (xs) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`);
+// Tailwind names the theme gives new values, as ranges: neutral-50 to neutral-950
+function retunedRanges(retuned) {
+  const fam = new Map();
+  for (const n of retuned) {
+    const m = /^(.*)-(\d+)$/.exec(n);
+    if (!m) { fam.set(n, null); continue; }
+    if (!fam.has(m[1])) fam.set(m[1], []);
+    fam.get(m[1]).push(Number(m[2]));
+  }
+  return [...fam].map(([f, steps]) => {
+    if (!steps) return f;
+    steps.sort((a, b) => a - b);
+    return steps.length === 1 ? `${f}-${steps[0]}` : `${f}-${steps[0]} to ${f}-${steps.at(-1)}`;
+  });
+}
+// the theme's own names worth naming: the ones a palette colour gets swapped
+// for (destructive, accent), and the chart colours as a group
+const NAMED_RE = /^(destructive|danger|error|negative|success|positive|warning|caution|info|accent|brand|highlight)$/;
+function themeWords(names, retuned) {
+  const tuned = new Set(retuned);
+  const base = [...new Set(names.filter((n) => !tuned.has(n)).map((n) => n.replace(/-\d+$/, '')))];
+  const words = base.filter((n) => NAMED_RE.test(n));
+  const chart = base.some((n) => /^chart(-|$)/.test(n));
+  const picked = words.length ? words : base.filter((n) => !/(^|-)foreground$|^chart(-|$)/.test(n)).slice(0, 3);
+  return chart ? [...picked, 'the chart colours'] : picked;
+}
+function utilityModeRule(sc) {
+  const head = 'shadcn is installed without CSS variables here (components.json: cssVariables false), so the components paint with';
+  const own = sc.ownTheme;
+  if (!own) {
+    const shades = sc.doorShades ?? [];
+    // the install's base colour first (zinc on a zinc install), so the example is the everyday shade, not the destructive red
+    const base = sc.kit?.baseColor ? `-${sc.kit.baseColor}-` : null;
+    const first = (util) => (base && shades.find((s) => s.value.startsWith(util) && s.value.includes(base))) ?? shades.find((s) => s.value.startsWith(util));
+    const pick = [first('bg-'), first('text-')].filter(Boolean);
+    return `${head} Tailwind's palette classes by design. Stay with the shades they already use${pick.length ? ` (${pick.map((s) => `\`${s.value}\``).join(', ')})` : ''}. Never a hex, an rgb() or a bracket colour.`;
+  }
+  const ranges = retunedRanges(own.retuned ?? []);
+  const words = themeWords(own.names ?? [], own.retuned ?? []);
+  const gives = ranges.length ? `gives ${andList(ranges)} this repo's own values` : '';
+  const namesPart = words.length ? `names ${andList(words)}` : '';
+  const theme = gives || namesPart ? ` The theme file, \`${own.file}\`, ${[gives, namesPart].filter(Boolean).join(', and ')}. Use those classes.` : '';
+  const samples = sc.ownThemePaint?.samples ?? [];
+  const example = (samples.find((s) => !s.value.includes(':')) ?? samples[0])?.value ?? null;
+  const swap = example ? themeClassFor(example, own.names ?? [], own.values ?? {}) : null;
+  const never = example
+    ? ` Never a palette colour the theme does not own, such as \`${example}\`; ${swap ? `use \`${swap}\`, or add` : 'add'} the colour to the theme once.`
+    : ' Never a palette colour the theme does not own; add the colour to the theme once.';
+  return `${head} Tailwind classes.${theme}${never}`;
 }

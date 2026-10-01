@@ -26,7 +26,7 @@ import { isGrey } from '../lib/color.mjs';
 import { nearColorPairs } from '../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { profileOf, installedDirs, splitArbitrary, ownSpacing } from '../profiles/index.mjs';
+import { profileOf, installedOf, splitArbitrary, ownSpacing } from '../profiles/index.mjs';
 
 export { SCHEMA_VERSION };
 
@@ -146,7 +146,7 @@ export function coreMetrics(h, opts = {}) {
   const P = profileOf(h);
   // On a shadcn repo the bracket count is the team's own: brackets inside the
   // catalogue, kit blocks and registries are installed choices, not drift.
-  const arbitraryEntries = P.isShadcn ? splitArbitrary(h.tokens?.tailwind?.arbitrary ?? [], installedDirs(P)).own : (h.tokens?.tailwind?.arbitrary ?? []);
+  const arbitraryEntries = P.isShadcn ? splitArbitrary(h.tokens?.tailwind?.arbitrary ?? [], installedOf(P)).own : (h.tokens?.tailwind?.arbitrary ?? []);
   // ownCode: the breakdown under the score. Same metrics, paint counted on
   // own code only, so the difference is what installed registries cost.
   const paint = P.isTailwind ? P.tailwind?.paint

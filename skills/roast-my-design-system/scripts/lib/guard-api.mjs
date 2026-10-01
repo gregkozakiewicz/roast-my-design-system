@@ -14,7 +14,7 @@ import { walkRepo, readSource, profileRepo } from '../harvest/walk.mjs';
 import { chartSystemOf } from './charts.mjs';
 import { designGaps } from './gaps.mjs';
 export { designGaps } from './gaps.mjs';
-import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
+import { decideProfile, profileOf, installedDirs, installedFile, installedFrom } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { kitPaintFindings } from './kitpaint.mjs';
 import { paletteFindings } from './palette.mjs';
@@ -76,6 +76,11 @@ export { PALETTE_CLASS_RE, DEMO_PATH_RE, blankComments };
 // a guard that calls this agrees with the report's live checks by
 // construction, on a Tailwind theme and on a shadcn kit alike.
 export { paletteFindings };
+// Installed code, file by file (9.5.0, profiles/installed.mjs): a guard
+// leaves installedFile(system.profile.installedFrom, file, under) alone and
+// judges everything else, including the team's own components kept in the
+// shadcn catalogue folder. isShadcnFile(file) is the name test on its own.
+export { installedFile, doorFile, isShadcnFile } from '../profiles/installed.mjs';
 // A product built on a kit (MUI, Mantine, Chakra UI, Ant Design), 8.4.6: a
 // colour or a pixel size written onto a kit component where the theme has a
 // value. kitPaintFindings(fileText, system.profile.kit, { file }) returns the
@@ -144,8 +149,7 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
   const read = (f) => readSource(join(repoRoot, f));
   const hardDupes = (findDuplicates(ledger, profile.uiDir, repoRoot, profile.uiDirs ?? null).exactDuplicates ?? []).filter((d) => !d.wrapped);
   const P = profileOf(profile);
-  const installedNow = installedDirs(P);
-  const charts = chartSystemOf(files, read, { own: (f) => !installedNow.some((d) => f === d || f.startsWith(`${d}/`)) });
+  const charts = chartSystemOf(files, read, { own: (f) => !installedFile(P, f) });
   // the kit the product is built on, with its definition attached, the way
   // the MCP knowledge reads it (mcp/knowledge.mjs): the theme's colours are
   // the token set on a kit repo, whatever stylesheet holds the most literals
@@ -225,12 +229,16 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     profile: {
       kind: P.kind,
       role: P.role,
-      // folders the team did not write (a shadcn catalogue, installed
-      // registries, kit blocks): their brackets and copies are not the PR's
-      // sin. Empty on a registry: what it publishes is its own work.
-      // only a shadcn kit has installed code; a hand-written components/ui on a
-      // plain product is the team's own (the report splits nothing there either)
+      // folders that hold installed code (a shadcn catalogue, installed
+      // registries, kit blocks). Empty on a registry: what it publishes is
+      // its own work. Only a shadcn kit has installed code; a hand-written
+      // components/ui on a plain product is the team's own.
       installedDirs: P.isShadcn && !P.isRegistry ? installedDirs(P) : [],
+      // Which files in those folders are installed, file by file (9.5.0): a
+      // component of the team's own kept in the catalogue folder is the
+      // team's, and judged. installedFile(profile.installedFrom, file, under)
+      // answers; `under` is how the caller matches a file to a folder.
+      installedFrom: installedFrom(P),
       // a product built on a kit: name, theme files and values, spacing step,
       // the team's own layers over it, and the definition kitPaintFindings reads
       kit,

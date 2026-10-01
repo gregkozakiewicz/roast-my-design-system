@@ -24,7 +24,7 @@ import { tsconfigAliases } from '../harvest/components.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { typefaceOf } from '../lib/typefaces.mjs';
 import { hexRgb } from '../lib/nearpairs.mjs';
-import { decideProfile, profileOf, installedDirs } from '../profiles/index.mjs';
+import { decideProfile, profileOf, installedDirs, installedFile, installedFrom } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { repoTokenDefs } from '../lib/tokentwins.mjs';
 import { dupeCopiesOf } from '../lib/avoidedimports.mjs';
@@ -159,7 +159,7 @@ export function loadKnowledge(root) {
   // without one (lib/charts.mjs)
   // installed kit code is the kit's own door, never a precedent (profiles/index)
   const installed = installedDirs(P);
-  const ownCode = (f) => !installed.some((d) => f === d || f.startsWith(`${d}/`));
+  const ownCode = (f) => !installedFile(P, f);
   const charts = chartSystemOf(files, read, { own: ownCode });
   const gaps = designGaps({ charts, tokenFile: tokens.tokenFile ?? null });
 
@@ -206,6 +206,9 @@ export function loadKnowledge(root) {
     // draws (lib/guard-api.mjs): only a shadcn kit has installed code, and a
     // registry's published folders are its own work
     installedDirs: P.isShadcn && !P.isRegistry ? installed : [],
+    // the facts installedFile reads (profiles/installed.mjs): a component of
+    // the team's own kept in the catalogue folder is judged like own code
+    installedFrom: installedFrom(P),
     // the kit the product is built on, and the Tailwind theme it names its
     // colours in: null when the repo is neither (see profiles/)
     kit,

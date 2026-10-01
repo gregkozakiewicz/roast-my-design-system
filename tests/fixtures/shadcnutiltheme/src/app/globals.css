@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* the neutral scale retuned to this product's own greys, the way rybbit does it */
+:root {
+  --neutral-50: 0 0% 98%;
+  --neutral-100: 0 0% 96%;
+  --neutral-200: 0 0% 90%;
+  --neutral-300: 0 0% 83%;
+  --neutral-400: 0 0% 64%;
+  --neutral-500: 0 0% 45%;
+  --neutral-600: 0 0% 32%;
+  --neutral-700: 0 0% 25%;
+  --neutral-800: 0 0% 15%;
+  --neutral-900: 0 0% 9%;
+  --neutral-950: 0 0% 4%;
+  --destructive: 0 72% 51%;
+}
+
+@theme {
+  --color-neutral-50: hsl(var(--neutral-50));
+  --color-neutral-100: hsl(var(--neutral-100));
+  --color-neutral-200: hsl(var(--neutral-200));
+  --color-neutral-300: hsl(var(--neutral-300));
+  --color-neutral-400: hsl(var(--neutral-400));
+  --color-neutral-500: hsl(var(--neutral-500));
+  --color-neutral-600: hsl(var(--neutral-600));
+  --color-neutral-700: hsl(var(--neutral-700));
+  --color-neutral-800: hsl(var(--neutral-800));
+  --color-neutral-900: hsl(var(--neutral-900));
+  --color-neutral-950: hsl(var(--neutral-950));
+  --color-destructive: hsl(var(--destructive));
+  --color-accent-500: #7c3aed;
+  --color-accent-600: #6d28d9;
+  --color-chart-1: #2563eb;
+  --color-chart-2: #16a34a;
+}

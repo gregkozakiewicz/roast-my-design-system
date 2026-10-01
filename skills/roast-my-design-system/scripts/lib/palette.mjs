@@ -34,6 +34,7 @@
 import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
 import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
 import { oklab } from './color.mjs';
+import { doorFile } from '../profiles/installed.mjs';
 
 // shadcn's names, one per role the utilities want; the sheet always has
 // greys and colours, so no family check
@@ -59,9 +60,10 @@ export function decidePalette(profile, P, readTheme = null) {
   const sc = profile.shadcn;
   // utility-class mode: the palette is the theme, and the report scores it so
   if (P.designSystem?.cssVariables === false) return null;
-  // the catalogue and kit blocks are the kit's own doors: editing them is the
-  // intended use, and the report's tile leaves them out
-  const doors = [...(P.uiDirs ?? []), ...(sc.blockFiles ?? [])];
+  // shadcn's own components and kit blocks are the kit's doors: editing them
+  // is the intended use, and the report's tile leaves them out. A component
+  // of the team's own kept in the catalogue folder is not a door (9.5.0).
+  const doors = { uiDirs: [...(P.uiDirs ?? [])], shadcn: { blockFiles: [...(sc.blockFiles ?? [])] } };
   const rows = Math.max(sc.sheet?.shadcnPresent ?? 0, sc.contract?.rows ?? 0);
   if (rows >= CONTRACT_MIN) {
     return {
@@ -83,7 +85,7 @@ export function decidePalette(profile, P, readTheme = null) {
 export function paletteFindings(text, palette, { file = null, css = null } = {}) {
   if (!palette || !text) return [];
   if (css ?? (file ? CSS_FILE_RE.test(file) : false)) return [];
-  if (file && (DEMO_PATH_RE.test(file) || (palette.doors ?? []).some((d) => file === d || file.startsWith(`${d}/`)))) return [];
+  if (file && (DEMO_PATH_RE.test(file) || doorFile(palette.doors, file))) return [];
   const retuned = new Set(palette.retuned ?? []);
   const fam = palette.families ?? null;
   const hasFamily = (cls) => !fam || (GREY_HUE_RE.test(cls) ? fam.grey : fam.colour);
@@ -122,6 +124,21 @@ export function paletteFindings(text, palette, { file = null, css = null } = {})
     });
   }
   return out;
+}
+
+/**
+ * The theme class that stands in for a palette class, or null: the theme's
+ * own word for the hue when it has one (text-red-500 on a theme naming
+ * destructive is text-destructive), else the suitable theme colour nearest
+ * by value. For the rules file's example (9.5.0).
+ */
+export function themeClassFor(cls, names = [], values = {}) {
+  const util = cls.replace(/^((?:[\w-]+:)*[a-z]+)-.*$/, '$1').replace(/^(?:[\w-]+:)*/, '');
+  const shade = cls.replace(/^(?:[\w-]+:)*[a-z]+-/, '').replace(/\/\d+$/, '');
+  const word = hueWord(shade, names);
+  if (names.includes(word)) return `${util}-${word}`;
+  const near = nearestThemeName(shade, utilRole(util), values);
+  return near ? `${util}-${near}` : null;
 }
 
 // ---------- the theme colour a palette class stands in for ----------

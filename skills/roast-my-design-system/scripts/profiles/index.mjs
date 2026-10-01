@@ -24,6 +24,7 @@ import { join, basename, dirname } from 'node:path';
 import shadcn from './shadcn.mjs';
 import tailwind, { readTailwindTheme } from './tailwind.mjs';
 import { decidePalette } from '../lib/palette.mjs';
+import { installedFile } from './installed.mjs';
 import mui from './mui.mjs';
 import mantine from './mantine.mjs';
 import chakra from './chakra.mjs';
@@ -89,6 +90,13 @@ export function decideProfile(profile, components, files, root = null) {
   // under a shadcn kit with no rows, or nothing. The report's tile keeps
   // its own gates (harvest/index.mjs) and no score reads this.
   profile.palette = decidePalette(profile, profileOf(profile), () => readTailwindTheme({ ...profile }, ctx)?.facts ?? null);
+  // shadcn in utility-class mode (components.json: cssVariables false) paints
+  // with Tailwind classes by design. A theme of the repo's own beside it
+  // (rybbit retunes the whole neutral scale) is what the rules file points
+  // the agent at. Kept as facts: no score and no check reads it (9.5.0).
+  if (profile.shadcn && profile.designSystem?.cssVariables === false) {
+    profile.shadcn.ownTheme = readTailwindTheme({ ...profile }, ctx)?.facts ?? null;
+  }
   // A shadcn repo that PUBLISHES a registry is a registry: the fourth kind.
   // Every count still reads the shadcn facts (release (a): zero score change);
   // the kind, the receipt and the header line say what it is.
@@ -194,14 +202,31 @@ export function installedDirs(P) {
   return [...(P?.uiDirs ?? []), ...(sc.registryDirs ?? []), ...(sc.blockFiles ?? [])];
 }
 const underAny = (file, dirs) => dirs.some((d) => file === d || file.startsWith(`${d}/`));
+// Which files in those folders are installed, file by file (9.5.0): a
+// component of the team's own kept in the catalogue folder is the team's.
+// The rule lives in profiles/installed.mjs.
+export { isShadcnFile, doorFile, installedFile, installedFrom } from './installed.mjs';
+
+/**
+ * The installed-code test for one reading, as a function of a file path.
+ * `none` is set when the repo has no installed folders at all, so a caller
+ * can skip the split.
+ */
+export function installedOf(P) {
+  const fn = (file) => installedFile(P, file);
+  fn.none = installedDirs(P).length === 0;
+  return fn;
+}
 
 /**
  * Split bracket-value entries ({value, count, files:[{file,count}]}) into the
  * team's own uses and installed uses. Own entries keep only own files with
  * counts re-summed; installed is a flat count with its top values.
+ * `installed` is installedOf(P), or (older callers) a list of folders.
  */
-export function splitArbitrary(entries, dirs) {
-  if (!dirs.length) return { own: entries, installed: { uses: 0, values: [] } };
+export function splitArbitrary(entries, installed) {
+  const isInstalled = typeof installed === 'function' ? installed : (file) => underAny(file, installed);
+  if (typeof installed === 'function' ? installed.none : !installed.length) return { own: entries, installed: { uses: 0, values: [] } };
   const own = [];
   const installedValues = new Map();
   let installedUses = 0;
@@ -211,8 +236,8 @@ export function splitArbitrary(entries, dirs) {
     // as the team's own, so ai-chatbot's installed badge put one of shadcn's
     // [3px] values in the headline (2026-09-30)
     const all = e.every ?? e.files ?? [];
-    const ownFiles = all.filter((f) => !underAny(f.file, dirs)).sort((a, b) => b.count - a.count).slice(0, 5);
-    const instCount = all.filter((f) => underAny(f.file, dirs)).reduce((s, f) => s + f.count, 0);
+    const ownFiles = all.filter((f) => !isInstalled(f.file)).sort((a, b) => b.count - a.count).slice(0, 5);
+    const instCount = all.filter((f) => isInstalled(f.file)).reduce((s, f) => s + f.count, 0);
     if (instCount) { installedUses += instCount; installedValues.set(e.value, (installedValues.get(e.value) ?? 0) + instCount); }
     // own is the remainder of the entry's total, never a sum of the files
     // that happened to be listed
@@ -247,16 +272,16 @@ export function decideFresh(profile, components, files, tokens, root = null) {
   const P = profileOf(profile);
   if (!P.isShadcn || !profile.shadcn) return;
   const sc = profile.shadcn;
-  const dirs = installedDirs(P);
-  const own = (files.code ?? []).filter((f) => /\.[jt]sx?$/.test(f) && !underAny(f, dirs));
+  const installed = installedOf(P);
+  const own = (files.code ?? []).filter((f) => /\.[jt]sx?$/.test(f) && !installed(f));
   // build config at the root (next.config, vite.config, tailwind.config) is scaffold too
   const stem = (f) => f.split('/').pop().replace(/\.[jt]sx?$/, '').replace(/^[\w-]+\.config$/, 'app');
-  const ownComponents = (components ?? []).filter((c) => !c.isPage && !underAny(c.file, dirs));
-  const ownArbitrary = splitArbitrary(tokens?.tailwind?.arbitrary ?? [], dirs).own.reduce((s, a) => s + a.count, 0);
-  const ownInline = (tokens?.inlineStyles?.files ?? []).filter((f) => !underAny(f.file ?? f, dirs)).length;
+  const ownComponents = (components ?? []).filter((c) => !c.isPage && !installed(c.file));
+  const ownArbitrary = splitArbitrary(tokens?.tailwind?.arbitrary ?? [], installed).own.reduce((s, a) => s + a.count, 0);
+  const ownInline = (tokens?.inlineStyles?.files ?? []).filter((f) => !installed(f.file ?? f)).length;
   // the demo page the install command writes shows one Button; a page that
   // composes several doors is a screen someone built
-  const ownPages = (components ?? []).filter((c) => c.isPage && !underAny(c.file, dirs)).map((c) => c.file);
+  const ownPages = (components ?? []).filter((c) => c.isPage && !installed(c.file)).map((c) => c.file);
   const doorImports = (f) => {
     if (!root) return 0;
     let src = '';
@@ -290,7 +315,7 @@ export function ownSpacing(h) {
   const css = h.tokens?.spacing ?? [];
   const tw = (h.tokens?.tailwind?.spacing ?? []).filter((v) => v.value.startsWith('['));
   if (!P.isShadcn) return { css, tw, installed: { uses: 0, values: [] } };
-  const dirs = installedDirs(P);
-  const a = splitArbitrary(css, dirs), b = splitArbitrary(tw, dirs);
+  const installed = installedOf(P);
+  const a = splitArbitrary(css, installed), b = splitArbitrary(tw, installed);
   return { css: a.own, tw: b.own, installed: { uses: a.installed.uses + b.installed.uses, values: [...a.installed.values, ...b.installed.values].sort((x, y) => y.count - x.count) } };
 }

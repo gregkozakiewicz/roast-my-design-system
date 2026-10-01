@@ -18,6 +18,7 @@ import { exemptReason, isDrawing, SVG_MARKUP_RE } from '../lib/exempt.mjs';
 import { extraDeclarations, fontDeclarations } from '../lib/declarations.mjs';
 import { typefaceOf, GENERIC_FONTS } from '../lib/typefaces.mjs';
 import { kitPaintFindings } from '../lib/kitpaint.mjs';
+import { installedFile } from '../profiles/installed.mjs';
 import { paletteFindings } from '../lib/palette.mjs';
 import { tokenTwinFindings } from '../lib/tokentwins.mjs';
 import { avoidedImportFindings } from '../lib/avoidedimports.mjs';
@@ -246,10 +247,12 @@ export function validateContent(content, k) {
     // a raw value the repo already uses, in a non-Tailwind repo, is consistency,
     // not a new offence — silence
   }
-  // Bracket values inside installed code (the shadcn catalogue, kit blocks,
-  // registries) are the kit's own choices. The report names them and keeps
-  // them out of the count; a file under review is judged by the same line.
-  const installed = !!file && (k.installedDirs ?? []).some((d) => file === d || file.startsWith(`${d}/`));
+  // Bracket values inside installed code (shadcn's own components, kit
+  // blocks, registries) are the kit's own choices. The report names them and
+  // keeps them out of the count; a file under review is judged by the same
+  // line, file by file: a component of the team's own kept in the catalogue
+  // folder is the team's (profiles/installed.mjs, 9.5.0).
+  const installed = !!file && installedFile(k.installedFrom, file);
   const localArb = new Map();
   for (const a of got.arbitrary) localArb.set(a.value, (localArb.get(a.value) ?? 0) + 1);
   for (const a of installed ? [] : got.arbitrary) {

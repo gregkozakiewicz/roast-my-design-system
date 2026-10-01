@@ -2,6 +2,42 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.5.0 — unreleased
+
+- **A component of the team's own in the shadcn folder is the team's.** The
+  report treated every file in the shadcn catalogue folder (`components/ui`,
+  or wherever components.json points) as installed code: its bracket values
+  were called shadcn's and kept out of the count, its palette colours were
+  not counted, and the edit check and the guard left it alone. Most teams
+  keep components of their own there too: in the fleet, 33 of 44 shadcn
+  repos do, 1,014 of 2,709 files in those folders, holding 1,285 palette
+  colours nothing counted. formbricks keeps 191 of its own there, and the
+  report called their values shadcn's. Now a file in that folder is
+  installed code only when it is one of shadcn's components by name,
+  however it is spelt (Nango's `Avatar.tsx` is shadcn's `avatar`). Kit blocks
+  and installed registries are read as before.
+- **The rules file stops contradicting a shadcn install without CSS
+  variables.** With `cssVariables: false` in components.json, shadcn's
+  components paint with Tailwind's palette classes by design, and the rules
+  file told the agent to use the theme variables and never a palette colour.
+  It now says so plainly. Where the repo keeps a theme of its own beside it,
+  the rules file names what the theme owns and gives an example of what it
+  does not:
+  > shadcn is installed without CSS variables here (components.json:
+  > cssVariables false), so the components paint with Tailwind classes. The
+  > theme file, `client/src/app/globals.css`, gives neutral-50 to
+  > neutral-950 this repo's own values, and names destructive, accent and the
+  > chart colours. Use those classes. Never a palette colour the theme does
+  > not own, such as `text-red-500`; use `text-destructive`, or add the
+  > colour to the theme once.
+- Measured on 204 repos: 29 change a count, 3 scores go down and 3 go up.
+  formbricks 37 to 24 and cal.com 33 to 28, as their own components' bracket
+  values and palette colours now count. chatbot-ui 73 to 78 and unkey 42 to
+  46, because the tile for shadcn components recoloured through className
+  no longer counted their own components (chatbot-ui's `SubmitButton`,
+  unkey's `CopyButton`) as shadcn's; the colours themselves still count. No
+  hosted example moves.
+
 ## 9.4.0 — 2026-09-30
 
 - **One palette rule for the live checks and the guard.** A palette class

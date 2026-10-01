@@ -29,9 +29,9 @@ import { ruleStaleness } from '../lib/staleness.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
 import { lastTouchedDates } from '../lib/lasttouched.mjs';
 import { SCHEMA_VERSION } from '../lib/version.mjs';
-import { decideProfile, decideFresh, profileOf, installedDirs, splitArbitrary, scopeFiles } from '../profiles/index.mjs';
+import { decideProfile, decideFresh, profileOf, installedOf, doorFile, installedFile, splitArbitrary, scopeFiles } from '../profiles/index.mjs';
 import { publishesLine } from '../profiles/registry.mjs';
-import { countPaint } from './paint.mjs';
+import { countPaint, doorShades } from './paint.mjs';
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -120,17 +120,18 @@ if (profileOf(profile).isRegistry) {
   const P = profileOf(profile);
   if (P.isShadcn) {
     const regDirs = profile.shadcn.registryDirs ?? [];
-    const blocks = profile.shadcn.blockFiles ?? [];
-    const allInstalled = installedDirs(P);
-    const doorFiles = new Set(allInstalled.flatMap((d) => files.code.filter((f) => f === d || f.startsWith(`${d}/`))));
+    // installed code, file by file (profiles/installed.mjs): a component of
+    // the team's own kept in the catalogue folder is own code (9.5.0)
+    const installed = installedOf(P);
+    const doorFiles = new Set(files.code.filter(installed));
     const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
     // The score reads the repo as the agent meets it: own code plus installed
     // registries, because a palette colour in ai-elements teaches the same
-    // wrong lesson as one in own code. The catalogue and kit blocks stay out:
-    // editing them is the intended use.
-    profile.shadcn.paint = countPaint(target, files.code, { uiDirs: [...P.uiDirs, ...blocks], kitNames, email });
+    // wrong lesson as one in own code. shadcn's own components and kit blocks
+    // stay out: editing them is the intended use.
+    profile.shadcn.paint = countPaint(target, files.code, { isDoor: (f) => doorFile(P, f), kitNames, email });
     // Own code alone, for the breakdown line under the score.
-    profile.shadcn.paintOwn = regDirs.length ? countPaint(target, files.code, { uiDirs: allInstalled, kitNames, email }) : profile.shadcn.paint;
+    profile.shadcn.paintOwn = regDirs.length ? countPaint(target, files.code, { isDoor: installed, kitNames, email }) : profile.shadcn.paint;
     if (regDirs.length) {
       const regFiles = files.code.filter((f) => regDirs.some((d) => f.startsWith(`${d}/`)));
       const rp = countPaint(target, regFiles, { uiDirs: [], kitNames, email });
@@ -138,7 +139,18 @@ if (profileOf(profile).isRegistry) {
     }
     // Bracket values inside installed code are shadcn's (or a registry's)
     // choices: a true lesson, badly framed. Kept out of the count, named.
-    const split = splitArbitrary(tokens.tailwind?.arbitrary ?? [], allInstalled);
+    // Utility-class mode (9.5.0), for the rules file only: the shades shadcn's
+    // own components paint with, and, where the repo keeps a theme of its
+    // own, the palette classes in own code that theme does not own.
+    if (P.designSystem?.cssVariables === false) {
+      profile.shadcn.doorShades = doorShades(target, files.code.filter((f) => /\.(tsx|jsx)$/.test(f) && doorFile(P, f)));
+      const own = profile.shadcn.ownTheme;
+      if (own) {
+        const p = countPaint(target, files.code, { isDoor: installed, retuned: own.retuned, families: own.families, email });
+        profile.shadcn.ownThemePaint = { uses: p.tin.uses, samples: p.tin.samples.slice(0, 6) };
+      }
+    }
+    const split = splitArbitrary(tokens.tailwind?.arbitrary ?? [], installed);
     profile.shadcn.arbitraryInstalled = split.installed;
     // A fresh kit (the install command's output, nothing built yet) is
     // decided here, once, from the facts above.
@@ -162,8 +174,8 @@ const context = harvestContext(target);
 // The chart palette the repo keeps, or the charts painting by hand without
 // one, and the gaps an agent will fill by inventing (lib/charts, lib/gaps).
 const charts = (() => {
-  const installed = installedDirs(profileOf(profile));
-  const own = (f) => !installed.some((d) => f === d || f.startsWith(`${d}/`));
+  const P = profileOf(profile);
+  const own = (f) => !installedFile(P, f);
   return chartSystemOf(files, (f) => readSource(resolve(target, f)), { own });
 })();
 const gaps = designGaps({ charts, tokenFile: tokens.tokenFile ?? null });

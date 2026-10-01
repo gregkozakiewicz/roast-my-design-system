@@ -38,6 +38,8 @@ export const CHAKRA = {
       ? "This theme replaces Chakra's space scale, so a step is not the default size: convert only after checking the theme's space tokens, and leave the rest."
       : 'In Chakra a number is a step of the space scale: <code>p={3}</code> is 12px on the default theme. A pixel value that is a multiple of 4 is that step (12px is 3), and 2px, 6px, 10px and 14px are 0.5, 1.5, 2.5 and 3.5; any other size stays.'),
     rulesTheme: (file) => `Colours, spacing and radius are decided in \`${file}\`. On a component, use style props by name: \`color="fg.muted"\`, \`bg="gray.100"\`, \`p={3}\`, \`gap={2}\`; a colour that changes with the mode is a semantic token or \`useColorModeValue\`.`,
+    // what does not reach another kit's components, in a repo with two kits
+    idiom: 'Chakra style props (`p={3}`) and the Chakra theme',
     rulesSpacing: 'Use space steps as numbers (`p={3}`), not pixel strings (`p="12px"`)',
     promptColour: '- Read the theme where Chakra reads it: style props with token names (color="fg.muted", bg="gray.100"), token() in code. Never import the theme file into a component just to read a hex.',
     promptSpacing: "- A number in a Chakra style prop is a space step, not pixels: 12px is p={3} only if the theme keeps Chakra's default space scale. Check the theme first.\n- Inside style={{}} or on a plain element a bare number is pixels. To use a step there, make the element a Chakra one (<Box as=\"legend\" ml={2}>) rather than changing the number.",

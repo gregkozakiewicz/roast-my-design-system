@@ -33,12 +33,17 @@ const TRAP_LINES = {
   spacing: '- Never round a width or height another element depends on: a preview panel, a skeleton that mirrors a chart, an editor pane. Name it if it repeats; leave it if it is one.',
 };
 
-export function fixPrompt({ title, sub, deltaText, repoName, metric = null, kit = null }) {
+export function fixPrompt({ title, sub, deltaText, repoName, metric = null, kit = null, second = null }) {
   // the kit's own words (MUI's sx, Mantine's props) follow the shared lines;
   // style -> sx was only safe where the component takes it (Linode, OpenAEV)
   const adv = kit ? KITS[kit]?.advice : null;
   const kitLine = adv && { kitColour: adv.promptColour, kitPx: adv.promptSpacing, inlineStyles: adv.promptInline }[metric];
-  const lines = [TRAP_LINES[metric], kitLine].filter(Boolean);
+  // a second kit in the repo ({ name, pkg }): the first kit's fix stays off
+  // its components (2026-10-01)
+  const secondLine = adv && second && ['kitColour', 'kitPx', 'inlineStyles'].includes(metric)
+    ? `- This repo also uses ${second.name}${second.pkg ? ` (${second.pkg})` : ''}. Make these changes only on ${kit} components and the wrappers around them. On ${second.name} components, style them the way the files around them do; ${String(adv.idiom ?? `the ${kit} theme`).replace(/`/g, '')} do not reach them.`
+    : null;
+  const lines = [TRAP_LINES[metric], kitLine, secondLine].filter(Boolean);
   const trap = lines.length ? `\n${lines.join('\n')}` : '';
   return `You are fixing one design-system finding in ${repoName ? `the ${repoName} repository` : 'this repository'}, measured by roast-my-design-system.
 

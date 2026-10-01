@@ -173,7 +173,9 @@ export function validateContent(content, k) {
       kitOwnsColours = true;
       for (const f of judged.findings) {
         if (f.rule === 'kit-px') kitPx.add(f.value.split(': ')[1]);
-        add(f.rule, 'violation', f.index, f.message, f.fix);
+        // a value on another kit's component is a warning: the first kit's
+        // fix does not reach it, so the end-of-turn review leaves it out
+        add(f.rule, f.severity ?? 'violation', f.index, f.message, f.fix);
       }
     }
   }

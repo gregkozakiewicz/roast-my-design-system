@@ -78,7 +78,12 @@ const repoName = h.profile?.name ?? 'this repo';
     const near = nearColorPairs(t.colors ?? []);
     if (near.length) rule(`Never eyeball a colour from memory: the scan found ${near.length} nearly identical pair${near.length === 1 ? '' : 's'} (like ${near[0].a.value} next to ${near[0].b.value}). Look the exact value up, or better, use its token.`);
     const ds = h.profile?.designSystem;
-    if (ds?.kind && !['none', 'custom'].includes(ds.kind) && ds.confidence !== 'low') {
+    const two = profileOf(h).kit?.second ? kitPair(profileOf(h).kit) : null;
+    // two kits: both named, biggest first, and no word about which way the
+    // repo is moving; SigNoz's own rules say the opposite of "prefer Ant
+    // Design" (2026-10-01)
+    if (two) rule(`This repo uses two kits: ${two.map(kitCount).join(' and ')}. Follow the kit the file already uses and extend it rather than building parallel pieces. Never put one kit's styling on the other's components.`);
+    else if (ds?.kind && !['none', 'custom'].includes(ds.kind) && ds.confidence !== 'low') {
       rule(`This repo uses ${ds.name ?? ds.kind}${profileOf(h).uiDir ? `; its components live in \`${profileOf(h).uiDir}\`` : ''}. Prefer extending it over building parallel pieces.`);
     }
   }
@@ -185,6 +190,7 @@ if (neverImported.length >= 3) {
     rule(k.themeFiles.length
       ? `This product is built on ${k.name}. ${KITS[k.name]?.advice.rulesTheme(k.themeFiles[0]) ?? ''}`
       : `This product is built on ${k.name} with its default theme. Before adding a colour to a component, add it to a theme with ${KITS[k.name]?.advice.themeCall ?? 'the kit\'s theme call'} and read it from there.`);
+    if (k.second) rule(secondKitRule(k));
     if (k.colour.uses) rule(`The scan found ${k.colour.uses} colours written onto components (${k.colour.samples.slice(0, 3).map((x) => `\`${x.value}\``).join(', ')}). Do not add more; if a colour is missing from the theme, add it to the palette once.`);
     if (k.px.uses) rule(`The scan found ${k.px.uses} pixel sizes written onto components (${k.px.samples.slice(0, 3).map((x) => `\`${x.value}\``).join(', ')}). ${KITS[k.name]?.advice.rulesSpacing ?? 'Use the theme\'s spacing steps, not pixels'}; a size between steps is a deliberate exception, left with a comment.`);
   }
@@ -269,6 +275,22 @@ if (neverImported.length >= 3) {
   }
   const ruleCount = text.split('\n').filter((l) => l.startsWith('- ')).length;
   return { text, ruleCount };
+}
+
+// ---------- a second kit beside the first (2026-10-01) ----------
+const fmt = (x) => Number(x).toLocaleString('en-GB');
+/** the two kits, biggest first, each with its package and folder where known */
+export function kitPair(k) {
+  return [
+    { name: k.name, pkg: null, files: k.kitFiles, dir: k.second.firstDir },
+    { name: k.second.name, pkg: k.second.pkg, files: k.second.files, dir: k.second.dir },
+  ].sort((a, b) => b.files - a.files);
+}
+const kitCount = (x) => `${x.name} (${x.pkg ? `\`${x.pkg}\`, ` : ''}${fmt(x.files)} files${x.dir ? ` in \`${x.dir}\`` : ''})`;
+/** the kit section's own rules are the first kit's; this says so */
+export function secondKitRule(k) {
+  const s = k.second;
+  return `The rules in this section are for ${k.name} components. ${s.name}${s.pkg ? ` (\`${s.pkg}\`)` : ''} is imported in ${fmt(s.files)} files${s.withoutFirst ? `, ${fmt(s.withoutFirst)} of them without ${k.name}` : ''}. On ${s.name} components, style them the way the files around them do; ${KITS[k.name]?.advice.idiom ?? `the ${k.name} theme`} do not reach them.`;
 }
 
 // ---------- shadcn in utility-class mode (words approved by Greg, 2026-10-01) ----------

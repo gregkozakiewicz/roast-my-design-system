@@ -40,6 +40,8 @@ export const MUI = {
       ? "This theme's spacing is custom (a function or a responsive config), so a step is not a fixed number of pixels: convert only after checking what <code>theme.spacing(1)</code> is here, and leave the rest."
       : `MUI spacing is a step count: <code>p: 2</code> is <code>theme.spacing(2)</code>, which is ${k.spacingUnit ? `${2 * Number(k.spacingUnit)}px on this theme (one step is ${k.spacingUnit}px)` : '16px on the default theme'}. A spacing that lands exactly on a step becomes the step; one that does not stays.`),
     rulesTheme: (file) => `A colour, a spacing step or a radius is decided in \`${file}\`. On a component, read it: sx paths (\`color: 'text.secondary'\`, \`p: 2\`) or \`theme.palette\` / \`theme.spacing()\` in styled().`,
+    // what does not reach another kit's components, in a repo with two kits
+    idiom: '`sx`, `styled()` and the MUI theme',
     rulesSpacing: 'Use spacing steps (`p: 2`), not pixels',
     promptColour: "- Read the theme where the kit reads it: sx paths ('text.secondary', 'primary.main'), theme.palette in styled() and makeStyles. Never import the theme file into a component just to read a hex.",
     promptSpacing: '- A bare number is a spacing step only inside sx and theme.spacing(). Inside style={{}} or a plain style object it is pixels, so convert only in sx.',

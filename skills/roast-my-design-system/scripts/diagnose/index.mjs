@@ -1191,13 +1191,13 @@ function whereToStartSection() {
       const s0 = k.colour.samples[0], f0 = productFirst(k.colour.top)[0];
       c.push({ score: 20 + k.colour.per100 / 4, metric: 'kitColour', after: 0,
         title: `Move the ${n(k.colour.uses)} colours written on components into the ${esc(k.name)} theme`,
-        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}.${s0.inTheme ? ` ${esc(s0.value)} is already in your theme: read it from there, from the entry that holds it in every mode.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with ${KITS[k.name]?.advice.themeCall ?? "the kit's theme call"} and put the palette there`}. ${KITS[k.name]?.advice.colourHow ?? ''}` });
+        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}.${s0.inTheme ? ` ${esc(s0.value)} is already in your theme: read it from there, from the entry that holds it in every mode.` : ''} ${k.themeFiles.length ? `The theme in ${esc(k.themeFiles[0])} is where a colour is decided` : `There is no theme yet: start one with ${KITS[k.name]?.advice.themeCall ?? "the kit's theme call"} and put the palette there`}. ${KITS[k.name]?.advice.colourHow ?? ''}${secondKitMoveNote(k)}` });
     }
     if (k.px.uses >= 10) {
       const s0 = k.px.samples[0], f0 = productFirst(k.px.top)[0];
       c.push({ score: 15 + k.px.per100 / 4, metric: 'kitPx', after: 0,
         title: `Put the ${n(k.px.uses)} pixel spacings on the theme's spacing steps`,
-        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}. ${KITS[k.name]?.advice.spacingHow(k) ?? ''}` });
+        sub: `The most written is ${esc(s0.value)} (${s0.count} times)${f0 ? `; ${esc(basename(f0.file))} carries the most, ${f0.count}, mostly ${esc(f0.sample)}` : ''}. ${KITS[k.name]?.advice.spacingHow(k) ?? ''}${secondKitMoveNote(k)}` });
     }
   }
 
@@ -1271,6 +1271,7 @@ function whereToStartSection() {
   const promptFor = (item) => fixPrompt({
     metric: item.metric,
     kit: P.isKit ? P.kit?.name : null,
+    second: P.isKit && P.kit?.second ? { name: P.kit.second.name, pkg: P.kit.second.pkg } : null,
     title: unesc(item.title),
     sub: unesc(item.sub),
     // the points arrive when the whole finding is done; one file moves the count
@@ -1488,7 +1489,30 @@ function publishesRegistryLine() {
 function kitReceipt() {
   if (!P.isKit || !P.kit) return '';
   const k = P.kit;
-  return `<div class="excl fresh">Read as a product built on ${esc(k.name)}: imported in ${n(k.kitFiles)} files, ${k.themeFiles.length ? `theme defined in ${esc(k.themeFiles[0])}` : `no theme of its own, so the ${esc(k.name)} defaults are the theme`}. The kit's own code is installed from npm and not counted; what is counted is what the repo writes onto its components.</div><div class="excl">Evidence: ${esc(P.evidence.join(' · '))}</div>`;
+  const sk = k.second;
+  // a second kit: named, and why its own files are not in the counts
+  const second = sk ? ` ${esc(sk.name)} is imported in ${n(sk.files)} files too, ${sk.withoutFirst ? `${n(sk.withoutFirst)} of them without ${esc(k.name)}. Those ${n(sk.withoutFirst)} files are not counted here: ${esc(sk.name)} components do not read the ${esc(k.name)} theme.` : `each of them beside ${esc(k.name)}.`}` : '';
+  return `<div class="excl fresh">Read as a product built on ${esc(k.name)}: imported in ${n(k.kitFiles)} files, ${k.themeFiles.length ? `theme defined in ${esc(k.themeFiles[0])}` : `no theme of its own, so the ${esc(k.name)} defaults are the theme`}. The kit's own code is installed from npm and not counted; what is counted is what the repo writes onto its components.${second}</div><div class="excl">Evidence: ${esc(P.evidence.join(' · '))}</div>`;
+}
+
+// A second kit, on the two kit moves: change only the first kit's components
+function secondKitMoveNote(k) {
+  const sk = k.second;
+  return sk?.mixed ? ` In the ${n(sk.mixed)} file${sk.mixed === 1 ? '' : 's'} that also use${sk.mixed === 1 ? 's' : ''} ${esc(sk.name)}, change only what sits on ${esc(k.name)} components.` : '';
+}
+
+// A second kit, in the kit section: which files are counted and which are not
+function secondKitBlock(k) {
+  const sk = k.second;
+  if (!sk) return '';
+  const mp = sk.mixedPaint ?? { colours: 0, px: 0 };
+  const inThem = [mp.colours ? `${n(mp.colours)} of the colours` : '', mp.px ? `${n(mp.px)} of the pixel sizes` : ''].filter(Boolean).join(' and ');
+  const parts = [
+    sk.withoutFirst ? `${n(sk.withoutFirst)} file${sk.withoutFirst === 1 ? ' uses' : 's use'} only ${esc(sk.name)} and ${sk.withoutFirst === 1 ? 'is' : 'are'} not in the counts above.` : '',
+    sk.mixed ? `${n(sk.mixed)} file${sk.mixed === 1 ? ' uses' : 's use'} both kits and ${sk.mixed === 1 ? 'is' : 'are'} counted${inThem ? `: ${inThem} above ${mp.colours + mp.px === 1 ? 'is' : 'are'} in ${sk.mixed === 1 ? 'it' : 'them'}, so some may sit on ${esc(sk.name)} components` : ''}.` : '',
+    "Follow the kit the file already uses, and never put one kit's styling on the other's components.",
+  ].filter(Boolean);
+  return `<div class="receipts">${eyebrow(`Two kits · ${esc(sk.name)} in ${n(sk.files)} files`)}<p class="sub">${parts.join(' ')}</p></div>`;
 }
 
 // A kit product: the theme, how often components read it, and where a colour
@@ -1501,6 +1525,7 @@ function kitSection() {
   const parts = [`<div class="receipts">${eyebrow(k.themeFiles.length ? `Theme in ${esc(k.themeFiles[0])}${k.themeFiles.length > 1 ? ` and ${n(k.themeFiles.length - 1)} more` : ''} · read ${n(k.refs)} times from components` : `No theme of its own · the ${esc(k.name)} defaults`)}<p class="sub">${k.themeFiles.length ? `Components reach the theme ${n(k.refsPer100)} times per 100 kit files, through ${KITS[k.name]?.advice.refExamples ?? 'theme references'}. That is the system working.` : `Without a theme of its own, every colour a component needs is either ${esc(k.name)}'s default or written by hand.`}</p></div>`];
   parts.push(`<div class="receipts">${eyebrow(`${n(k.colour.uses)} colours written on components · ${n(k.colour.per100)} per 100 kit files`)}${k.colour.uses ? `<div class="chips-row">${chips(k.colour.samples, 'bad')}</div><div class="chips-row">${files(k.colour.top)}</div>` : '<p class="sub">Every colour on a component comes from the theme.</p>'}${whyToggle('kitColour')}</div>`);
   parts.push(`<div class="receipts">${eyebrow(`${n(k.px.uses)} pixel sizes written on components · ${n(k.px.per100)} per 100 kit files`)}${k.px.uses ? `<div class="chips-row">${chips(k.px.samples, 'warn')}</div><div class="chips-row">${files(k.px.top)}</div>` : '<p class="sub">Spacing, type size and radius on components come from the theme.</p>'}${whyToggle('kitPx')}</div>`);
+  if (k.second) parts.push(secondKitBlock(k));
   if (k.exempt?.length) parts.push(`<p class="sub">Not counted: ${n(k.exempt.length)} file${k.exempt.length === 1 ? '' : 's'} of colour data or artwork (${esc(k.exempt.slice(0, 3).map((e) => basename(e.file)).join(', '))}).</p>`);
   return `<section class="glass pad">${sectionHead(`Your ${esc(k.name)} theme, and what is written around it`, 'the theme, and the places a colour or a pixel size was written onto a component instead')}${parts.join('')}</section>`;
 }
@@ -2320,7 +2345,9 @@ if (summaryPath) {
     role: P.role,
     kind: P.kind,
     ...(P.publishesRegistry ? { publishesRegistry: { source: P.publishesRegistry.source, publishes: P.publishesRegistry.publishes } } : {}),
-    ...(P.isKit && P.kit ? { kit: { name: P.kit.name, kitFiles: P.kit.kitFiles, themeFiles: P.kit.themeFiles, spacingUnit: P.kit.spacingUnit ?? null, refs: P.kit.refs, colours: P.kit.colour.uses, pixelSizes: P.kit.px.uses, evidence: P.evidence } } : {}),
+    ...(P.isKit && P.kit ? { kit: { name: P.kit.name, kitFiles: P.kit.kitFiles, themeFiles: P.kit.themeFiles, spacingUnit: P.kit.spacingUnit ?? null, refs: P.kit.refs, colours: P.kit.colour.uses, pixelSizes: P.kit.px.uses, evidence: P.evidence,
+      // a second kit, named and not scored (9.7.0); absent when there is none
+      ...(P.kit.second ? { second: { name: P.kit.second.name, pkg: P.kit.second.pkg, files: P.kit.second.files, withoutFirst: P.kit.second.withoutFirst, mixed: P.kit.second.mixed } } : {}) } } : {}),
     ...(P.isTailwind && P.tailwind ? { tailwind: { file: P.tailwind.file, names: P.tailwind.names.length, restated: P.tailwind.restated, retuned: P.tailwind.retuned?.length ?? 0, uses: P.tailwind.uses, usedIn: P.tailwind.usedIn, adopted: P.tailwind.adopted, evidence: P.evidence } } : {}),
     ...(P.isRegistry && P.registry ? { registry: { source: P.registry.source, builtFrom: P.registry.builtFrom, items: P.registry.items, publishes: P.registry.publishes, variants: P.registry.variants, counted: P.registry.counted ?? null, showcase: P.registry.showcase ?? [], variantsDropped: P.registry.variantsDropped ?? [], themes: P.registry.themes ? { total: P.registry.themes.total, incomplete: P.registry.themes.incomplete } : null } } : {}),
     ...(P.isShadcn && P.shadcn ? { shadcn: { confidence: P.confidence, evidence: P.evidence, style: P.shadcn.kit?.style ?? null, baseColor: P.shadcn.kit?.baseColor ?? null, tailwind: P.shadcn.kit?.tailwind ?? null, catalogues: P.uiDirs, registries: P.shadcn.registryDirs ?? [], ...(P.shadcn.registryPaint ? { registryFiles: P.shadcn.registryPaint.files, registryPaletteColours: P.shadcn.registryPaint.tinUses } : {}), ownFiles: P.shadcn.paint?.ownFiles ?? null, fresh: P.shadcn.fresh?.fresh === true, ...(P.shadcn.lint ? { lint: { file: P.shadcn.lint.file, kind: P.shadcn.lint.kind, rulesOn: lintRulesOn(P.shadcn.lint), readFully: P.shadcn.lint.readFully } } : {}) } } : {}),

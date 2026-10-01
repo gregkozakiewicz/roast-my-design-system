@@ -13,8 +13,9 @@
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { exemptReason } from './exempt.mjs';
+import { importSources, kitOfSource } from './kitlist.mjs';
 
-const SKIP_PATH_RE = /(^|\/)(__tests__|__mocks__|e2e|cypress|stories|storybook|\.storybook|fixtures?|examples?|demos?|tests?|mocks?)\/|\.(test|spec|stories)\.[jt]sx?$|\.d\.ts$/;
+export const SKIP_PATH_RE = /(^|\/)(__tests__|__mocks__|e2e|cypress|stories|storybook|\.storybook|fixtures?|examples?|demos?|tests?|mocks?)\/|\.(test|spec|stories)\.[jt]sx?$|\.d\.ts$/;
 // a file whose job is to hold the palette: the theme, not paint on it. A folder
 // counts too (Checkmate keeps three status-page themes in themes/, Qdrant its
 // colour scales in theme/colors/, 2026-09-17).
@@ -112,6 +113,60 @@ const blankPalettes = (code) => code.replace(ARRAY_RE, (a) => ((a.match(QUOTED_C
 // files and 344 of Metabase's 2,679 (2026-10-01).
 const layerImportSource = (layers) => `from\\s+['"](?:[^'"]*\\/)?(?:${layers.map(escapeRe).join('|')})(?:['"]|\\/)`;
 
+// Another kit's components in the same file: Linode renders Akamai CDS table
+// cells beside MUI, SigNoz renders SigNoz UI callouts beside Ant Design. A
+// colour or a pixel size on one of those is not on the first kit, and the
+// first kit's fix does not apply: sx does nothing on an Akamai CDS cell
+// (2026-10-01). The element is found by reading back to the JSX tag still
+// open at the value, or the component handed to styled(); anything else
+// (plain HTML, the team's own components, a style object outside JSX) stays
+// with the first kit, as before.
+const IMPORT_RE = /import\s+(?:type\s+)?([\s\S]*?)\s+from\s+['"]([^'"]+)['"]/g;
+/** local name -> import source, for every name a file imports */
+function importMap(code) {
+  const m = new Map();
+  for (const [, what, from] of code.matchAll(IMPORT_RE)) {
+    const d = what.match(/^([A-Za-z_$][\w$]*)/); if (d && d[1] !== 'type') m.set(d[1], from);
+    const ns = what.match(/\*\s+as\s+([\w$]+)/); if (ns) m.set(ns[1], from);
+    const br = what.match(/\{([\s\S]*)\}/);
+    if (br) for (const part of br[1].split(',')) { const p = part.trim().replace(/^type\s+/, ''); if (!p) continue; const [a, b] = p.split(/\s+as\s+/); m.set((b ?? a).trim(), from); }
+  }
+  return m;
+}
+/** the element a value sits on: the JSX tag still open at index, or the component handed to styled() */
+function elementAt(code, index) {
+  let i = index;
+  while (i > 0 && index - i < 4000) {
+    i = code.lastIndexOf('<', i - 1);
+    if (i < 0) break;
+    const m = /^<([A-Za-z][\w.]*)/.exec(code.slice(i, i + 80));
+    if (!m) continue;
+    // still open when no > closes it at brace depth 0 before the value: a
+    // prop holding JSX (title={<Box sx={...} />}) belongs to the inner tag
+    let depth = 0, open = true;
+    for (let j = i + 1; j < index; j++) {
+      const ch = code[j];
+      if (ch === '{') depth++;
+      else if (ch === '}') depth--;
+      else if (ch === '>' && depth === 0 && code[j - 1] !== '=') { open = false; break; }
+    }
+    if (open && depth >= 0) return m[1];
+  }
+  const back = code.slice(Math.max(0, index - 600), index);
+  const st = [...back.matchAll(/\bstyled\(\s*([A-Z][\w.]*)/g)].pop();
+  return st ? st[1] : null;
+}
+/** the other kit that owns the element at index, as { name, from }, or null */
+function otherKitAt(code, index, imports, def, ownRe) {
+  const tag = elementAt(code, index);
+  if (!tag || /^[a-z]/.test(tag)) return null;
+  const from = imports.get(tag.split('.')[0]);
+  if (!from) return null;
+  const name = kitOfSource(from);
+  if (!name || name === def.name || ownRe.test(`from '${from}'`)) return null;
+  return { name, from };
+}
+
 /** The import test a kit's files pass, the team's own layer included. */
 export function kitImportRe(def, layers = []) {
   return layers.length ? new RegExp(`${def.importRe.source}|${layerImportSource(layers)}`) : def.importRe;
@@ -144,6 +199,11 @@ export function kitPaintInSource(src, def, { file = null, layers = [], email = n
     ...[...code.matchAll(PX_RE)].map((m) => ({ value: `${m[1]}: ${m[3]}`, index: m.index })),
     ...(def.pxPropRes ?? []).flatMap((re) => [...code.matchAll(re)].map((m) => ({ value: `${m[1]}: ${m[2]}px`, index: m.index }))),
   ].filter((h) => !/: (0|1)px$/.test(h.value) && parseFloat(h.value.split(': ')[1]) >= pxMin);
+  // a file that also imports another kit: name the kit an element comes from
+  if (importSources(code).some((f) => { const n = kitOfSource(f); return n && n !== def.name; })) {
+    const imports = importMap(code);
+    for (const h of [...colours, ...px]) { const o = otherKitAt(code, h.index, imports, def, importRe); if (o) h.otherKit = o; }
+  }
   return { exempt: null, colours, px };
 }
 
@@ -252,7 +312,8 @@ const plain = (html) => String(html ?? '').replace(/<\/?code>/g, '').replace(/&q
  * { exempt: null, findings: [{ rule, index, value, label, note, message, fix }] }:
  * label is the finding in a few words ("colour written onto an MUI
  * component"), note what the theme says about it or null, message the two
- * as one sentence for the live checks.
+ * as one sentence for the live checks. A value on another kit's component
+ * also carries severity 'warning' and otherKit (that kit's name).
  */
 export function kitPaintFindings(src, kit, { file = null, email = null } = {}) {
   if (!kit?.def) return null;
@@ -263,7 +324,18 @@ export function kitPaintFindings(src, kit, { file = null, email = null } = {}) {
   const themeSet = new Set(kit.themeValues ?? []);
   const findings = [];
   const colourLabel = `colour written onto ${aKit(kit.name)} component`;
+  // on another kit's component: say whose it is and give the neutral rule, as
+  // a warning, since the first kit's advice does not reach it
+  const other = (h, rule) => {
+    const o = h.otherKit;
+    return { rule, severity: 'warning', otherKit: o.name, index: h.index, value: h.value,
+      label: rule === 'kit-colour' ? `colour written onto ${aKit(o.name)} component` : `pixel size on ${aKit(o.name)} component`,
+      note: `it comes from ${o.from}, not ${kit.name}`,
+      message: `${rule === 'kit-colour' ? `Colour ${h.value} written onto` : `Pixel size ${h.value} on`} ${aKit(o.name)} component (${o.from}), in a file that also uses ${kit.name}.`,
+      fix: `Style it the way the repo styles its other ${o.name} components. Never put one kit's styling on the other's components.` };
+  };
   for (const c of paint.colours) {
+    if (c.otherKit) { findings.push(other(c, 'kit-colour')); continue; }
     findings.push(themeSet.has(c.value)
       ? { rule: 'kit-colour', index: c.index, value: c.value, label: colourLabel,
           note: `the theme already holds it${themeFile ? ` (${themeFile})` : ''}`,
@@ -275,6 +347,7 @@ export function kitPaintFindings(src, kit, { file = null, email = null } = {}) {
           fix: `Add it to the theme once${themeFile ? ` (${themeFile})` : ` with ${adv.themeCall}`}, then read it there. ${plain(adv.colourHow)}` });
   }
   for (const h of paint.px) {
+    if (h.otherKit) { findings.push(other(h, 'kit-px')); continue; }
     const raw = h.value.split(': ')[1];
     findings.push({ rule: 'kit-px', index: h.index, value: h.value, label: `pixel size on ${aKit(kit.name)} component`, note: null,
       message: `Pixel size ${h.value} on ${aKit(kit.name)} component.`,

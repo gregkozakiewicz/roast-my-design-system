@@ -2,6 +2,38 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.7.0 — 2026-10-01
+
+- **A second kit is named, and the advice takes no side.** 13 of 79
+  products built on a kit also import a second, different kit in earnest:
+  SigNoz uses Ant Design and its own SigNoz UI, Backstage uses MUI and
+  Backstage UI, Linode uses MUI and Akamai's components. The rules file
+  told the agent "This repo uses Ant Design. Prefer extending it", the
+  opposite of SigNoz's own lint rule. Now the rules file, the MCP context,
+  the report and the fix prompts name both kits, biggest first, and say:
+  follow the kit the file already uses, and never put one kit's styling on
+  the other's components. The first kit's advice (MUI's `sx`, Ant Design's
+  tokens) is marked as being for that kit's components. The second kit is
+  named, not scored, so no score moves.
+- **The edit check names the kit a value sits on.** In a file that uses
+  both kits, a colour or a pixel size on the second kit's component got
+  the first kit's fix: "use the nearest step in sx" on an Akamai table
+  cell, where `sx` does nothing. It now names that kit and the package the
+  component comes from, and says to style it the way the repo styles that
+  kit's other components. It is a warning: the edit check says it once and
+  the end-of-turn review does not send the agent back for it. The guard
+  says the same on a pull request. In the fleet, 21 findings change words
+  this way, in SigNoz, Linode, OpenCTI, Agenta and DB-GPT. None is added
+  or removed.
+- **A shadcn catalogue one folder down is read as shadcn.** nhost keeps its
+  shadcn components in `components/ui/v3` and imports them in 631 files,
+  while 57 older files still import MUI. The scan counted only catalogue
+  imports directly under `components/ui`, so it read nhost as an MUI
+  product. It now reads it as shadcn, and its score goes from 35 to 18:
+  the shadcn tiles (palette classes in own code, and colours added to
+  shadcn components through className) replace the two MUI tiles.
+- Measured on 204 repos: only nhost's score moves.
+
 ## 9.6.1 — 2026-10-01
 
 - **The edit check and the guard judge files that use a team's own layer

@@ -41,7 +41,21 @@ export function getContext(k, { path = null } = {}) {
 
   const t = k.tokens;
   const plain = (s) => String(s ?? '').replace(/<\/?code>/g, '').replace(/`/g, '');
-  if (k.kit) {
+  if (k.kit?.second) {
+    // two kits: both named, biggest first, neutral about direction; the first
+    // kit's theme advice is said to be for its own components (2026-10-01)
+    const kit = k.kit, adv = kit.def?.advice, sk = kit.second;
+    const theme = kit.themeFiles?.[0];
+    const pair = [{ name: kit.name, files: kit.kitFiles, dir: sk.firstDir }, { name: sk.name, files: sk.files, dir: sk.dir }].sort((a, b) => b.files - a.files);
+    const one = (x) => `${x.name} (${x.files} files${x.dir ? ` in ${x.dir}` : ''})`;
+    L.push(`KITS: two in use. ${one(pair[0])} and ${one(pair[1])}${sk.mixed ? `; ${sk.mixed} file${sk.mixed === 1 ? ' imports' : 's import'} both` : ''}. Follow the kit the file already uses; never put one kit's styling on the other's components. A new file follows its neighbours.`);
+    L.push(theme
+      ? `  On ${kit.name} components: ${plain(adv?.rulesTheme?.(theme))}`
+      : `  On ${kit.name} components: the default theme. Before adding a colour, add it with ${adv?.themeCall ?? 'the theme call'} and read it from there.`);
+    const c = kit.colour?.uses ?? 0, p = kit.px?.uses ?? 0;
+    if (c || p) L.push(`  Already written onto ${kit.name} components: ${[c ? `${c} colour${c === 1 ? '' : 's'} (${kit.colour.samples.slice(0, 3).map((x) => x.value).join(', ')})` : '', p ? `${p} pixel size${p === 1 ? '' : 's'}` : ''].filter(Boolean).join(' and ')}; do not add more.`);
+    L.push(`  On ${sk.name} components${sk.pkg ? ` (${sk.pkg})` : ''}: style them the way the files around them do; ${plain(adv?.idiom ?? `the ${kit.name} theme`)} do not reach them.`);
+  } else if (k.kit) {
     const kit = k.kit, adv = kit.def?.advice;
     const theme = kit.themeFiles?.[0];
     // the rulesTheme sentence already names the file; the header adds only
@@ -86,7 +100,9 @@ export function getContext(k, { path = null } = {}) {
     const names = (tw.names ?? []).slice(0, 4).map((n) => `bg-${n}`).join(', ');
     L.push(`TAILWIND THEME: ${tw.file} names this repo's colours; use them as classes (${names}). No palette classes (text-gray-500, bg-blue-600) where the theme has a colour of that kind.${tw.retuned?.length ? ` ${tw.retuned.slice(0, 3).join(', ')} ${tw.retuned.length === 1 ? 'is' : 'are'} retuned by the theme and ${tw.retuned.length === 1 ? 'counts' : 'count'} as its own.` : ''}${tw.adopted === false ? ` The theme is defined but barely used (${tw.uses} class uses): use it before adding anything.` : ''}`);
   }
-  L.push(k.kit
+  L.push(k.kit?.second
+    ? `SPACING on ${k.kit.name} components: ${plain(k.kit.def?.advice?.rulesSpacing ?? "use the theme's spacing steps, not pixels")}.`
+    : k.kit
     ? `SPACING: ${plain(k.kit.def?.advice?.rulesSpacing ?? "use the theme's spacing steps, not pixels")}.${k.kit.px?.uses ? ` ${k.kit.px.uses} pixel sizes are already written onto components; do not add one.` : ''}`
     : k.usesTailwind
     ? 'SPACING: Tailwind scale only. No arbitrary brackets (p-[13px]); a repeating value is a token, not a bracket.'
@@ -116,7 +132,20 @@ export function getContext(k, { path = null } = {}) {
     if (nCanon > 2) nCanon -= 1; else nDupes -= 1;
     text = assemble(nCanon, nDupes) + shortened();
   }
-  if (text.length > CONTEXT_BUDGET) text = `${text.slice(0, text.lastIndexOf('\n', CONTEXT_BUDGET))}\n(trimmed to budget; ask roast_find_component / roast_find_token for specifics)`;
+  // Two kits add three lines. Before cutting anything, drop what another call
+  // can give back, in this order, so the KITS lines, DISCIPLINE and the
+  // closing roast_validate line always stay. Repos with one kit keep the
+  // cut below exactly as before (2026-10-01).
+  if (k.kit?.second) {
+    const drop = (re) => { for (let j = L.length - 1; j >= 0; j--) if (typeof L[j] === 'string' && re.test(L[j])) { L.splice(j, 1); return true; } return false; };
+    const steps = [() => drop(/^NOTE:/), () => (nDupes > 0 ? (nDupes -= 1, true) : false), () => drop(/^GAP:/), () => drop(/^GAP:/), () => drop(/^TYPE:/), () => (nCanon > 1 ? (nCanon -= 1, true) : false)];
+    for (const step of steps) {
+      if (text.length <= CONTEXT_BUDGET) break;
+      if (step()) text = assemble(nCanon, nDupes) + shortened();
+    }
+  }
+  const TRIM = '\n(trimmed to budget; ask roast_find_component / roast_find_token for specifics)';
+  if (text.length > CONTEXT_BUDGET) text = `${text.slice(0, text.lastIndexOf('\n', k.kit?.second ? CONTEXT_BUDGET - TRIM.length : CONTEXT_BUDGET))}${TRIM}`;
   // No credit line here (8.1.1): a tool answers the question and nothing
   // else. Attribution lives on the report and in the skill's citation rule.
   return text;
@@ -225,7 +254,18 @@ function componentLine(c, k) {
 }
 
 // ---------- roast_find_token ----------
-export function findToken(k, { value } = {}) {
+// A repo with two kits: the answer is the first kit's, and says so (2026-10-01)
+export function findToken(k, args = {}) {
+  const answer = findTokenAnswer(k, args);
+  const sk = k.kit?.second;
+  if (!sk || typeof answer !== 'string') return answer;
+  const v = String(args.value ?? '').trim();
+  if (hexRgb(v.toLowerCase())) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, set colour the way the files around them do.`;
+  if (toPxLocal(v) !== null && k.kit.def?.advice?.step) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, set sizes the way the files around them do.`;
+  return answer;
+}
+
+function findTokenAnswer(k, { value } = {}) {
   if (typeof value !== 'string' || !value.trim()) return invalidInput('Give me a value: a colour (#111111, rgba(...)) or a length (13px, 0.8rem).');
   const v = value.trim();
 

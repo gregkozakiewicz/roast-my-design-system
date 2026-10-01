@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 9.6.1 — unreleased
+## 9.6.1 — 2026-10-01
 
 - **The edit check and the guard judge files that use a team's own layer
   over its kit.** On a product built on MUI, Mantine, Chakra UI or Ant

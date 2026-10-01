@@ -20,9 +20,9 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 
 ### MUI: the theme and the components
 
-- This repo uses two kits: MUI (35 files) and Backstage UI (`@backstage/ui`, 14 files in `src/plugins`). Follow the kit the file already uses and extend it rather than building parallel pieces. Never put one kit's styling on the other's components.
+- This repo uses two kits: MUI (35 files) and Backstage UI (`@backstage/ui`, 14 files in `src/plugins`). Follow the kit the file already uses. Add to that kit rather than building a second version of something it already has. Never put one kit's styling on the other's components.
 - On MUI components: a colour, a spacing step or a radius is decided in `src/theme/theme.ts`. On a component, read it: sx paths (`color: 'text.secondary'`, `p: 2`) or `theme.palette` / `theme.spacing()` in styled().
-- The rules in this section are for MUI components. Backstage UI (`@backstage/ui`) is imported in 14 files, 11 of them without MUI. On Backstage UI components, style them the way the files around them do.
+- The rules in this section are for MUI components. Backstage UI (`@backstage/ui`) is imported in 14 files, 11 of them without MUI. On Backstage UI components, copy how nearby files style them.
 - The scan found 12 colours written onto components (`#667085`, `#3355ff`). Do not add more; if a colour is missing from the theme, add it to the palette once.
 - The scan found 13 pixel sizes written onto components (`p: 12px`, `p: 20px`, `m: 8px`). Use spacing steps (`p: 2`), not pixels; a size between steps is a deliberate exception, left with a comment.
 

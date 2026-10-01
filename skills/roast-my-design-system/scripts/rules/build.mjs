@@ -156,7 +156,7 @@ if (neverImported.length >= 3) {
   const names = (list) => `${list.slice(0, 3).map((c) => `\`<${c.name}>\``).join(', ')}…`;
   if (stock.length) {
     section('Catalogue components already installed');
-    rule(`${stock.length} component${stock.length === 1 ? ' sits' : 's sit'} installed and unused in \`${profileOf(h).uiDir}\` (${names(stock)}). Reach for one of these before building your own version of the same thing. Do not delete them to tidy up.`);
+    rule(`${stock.length} component${stock.length === 1 ? ' is' : 's are'} installed and unused in \`${profileOf(h).uiDir}\` (${names(stock)}). Use one of these before you build your own version. Do not delete them to tidy up.`);
   }
   if (own.length) {
     section('Components nobody imports');
@@ -305,12 +305,12 @@ const kitCount = (x) => `${x.name} (${x.pkg ? `\`${x.pkg}\`, ` : ''}${x.files} f
 const alsoWords = (k) => ((k.alsoSeen ?? []).length ? `, and also ${andList(k.alsoSeen.map((a) => `${a.name} (${a.files} files)`))}` : '');
 /** the opening rule on a repo with two kits */
 export function secondKitLead(k) {
-  return `This repo uses ${(k.alsoSeen ?? []).length ? 'more than one kit' : 'two kits'}: ${kitPair(k).map(kitCount).join(' and ')}${alsoWords(k)}. Follow the kit the file already uses and extend it rather than building parallel pieces. Never put one kit's styling on the other's components.`;
+  return `This repo uses ${(k.alsoSeen ?? []).length ? 'more than one kit' : 'two kits'}: ${kitPair(k).map(kitCount).join(' and ')}${alsoWords(k)}. Follow the kit the file already uses. Add to that kit rather than building a second version of something it already has. Never put one kit's styling on the other's components.`;
 }
 /** the kit section's own rules are the first kit's; this says so */
 export function secondKitRule(k) {
   const s = k.second;
-  return `The rules in this section are for ${k.name} components. ${s.name}${s.pkg ? ` (\`${s.pkg}\`)` : ''} is imported in ${s.files} files${withoutWords(s, k.name)}. On ${s.name} components, style them the way the files around them do.`;
+  return `The rules in this section are for ${k.name} components. ${s.name}${s.pkg ? ` (\`${s.pkg}\`)` : ''} is imported in ${s.files} files${withoutWords(s, k.name)}. On ${s.name} components, copy how nearby files style them.`;
 }
 
 // ---------- shadcn in utility-class mode (words approved by Greg, 2026-10-01) ----------

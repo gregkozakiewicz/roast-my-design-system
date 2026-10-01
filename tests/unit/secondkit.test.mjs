@@ -224,8 +224,8 @@ test('naming a second kit moves no score and no tile', () => {
     const html = readFileSync(join(tmp, 'with.html'), 'utf8');
     assert.match(html, /Backstage UI is imported in 14 files too, 11 of them without MUI\. Those 11 files are not in the kit counts/);
     assert.match(html, /Two kits · Backstage UI in 14 files/);
-    assert.match(html, /11 files use Backstage UI without MUI and are not in the counts above\./);
-    assert.match(html, /3 files use both kits and are counted: 6 of the colours and 7 of the pixel sizes above are in them, so some may sit on Backstage UI components/);
+    assert.match(html, /11 files use Backstage UI without MUI\. They are not in the counts above\./);
+    assert.match(html, /3 files use both kits and are counted\. 6 of the colours and 7 of the pixel sizes above are in those files, so some may be on Backstage UI components/);
     assert.match(html, /In the 3 files that also use Backstage UI, change only what sits on MUI components\./);
     assert.match(html, /- This repo also uses Backstage UI \(@backstage\/ui\)\. Make these changes only on MUI components/);
     const plain = readFileSync(join(tmp, 'without.html'), 'utf8');
@@ -243,9 +243,9 @@ test('the rules file names both kits, biggest first, and takes no side', () => {
   const lines = text.split('\n');
   // the kit section opens with both kits, then the first kit's theme, then whose rules these are
   const at = lines.indexOf('### MUI: the theme and the components');
-  assert.equal(lines[at + 2], "- This repo uses two kits: MUI (35 files) and Backstage UI (`@backstage/ui`, 14 files in `src/plugins`). Follow the kit the file already uses and extend it rather than building parallel pieces. Never put one kit's styling on the other's components.");
+  assert.equal(lines[at + 2], "- This repo uses two kits: MUI (35 files) and Backstage UI (`@backstage/ui`, 14 files in `src/plugins`). Follow the kit the file already uses. Add to that kit rather than building a second version of something it already has. Never put one kit's styling on the other's components.");
   assert.match(lines[at + 3], /^- On MUI components: a colour, a spacing step or a radius is decided in `src\/theme\/theme\.ts`\./);
-  assert.equal(lines[at + 4], '- The rules in this section are for MUI components. Backstage UI (`@backstage/ui`) is imported in 14 files, 11 of them without MUI. On Backstage UI components, style them the way the files around them do.');
+  assert.equal(lines[at + 4], '- The rules in this section are for MUI components. Backstage UI (`@backstage/ui`) is imported in 14 files, 11 of them without MUI. On Backstage UI components, copy how nearby files style them.');
   // nothing names one kit as the product's base, or a direction
   assert.doesNotMatch(text, /built on MUI|Prefer extending it/);
   assert.doesNotMatch(lines.slice(at + 2, at + 5).join('\n'), FORBIDDEN);
@@ -284,9 +284,9 @@ function loadHarvest(fixture) {
 test('a fix prompt for a kit move keeps the first kit off the second kit', () => {
   const base = { title: 't', sub: 's', deltaText: '', repoName: 'r', kit: 'Ant Design' };
   const second = { name: 'SigNoz UI', pkg: '@signozhq/ui' };
-  const P1 = '- This repo also uses SigNoz UI (@signozhq/ui). Make these changes only on Ant Design components and the wrappers around them. On SigNoz UI components, style them the way the files around them do.';
+  const P1 = '- This repo also uses SigNoz UI (@signozhq/ui). Make these changes only on Ant Design components and the wrappers around them. On SigNoz UI components, copy how nearby files style them.';
   // inline styles are repo-wide: plain elements and other files stay in scope
-  const P1i = "- This repo also uses SigNoz UI (@signozhq/ui). On SigNoz UI components, move a style the way the files around them do. Never put one kit's styling on the other's components.";
+  const P1i = "- This repo also uses SigNoz UI (@signozhq/ui). On SigNoz UI components, move a style the way nearby files do. Never put one kit's styling on the other's components.";
   const lastHow = (p) => p.split('\n\nWork through')[0].split('\n').at(-1);
   for (const metric of ['kitColour', 'kitPx']) assert.equal(lastHow(fixPrompt({ ...base, metric, second })), P1, metric);
   assert.equal(lastHow(fixPrompt({ ...base, metric: 'inlineStyles', second })), P1i);
@@ -304,10 +304,10 @@ test('the MCP context names both kits and says whose advice is whose', () => {
   const ctx = getContext(k);
   const lines = ctx.split('\n');
   const at = lines.findIndex((l) => l.startsWith('KITS: '));
-  assert.equal(lines[at], "KITS: two in use. MUI (35 files) and Backstage UI (14 files in src/plugins); 3 files import both. Follow the kit the file already uses; never put one kit's styling on the other's components. A new file follows its neighbours.");
+  assert.equal(lines[at], "KITS: two in use. MUI (35 files) and Backstage UI (14 files in src/plugins). 3 files use both. Follow the kit the file already uses. Never put one kit's styling on the other's components. In a new file, use the kit the nearby files use.");
   assert.match(lines[at + 1], /^ {2}On MUI components: a colour, a spacing step or a radius is decided in src\/theme\/theme\.ts\./);
   assert.equal(lines[at + 2], '  Already written onto components in MUI files: 12 colours (#667085, #3355ff) and 13 pixel sizes; do not add more.');
-  assert.equal(lines[at + 3], '  On Backstage UI components (@backstage/ui): style them the way the files around them do.');
+  assert.equal(lines[at + 3], '  On Backstage UI components (@backstage/ui): copy how nearby files style them.');
   assert.ok(lines.includes('SPACING on MUI components: Use spacing steps (p: 2), not pixels.'));
   assert.doesNotMatch(ctx, FORBIDDEN);
   assert.doesNotMatch(ctx, /do not reach/);
@@ -317,9 +317,9 @@ test('the MCP context names both kits and says whose advice is whose', () => {
   assert.match(big, /^KITS: two in use\. Backstage UI \(500 files in src\/plugins\) and MUI \(35 files\)/m);
   // a third kit is named too
   const three = getContext({ ...k, kit: { ...k.kit, alsoSeen: [{ name: 'Agenta UI', files: 20 }] } });
-  assert.match(three, /^KITS: three in use\. MUI \(35 files\), Backstage UI \(14 files in src\/plugins\) and Agenta UI \(20 files\);/m);
-  assert.match(findToken(k, { value: '#667085' }), / That is for MUI components\. On Backstage UI components, set colour the way the files around them do\.$/);
-  assert.match(findToken(k, { value: '12px' }), / That is for MUI components\. On Backstage UI components, set sizes the way the files around them do\.$/);
+  assert.match(three, /^KITS: three in use\. MUI \(35 files\), Backstage UI \(14 files in src\/plugins\) and Agenta UI \(20 files\)\. 3 files use both\./m);
+  assert.match(findToken(k, { value: '#667085' }), / That is for MUI components\. On Backstage UI components, copy how nearby files set colour\.$/);
+  assert.match(findToken(k, { value: '12px' }), / That is for MUI components\. On Backstage UI components, copy how nearby files set sizes\.$/);
   // an answer that is not the kit's advice gets no kit note
   const bare = { ...k, tokenColorRgb: [] };
   assert.doesNotMatch(findToken(bare, { value: '#123456' }), /That is for/);

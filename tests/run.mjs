@@ -463,10 +463,10 @@ console.log('vendored catalogue:');
   !(shS.moves ?? []).some((m) => /nobody imports/.test(m.title))
     ? ok('no fix-it move for catalogue stock') : bad('catalogue move', 'still telling people to delete the catalogue');
   const shHtml = readFileSync(join(tmp, 'shadcnv3.html'), 'utf8');
-  shHtml.includes('catalogue components not used yet') && shHtml.includes('takes nothing off the score')
+  shHtml.includes('shadcn components installed but not used yet') && shHtml.includes('takes nothing off the score')
     ? ok('the report explains stock instead of accusing') : bad('catalogue copy', 'missing');
   const shRules = rulesMarkdown(sh).text;
-  shRules.includes('Reach for one of these before building your own') && !shRules.includes('flag it for deletion')
+  shRules.includes('Use one of these before you build your own version') && !shRules.includes('flag it for deletion')
     ? ok('the rules point the agent at the catalogue, not at deleting it') : bad('catalogue rules', 'still says delete');
   // The rule catalogue always declares every rule id; what matters is results.
   const shSarif = JSON.parse(readFileSync(join(tmp, 'shadcnv3.sarif'), 'utf8'));
@@ -643,8 +643,8 @@ console.log('colour-use bar:');
   html.includes('title="black ×1 as dark: overrides written by hand · most in apps/web/app/page.tsx"')
     ? ok('a dark: black is a stray with its own words') : bad('dark override tooltip', (html.match(/title="black ×[^"]*"/g) ?? ['none']).join(' | '));
   // white and black apart, and which dark: overrides the rule calls strays
-  html.includes('Palette classes left out of the strays: plain white, apart from dark: backgrounds, text and borders;')
-    ? ok('the sentence names plain white alone, and the dark: overrides the rule flags') : bad('white and black', (html.match(/Palette classes left out[^.]*/) ?? ['missing'])[0]);
+  html.includes('Palette classes not counted as strays: plain white, except dark: backgrounds, text and borders;')
+    ? ok('the sentence names plain white alone, and the dark: overrides the rule flags') : bad('white and black', (html.match(/Palette classes not counted[^.]*/) ?? ['missing'])[0]);
   // a written value names a token only where the token holds it by day:
   // #e2e8f0 is --app-label's dark-mode value only
   html.includes('title="#e2e8f0 ×1 written by hand; a token already holds this value · most in apps/web/app/page.tsx"')
@@ -718,7 +718,7 @@ console.log('colour-use bar, drawn:');
   // the shares line and the fold under it ("how this is counted")
   const wcLine = (wc.html.match(/<p class="sub use-line">[\s\S]*?<\/p>(?:<div class="whywrap">[\s\S]*?<\/div><\/div>)?/) ?? [''])[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
   wc.h.profile.palette === null && (wc.h.profile.shadcn?.paint?.tin?.uses ?? 0) > 0
-    && wcLine.includes("The palette rule found no theme here it can check these classes against, so the bar keeps them as Tailwind's palette. The off-theme colours tile still counts palette classes as off-theme.")
+    && wcLine.includes("No theme was found to check these palette classes against, so the bar shows them as Tailwind's palette. The off-theme colours tile still counts palette classes.")
     && !wcLine.includes('none of them count as strays')
     ? ok('where the tile counts palette classes, the bar never says none of them count') : bad('rule off, tile on', wcLine || JSON.stringify(wc.h.profile.palette));
 
@@ -738,7 +738,7 @@ console.log('colour-use bar, drawn:');
     'src/theme.scss': `$ink: #222222;\n$paper: #fafafa;\n${Array.from({ length: 12 }, (_, i) => `.c${i} { color: $ink; background: $paper; }`).join('\n')}\n`,
     'src/app.tsx': 'export const App = () => <p style={{ color: "#333333" }}>x</p>;\n',
   });
-  sass.html.includes('go through Sass variables, which this bar cannot follow yet, so it is sized by written values instead.')
+  sass.html.includes('go through Sass variables. This bar cannot follow those yet, so it counts written values instead.')
     && sass.html.includes('Sized by how often each value is written')
     ? ok('a Sass-read theme keeps the written bar and says why') : bad('fallback sentence', (sass.html.match(/<p class="sub use-line">[^<]*/) ?? ['missing'])[0]);
 

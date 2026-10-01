@@ -49,7 +49,7 @@ export function getContext(k, { path = null } = {}) {
     const theme = kit.themeFiles?.[0];
     const one = (x) => `${x.name} (${x.files} files${x.dir ? ` in ${x.dir}` : ''})`;
     const also = kit.alsoSeen ?? [];
-    L.push(`KITS: ${['two', 'three', 'four'][also.length] ?? 2 + also.length} in use. ${[...kitPair(kit), ...also].map(one).join(', ').replace(/, ([^,]*)$/, ' and $1')}${sk.mixed ? `; ${sk.mixed} file${sk.mixed === 1 ? ' imports' : 's import'} both` : ''}. Follow the kit the file already uses; never put one kit's styling on the other's components. A new file follows its neighbours.`);
+    L.push(`KITS: ${['two', 'three', 'four'][also.length] ?? 2 + also.length} in use. ${[...kitPair(kit), ...also].map(one).join(', ').replace(/, ([^,]*)$/, ' and $1')}${sk.mixed ? `. ${sk.mixed} file${sk.mixed === 1 ? ' uses' : 's use'} both` : ''}. Follow the kit the file already uses. Never put one kit's styling on the other's components. In a new file, use the kit the nearby files use.`);
     L.push(theme
       ? `  On ${kit.name} components: ${plain(adv?.rulesTheme?.(theme)).replace(/^[A-Z](?=[a-z ])/, (c) => c.toLowerCase())}`
       : `  On ${kit.name} components: the default theme. Before adding a colour, add it with ${adv?.themeCall ?? 'the theme call'} and read it from there.`);
@@ -57,7 +57,7 @@ export function getContext(k, { path = null } = {}) {
     // counted in the first kit's files: some may sit on the second kit's
     // components, which the live checks name one by one
     if (c || p) L.push(`  Already written onto components in ${kit.name} files: ${[c ? `${c} colour${c === 1 ? '' : 's'} (${kit.colour.samples.slice(0, 3).map((x) => x.value).join(', ')})` : '', p ? `${p} pixel size${p === 1 ? '' : 's'}` : ''].filter(Boolean).join(' and ')}; do not add more.`);
-    L.push(`  On ${sk.name} components${sk.pkg ? ` (${sk.pkg})` : ''}: style them the way the files around them do.`);
+    L.push(`  On ${sk.name} components${sk.pkg ? ` (${sk.pkg})` : ''}: copy how nearby files style them.`);
   } else if (k.kit) {
     const kit = k.kit, adv = kit.def?.advice;
     const theme = kit.themeFiles?.[0];
@@ -273,8 +273,8 @@ export function findToken(k, args = {}) {
   const v = String(args.value ?? '').trim();
   // only an answer that points at the kit's theme is the kit's advice; "no
   // token scale here" is true of the whole repo
-  if (hexRgb(v.toLowerCase()) && k.tokenColorRgb?.length) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, set colour the way the files around them do.`;
-  if (toPxLocal(v) !== null && k.kit.def?.advice?.step) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, set sizes the way the files around them do.`;
+  if (hexRgb(v.toLowerCase()) && k.tokenColorRgb?.length) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, copy how nearby files set colour.`;
+  if (toPxLocal(v) !== null && k.kit.def?.advice?.step) return `${answer} That is for ${k.kit.name} components. On ${sk.name} components, copy how nearby files set sizes.`;
   return answer;
 }
 

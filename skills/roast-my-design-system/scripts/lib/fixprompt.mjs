@@ -45,9 +45,9 @@ export function fixPrompt({ title, sub, deltaText, repoName, metric = null, kit 
   const also = second ? `- This repo also uses ${second.name}${second.pkg ? ` (${second.pkg})` : ''}.` : '';
   const secondLine = !adv || !second ? null
     : ['kitColour', 'kitPx'].includes(metric)
-    ? `${also} Make these changes only on ${kit} components and the wrappers around them. On ${second.name} components, style them the way the files around them do.`
+    ? `${also} Make these changes only on ${kit} components and the wrappers around them. On ${second.name} components, copy how nearby files style them.`
     : metric === 'inlineStyles'
-    ? `${also} On ${second.name} components, move a style the way the files around them do. Never put one kit's styling on the other's components.`
+    ? `${also} On ${second.name} components, move a style the way nearby files do. Never put one kit's styling on the other's components.`
     : null;
   const lines = [TRAP_LINES[metric], kitLine, secondLine].filter(Boolean);
   const trap = lines.length ? `\n${lines.join('\n')}` : '';

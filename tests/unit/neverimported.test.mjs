@@ -31,26 +31,26 @@ const own = (name) => `export function ${name}() { return <div className="p-2">$
 
 test("shadcn's unused components are stock; the team's own unused ones are named as its own", () => {
   const r = scan({ 'components/ui/promo-strip.tsx': own('PromoStrip'), 'components/ui/plan-picker.tsx': own('PlanPicker') });
-  const stock = (r.html.match(/(\d+) catalogue components? not used yet · installed by the shadcn CLI/) ?? [])[1];
+  const stock = (r.html.match(/(\d+) shadcn components? installed but not used yet · added by the shadcn CLI/) ?? [])[1];
   assert.ok(Number(stock) >= 2, `stock ${stock}`);
-  assert.match(r.html, /2 components of the team's own in components\/ui defined but never imported · they sit in the system as wrong answers waiting to be picked/);
+  assert.match(r.html, /2 components the team wrote in components\/ui are never imported · an agent may use one of these by mistake/);
   assert.match(r.html, new RegExp(`${stock} installed by the shadcn CLI and 2 of the team's own, not used yet; not scored`));
-  assert.match(r.html, /2 components of the team's own in the same folder are never imported either: listed under the adoption map, not scored\./);
+  assert.match(r.html, /2 components the team wrote in the same folder are not imported either\. They are listed under the adoption map and are not scored\./);
   // the own list holds only the team's files, the stock list only shadcn's
-  const ownBlock = r.html.split("of the team's own in components/ui defined")[1].split('</div></div>')[0];
+  const ownBlock = r.html.split("the team wrote in components/ui are never imported")[1].split('</div></div>')[0];
   assert.match(ownBlock, /PromoStrip/);
   assert.doesNotMatch(ownBlock, /&lt;Dialog&gt;|&lt;Tabs&gt;/);
   // not scored, as before: the tile stays information
   assert.equal(r.summary.tiles.find((t) => t.metric === 'neverImported').health, 'info');
   const rules = rulesMarkdown(r.harvest).text;
-  assert.match(rules, /### Catalogue components already installed\n\n- \d+ components sit installed and unused in `components\/ui`/);
+  assert.match(rules, /### Catalogue components already installed\n\n- \d+ components are installed and unused in `components\/ui`/);
   assert.match(rules, /### Components nobody imports\n\n- 2 components are defined but never imported \(`<PlanPicker>`, `<PromoStrip>`…\)|### Components nobody imports\n\n- 2 components are defined but never imported \(`<PromoStrip>`, `<PlanPicker>`…\)/);
   assert.doesNotMatch(rules.split('### Catalogue components already installed')[1].split('###')[0], /PromoStrip|PlanPicker/);
 });
 
 test('with only shadcn stock unused, the words are as before', () => {
   const r = scan({});
-  assert.doesNotMatch(r.html, /of the team's own/);
+  assert.doesNotMatch(r.html, /of the team's own|the team wrote/);
   assert.match(r.html, /catalogue stock: installed by the shadcn CLI, not used yet/);
   assert.doesNotMatch(rulesMarkdown(r.harvest).text, /Components nobody imports/);
 });

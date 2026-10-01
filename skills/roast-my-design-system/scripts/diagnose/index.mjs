@@ -609,7 +609,7 @@ function colourUsage() {
     const pct = Math.round(use.fallback.share * 100);
     const words = { sass: 'Sass variables', less: 'Less variables', 'js-theme': 'JavaScript theme objects' };
     const what = listWords(use.fallback.why.map((w) => words[w]).filter(Boolean));
-    return { ...written(), line: `<p class="sub use-line">Of every 100 colour uses here, ${pct} go through ${what}, which this bar cannot follow yet, so it is sized by written values instead.</p>` };
+    return { ...written(), line: `<p class="sub use-line">${pct} in every 100 colour uses here go through ${what}. This bar cannot follow those yet, so it counts written values instead.</p>` };
   }
 
   const kitName = P.kit?.name ?? 'kit';
@@ -661,16 +661,15 @@ function colourUsage() {
     return out;
   })();
   const T = use.totals;
-  const strayWhat = T.written && T.paletteStray
-    ? (st === 1 ? 'a value written by hand or a palette class where the theme names its own colours' : 'values written by hand, or palette classes where the theme names its own colours')
-    : T.written ? (st === 1 ? 'a value written by hand' : 'values written by hand')
-      : (st === 1 ? 'a palette class where the theme names its own colours' : 'palette classes where the theme names its own colours');
+  // what a stray is here, said once after the shares
+  const strayWhat = T.written && T.paletteStray ? 'a value written by hand, or a palette class where the theme has its own colour'
+    : T.written ? 'a value written by hand' : 'a palette class where the theme has its own colour';
   const parts = [
-    t ? `${t} reach${t === 1 ? 'es' : ''} the colour by name through the theme` : '',
-    p ? `${p} use${p === 1 ? 's' : ''} Tailwind's own palette` : '',
-    st ? `${st} ${st === 1 ? 'is a stray' : 'are strays'}: ${strayWhat}` : '',
+    t ? `${t} use${t === 1 ? 's' : ''} a theme colour by name` : '',
+    p ? `${p} use${p === 1 ? 's' : ''} Tailwind's palette` : '',
+    st ? `${st} ${st === 1 ? 'is a stray' : 'are strays'}` : '',
   ].filter(Boolean);
-  const sentences = [`Of every 100 colour uses, ${listWords(parts)}.`];
+  const sentences = [`Of every 100 colour uses, ${listWords(parts)}.${st ? ` A stray is ${strayWhat}.` : ''}`];
   // why the palette cells are not strays, in the one rule's terms
   if (p) {
     const w = use.paletteWhy ?? {};
@@ -680,7 +679,7 @@ function colourUsage() {
         // a shadcn repo with no theme the rule can read still has its
         // palette classes counted by the off-theme colours tile (workout-cool)
         : P.isShadcn && (P.shadcn?.paint?.tin?.uses ?? 0) > 0
-          ? "The palette rule found no theme here it can check these classes against, so the bar keeps them as Tailwind's palette. The off-theme colours tile still counts palette classes as off-theme."
+          ? "No theme was found to check these palette classes against, so the bar shows them as Tailwind's palette. The off-theme colours tile still counts palette classes."
           : 'The report does not check palette classes against a theme here, so none of them count as strays.');
     }
     const fam = P.palette?.families ?? null;
@@ -689,17 +688,17 @@ function colourUsage() {
     const left = [
       // the rule flags dark: backgrounds, text and borders; every other
       // dark: white or black (dark:via-white, dark:ring-white) stays plain
-      wb.length ? `plain ${listWords(wb)}${T.paletteStrayDark ? ', apart from dark: backgrounds, text and borders' : ''}` : '',
+      wb.length ? `plain ${listWords(wb)}${T.paletteStrayDark ? ', except dark: backgrounds, text and borders' : ''}` : '',
       w.family && fam ? (!fam.grey ? 'greys (the theme names no grey)' : 'colours other than grey (the theme names only greys)') : '',
       w.apply ? '@apply lines in stylesheets' : '',
-      w.sides ? `side borders and ring offsets${w.sidesTop ? ` such as ${w.sidesTop}` : ''}` : '',
+      w.sides ? `side borders and ring offsets${w.sidesTop ? `, such as ${w.sidesTop}` : ''}` : '',
       w.installed ? "shadcn's own components" : '',
     ].filter(Boolean);
     // semicolons: "plain white and black" carries its own "and"
-    if (P.palette && left.length) sentences.push(`Palette classes left out of the strays: ${left.join('; ')}.`);
+    if (P.palette && left.length) sentences.push(`Palette classes not counted as strays: ${left.join('; ')}.`);
   }
   if (use.scope === 'installed') sentences.push("Your own code uses colour fewer than 20 times so far, so shadcn's installed components are counted too.");
-  else if (P.isShadcn && use.doorFiles) sentences.push("shadcn's own components are left out, as in the score.");
+  else if (P.isShadcn && use.doorFiles) sentences.push("shadcn's own components are left out, as they are in the score.");
   return {
     cells: cells + rest, legend,
     subtitle: 'Sized by how often the code uses each colour',
@@ -1105,14 +1104,14 @@ function componentsSection() {
     ${onceUsed.length && !fresh ? `<p class="sub">${n(onceUsed.length)} component${onceUsed.length === 1 ? ' is' : 's are'} imported exactly once: ${onceUsed.slice(0, 6).map((c) => `&lt;${esc(c.name)}&gt;`).join(', ')}${onceUsed.length > 6 ? ` and ${onceUsed.length - 6} more` : ''}. Quiet corners, not yet a system.</p>` : ''}
     ${top.length ? `<div class="tbl-wrap"><table><thead><tr><th>component</th><th>used</th><th>defined in</th><th>props</th></tr></thead><tbody>${rows}</tbody></table></div>` : ''}
     ${neverImported.length >= 2 && vendoredUi ? `${neverStock.length ? `
-    <div class="receipts">${eyebrow(`${n(neverStock.length)} catalogue component${neverStock.length === 1 ? '' : 's'} not used yet · installed by the shadcn CLI and waiting to be used, not written by this team`)}
+    <div class="receipts">${eyebrow(`${n(neverStock.length)} shadcn component${neverStock.length === 1 ? '' : 's'} installed but not used yet · added by the shadcn CLI, not written by this team`)}
     ${orphanRows(neverStock)}
-    <p class="sub" style="margin-top:8px">Reach for one before building anything new. This list is counted and shown, and takes nothing off the score.</p></div>` : ''}${neverOwn.length ? `
-    <div class="receipts">${eyebrow(`${n(neverOwn.length)} component${neverOwn.length === 1 ? '' : 's'} of the team's own in ${esc(P.uiDir)} defined but never imported · ${neverOwn.length === 1 ? 'it sits' : 'they sit'} in the system as ${neverOwn.length === 1 ? 'a wrong answer' : 'wrong answers'} waiting to be picked`)}
+    <p class="sub" style="margin-top:8px">Use one before you build anything new. This list is counted and shown, and takes nothing off the score.</p></div>` : ''}${neverOwn.length ? `
+    <div class="receipts">${eyebrow(`${n(neverOwn.length)} component${neverOwn.length === 1 ? '' : 's'} the team wrote in ${esc(P.uiDir)} ${neverOwn.length === 1 ? 'is' : 'are'} never imported · an agent may use ${neverOwn.length === 1 ? 'it' : 'one of these'} by mistake`)}
     ${orphanRows(neverOwn)}
     <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order. Counted and shown, not scored.</p>
     ${whyToggle('neverImported')}</div>` : ''}` : neverImported.length >= 2 ? `
-    <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : `${n(neverImported.length)} components defined but never imported · they sit in the system as wrong answers waiting to be picked`)}
+    <div class="receipts">${eyebrow(isLibrary ? `${n(neverImported.length)} components unused internally · showroom stock to review, not dead weight: consumers in other repos are invisible from here` : `${n(neverImported.length)} components defined but never imported · an agent may use one of these by mistake`)}
     ${orphanRows()}
     <p class="sub" style="margin-top:8px">Routers, dynamic imports and barrel files can hide real usage, so treat this as a shortlist to check, not a demolition order.</p>
     ${isLibrary ? '' : whyToggle('neverImported')}` : ''}</section>`;
@@ -1347,10 +1346,9 @@ function whereToStartSection() {
         : tr.count <= 4 ? `${n(tr.count)} colours of its own (${listWords(tr.names)})`
           : families.length >= 4 ? `${n(tr.count)} colours of its own, from ${listWords(families.slice(0, 3))} to ${families.at(-1)}`
             : `${n(tr.count)} colours of its own, among them ${listWords(families)}`;
-      const orWords = (xs) => (xs.length <= 1 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} or ${xs.at(-1)}`);
       if (gate === 'map') c.push({ score: 20 + pt.tin.per100 / 4, metric: 'paintTin', after: 0,
         title: `Map the palette onto the theme you already have`,
-        sub: `${esc(s0.value)} appears ${s0.count} times${f0 ? `, and ${esc(basename(f0.file))} alone carries ${f0.count} palette classes` : ''}. ${esc(tr.file)} already names ${esc(themeNames)}, ${grey ? `but not the greys that classes like ${esc(grey)} stand in for` : "but none of shadcn's names for text, borders and surfaces"}: no ${orWords(missing.slice(0, 3))}. Add ${grey ? 'those greys' : 'them'} to the theme once, then repaint file by file.${missing.includes('muted-foreground') ? ` Swapping <code>${esc(textGrey)}</code> for <code>text-muted-foreground</code> before that leaves the text with no colour.` : ''}` });
+        sub: `${esc(s0.value)} appears ${s0.count} times.${f0 ? ` ${esc(basename(f0.file))} alone has ${f0.count} palette classes.` : ''} ${esc(tr.file)} already names ${esc(themeNames)}. ${grey ? 'It does not name the greys these classes replace' : "It does not name shadcn's colours for text, borders and surfaces"}: ${listWords(missing.slice(0, 3))}. Add ${grey ? 'those greys' : 'them'} to the theme first, then change the classes one file at a time.${missing.includes('muted-foreground') ? ` If you change <code>${esc(textGrey)}</code> to <code>text-muted-foreground</code> before that, the text will have no colour.` : ''}` });
       else c.push(gate === 'repaint'
         ? { score: 20 + pt.tin.per100 / 4, metric: 'paintTin', after: 0,
           title: `Repaint the ${n(pt.tin.uses)} colours from outside the theme`,
@@ -1714,9 +1712,9 @@ function secondKitBlock(k) {
   const inThem = [mp.colours ? `${n(mp.colours)} of the colours` : '', mp.px ? `${n(mp.px)} of the pixel sizes` : ''].filter(Boolean).join(' and ');
   const one = mp.colours + mp.px === 1;
   const parts = [
-    sk.withoutFirst ? `${n(sk.withoutFirst)} file${sk.withoutFirst === 1 ? ' uses' : 's use'} ${esc(sk.name)} without ${esc(k.name)} and ${sk.withoutFirst === 1 ? 'is' : 'are'} not in the counts above.` : '',
-    sk.mixed ? `${n(sk.mixed)} file${sk.mixed === 1 ? ' uses' : 's use'} both kits and ${sk.mixed === 1 ? 'is' : 'are'} counted${inThem ? `: ${inThem} above ${one ? 'is' : 'are'} in ${sk.mixed === 1 ? 'it' : 'them'}, so ${one ? `it may sit on ${aKitName(sk.name)} component` : `some may sit on ${esc(sk.name)} components`}` : ''}.` : '',
-    "Follow the kit the file already uses, and never put one kit's styling on the other's components.",
+    sk.withoutFirst ? `${n(sk.withoutFirst)} file${sk.withoutFirst === 1 ? ' uses' : 's use'} ${esc(sk.name)} without ${esc(k.name)}. ${sk.withoutFirst === 1 ? 'It is' : 'They are'} not in the counts above.` : '',
+    sk.mixed ? `${n(sk.mixed)} file${sk.mixed === 1 ? ' uses' : 's use'} both kits and ${sk.mixed === 1 ? 'is' : 'are'} counted.${inThem ? ` ${inThem[0].toUpperCase()}${inThem.slice(1)} above ${one ? 'is' : 'are'} in ${sk.mixed === 1 ? 'that file' : 'those files'}, so ${one ? `it may be on ${aKitName(sk.name)} component` : `some may be on ${esc(sk.name)} components`}.` : ''}` : '',
+    "Follow the kit the file already uses. Never put one kit's styling on the other's components.",
   ].filter(Boolean);
   return `<div class="receipts">${eyebrow(`Two kits · ${esc(sk.name)} in ${n(sk.files)} files`)}<p class="sub">${parts.join(' ')}</p></div>`;
 }
@@ -1890,8 +1888,8 @@ function exceptionsBlock() {
       const vd = r.variantsDropped ?? [];
       if (vd.length) lines.push(`${vd.length} variant${vd.length === 1 ? '' : 's'} of the same components (${vd.map((e) => esc(basename(dirname(e.dir)) === 'bases' ? basename(dirname(e.dir)) + '/' + basename(e.dir) : e.dir)).join(', ')}, ${n(vd.reduce((a, e) => a + e.files, 0))} files) counted once, through the variant the registry file names.`);
     }
-    if (vendoredUi && neverStock.length) lines.push(`${n(neverStock.length)} catalogue component${neverStock.length === 1 ? '' : 's'} not used yet: stock on the shelf, not scored.`);
-    if (vendoredUi && neverOwn.length) lines.push(`${n(neverOwn.length)} component${neverOwn.length === 1 ? '' : 's'} of the team's own in the same folder ${neverOwn.length === 1 ? 'is' : 'are'} never imported either: listed under the adoption map, not scored.`);
+    if (vendoredUi && neverStock.length) lines.push(`${n(neverStock.length)} shadcn component${neverStock.length === 1 ? ' is' : 's are'} installed but not used yet. ${neverStock.length === 1 ? 'It is' : 'They are'} not scored.`);
+    if (vendoredUi && neverOwn.length) lines.push(`${n(neverOwn.length)} component${neverOwn.length === 1 ? '' : 's'} the team wrote in the same folder ${neverOwn.length === 1 ? 'is' : 'are'} not imported either. ${neverOwn.length === 1 ? 'It is' : 'They are'} listed under the adoption map and ${neverOwn.length === 1 ? 'is' : 'are'} not scored.`);
     const rp = P.shadcn?.registryPaint;
     if (rp) lines.push(`Installed registr${rp.dirs.length === 1 ? 'y' : 'ies'} ${esc(rp.dirs.map((d) => basename(d)).join(', '))}: ${n(rp.files)} file${rp.files === 1 ? '' : 's'}${rp.tinUses ? `, ${n(rp.tinUses)} palette colour${rp.tinUses === 1 ? '' : 's'}` : ''}. Kept in the score, left out of the fixes. Your agent reads them like everything else.`);
   } else if (isLibrary) {

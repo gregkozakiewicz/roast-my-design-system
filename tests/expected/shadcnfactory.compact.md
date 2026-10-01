@@ -16,7 +16,7 @@ Follow these rules when writing or editing UI in this repo; derived from a scan 
 
 ### Catalogue components already installed
 
-- 41 components sit installed and unused in `components/ui` (`<Badge>`, `<Card>`, `<CardAction>`…). Reach for one of these before building your own version of the same thing. Do not delete them to tidy up.
+- 41 components are installed and unused in `components/ui` (`<Badge>`, `<Card>`, `<CardAction>`…). Use one of these before you build your own version. Do not delete them to tidy up.
 
 ### Spacing and sizing
 

@@ -389,7 +389,7 @@ export function kitPaintFindings(src, kit, { file = null, email = null } = {}) {
       label: rule === 'kit-colour' ? `colour written onto ${aKit(o.name)} component` : `pixel size on ${aKit(o.name)} component`,
       note: `it comes from ${o.from}, not ${kit.name}`,
       message: `${rule === 'kit-colour' ? `Colour ${h.value} written onto` : `Pixel size ${h.value} on`} ${aKit(o.name)} component (${o.from}), in a file that also uses ${kit.name}.`,
-      fix: `Style it the way the repo styles its other ${o.name} components. Never put one kit's styling on the other's components.` };
+      fix: `Style it like the repo's other ${o.name} components. Never put one kit's styling on the other's components.` };
   };
   for (const c of paint.colours) {
     if (c.otherKit) { findings.push(other(c, 'kit-colour')); continue; }

@@ -4,81 +4,63 @@ All notable changes to roast-my-design-system. One version everywhere: the npm p
 
 ## 9.7.0 — 2026-10-01
 
-- **A second kit is named, and the advice takes no side.** 13 of 79
-  products built on a kit also import a second, different kit in earnest:
-  SigNoz uses Ant Design and its own SigNoz UI, Backstage uses MUI and
-  Backstage UI, Linode uses MUI and Akamai's components. The rules file
-  told the agent "This repo uses Ant Design. Prefer extending it", the
-  opposite of SigNoz's own lint rule. Now the rules file, the MCP context,
-  the report and the fix prompts name both kits, biggest first, and say:
-  follow the kit the file already uses, and never put one kit's styling on
-  the other's components. The first kit's advice (MUI's `sx`, Ant Design's
-  tokens) is marked as being for that kit's components. The second kit is
-  named, not scored, so no score moves.
-- **The edit check names the kit a value sits on.** In a file that uses
-  both kits, a colour or a pixel size on the second kit's component got
-  the first kit's fix: "use the nearest step in sx" on an Akamai table
-  cell, where `sx` does nothing. It now names that kit and the package the
-  component comes from, and says to style it the way the repo styles that
-  kit's other components. It is a warning: the edit check says it once and
-  the end-of-turn review does not send the agent back for it. The guard
-  says the same on a pull request. In the fleet, 21 findings change words
-  this way, in SigNoz, Linode, OpenCTI, Agenta and DB-GPT. None is added
-  or removed.
-- **A shadcn catalogue one folder down is read as shadcn.** nhost keeps its
-  shadcn components in `components/ui/v3` and imports them in 631 files,
-  while 57 older files still import MUI. The scan counted only catalogue
-  imports directly under `components/ui`, so it read nhost as an MUI
-  product. It now reads it as shadcn, and its score goes from 35 to 18:
-  the shadcn tiles (palette classes in own code, and colours added to
-  shadcn components through className) replace the two MUI tiles.
-- **The verdict names the group it compares with.** On a shadcn, Tailwind
-  or kit product the medians come from repos of the same kind, but the
-  sentence said "Messier than the median of 34 scanned repos", the count of
-  the whole benchmark. It now says, for example, "the median of 16 scanned
-  shadcn repos". The tiles name the group the same way ("Avg MUI repo",
-  "Avg Ant Design repo"), and a registry, which is compared with shadcn
-  repos, no longer reads "Avg registry repo". The sentence changes on 51
-  of 204 reports.
-- **Unused components in a shadcn folder are told apart.** The report and
-  the rules file called every unused component in the shadcn folder stock
-  "installed by the shadcn CLI, not written by this team". In 16 repos
-  some of them are the team's own (cal.com 38, workout-cool 27, midday
-  19, rallly 19). Those now get the words and the rule any unused
-  component of the team's own gets. shadcn's own unused components keep
-  theirs. Neither list is scored, as before.
-- Spacing values in installed shadcn code are set aside exactly, as
-  bracket values have been since 9.3.3. No report number moves.
-- **The colour bar counts how often each colour is used.** The Colour
-  usage bar was sized by how often each value is written, the theme's own
-  definitions included, so the colour a repo uses most (`bg-primary` on
-  every button) was drawn as one of its thinnest segments. It now counts
-  uses: a theme class, a `var()` read and a read of the kit's theme count
-  towards their colour, and a definition is not a use. Each use is drawn in
-  one of three states: reached by name through the theme, a Tailwind
-  palette class, or a stray. A palette class is a stray only where the
-  live checks and the guard already flag it, so plain white and black, and
-  greys where the theme names no grey, are not strays. A token's value
-  written by hand is a stray, as the live checks have said since 9.1.3.
-  shadcn's own components and demo folders are left out, as in the score.
-  Classes are counted only where the repo uses Tailwind, so Bootstrap's
-  `text-white` is not drawn as Tailwind's palette.
-  A sentence under the bar gives the three shares: dub 15 by name, 84
-  Tailwind palette and 1 stray; formbricks 9, 11 and 80; vercel-ai-chatbot
-  80, 6 and 14. On 19 of 204 repos a fifth or more of colour uses go
-  through Sass or Less variables or a JavaScript theme object, which the
-  bar cannot follow yet, so there it stays sized by written values and
-  says why.
-  The shadcn receipt now also says how often class names matching the
-  theme's colours appear, leaving out class names in comments. It is left
-  out where that count is under half the theme classes the bar counts,
-  which means the theme was read wrongly (onlook, supabase). documenso and taxonomy keep shadcn's colour
-  variables in a stylesheet no config names, and were told their theme
-  defined none; their colour fix now reads "Repaint the colours from
-  outside the theme". formbricks keeps 37 colours of its own but none of
-  shadcn's greys; its first fix is now "Map the palette onto the theme you
-  already have". No score moves.
-- Measured on 204 repos: only nhost's score moves.
+- **Repos that use two component kits get advice that names both.** 13 of
+  79 products built on a kit also use a second kit. For example, SigNoz
+  uses Ant Design and its own SigNoz UI. Before, the rules file told the
+  agent to prefer Ant Design. SigNoz's own rules say the opposite. Now
+  the rules file, the MCP context, the report and the fix prompts name
+  both kits, largest first. They tell the agent to follow the kit the file
+  already uses. They do not say which kit is preferred. The second kit is
+  not scored, so no score changes.
+- **The edit check names the kit a value is on.** In a file that uses both
+  kits, a colour on the second kit's component got the first kit's fix.
+  For example, it said "use the nearest step in sx" on an Akamai table
+  cell, where sx does nothing. Now it names the second kit and tells the
+  agent to style the component like other components from that kit. This
+  is a warning, so the end-of-turn review does not send the agent back.
+  The guard says the same on a pull request. This changes the wording of
+  21 findings in 5 repos. No findings are added or removed.
+- **A shadcn folder inside another folder is now read as shadcn.** nhost
+  keeps its shadcn components in `components/ui/v3`. 631 files use them,
+  and 57 older files use MUI. The scan read nhost as an MUI product. It
+  now reads it as shadcn. Its score changes from 35 to 18, because the
+  shadcn checks replace the MUI checks.
+- **The verdict says which repos it compares with.** shadcn, Tailwind and
+  kit products are compared with repos of the same kind. The verdict
+  said "the median of 34 scanned repos", which is the size of the whole
+  benchmark. It now says, for example, "the median of 16 scanned shadcn
+  repos". The tiles also name the group, for example "Avg MUI repo". This
+  changes the verdict on 51 of 204 reports.
+- **Unused components in a shadcn folder are split by who wrote them.**
+  The report said every unused component in the shadcn folder came from
+  shadcn. In 16 repos, some were written by the team. For example, cal.com
+  has 38. The report and the rules file now list the team's own unused
+  components separately. Neither list is scored.
+- **The colour bar shows how often each colour is used.** Before, the bar
+  counted how often each colour value was written in the code, including
+  where the theme defines it. So the colour a repo uses most, such as
+  `bg-primary` on every button, could look like one of the least used.
+  Now the bar counts each use of a colour. Each use is shown in one of 3
+  groups: a theme colour used by name, a Tailwind palette class, or a
+  stray. A sentence under the bar gives the split. For example, on
+  vercel-ai-chatbot 80 in every 100 uses are theme colours, 6 are palette
+  classes and 14 are strays.
+  - A palette class only counts as a stray where the edit check already
+    flags it.
+  - The bar leaves out shadcn's own components, as the score does.
+  - On 19 of 204 repos, the bar cannot read how the theme is used. These
+    repos use Sass variables or JavaScript theme objects. The bar on these
+    repos still counts written values, and says why.
+- **The shadcn summary says how often the theme's colours appear as
+  classes.** It does not show this where the theme file was read wrongly.
+- **The colour fix is correct on 3 more repos.** documenso and taxonomy
+  were told their theme had none of shadcn's colours, which was wrong.
+  Their fix is now "Repaint the colours from outside the theme".
+  formbricks has 37 colours of its own but none of shadcn's greys. Its fix
+  is now "Map the palette onto the theme you already have".
+- **Scans are faster.** The scan reads each file once. The 3 largest
+  test repos scan in 4.8, 1.6 and 3.6 seconds.
+- Tested on 204 repos. Only nhost's score changes.
 
 ## 9.6.1 — 2026-10-01
 

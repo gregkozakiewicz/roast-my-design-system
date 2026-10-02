@@ -1224,6 +1224,34 @@ console.log('a kit layer in the live checks (9.6.1):');
   rmSync(work, { recursive: true, force: true });
 }
 
+// 9.7.1: a palette name a v3 config gives the repo's own colour is the
+// theme, not drift, whichever vocabulary judges the rest. Novu points every
+// grey at hsl(var(--gray-N)) and had 785 grey classes flagged (2026-10-02).
+// A config in a small side package (an email kit of its own) does not count.
+console.log('a v3 config that retunes a scale (9.7.1):');
+{
+  const work = mkdtempSync(join(tmpdir(), 'roast-v3tune-'));
+  const app = join(work, 'app');
+  cpSync(join(FIXTURES, 'shadcnv3'), app, { recursive: true });
+  const cfg = join(app, 'tailwind.config.js');
+  writeFileSync(cfg, readFileSync(cfg, 'utf8').replace('border: "hsl(var(--border))",', 'border: "hsl(var(--border))",\n        gray: { 100: "hsl(var(--gray-100))", 500: "hsl(var(--gray-500))" },\n        blue: { 500: "#3b82f6" },'));
+  // enough product code that a one-file side package is under a tenth of it
+  mkdirSync(join(app, 'app/pads'), { recursive: true });
+  for (let i = 0; i < 12; i++) writeFileSync(join(app, `app/pads/Pad${i}.tsx`), `export const Pad${i} = () => <i className="text-foreground">${i}</i>;\n`);
+  mkdirSync(join(app, 'packages/mail'), { recursive: true });
+  writeFileSync(join(app, 'packages/mail/package.json'), '{ "name": "@acme/mail", "private": true }\n');
+  writeFileSync(join(app, 'packages/mail/tailwind.config.js'), 'module.exports = { theme: { extend: { colors: { red: { 500: "#aa0000" } } } } };\n');
+  writeFileSync(join(app, 'packages/mail/x.tsx'), 'export const X = () => <b className="text-red-500">x</b>;\n');
+  const k = loadKnowledge(app);
+  const tuned = (k.palette?.retuned ?? []).join(',');
+  tuned === 'gray-100,gray-500' ? ok('the retuned names are read from the v3 config; a copy of Tailwind\'s value and a side package\'s config are not')
+    : bad('v3 retuned', tuned || 'nothing');
+  const { validateContent } = await import(pathToFileURL(join(ENGINE, 'mcp/engine.mjs')).href);
+  const rules = validateContent({ text: 'export const Y = () => <p className="text-gray-500 bg-gray-200 text-blue-500">y</p>;', file: 'components/y.tsx' }, k).findings.filter((f) => f.rule === 'palette-class').map((f) => /Palette class (\S+)/.exec(f.message)?.[1]).sort().join(',');
+  rules === 'bg-gray-200,text-blue-500' ? ok('a retuned class is the theme; its untouched neighbours are still drift') : bad('v3 retuned findings', rules || 'nothing');
+  rmSync(work, { recursive: true, force: true });
+}
+
 console.log('mcp server:');
 {
   const msgs = [

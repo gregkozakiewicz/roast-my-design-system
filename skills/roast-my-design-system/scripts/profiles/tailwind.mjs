@@ -20,7 +20,10 @@ import { cachedSource } from '../harvest/walk.mjs';
 import { join } from 'node:path';
 import { PALETTE } from './shadcn-data.mjs';
 import { TAILWIND_DEFAULTS } from './tailwind-defaults.mjs';
-import { canonical, parseColor } from '../lib/color.mjs';
+import { canonical, parseColor, oklab } from '../lib/color.mjs';
+import { configColours } from '../harvest/coloruse.mjs';
+import { existsSync } from 'node:fs';
+import { posix } from 'node:path';
 
 // the scan's own copy when it has one (harvest/walk.mjs), the disk otherwise
 const read = (p) => { const t = cachedSource(p); if (t !== undefined) return t; try { return readFileSync(p, 'utf8'); } catch { return ''; } };
@@ -38,6 +41,58 @@ function retuned(name, value) {
   if (v === `var(--color-${name})` || v === 'initial') return false;
   const cv = canonical(v), cd = canonical(d);
   return !(cv && cd && near(cv, cd));
+}
+
+// A v3 config can retune a scale too: Novu points every grey at
+// hsl(var(--gray-N)), workout-cool gives green its own values. The theme
+// itself stays unread (a v3 config imports, spreads and computes; Greg,
+// 2026-09-16), but a palette name it gives a new colour is the repo's own
+// wherever it is read, so the live checks and the colour bar stop calling
+// the class drift (9.7.1). Only a config the product reads counts: the root
+// config, or one in a package holding a tenth of the code files (unkey
+// retunes grey in an email package of 20 files, and the web app must not
+// inherit it).
+const TW_CONFIG_RE = /(^|\/)tailwind\.config\.[mc]?[jt]s$/;
+const PALETTE_SHADE_NAME_RE = new RegExp(`^(?:${PALETTE})-(?:50|[1-9]00|950)$`);
+const CONFIG_SHARE = 0.1;
+// The defaults the engine keeps are v4's. v3's own values sit within 0.04
+// of them in OKLab (blue-500 #3b82f6 against oklch(62.3% 0.214 259.815):
+// 0.019; the widest, fuchsia-500, 0.036), while a scale a team retuned sits
+// at 0.07 or more (workout-cool's green-500 at 0.076). A literal this close
+// is Tailwind's own, whichever major it was copied from.
+const V3_SAME = 0.05;
+const v3Retune = (name, value) => {
+  if (!retuned(name, value)) return false;
+  const a = oklab(value.trim()), b = oklab(TAILWIND_DEFAULTS[name]);
+  return !(a && b && Math.hypot(a.L - b.L, a.a - b.a, a.b - b.b) < V3_SAME);
+};
+/** Palette names a v3 config the product reads gave colours of its own. */
+export function v3Retuned(root, codeFiles) {
+  if (!root || !codeFiles?.length) return [];
+  const configs = codeFiles.filter((f) => TW_CONFIG_RE.test(f));
+  if (!configs.length) return [];
+  const pkgOf = (file) => {
+    let dir = posix.dirname(file);
+    while (dir && dir !== '.') {
+      if (existsSync(join(root, dir, 'package.json'))) return dir;
+      dir = posix.dirname(dir);
+    }
+    return '';
+  };
+  let sizes = null;
+  const sizeOf = (pkg) => {
+    if (!sizes) { sizes = new Map(); for (const f of codeFiles) { const p = pkgOf(f); sizes.set(p, (sizes.get(p) ?? 0) + 1); } }
+    return sizes.get(pkg) ?? 0;
+  };
+  const out = new Set();
+  for (const f of configs) {
+    const pkg = pkgOf(f);
+    if (pkg !== '' && sizeOf(pkg) < codeFiles.length * CONFIG_SHARE) continue;
+    for (const [n, v] of configColours(read(join(root, f)))) {
+      if (PALETTE_SHADE_NAME_RE.test(n) && v3Retune(n, v)) out.add(n);
+    }
+  }
+  return [...out].sort();
 }
 
 // what counts as a theme worth judging

@@ -22,7 +22,7 @@ import { join, basename, dirname } from 'node:path';
  * fixture's expected output is byte-identical before and after.
  */
 import shadcn from './shadcn.mjs';
-import tailwind, { readTailwindTheme } from './tailwind.mjs';
+import tailwind, { readTailwindTheme, v3Retuned } from './tailwind.mjs';
 import { decidePalette } from '../lib/palette.mjs';
 import { installedFile, componentName } from './installed.mjs';
 import mui from './mui.mjs';
@@ -94,6 +94,12 @@ export function decideProfile(profile, components, files, root = null, { themeRe
   let ownTheme;
   const readOwnTheme = () => (ownTheme === undefined ? (ownTheme = readTailwindTheme({ ...profile }, ctx)?.facts ?? null) : ownTheme);
   profile.palette = decidePalette(profile, profileOf(profile), readOwnTheme);
+  // a palette name a v3 config gave the repo's own colour is the theme too,
+  // whichever vocabulary judges the rest (9.7.1)
+  if (profile.palette && root) {
+    const tuned = v3Retuned(root, files.code);
+    if (tuned.length) profile.palette.retuned = [...new Set([...(profile.palette.retuned ?? []), ...tuned])].sort();
+  }
   // shadcn in utility-class mode (components.json: cssVariables false) paints
   // with Tailwind classes by design. A theme of the repo's own beside it
   // (rybbit retunes the whole neutral scale) is what the rules file points

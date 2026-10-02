@@ -195,7 +195,7 @@ function cssStatements(text) {
 /** A Tailwind v3 config's colours, flattened: primary.DEFAULT -> primary,
  *  brand[500] -> brand-500. String values only; spreads and computed values
  *  are skipped, so a palette assembled in code reads as not defined. */
-function configColours(src) {
+export function configColours(src) {
   const out = new Map();
   const code = src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1');
   const re = /\bcolou?rs\s*:\s*\{/g;

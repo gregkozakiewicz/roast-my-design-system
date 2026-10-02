@@ -2,6 +2,49 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.7.1 — 2026-10-03
+
+Six fixes to what the agent is told. No score changes on any of the 205
+scanned repos.
+
+- **A grey class is never swapped for a brand colour.** The rules file
+  suggests a theme class in place of a palette class, picked by how close
+  the colours are. On formbricks the brand teal was close enough to
+  slate-500 that `text-slate-500` was sent to `text-brandnew`. A grey
+  class now only matches a grey. formbricks, nodejs.org and supabase get
+  a different suggestion; nothing else changes.
+- **A palette scale a Tailwind 3 config redefines is the theme.** Novu
+  points every grey at its own variables in `tailwind.config.ts`. The
+  edit check and the guard flagged all 785 of its grey classes as
+  palette classes, and the colour bar drew them as strays. The scan now
+  reads the config as well as a v4 `@theme` block. Only a config the
+  product reads counts: the root config, or one in a package that holds a
+  tenth of the code. Novu drops to 13 findings. No other repo changes.
+- **The repaint move names its unit.** It said "text-red-600 appears 2
+  times, Panel.tsx alone carries 9". The 9 counted every palette class in
+  the file, not that one. It now says "Panel.tsx alone has 9 palette
+  classes".
+- **A theme variable another variable reads is used.** The leftover check
+  read every file except the theme file. shadcn-ui registers
+  `--code-highlight` through `--color-code-highlight: var(--code-highlight)`
+  in the same file and was told to delete it. A `var()` read inside the
+  theme file now counts. shadcn-ui and magicui lose the move. The
+  Next.js starter leftovers in ai-chatbot are still named.
+- **The rules file and the edit check agree on the shadcn theme.** The
+  rules file read the configured theme file's `:root` block alone. On
+  formbricks, documenso, taxonomy and supabase the names live in a v4
+  `@theme` block or in another package, so the rules file said the theme
+  defines none of shadcn's variables and told the agent to keep using
+  palette classes, while the edit check flagged every one. The rules
+  file now uses the same decision as the edit check, and names the file
+  that holds the variables when it is not the configured one.
+- **A theme file whose `:root` heads a list is read.** documenso declares
+  its light values under `:root, .dark-mode-disabled` and its dark values
+  under `.dark:not(.dark-mode-disabled)`. The reader wanted `:root {` on
+  its own and took the word dark in the second selector for the dark
+  block. documenso's report now carries its receipt line: 35 colours,
+  used as classes 2,386 times.
+
 ## 9.7.0 — 2026-10-01
 
 - **Repos that use two component kits get advice that names both.** 13 of

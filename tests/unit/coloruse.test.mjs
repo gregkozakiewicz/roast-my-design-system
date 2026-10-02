@@ -502,3 +502,33 @@ test('a config name with a computed value is the theme\'s, drawn without a swatc
   assert.deepEqual(u.deadNames.top, []);
   assert.equal(u.totals.outside, 1);
 });
+
+// ---------- 9.9.0: Sass and Less variables ----------
+
+test('a Sass variable read in a colour property is the theme by name, with its colour', () => {
+  const u = run({ 'theme.scss': '$ink: #222222;\n$paper: $ink;\n.a { color: $paper; border: 1px solid $ink; }' });
+  const s = byCanon(u, '#222222', 'token');
+  assert.ok(s, JSON.stringify(u.segments));
+  assert.equal(s.vars, 2);
+  assert.equal(u.unreadable.sass, 0);
+  assert.equal(u.totals.written, 0);
+});
+
+test('a Sass variable built with a function is the theme by name, drawn without a swatch', () => {
+  const u = run({ 'theme.scss': '$ink: #222222;\n$faint: rgba($ink, 0.5);\n.a { color: $faint; }' });
+  const s = byName(u, '$faint', 'token');
+  assert.ok(s && !s.canon, JSON.stringify(u.segments));
+  assert.equal(u.unreadable.sass, 0);
+});
+
+test('a Sass variable defined nowhere in the repo is still a read the bar cannot follow', () => {
+  const u = run({ 'app.scss': "@use '@carbon/themes';\n.a { color: $text-primary; }" });
+  assert.equal(u.unreadable.sass, 1);
+});
+
+test('a Less variable resolves like a Sass one, and a map entry\'s hex is a definition', () => {
+  const u = run({ 'vars.less': '@brand: #0b5fff;\n@brand-dark: darken(@brand, 10%);', 'page.less': '.a { color: @brand; background: @brand-dark; }', 'palette.scss': '$colours: ("red": #d4351c, "blue": #1d70b8);' });
+  assert.equal(byCanon(u, '#0b5fff', 'token')?.vars, 1, JSON.stringify(u.segments));
+  assert.ok(byName(u, '@brand-dark', 'token'));
+  assert.equal(u.totals.written, 0);
+});

@@ -154,6 +154,11 @@ const JS_THEME_RE = /\b(?:props\.)?(?:theme|tokens)\.(?:\w+\.)*(?:colou?rs?|pale
 // bar to the fallback for nothing (2026-10-01).
 const JS_NOT_COLOUR_RE = /\.(?:mode|getContrastText|augmentColor|tonalOffset|contrastThreshold)$|(?:^|\.)palette$/;
 const jsThemeReads = (text) => (text.match(JS_THEME_RE) ?? []).filter((m) => !JS_NOT_COLOUR_RE.test(m.replace(/\.+$/, ''))).length;
+// a Sass or Less variable statement, at the start of a line: its name and
+// its value up to the semicolon (a map or a multi-line value is cut at the
+// first semicolon and reads as unreadable, which is right)
+const SASS_DEF_RE = /(?:^|[\n;{}])\s*\$([\w-]+)\s*:\s*([^;\n]+)/g;
+const LESS_DEF_RE = /(?:^|[\n;{}])\s*@([\w-]+)\s*:\s*([^;\n]+)/g;
 // group 1 the property, group 2 its value
 const SHEET_COLOUR_DECL_RE = /(?:^|[;{\s])(color|background(?:-color)?|border(?:-(?:top|right|bottom|left))?(?:-color)?|outline(?:-color)?|fill|stroke|box-shadow|caret-color|accent-color|text-decoration-color|column-rule-color)\s*:\s*([^;{}\n]*)/g;
 // A shorthand carries widths and offsets beside its colour: in `border:
@@ -564,7 +569,12 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
   const countDefinitionWrites = (raw, pkg, file) => {
     const text = raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length))
       .replace(/var\(\s*--[\w-]+\s*,([^()]*)\)/g, (m, fb) => m.replace(fb, ' '.repeat(fb.length)));
-    for (const m of text.matchAll(/--([\w-]+)\s*:\s*([^;{}]+)[;}]/g)) {
+    // a custom property, or (9.9.0) a Sass or Less variable or a Sass map
+    // entry ("red": #d4351c): the hex it states is a definition, not a write
+    const sass = /\.(scss|sass|less)$/i.test(file);
+    const defRe = sass ? /(?:--|\$|@)([\w-]+)\s*:\s*([^;{}]+)[;}]|"([\w-]+)"\s*:\s*(#[0-9a-f]{3,8}|(?:rgba?|hsla?|oklch)\([^)]*\))/gi : /--([\w-]+)\s*:\s*([^;{}]+)[;}]/g;
+    for (const m of text.matchAll(defRe)) {
+      if (m[3] !== undefined) { addDefWrite(canonical(m[4]), file); continue; }
       const key = `${pkg}\u0000${m[1]}`;
       const variant = firstSeen.has(key);
       if (!variant) firstSeen.add(key);
@@ -595,6 +605,8 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
   let tw = !!tailwind || (files.code ?? []).some((f) => TW_CONFIG_RE.test(f));
   // what imports what, for the theme a package can see (visibleFrom)
   const codeImports = new Map(), sheetImports = new Map(), sheetConfigs = new Map(), sheetSources = new Map();
+  const preDefs = new Map(); // Sass/Less variable -> [{ pkg, value, order, dflt }]
+  let preOrder = 0;
   for (const f of files.styles ?? []) {
     const raw = readSource(join(root, f));
     if (raw === null || isEmail(f, raw, email) || foreignStylesheet(f, raw)) continue;
@@ -603,6 +615,17 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
     const text = raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length));
     if (text.includes('@import') || text.includes('@use')) sheetImports.set(f, [...text.matchAll(CSS_IMPORT_IN_SHEET_RE)].map((m) => m[1] ?? m[2]));
     if (text.includes('@config')) sheetConfigs.set(f, [...text.matchAll(CSS_CONFIG_IN_SHEET_RE)].map((m) => m[1]));
+    // Sass and Less variables defined here: $brand: #1d70b8; @brand: #1d70b8;
+    // (9.9.0; until now every read of one was a theme the bar could not follow)
+    if (/\.(scss|sass|less)$/i.test(f)) {
+      const less = /\.less$/i.test(f);
+      for (const m of text.matchAll(less ? LESS_DEF_RE : SASS_DEF_RE)) {
+        const name = (less ? '@' : '$') + m[1];
+        const list = preDefs.get(name) ?? [];
+        list.push({ pkg, value: m[2].trim(), order: preOrder++, dflt: /!default\s*$/.test(m[2]) });
+        preDefs.set(name, list);
+      }
+    }
     if (text.includes('@source')) { const src = [...text.matchAll(CSS_SOURCE_IN_SHEET_RE)].map((m) => m[1]).filter((x) => /^\.{1,2}\//.test(x)); if (src.length) sheetSources.set(f, src); }
     if (!tw && TW_SHEET_RE.test(text)) tw = true;
     const st = cssStatements(text);
@@ -967,6 +990,35 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
   // stylesheets (and css`` blocks): @apply lines, var() reads outside
   // custom-property statements, Sass and Less reads the bar cannot follow
   const kitVar = (name) => { if (!kitRe) return false; kitRe.lastIndex = 0; const hit = kitRe.test(`var(${name}`); kitRe.lastIndex = 0; return hit; };
+  // A Sass or Less variable's colour: its own package's statement first (a
+  // plain one over a !default one, then first stated), followed through
+  // other variables, #{} interpolation and a plain var() wrapper to a
+  // literal. A function (darken(), rgba($x, .5), map-get(), a theme
+  // function) is a colour the bar cannot read: the name is drawn without a
+  // swatch. A variable defined nowhere in the repo is UNDEF.
+  const preCache = new Map();
+  const resolvePre = (name, pkg, depth = 0) => {
+    const key = `${pkg}\u0000${name}`;
+    if (preCache.has(key)) return preCache.get(key);
+    preCache.set(key, OPAQUE); // cycle guard
+    const list = preDefs.get(name);
+    let r;
+    if (!list?.length || depth > 8) r = UNDEF;
+    else {
+      const own = list.filter((x) => x.pkg === pkg);
+      const pool = own.length ? own : list;
+      const d = pool.reduce((a, b) => ((Number(a.dflt) - Number(b.dflt) || a.order - b.order) <= 0 ? a : b));
+      const v = d.value.replace(/\s*!(?:default|global|important)\s*$/g, '').replace(/#\{\s*(\$[\w-]+)\s*\}/g, '$1').trim();
+      const ref = /^[$@][\w-]+$/.test(v) ? v : null;
+      if (ref) r = resolvePre(ref, d.pkg, depth + 1);
+      else {
+        const lit = resolveValue(v, d.pkg, depth + 1);
+        r = lit === null ? (/^[\w.-]+\(/.test(v) || /[$@][\w-]+/.test(v) ? OPAQUE : null) : lit;
+      }
+    }
+    preCache.set(key, r);
+    return r;
+  };
   for (const { f, pkg, st, text, inCode } of sheets) {
     if (DEMO_PATH_RE.test(f) || isDoor(f)) continue;
     if (tw && text.includes('@apply')) for (const a of text.match(/@apply[^;}]*/g) ?? []) classUses(records(a), f, pkg, { apply: true });
@@ -982,7 +1034,17 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
       for (const m of text.matchAll(SHEET_COLOUR_DECL_RE)) {
         const reads = m[2].match(less ? /@[\w-]+/g : /\$[\w-]+/g) ?? [];
         // in a shorthand, a variable named like a length is not a colour
-        unreadable[less ? 'less' : 'sass'] += SHORTHAND_RE.test(m[1]) ? reads.filter((v) => !LENGTH_NAME_RE.test(v)).length : reads.length;
+        const colourReads = SHORTHAND_RE.test(m[1]) ? reads.filter((v) => !LENGTH_NAME_RE.test(v)) : reads;
+        for (const name of colourReads) {
+          // a variable the repo defines is the theme by name, with its
+          // colour when it is readable; one defined nowhere in the repo (a
+          // package's tokens, @carbon/themes) is still a read the bar
+          // cannot follow
+          const r = resolvePre(name, pkg);
+          if (r === UNDEF) { unreadable[less ? 'less' : 'sass'] += 1; continue; }
+          if (isLiteral(r)) tokenUse({ ...r, name }, 'vars', f);
+          else tokenUse({ name }, 'vars', f);
+        }
       }
     }
   }

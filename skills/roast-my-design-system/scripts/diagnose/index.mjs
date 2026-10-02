@@ -1600,8 +1600,15 @@ function agentSection() {
 // library stays "component library"; a product repo we cannot read gets the
 // quiet unrecognised chip, because not knowing IS a finding here.
 const ns = h.tokens.namespaces ?? null;
+// A product built on a kit is named by its kit, and by its second kit when
+// it has one (9.8.0; 44 of 80 kit reports said "unrecognised" before, and
+// unleash said "custom design system" over MUI). A token namespace beside a
+// kit keeps a chip of its own below.
+const kitSecond = P.kit?.second?.name ?? P.shadcn?.second?.name ?? null;
 const dsChip =
-  ds.kind === 'shadcn' ? `shadcn/ui${ds.cssVariables === false ? ' (utility classes, no CSS variables)' : ''}${P.shadcn?.kit?.style ? ` · ${P.shadcn.kit.style}` : ''}`
+  ds.kind === 'kit' ? `${ds.name}${kitSecond ? ` + ${kitSecond}` : ''}`
+  : ds.kind === 'shadcn' ? `shadcn/ui${ds.cssVariables === false ? ' (utility classes, no CSS variables)' : ''}${P.shadcn?.kit?.style ? ` · ${P.shadcn.kit.style}` : ''}${kitSecond ? ` + ${kitSecond}` : ''}`
+  : ds.kind === 'tailwind' ? 'Tailwind theme'
   : ds.kind === 'library' ? ds.name
   : ns ? `custom design system (--${ns.primary}-*${ns.partner ? ` + --${ns.partner}-*` : ''})`
   // A tokenFile alone is a technicality (Lion's is one drawer style file);
@@ -1615,6 +1622,8 @@ const stack = [
   h.profile.typescript ? 'TypeScript' : null,
   ...(h.profile.stylingDeps ?? []),
   dsChip,
+  // the kit's own variables (--mantine-*, --chakra-*) are not the team's tokens
+  ds.kind === 'kit' && ns && !/^(?:mantine|chakra|mui|antd?)$/.test(ns.primary) ? `tokens --${ns.primary}-*` : null,
   h.profile.monorepo ? 'monorepo' : null,
 ].filter(Boolean);
 const dsUnrecognised = !dsChip && !noSystemLikely;

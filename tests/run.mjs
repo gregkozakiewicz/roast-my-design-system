@@ -431,6 +431,12 @@ console.log('shadcn tokens:');
     ? ok('components.json cssVariables:false is read') : bad('cssVariables flag', JSON.stringify(su.profile.designSystem));
   const suHtml = readFileSync(join(tmp, 'shadcnutil.html'), 'utf8');
   suHtml.includes('shadcn/ui (utility classes, no CSS variables)') ? ok('header chip names the utility-class mode') : bad('utility chip', 'missing');
+  // 9.8.0: a product built on a kit is named by its kit in the header chip,
+  // and by its second kit after a plus sign; "unrecognised" was wrong there
+  const chips = (name) => [...readFileSync(join(tmp, `${name}.html`), 'utf8').matchAll(/class="chip(?: chip-dim)?">([^<]*)</g)].map((m) => m[1]);
+  chips('muikit').includes('MUI') && !chips('muikit').some((c) => /unrecognised/.test(c)) ? ok('header chip names the kit') : bad('kit chip', chips('muikit').join('|'));
+  chips('twokits').includes('MUI + Backstage UI') ? ok('header chip names the second kit after a plus sign') : bad('two-kit chip', chips('twokits').join('|'));
+  chips('tailwindtheme').includes('Tailwind theme') ? ok('header chip names a Tailwind theme') : bad('tailwind chip', chips('tailwindtheme').join('|'));
   !suHtml.includes('None of these are defined as CSS variables') && suHtml.includes('by design')
     ? ok('utility-class mode explained, not accused') : bad('utility-mode copy', 'banner fired or note missing');
 

@@ -1352,10 +1352,10 @@ function whereToStartSection() {
       else c.push(gate === 'repaint'
         ? { score: 20 + pt.tin.per100 / 4, metric: 'paintTin', after: 0,
           title: `Repaint the ${n(pt.tin.uses)} colours from outside the theme`,
-          sub: `${esc(s0.value)} appears ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}. The theme file already has a variable for each (a grey is <code>text-muted-foreground</code>, a status colour is a Badge variant or a variable you add). Swap the class, not the value.` }
+          sub: `${esc(s0.value)} appears ${s0.count} times.${f0 ? ` ${esc(basename(f0.file))} alone has ${f0.count} palette classes.` : ''} The theme file already has a variable for each (a grey is <code>text-muted-foreground</code>, a status colour is a Badge variant or a variable you add). Swap the class, not the value.` }
         : { score: 20 + pt.tin.per100 / 4, metric: 'paintTin', after: 0,
           title: `Decide what the product paints from`,
-          sub: `${esc(s0.value)} appears ${s0.count} times${f0 ? `, ${esc(basename(f0.file))} alone carries ${f0.count}` : ''}, and there is no theme file to point them at: ${P.shadcn?.sheet?.file ? `${esc(P.shadcn.sheet.file)} defines` : 'the theme file defines'} none of shadcn's colour variables, so the palette is the system today. The first move is a decision, not a swap: adopt the theme variables (define them, map the palette onto them), then repaint file by file. Swapping <code>text-slate-500</code> for <code>text-muted-foreground</code> before that leaves the text with no colour.` });
+          sub: `${esc(s0.value)} appears ${s0.count} times.${f0 ? ` ${esc(basename(f0.file))} alone has ${f0.count} palette classes.` : ''} There is no theme file to point them at: ${P.shadcn?.sheet?.file ? `${esc(P.shadcn.sheet.file)} defines` : 'the theme file defines'} none of shadcn's colour variables, so the palette is the system today. The first move is a decision, not a swap: adopt the theme variables (define them, map the palette onto them), then repaint file by file. Swapping <code>text-slate-500</code> for <code>text-muted-foreground</code> before that leaves the text with no colour.` });
     }
     if (pt.doors.uses >= 5) {
       const s0 = pt.doors.samples[0];

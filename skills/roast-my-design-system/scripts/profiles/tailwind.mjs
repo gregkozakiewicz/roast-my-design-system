@@ -89,7 +89,7 @@ export function v3Retuned(root, codeFiles) {
     const pkg = pkgOf(f);
     if (pkg !== '' && sizeOf(pkg) < codeFiles.length * CONFIG_SHARE) continue;
     for (const [n, v] of configColours(read(join(root, f)))) {
-      if (PALETTE_SHADE_NAME_RE.test(n) && v3Retune(n, v)) out.add(n);
+      if (typeof v === 'string' && PALETTE_SHADE_NAME_RE.test(n) && v3Retune(n, v)) out.add(n);
     }
   }
   return [...out].sort();

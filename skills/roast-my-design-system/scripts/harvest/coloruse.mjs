@@ -275,6 +275,12 @@ function parseObject(s, start, path, out) {
       if (name && !out.has(name)) out.set(name, v.trim());
       continue;
     }
+    // a computed value (colors.slateDarkA.slateA5, a call, a spread of a
+    // scale): the name is defined, its colour is not readable here. Kept as
+    // null so a class on it is the theme's, drawn without a swatch, rather
+    // than a dead name or a borrowed one (react-email's apps/web, 9.9.0).
+    const name = next.join('-');
+    if (name && !out.has(name) && /^[\w$.[\]'"-]+/.test(s.slice(i, i + 2))) out.set(name, null);
     skipExpr();
   }
   return i;
@@ -288,12 +294,12 @@ function parseObject(s, start, path, out) {
  * package named like tailwind-config is a preset too. Configs themselves are
  * read as configs already and are left out.
  */
-function presetFiles(root, codeFiles, pkgOf) {
-  const code = new Set(codeFiles);
-  const out = new Set();
+/** A workspace package's folder by its package.json name, read once:
+ *  the preset reader and the stylesheet-import follower share it. */
+function packageDirs(root, codeFiles, pkgOf) {
   const readJson = (p) => { try { return JSON.parse(readFileSync(join(root, p), 'utf8')); } catch { return null; } };
-  let names = null; // a package's name -> its folder
-  const dirOf = (name) => {
+  let names = null;
+  return (name) => {
     if (!names) {
       names = new Map();
       for (const d of new Set(codeFiles.map(pkgOf))) {
@@ -303,6 +309,12 @@ function presetFiles(root, codeFiles, pkgOf) {
     }
     return names.get(name);
   };
+}
+function presetFiles(root, codeFiles, pkgOf) {
+  const code = new Set(codeFiles);
+  const out = new Set();
+  const readJson = (p) => { try { return JSON.parse(readFileSync(join(root, p), 'utf8')); } catch { return null; } };
+  const dirOf = packageDirs(root, codeFiles, pkgOf);
   const resolveSpec = (spec, from) => {
     let base;
     if (spec.startsWith('.')) base = posix.join(posix.dirname(from), spec);
@@ -320,6 +332,10 @@ function presetFiles(root, codeFiles, pkgOf) {
   };
   const queue = codeFiles.filter((f) => TW_CONFIG_RE.test(f));
   const seen = new Set(queue);
+  // which config reached which preset (the preset's package becomes
+  // visible to the config's, see visibleFrom)
+  const byConfig = new Map();
+  const origin = new Map(queue.map((f) => [f, f]));
   while (queue.length) {
     const f = queue.shift();
     const src = (readSource(join(root, f)) ?? '').replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1');
@@ -334,6 +350,9 @@ function presetFiles(root, codeFiles, pkgOf) {
       const hit = resolveSpec(spec, f);
       if (!hit || seen.has(hit)) continue;
       seen.add(hit);
+      origin.set(hit, origin.get(f) ?? f);
+      const cfg = origin.get(hit);
+      byConfig.set(cfg, [...(byConfig.get(cfg) ?? []), hit]);
       if (!TW_CONFIG_RE.test(hit)) out.add(hit);
       queue.push(hit);
     }
@@ -341,6 +360,7 @@ function presetFiles(root, codeFiles, pkgOf) {
   for (const f of codeFiles) {
     if (/\.[mc]?[jt]s$/.test(f) && !/\.d\.[mc]?ts$/.test(f) && !TW_CONFIG_RE.test(f) && TW_PRESET_PKG_RE.test(pkgOf(f))) out.add(f);
   }
+  out.byConfig = byConfig;
   return out;
 }
 
@@ -355,6 +375,139 @@ const blankAt = (text, matches) => {
   for (const m of matches) { out += text.slice(at, m.index) + ' '.repeat(m[0].length); at = m.index + m[0].length; }
   return out + text.slice(at);
 };
+
+// A stylesheet an import names, as a repo file: relative to the importer,
+// through the package's own `@/` or `~/` alias (its folder, or its src/),
+// or by the package name of another workspace package (its folder, or its
+// src/). A query string or a bare extension-less name is tried too.
+const SHEET_EXT = ['', '.css', '.scss', '.sass', '.less', '/index.css', '/index.scss'];
+function resolveSheetSpec(spec, from, { styles, pkgOf, dirOf, root }) {
+  const clean = spec.replace(/[?#].*$/, '').trim();
+  if (!clean || /^(?:https?:)?\/\//.test(clean) || clean === 'tailwindcss' || clean.startsWith('tailwindcss/')) return null;
+  let base;
+  if (clean.startsWith('.')) base = posix.join(posix.dirname(from), clean);
+  else if (/^[@~]\//.test(clean)) {
+    const pkgDir = pkgOf(from);
+    const rest = clean.slice(2);
+    for (const b of [posix.join(pkgDir || '.', rest), posix.join(pkgDir || '.', 'src', rest)]) {
+      for (const ext of SHEET_EXT) { const c = posix.normalize(b + ext); if (styles.has(c)) return c; }
+    }
+    return null;
+  } else {
+    const parts = clean.split('/');
+    const scoped = clean.startsWith('@');
+    const dir = dirOf(parts.slice(0, scoped ? 2 : 1).join('/'));
+    if (dir === undefined) return null;
+    const sub = parts.slice(scoped ? 2 : 1).join('/');
+    // the package's own map first: exports["."] or exports["./sub"] (a
+    // string, or an object with style, import, default or require), then
+    // its style or main field (rallly: "@rallly/tailwind-config" is
+    // exports["."]: "./shared-styles.css")
+    let pkgJson = null;
+    try { pkgJson = JSON.parse(readFileSync(join(root, dir, 'package.json'), 'utf8')); } catch { pkgJson = null; }
+    const target = (x) => (typeof x === 'string' ? x : x && typeof x === 'object' ? x.style ?? x.import ?? x.default ?? x.require ?? null : null);
+    const mapped = [];
+    const exp = pkgJson?.exports;
+    if (exp) {
+      const key = sub ? `./${sub}` : '.';
+      const hit = target(typeof exp === 'string' && !sub ? exp : exp[key]);
+      if (typeof hit === 'string') mapped.push(hit);
+    }
+    if (!sub) for (const k of ['style', 'main']) if (typeof pkgJson?.[k] === 'string') mapped.push(pkgJson[k]);
+    for (const m of mapped) { const c = posix.normalize(posix.join(dir, m)); if (styles.has(c)) return c; }
+    for (const b of [posix.join(dir, sub), posix.join(dir, 'src', sub)]) {
+      for (const ext of SHEET_EXT) { const c = posix.normalize(b + ext); if (styles.has(c)) return c; }
+    }
+    return null;
+  }
+  for (const ext of SHEET_EXT) { const c = posix.normalize(base + ext); if (styles.has(c)) return c; }
+  return null;
+}
+const CSS_IMPORT_IN_CODE_RE = /\bimport\s+(?:[\w$*{}\s,]+\s+from\s+)?['"]([^'"\n]+\.(?:css|scss|sass|less)(?:\?[^'"\n]*)?)['"]|\brequire\(\s*['"]([^'"\n]+\.(?:css|scss|sass|less))['"]\s*\)/g;
+const CSS_IMPORT_IN_SHEET_RE = /@import\s+(?:url\(\s*)?['"]?([^'")\s;]+)['"]?\s*\)?[^;]*;|@use\s+['"]([^'"]+)['"]/g;
+// a v4 sheet pointing at a v3 config: the config's package (and the
+// presets it reaches) are visible from the sheet's (react-email's apps/web)
+const CSS_CONFIG_IN_SHEET_RE = /@config\s+['"]([^'"]+)['"]/g;
+// a v4 sheet's @source: the folders its theme covers (dify's web sheet
+// names ../../../packages/dify-ui/src, so dify-ui's files read web's theme)
+const CSS_SOURCE_IN_SHEET_RE = /@source\s+(?!not\b)(?:inline\(|['"])([^'")]+)['"]?\)?/g;
+
+/**
+ * Which packages each package can see the theme of, through the
+ * stylesheets it imports: the sheets its code imports, its own sheets, and
+ * every sheet those reach with @import, plus the packages of the presets
+ * its Tailwind config reaches. A package with no stylesheet import the scan
+ * could follow is not in the map at all, and keeps the loose reading
+ * (9.9.0; formbricks' apps/web imports only its own globals.css, and its
+ * 50-odd shadcn class names came back in a sibling package's colours;
+ * teable's app imports @teable/ui-lib's sheet with @import and keeps it).
+ * @returns Map<pkg, Set<pkg>>
+ */
+function visibleFrom(root, files, { codeImports, sheetImports, sheetConfigs, sheetSources, presetByConfig, pkgOf, dirOf }) {
+  const styles = new Set(files.styles ?? []);
+  const ctx = { styles, pkgOf, dirOf, root };
+  const code = new Set(files.code ?? []);
+  // the config a sheet names, as a repo file
+  const configOf = (f) => {
+    const out = [];
+    for (const spec of sheetConfigs.get(f) ?? []) {
+      const base = posix.normalize(posix.join(posix.dirname(f), spec));
+      for (const ext of ['', '.js', '.cjs', '.mjs', '.ts']) if (code.has(base + ext)) { out.push(base + ext); break; }
+    }
+    return out;
+  };
+  const resolved = new Map(); // sheet -> [sheet] it imports
+  const sheetOf = (f) => {
+    if (resolved.has(f)) return resolved.get(f);
+    const out = [];
+    resolved.set(f, out);
+    for (const spec of sheetImports.get(f) ?? []) { const hit = resolveSheetSpec(spec, f, ctx); if (hit) out.push(hit); }
+    return out;
+  };
+  const entries = new Map(); // pkg -> Set<sheet>
+  const add = (pkg, sheet) => { if (!entries.has(pkg)) entries.set(pkg, new Set()); entries.get(pkg).add(sheet); };
+  const wired = new Set();
+  for (const [f, specs] of codeImports) {
+    for (const spec of specs) { const hit = resolveSheetSpec(spec, f, ctx); if (hit) { add(pkgOf(f), hit); wired.add(pkgOf(f)); } }
+  }
+  for (const f of styles) {
+    add(pkgOf(f), f);
+    if (sheetOf(f).length || configOf(f).length) wired.add(pkgOf(f));
+  }
+  const out = new Map();
+  for (const pkg of wired) {
+    const seen = new Set(), queue = [...(entries.get(pkg) ?? [])];
+    const vis = new Set([pkg]);
+    const configs = new Set();
+    while (queue.length) {
+      const f = queue.shift();
+      if (seen.has(f)) continue;
+      seen.add(f);
+      vis.add(pkgOf(f));
+      queue.push(...sheetOf(f));
+      for (const c of configOf(f)) configs.add(c);
+    }
+    // the presets its own configs reach, and the configs its sheets name
+    for (const [cfg, presets] of presetByConfig) if (pkgOf(cfg) === pkg || configs.has(cfg)) for (const p of presets) vis.add(pkgOf(p));
+    for (const c of configs) vis.add(pkgOf(c));
+    out.set(pkg, vis);
+  }
+  // a sheet that covers another package's folder with @source lends that
+  // package everything the sheet's own package can see
+  for (const [f, specs] of sheetSources) {
+    const owner = pkgOf(f);
+    const lends = out.get(owner) ?? new Set([owner]);
+    for (const spec of specs) {
+      const dir = posix.normalize(posix.join(posix.dirname(f), spec.replace(/\/\*\*?.*$/, '').replace(/\/$/, '')));
+      for (const [pkg, vis] of out) {
+        if (pkg === owner) continue;
+        const under = pkg === '' ? dir === '.' : (dir === pkg || dir.startsWith(`${pkg}/`) || pkg.startsWith(`${dir}/`));
+        if (under) for (const p of lends) vis.add(p);
+      }
+    }
+  }
+  return out;
+}
 
 /**
  * @param root     repo root
@@ -440,12 +593,17 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
   // Tailwind's evidence: the dependency, a config, or a stylesheet bringing
   // it in (plausible-analytics reads as plain CSS yet imports tailwindcss)
   let tw = !!tailwind || (files.code ?? []).some((f) => TW_CONFIG_RE.test(f));
+  // what imports what, for the theme a package can see (visibleFrom)
+  const codeImports = new Map(), sheetImports = new Map(), sheetConfigs = new Map(), sheetSources = new Map();
   for (const f of files.styles ?? []) {
     const raw = readSource(join(root, f));
     if (raw === null || isEmail(f, raw, email) || foreignStylesheet(f, raw)) continue;
     const pkg = pkgOf(f);
     countDefinitionWrites(raw, pkg, f);
     const text = raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length));
+    if (text.includes('@import') || text.includes('@use')) sheetImports.set(f, [...text.matchAll(CSS_IMPORT_IN_SHEET_RE)].map((m) => m[1] ?? m[2]));
+    if (text.includes('@config')) sheetConfigs.set(f, [...text.matchAll(CSS_CONFIG_IN_SHEET_RE)].map((m) => m[1]));
+    if (text.includes('@source')) { const src = [...text.matchAll(CSS_SOURCE_IN_SHEET_RE)].map((m) => m[1]).filter((x) => /^\.{1,2}\//.test(x)); if (src.length) sheetSources.set(f, src); }
     if (!tw && TW_SHEET_RE.test(text)) tw = true;
     const st = cssStatements(text);
     addStatements(st, f, pkg);
@@ -505,7 +663,9 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
       const list = config.get(name) ?? [];
       list.push({ pkg, value });
       config.set(name, list);
-      configPkgs.add(pkg);
+      // a config of computed values alone does not make the package one
+      // with a readable config (the bare --NAME rule still applies there)
+      if (value !== null) configPkgs.add(pkg);
     }
   };
   // presets a config reaches, read as config (documenso's brand scales)
@@ -518,6 +678,10 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
     const raw = readSource(join(root, f));
     if (raw === null || (flagged && isEmail(f, raw, email))) continue;
     const pkg = pkgOf(f);
+    if (/\.(?:css|scss|sass|less)['"]/.test(raw)) {
+      const specs = [...raw.matchAll(CSS_IMPORT_IN_CODE_RE)].map((m) => m[1] ?? m[2]);
+      if (specs.length) codeImports.set(f, specs);
+    }
     let src = raw;
     const blocks = [];
     if (raw.includes('css')) for (const m of raw.matchAll(CSS_BLOCK_RE)) {
@@ -670,16 +834,24 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
 
   // ---------- 3. classes: a theme name, a palette shade, or nothing ----------
   const classCache = new Map();
-  // a theme lookup in one package (or any, pkg null): the plan's order
+  // the packages each package can see the theme of (null: not wired, so any)
+  const visible = visibleFrom(root, files, { codeImports, sheetImports, sheetConfigs, sheetSources, presetByConfig: presets.byConfig ?? new Map(), pkgOf, dirOf: packageDirs(root, [...(files.code ?? []), ...(files.styles ?? [])], pkgOf) });
+  // a theme lookup in one package (or any, pkg null, or a set of packages):
+  // the plan's order
   const lookupIn = (rest, pkg) => {
-    const inPkg = (list) => (pkg === null ? list : list?.filter((x) => x.pkg === pkg));
+    const set = pkg instanceof Set ? pkg : null;
+    const inPkg = (list) => (pkg === null ? list : set ? list?.filter((x) => set.has(x.pkg)) : list?.filter((x) => x.pkg === pkg));
     const colorDefs = inPkg(defs.get(`--color-${rest}`));
     if (colorDefs?.length) return { name: `--color-${rest}`, r: resolveValue(best(colorDefs).value, best(colorDefs).pkg) };
     const cfg = inPkg(config.get(rest));
-    if (cfg?.length) return { name: rest, r: resolveValue(cfg[0].value, cfg[0].pkg) };
+    if (cfg?.length) {
+      // a readable value first; a computed one is the theme's, unread
+      const lit = cfg.find((x) => x.value !== null);
+      return { name: rest, r: lit ? resolveValue(lit.value, lit.pkg) : OPAQUE };
+    }
     // a bare --NAME (a shadcn sheet read through a config the scan did not
     // find): only in a package keeping no @theme and no readable config
-    if (pkg === null || (!themePkgs.has(pkg) && !configPkgs.has(pkg))) {
+    if (pkg === null || set || (!themePkgs.has(pkg) && !configPkgs.has(pkg))) {
       const bare = inPkg(defs.get(`--${rest}`));
       if (bare?.length) {
         const r = resolveValue(best(bare).value, best(bare).pkg);
@@ -696,7 +868,7 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
     if (NOT_COLOUR.has(rest) || NOT_COLOUR_RE.test(rest)) r = null;
     else if (PALETTE_SHADE_RE.test(rest)) r = { kind: 'palette', shade: rest };
     else {
-      const hit = lookupIn(rest, pkg) ?? lookupIn(rest, null);
+      const hit = lookupIn(rest, pkg) ?? lookupIn(rest, visible.get(pkg) ?? null);
       if (!hit || hit.r === null) r = hit ? null : { kind: 'dead' };
       else if (isLiteral(hit.r)) r = { kind: 'theme', canon: hit.r.canon, literal: hit.r.literal, name: hit.name };
       else r = { kind: 'theme', outside: true, name: hit.name };

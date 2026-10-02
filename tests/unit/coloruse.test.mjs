@@ -416,3 +416,89 @@ test('light-dark() reads its daylight side', () => {
   const u = run({ 'app.css': '@theme { --color-paper: light-dark(#fefefe, #101010); }', 'a.tsx': '<p className="bg-paper" />' });
   assert.equal(byCanon(u, '#fefefe', 'token')?.classes, 1, JSON.stringify(u.segments));
 });
+
+// ---------- 9.9.0: the theme a package can see ----------
+
+test('a package that imports another package\'s sheet with @import sees its names', () => {
+  const u = run({
+    'apps/web/package.json': '{"name":"web"}',
+    'apps/web/global.css': "@import url('@acme/ui/shadcn/global.css');\n@tailwind base;",
+    'apps/web/page.tsx': '<p className="bg-primary" />',
+    'packages/ui/package.json': '{"name":"@acme/ui"}',
+    'packages/ui/shadcn/global.css': ':root { --primary: #112233; }\n@theme inline { --color-primary: var(--primary); }',
+  });
+  assert.equal(byCanon(u, '#112233', 'token')?.classes, 1, JSON.stringify({ seg: u.segments, dead: u.deadNames }));
+});
+
+test('a package whose code imports only its own sheet does not borrow a sibling\'s names', () => {
+  const u = run({
+    'apps/web/package.json': '{"name":"web"}',
+    'apps/web/globals.css': '@import "tailwindcss";\n@theme { --color-brand: #00e6ca; }',
+    'apps/web/layout.tsx': 'import "./globals.css";\nexport const L = () => <p className="bg-brand text-muted-foreground" />;',
+    'packages/survey/package.json': '{"name":"@acme/survey"}',
+    'packages/survey/globals.css': ':root { --muted-foreground: #667085; }\n@theme inline { --color-muted-foreground: var(--muted-foreground); }',
+  });
+  assert.equal(byCanon(u, '#00e6ca', 'token')?.classes, 1);
+  assert.ok(!byCanon(u, '#667085', 'token'), JSON.stringify(u.segments));
+  assert.deepEqual(u.deadNames.top, [['muted-foreground', 1]]);
+});
+
+test('a package with no stylesheet import the scan can follow keeps the loose reading', () => {
+  const u = run({
+    'apps/web/package.json': '{"name":"web"}',
+    'apps/web/page.tsx': '<p className="bg-primary" />',
+    'packages/ui/package.json': '{"name":"@acme/ui"}',
+    'packages/ui/global.css': ':root { --primary: #112233; }\n@theme inline { --color-primary: var(--primary); }',
+  });
+  assert.equal(byCanon(u, '#112233', 'token')?.classes, 1, JSON.stringify(u.segments));
+});
+
+test('a preset\'s package is visible to the config that reaches it', () => {
+  const u = run({
+    'apps/web/package.json': '{"name":"web"}',
+    'apps/web/tailwind.config.js': "module.exports = { presets: [require('@acme/tailwind-config')] };",
+    'apps/web/styles.css': '@tailwind base;',
+    'apps/web/layout.tsx': 'import "./styles.css";\nexport const L = () => <p className="bg-brand-500" />;',
+    'packages/tailwind-config/package.json': '{"name":"@acme/tailwind-config","main":"index.js"}',
+    'packages/tailwind-config/index.js': "module.exports = { theme: { extend: { colors: { brand: { 500: '#a1a2a3' } } } } };",
+  });
+  assert.equal(byCanon(u, '#a1a2a3', 'token')?.classes, 1, JSON.stringify({ seg: u.segments, dead: u.deadNames }));
+});
+
+test('a bare package import in a sheet resolves through the package\'s exports map', () => {
+  const u = run({
+    'apps/web/package.json': '{"name":"web"}',
+    'apps/web/globals.css': '@import "tailwindcss";\n@import "@acme/tailwind-config";',
+    'apps/web/layout.tsx': 'import "./globals.css";\nexport const L = () => <p className="bg-brand" />;',
+    'packages/tailwind-config/package.json': '{"name":"@acme/tailwind-config","exports":{".":"./shared-styles.css"}}',
+    'packages/tailwind-config/shared-styles.css': '@theme { --color-brand: #0a0b0c; }',
+  });
+  assert.equal(byCanon(u, '#0a0b0c', 'token')?.classes, 1, JSON.stringify({ seg: u.segments, dead: u.deadNames }));
+});
+
+test('a sheet that covers another package with @source lends it the theme', () => {
+  const u = run({
+    'apps/web/package.json': '{"name":"web"}',
+    'apps/web/globals.css': '@import "tailwindcss";\n@source "../../packages/ui/src";\n@theme { --color-brand: #0a0b0c; }',
+    'apps/web/layout.tsx': 'import "./globals.css";\nexport const L = () => <p />;',
+    'packages/ui/package.json': '{"name":"@acme/ui"}',
+    'packages/ui/src/story.css': '@import "./other.css";',
+    'packages/ui/src/other.css': '.x { display: block; }',
+    'packages/ui/src/button.tsx': '<button className="bg-brand" />',
+  });
+  assert.equal(byCanon(u, '#0a0b0c', 'token')?.classes, 1, JSON.stringify({ seg: u.segments, dead: u.deadNames }));
+});
+
+test('a config name with a computed value is the theme\'s, drawn without a swatch, not dead and not borrowed', () => {
+  const u = run({
+    'apps/web/package.json': '{"name":"web"}',
+    'apps/web/tailwind.config.js': "const c = require('@radix-ui/colors');\nmodule.exports = { theme: { extend: { colors: { slate: { 5: c.slateDarkA.slateA5 } } } } };",
+    'apps/web/globals.css': '@tailwind base;',
+    'apps/web/layout.tsx': 'import "./globals.css";\nexport const L = () => <p className="bg-slate-5" />;',
+    'packages/ui/package.json': '{"name":"@acme/ui"}',
+    'packages/ui/globals.css': '@theme { --color-slate-5: #123456; }',
+  });
+  assert.ok(!byCanon(u, '#123456', 'token'), JSON.stringify(u.segments));
+  assert.deepEqual(u.deadNames.top, []);
+  assert.equal(u.totals.outside, 1);
+});

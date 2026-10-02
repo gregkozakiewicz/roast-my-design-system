@@ -2,6 +2,31 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.8.0 — 2026-10-03
+
+Three wording changes. No score changes on any of the 205 scanned repos.
+
+- **The MCP context always ends with its closing line.** When a repo's
+  context ran over the 400-token budget, the text was cut at the budget.
+  On 21 repos that cut removed the last line, "Before finishing: call
+  roast_validate on what you wrote, then roast_review". Repos that use
+  two kits got an ordered trim in 9.7.0 that drops the least needed lines
+  first and keeps the closing line. Every repo now gets that trim. The
+  context changes on 29 repos.
+- **A second kit is named on shadcn repos too.** 9.7.0 named a second kit
+  on products built on MUI, Mantine, Chakra or Ant Design. Two cases were
+  missed. nhost keeps a shadcn folder and 57 files that import MUI. zupass
+  is built on Chakra and keeps a shadcn folder in one app. Both are now
+  named in the rules file, the MCP context and the report. The agent is
+  told to follow the kit the file already uses. Named, not scored.
+- **The report header names the kit.** The chip at the top of the report
+  said "design system: unrecognised" on 50 of 205 scanned repos. Most of
+  them are built on a kit the scan reads perfectly well. The chip now says
+  "MUI", "Chakra", "Ant Design + SigNoz UI" or "Tailwind theme". A set of
+  the team's own tokens beside a kit gets a chip of its own, such as
+  "tokens --mb-*" on Metabase. Four hosted example pages change their chip:
+  Airflow, SigNoz, Unleash and Metabase.
+
 ## 9.7.1 — 2026-10-03
 
 Six fixes to what the agent is told. No score changes on any of the 205

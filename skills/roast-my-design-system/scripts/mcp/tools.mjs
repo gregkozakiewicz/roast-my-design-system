@@ -135,11 +135,12 @@ export function getContext(k, { path = null } = {}) {
     if (nCanon > 2) nCanon -= 1; else nDupes -= 1;
     text = assemble(nCanon, nDupes) + shortened();
   }
-  // Two kits add three lines. Before cutting anything, drop what another call
-  // can give back, in this order, so the KITS lines, DISCIPLINE and the
-  // closing roast_validate line always stay. Repos with one kit keep the
-  // cut below exactly as before (2026-10-01).
-  if (k.kit?.second) {
+  // Before cutting anything, drop what another call can give back, in this
+  // order, so the KIT or TOKENS lines, DISCIPLINE and the closing
+  // roast_validate line always stay. Built for two-kit repos in 9.7.0; from
+  // 9.8.0 every repo gets it (19 single-kit repos went over the budget and
+  // lost their closing line to the straight cut, Greg agreed 2026-10-02).
+  {
     const drop = (re) => { for (let j = L.length - 1; j >= 0; j--) if (typeof L[j] === 'string' && re.test(L[j])) { L.splice(j, 1); return true; } return false; };
     const steps = [() => drop(/^NOTE:/), () => (nDupes > 0 ? (nDupes -= 1, true) : false), () => drop(/^GAP:/), () => drop(/^GAP:/), () => drop(/^TYPE:/), () => (nCanon > 1 ? (nCanon -= 1, true) : false)];
     for (const step of steps) {
@@ -148,15 +149,15 @@ export function getContext(k, { path = null } = {}) {
     }
   }
   const TRIM = '\n(trimmed to budget; ask roast_find_component / roast_find_token for specifics)';
-  if (text.length > CONTEXT_BUDGET && k.kit?.second) {
-    // still over: cut the middle, never the KITS lines at the top nor
-    // DISCIPLINE and the closing roast_validate line at the end
+  if (text.length > CONTEXT_BUDGET) {
+    // still over: cut the middle, never the lines at the top nor DISCIPLINE
+    // and the closing roast_validate line at the end
     const tailAt = text.indexOf('\nDISCIPLINE:');
     const tail = tailAt >= 0 ? text.slice(tailAt) : '';
     const room = CONTEXT_BUDGET - tail.length - TRIM.length;
     const head = tailAt >= 0 ? text.slice(0, tailAt) : text;
     text = `${head.slice(0, Math.max(0, head.lastIndexOf('\n', room)))}${TRIM}${tail}`;
-  } else if (text.length > CONTEXT_BUDGET) text = `${text.slice(0, text.lastIndexOf('\n', CONTEXT_BUDGET))}${TRIM}`;
+  }
   // No credit line here (8.1.1): a tool answers the question and nothing
   // else. Attribution lives on the report and in the skill's citation rule.
   return text;

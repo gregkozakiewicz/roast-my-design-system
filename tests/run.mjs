@@ -799,6 +799,20 @@ for (const fixture of readdirSync(FIXTURES).sort()) {
 }
 const mk = loadKnowledge(join(FIXTURES, 'monorepo'));
 compare('monorepo routed context', stripDates(mcpTools.getContext(mk, { path: 'packages/ui' })), 'monorepo.mcp-routed.txt');
+// 9.8.0: a single-kit repo over the budget keeps its closing line. The
+// ordered drop (note, a duplicate, the gaps, the type line, a canonical)
+// and the middle cut were two-kit only in 9.7.0; 21 single-kit repos lost
+// "Before finishing: call roast_validate" to the straight cut (2026-10-02).
+{
+  const base = loadKnowledge(join(FIXTURES, 'muikit'));
+  const long = (i) => ({ name: `VeryLongComponentName${i}`, file: `src/components/a/rather/deep/folder/VeryLongComponentName${i}/VeryLongComponentName${i}.tsx`, usageCount: 90 - i });
+  const fat = { ...base, canonical: [0, 1, 2, 3, 4].map(long), dupeByName: new Map([0, 1, 2].map((i) => [`Dup${i}`, { name: `Dup${i}`, files: [`src/one/deep/path/Dup${i}.tsx`, `src/two/deeper/path/Dup${i}.tsx`, `src/three/Dup${i}.tsx`] }])), gaps: [{ title: 'charts have no palette', fix: 'Name the series once (--chart-1, --chart-2 … in src/theme/index.ts) and point the existing charts at them. From then on a chart that writes a colour by hand is a finding the checks catch.' }, { title: 'empty states have no pattern', fix: 'Pick one empty-state component, keep its copy and its illustration in one place, and reuse it on every list and every search that can come back with nothing.' }], agentFiles: [] };
+  const text = mcpTools.getContext(fat, {});
+  const t = typeof text === 'string' ? text : text.text;
+  t.length <= 1600 && /KIT: MUI/.test(t) && t.includes('DISCIPLINE:') && t.includes('Before finishing: call roast_validate')
+    ? ok('a single-kit context over budget keeps the kit line, DISCIPLINE and the closing line')
+    : bad('single-kit trim', `${t.length} chars; closing ${t.includes('Before finishing')}; discipline ${t.includes('DISCIPLINE:')}`);
+}
 
 // review needs a real git repo: copy messy, commit it clean, add one bad file
 console.log('mcp review:');

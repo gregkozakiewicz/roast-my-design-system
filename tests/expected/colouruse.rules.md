@@ -28,7 +28,7 @@ Follow these rules when writing or editing UI in this repo. Every rule below was
 ### shadcn: the components and the theme
 
 - This is a shadcn install (style `new-york`, base colour slate). The theme is a set of CSS variables in `apps/web/modules/ui/globals.css`: background, foreground, primary, muted, border and the rest, each with a light and a dark value. Change a colour there, never in a component.
-- `apps/web/modules/ui/globals.css` defines none of shadcn's colour variables, so `bg-background` and `text-muted-foreground` have nothing behind them here. Until the theme variables are adopted, stay with the palette classes the surrounding file already uses; do not introduce semantic classes with no variable behind them, and do not add a second palette.
+- Use the semantic classes the theme gives you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The variables already carry both modes. The variables are defined in `packages/survey-ui/src/styles/globals.css`.
   (16 palette colours already sit in own code, `text-slate-500` ×7, `text-slate-900` ×3, `bg-slate-50` ×2; do not add to them.)
 - Before adding classes to a shadcn component, use one of its variants (`variant="outline"`, `size="sm"`). `className` on a shadcn component is for layout only: width, margin, position. Never colour, never typography.
 - Edit the component you own in `apps/web/modules/ui/components`. Never build a second one beside it under another name. A wrapper that composes shadcn components is fine; a second implementation is not.

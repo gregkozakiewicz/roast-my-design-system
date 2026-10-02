@@ -237,7 +237,14 @@ if (neverImported.length >= 3) {
       if (op?.uses) lines.push(`  (${op.uses} palette colour${op.uses === 1 ? '' : 's'} the theme does not own already sit in own code, ${op.samples.slice(0, 3).map((s) => `\`${s.value}\` ×${s.count}`).join(', ')}; do not add to them.)`);
     } else {
       rule(`This is a shadcn install${styleNote}. The theme is a set of CSS variables${sheetFile ? ` in \`${sheetFile}\`` : ''}: background, foreground, primary, muted, border and the rest, each with a light and a dark value. Change a colour there, never in a component.`);
-      if ((sc.sheet?.shadcnPresent ?? 0) >= 5) rule('Use the semantic classes the theme gives you (`bg-background`, `text-muted-foreground`, `border-border`), never a palette colour like `bg-blue-500` or `text-gray-600`, and never a hand-written `dark:` colour. The variables already carry both modes.');
+      // The same decision as the live checks (lib/palette.mjs): the contract
+      // holds when any stylesheet keeps five of shadcn's rows. Until 9.7.1
+      // this line read the configured sheet's :root rows alone, so formbricks
+      // (its names in @theme, the rows in a sibling package) was told to stay
+      // with the palette classes the live checks flag.
+      const contractHolds = P.palette?.source === 'shadcn' || (sc.sheet?.shadcnPresent ?? 0) >= 5;
+      const contractNote = contractHolds && (sc.sheet?.shadcnPresent ?? 0) < 5 && sc.contract?.file && sc.contract.file !== sheetFile ? ` The variables are defined in \`${sc.contract.file}\`.` : '';
+      if (contractHolds) rule(`Use the semantic classes the theme gives you (\`bg-background\`, \`text-muted-foreground\`, \`border-border\`), never a palette colour like \`bg-blue-500\` or \`text-gray-600\`, and never a hand-written \`dark:\` colour. The variables already carry both modes.${contractNote}`);
       else rule(`${sheetFile ? `\`${sheetFile}\` defines` : 'The theme file defines'} none of shadcn's colour variables, so \`bg-background\` and \`text-muted-foreground\` have nothing behind them here. Until the theme variables are adopted, stay with the palette classes the surrounding file already uses; do not introduce semantic classes with no variable behind them, and do not add a second palette.`);
       if (paint?.tin?.uses) lines.push(`  (${paint.tin.uses} palette colour${paint.tin.uses === 1 ? '' : 's'} already sit in own code, ${paint.tin.samples.slice(0, 3).map((s) => `\`${s.value}\` ×${s.count}`).join(', ')}; do not add to them.)`);
     }

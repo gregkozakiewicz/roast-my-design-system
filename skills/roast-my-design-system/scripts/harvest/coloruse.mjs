@@ -73,6 +73,7 @@ import { join, posix } from 'node:path';
 import { readSource } from './walk.mjs';
 import { isEmail, foreignStylesheet, CRASH_PAGE_RE } from '../lib/exempt.mjs';
 import { canonical } from '../lib/color.mjs';
+import { themePaths, lookupThemePath } from './jstheme.mjs';
 import { NAMED_COLOURS } from '../lib/named-colours.mjs';
 import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
 import { PALETTE } from '../profiles/shadcn-data.mjs';
@@ -153,7 +154,12 @@ const JS_THEME_RE = /\b(?:props\.)?(?:theme|tokens)\.(?:\w+\.)*(?:colou?rs?|pale
 // object on. Azure-ipam's 39 reads were all theme.palette.mode, and sent its
 // bar to the fallback for nothing (2026-10-01).
 const JS_NOT_COLOUR_RE = /\.(?:mode|getContrastText|augmentColor|tonalOffset|contrastThreshold)$|(?:^|\.)palette$/;
-const jsThemeReads = (text) => (text.match(JS_THEME_RE) ?? []).filter((m) => !JS_NOT_COLOUR_RE.test(m.replace(/\.+$/, ''))).length;
+const jsThemeReads = (text) => (text.match(JS_THEME_RE) ?? []).map((m) => m.replace(/\.+$/, '')).filter((m) => !JS_NOT_COLOUR_RE.test(m));
+// a theme file: the harvest's code token sources, and any file named for a
+// theme, a palette or tokens (twenty's ThemeLight.ts, outline's theme.ts,
+// strapi's light-colors.ts); never a test, a story or a type file
+const SKIP_THEME_FILE_RE = /(^|\/)(?:__tests__|__mocks__|stories|storybook|\.storybook|fixtures?|tests?)\/|\.(?:test|spec|stories)\.[cm]?[jt]sx?$/;
+const THEME_FILE_RE = /(^|\/)[\w.-]*(?:theme|colou?rs?|palette|tokens)[\w.-]*\.[cm]?[jt]sx?$/i;
 // a Sass or Less variable statement, at the start of a line: its name and
 // its value up to the semicolon (a map or a multi-line value is cut at the
 // first semicolon and reads as unreadable, which is right)
@@ -650,7 +656,7 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
       if (hits.length) whole = blankAt(whole, hits);
     }
     let code = hasBlocks ? blank(whole, CSS_BLOCK_RE) : whole;
-    const js = whole.includes('theme.') || whole.includes('token') || whole.includes('cssVar.') ? jsThemeReads(whole) : 0;
+    const js = whole.includes('theme.') || whole.includes('token') || whole.includes('cssVar.') ? jsThemeReads(whole) : [];
     const arbVars = [];
     if (tw && code.includes('--') && /-[[(](?:color:)?(?:var\(\s*)?--/.test(code)) {
       for (const m of code.matchAll(ARB_VAR_RE)) arbVars.push(m[1]);
@@ -931,6 +937,9 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
   const sidesSample = new Map();
   const dead = new Map();
   const unreadable = { sass: 0, less: 0, js: 0 };
+  // reads of a Sass or Less variable or a JavaScript theme value the repo
+  // defines, counted by name above (9.9.0); the fold says so
+  const readBy = { sass: 0, less: 0, js: 0 };
 
   const tokenUse = (target, how, file) => {
     if (target.canon) {
@@ -1042,6 +1051,7 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
           // cannot follow
           const r = resolvePre(name, pkg);
           if (r === UNDEF) { unreadable[less ? 'less' : 'sass'] += 1; continue; }
+          readBy[less ? 'less' : 'sass'] += 1;
           if (isLiteral(r)) tokenUse({ ...r, name }, 'vars', f);
           else tokenUse({ name }, 'vars', f);
         }
@@ -1056,9 +1066,29 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
   }
 
   // code: the records taken while each file was open
+  // the repo's JavaScript theme objects, read once, only when a file reads one
+  let jsPaths = null;
+  const jsThemePaths = () => {
+    if (jsPaths) return jsPaths;
+    const candidates = (files.code ?? []).filter((f) => /\.[cm]?[jt]sx?$/.test(f) && !/\.d\.ts$/.test(f) && !SKIP_THEME_FILE_RE.test(f) && (tokenSources.has(f) || THEME_FILE_RE.test(f)));
+    jsPaths = themePaths(candidates, (f) => readSource(join(root, f)) ?? '');
+    return jsPaths;
+  };
+  // theme.font.color.tertiary -> font.color.tertiary
+  const readPath = (read) => read.replace(/^(?:props\.)?(?:theme|tokens|token|cssVar)\./, '');
+  const jsUse = (read, file, pkg) => {
+    const hits = lookupThemePath(jsThemePaths(), readPath(read));
+    if (hits === undefined) { unreadable.js += 1; return; }
+    readBy.js += 1;
+    // the first statement that reads to a literal; failing that, the name
+    let r = null;
+    for (const h of hits) { if (typeof h.value !== 'string') continue; const x = resolveValue(h.value, pkg); if (isLiteral(x)) { r = x; break; } }
+    if (r) tokenUse({ ...r, name: read }, 'vars', file);
+    else tokenUse({ name: read }, 'vars', file);
+  };
   const codeUses = (r, { installed = false } = {}) => {
     for (const ref of r.kitRefs) kitUse(ref, r.f);
-    unreadable.js += r.js;
+    for (const read of r.js) jsUse(read, r.f, r.pkg);
     for (const name of r.arbVars) varUse(name, r.f, r.pkg, true);
     for (const name of r.vars) varUse(name, r.f, r.pkg, false);
     classUses(r.classes, r.f, r.pkg, { installed, drift: r.drift, ruled: r.ruled });
@@ -1144,6 +1174,9 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
     paletteWhy: { ...why, sidesTop: [...sidesSample.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null },
     // reads of the theme the bar cannot follow, by kind (the fallback's evidence)
     unreadable,
+    // reads of a Sass or Less variable or a JavaScript theme value the repo
+    // defines, counted by name
+    readBy,
     // shadcn's own components left out (scope 'own') or counted (scope 'installed')
     doorFiles: doorFiles.length,
     // classes whose name the repo defines nowhere: they paint nothing

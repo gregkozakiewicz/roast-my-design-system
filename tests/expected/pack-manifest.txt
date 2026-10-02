@@ -13,6 +13,7 @@ skills/roast-my-design-system/scripts/harvest/components.mjs
 skills/roast-my-design-system/scripts/harvest/context.mjs
 skills/roast-my-design-system/scripts/harvest/duplicates.mjs
 skills/roast-my-design-system/scripts/harvest/index.mjs
+skills/roast-my-design-system/scripts/harvest/jstheme.mjs
 skills/roast-my-design-system/scripts/harvest/paint.mjs
 skills/roast-my-design-system/scripts/harvest/summary.mjs
 skills/roast-my-design-system/scripts/harvest/tokens.mjs

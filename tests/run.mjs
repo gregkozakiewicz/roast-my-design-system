@@ -746,14 +746,14 @@ console.log('colour-use bar, drawn:');
     'src/theme.scss': `$ink: #222222;\n$paper: #fafafa;\n${Array.from({ length: 12 }, (_, i) => `.c${i} { color: $ink; background: $paper; }`).join('\n')}\n`,
     'src/app.tsx': 'export const App = () => <p style={{ color: "#333333" }}>x</p>;\n',
   });
-  /Of every 100 colour uses, 96 use a theme colour by name and 4 are strays/.test(sass.html) && !sass.html.includes('This bar cannot follow those yet')
+  /Of every 100 colour uses, 96 use a theme colour by name and 4 are strays/.test(sass.html) && sass.html.includes('include 24 Sass variables this repo defines') && !sass.html.includes('This bar cannot follow those')
     ? ok('a theme of Sass variables the repo defines is read by name') : bad('sass theme read', (sass.html.match(/<p class="sub use-line">[^<]*/) ?? ['missing'])[0]);
   const sassOut = scanTemp('sassout', {
     'package.json': '{"name":"sassout","private":true,"dependencies":{"react":"19.0.0","sass":"1.77.0","@carbon/themes":"11.0.0"}}',
     'src/app.scss': `@use '@carbon/themes';\n${Array.from({ length: 12 }, (_, i) => `.c${i} { color: $text-primary; background: $layer-01; }`).join('\n')}\n`,
     'src/app.tsx': 'export const App = () => <p style={{ color: "#333333" }}>x</p>;\n',
   });
-  sassOut.html.includes('go through Sass variables. This bar cannot follow those yet, so it counts written values instead.')
+  sassOut.html.includes('go through Sass variables this repo does not define: they come from a package outside it, or are built in code. This bar cannot follow those, so it counts written values instead.')
     && sassOut.html.includes('Sized by how often each value is written')
     ? ok('Sass variables from a package outside the repo keep the written bar and say why') : bad('fallback sentence', (sassOut.html.match(/<p class="sub use-line">[^<]*/) ?? ['missing'])[0]);
 

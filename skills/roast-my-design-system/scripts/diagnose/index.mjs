@@ -609,7 +609,7 @@ function colourUsage() {
     const pct = Math.round(use.fallback.share * 100);
     const words = { sass: 'Sass variables', less: 'Less variables', 'js-theme': 'JavaScript theme objects' };
     const what = listWords(use.fallback.why.map((w) => words[w]).filter(Boolean));
-    return { ...written(), line: `<p class="sub use-line">${pct} in every 100 colour uses here go through ${what}. This bar cannot follow those yet, so it counts written values instead.</p>` };
+    return { ...written(), line: `<p class="sub use-line">${pct} in every 100 colour uses here go through ${what} this repo does not define: they come from a package outside it, or are built in code. This bar cannot follow those, so it counts written values instead.</p>` };
   }
 
   const kitName = P.kit?.name ?? 'kit';
@@ -697,6 +697,10 @@ function colourUsage() {
     // semicolons: "plain white and black" carries its own "and"
     if (P.palette && left.length) sentences.push(`Palette classes not counted as strays: ${left.join('; ')}.`);
   }
+  // Sass, Less and JavaScript theme values the repo defines are read by name (9.9.0)
+  const rb = use.readBy ?? { sass: 0, less: 0, js: 0 };
+  const byKind = [rb.sass + rb.less ? `${n(rb.sass + rb.less)} ${rb.sass && rb.less ? 'Sass and Less' : rb.sass ? 'Sass' : 'Less'} variable${rb.sass + rb.less === 1 ? '' : 's'}` : '', rb.js ? `${n(rb.js)} JavaScript theme value${rb.js === 1 ? '' : 's'}` : ''].filter(Boolean);
+  if (byKind.length) sentences.push(`The theme colours used by name include ${byKind.join(' and ')} this repo defines, read from its own files.`);
   if (use.scope === 'installed') sentences.push("Your own code uses colour fewer than 20 times so far, so shadcn's installed components are counted too.");
   else if (P.isShadcn && use.doorFiles) sentences.push("shadcn's own components are left out, as they are in the score.");
   return {

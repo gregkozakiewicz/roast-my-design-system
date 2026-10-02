@@ -182,15 +182,22 @@ const hueDistance = (x, y) => Math.hypot(x.L - y.L, 2 * (x.a - y.a), 2 * (x.b - 
 // Past this, the nearest theme colour is a different colour, not a stand-in
 // (bg-blue-600 against a theme of greys), and the pick by name answers.
 const CLOSE = 0.2;
+// A grey class stands in for a grey only. Tailwind's greys sit at a chroma
+// of 0.01 to 0.045 (slate is the most tinted); a brand teal at the same
+// lightness sits at 0.095 and was within CLOSE of slate-500, so formbricks'
+// text-slate-500 was sent to text-brandnew (2026-10-01).
+const GREY_CHROMA = 0.06;
 /** The suitable theme name nearest to a palette shade's Tailwind value, or null. */
 function nearestThemeName(shade, role, values) {
   const from = oklab(TAILWIND_DEFAULTS[shade] ?? '');
   if (!from) return null;
+  const grey = GREY_HUE_RE.test(`-${shade}`);
   let best = null;
   for (const [name, value] of Object.entries(values)) {
     if (!suits(name, role)) continue;
     const to = oklab(value);
     if (!to) continue;
+    if (grey && Math.hypot(to.a, to.b) > GREY_CHROMA) continue;
     const d = hueDistance(from, to);
     if (!best || d < best.d) best = { name, d };
   }

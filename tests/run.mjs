@@ -1374,6 +1374,20 @@ if (existsSync(bin)) {
   const twHits = api.paletteFindings('export const X = () => <span className="text-gray-500 text-ink">x</span>;', twSys.profile.palette, { file: 'components/x.tsx' });
   twHits.length === 1 && twHits[0].value === 'text-gray-500' && twHits[0].example.startsWith('text-ink') && twHits[0].themeFile === 'app/globals.css' ? ok('doorway: paletteFindings words the hit as the live check does') : bad('doorway paletteFindings', JSON.stringify(twHits));
   api.paletteFindings('export const X = () => <span className="text-gray-500">x</span>;', twSys.profile.palette, { file: 'src/stories/x.tsx' }).length === 0 ? ok('doorway: a demo folder is left out') : bad('doorway demo', 'flagged');
+  // 9.7.1: a grey class never stands in for a brand colour. formbricks' teal
+  // (#038178) sat within the distance cut-off of slate-500 and was offered
+  // for text-slate-500; the nearest grey by value still answers.
+  {
+    const { themeClassFor } = await import(pathToFileURL(join(ENGINE, 'lib/palette.mjs')).href);
+    const vals = { brandnew: '#038178', muted: '#6b7280', secondary: '#f1f5f9' };
+    const names = Object.keys(vals);
+    themeClassFor('text-slate-500', ['brandnew', 'secondary'], { brandnew: '#038178', secondary: '#f1f5f9' }) === null
+      ? ok('a grey class is not sent to a brand colour') : bad('grey to brand', themeClassFor('text-slate-500', ['brandnew', 'secondary'], { brandnew: '#038178', secondary: '#f1f5f9' }));
+    themeClassFor('text-slate-500', names, vals) === 'text-muted'
+      ? ok('a grey class still finds the nearest grey') : bad('grey to grey', themeClassFor('text-slate-500', names, vals));
+    themeClassFor('bg-teal-700', ['brandnew'], { brandnew: '#038178' }) === 'bg-brandnew'
+      ? ok('a coloured class still finds the brand colour') : bad('colour to brand', themeClassFor('bg-teal-700', ['brandnew'], { brandnew: '#038178' }));
+  }
   api.learnSystem(join(FIXTURES, 'shadcnutil')).profile.palette === null ? ok('doorway: utility-class mode switches the palette rule off') : bad('doorway utility palette', 'expected null');
   api.learnSystem(join(FIXTURES, 'shadcnsplit')).profile.palette?.source === 'shadcn' ? ok('doorway: a split sheet still holds the contract') : bad('doorway split palette', 'expected shadcn');
   // 9.5.0: installed code, file by file, through the doorway

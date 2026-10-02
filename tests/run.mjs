@@ -1252,6 +1252,24 @@ console.log('a v3 config that retunes a scale (9.7.1):');
   rmSync(work, { recursive: true, force: true });
 }
 
+// 9.7.1: a theme row read only by another row of the same sheet is part of
+// the theme, not a leftover. shadcn-ui registers --code-highlight through
+// --color-code-highlight: var(--code-highlight) and was told to delete it.
+console.log('a theme row the sheet itself reads (9.7.1):');
+{
+  const work = mkdtempSync(join(tmpdir(), 'roast-sheetread-'));
+  const app = join(work, 'app');
+  cpSync(join(FIXTURES, 'shadcncustom'), app, { recursive: true });
+  const sheet = join(app, 'src/styles/globals.css');
+  writeFileSync(sheet, readFileSync(sheet, 'utf8').replace('    --brand-glow: 262 83% 58%;', '    --brand-glow: 262 83% 58%;\n    --glow-ring: hsl(var(--brand-glow) / 0.4);'));
+  const bin = resolve(ENGINE, '../../../cli/roast.mjs');
+  const r = spawnSync(process.execPath, [bin, app, '--json', '--out', join(work, 'r.html')], { encoding: 'utf8' });
+  const move = (JSON.parse(r.stdout).moves ?? []).find((m) => /theme variables? nothing uses/.test(m.title));
+  const named = (move?.sub.match(/--[\w-]+/g) ?? []).sort().join(',');
+  named === '--glow-ring,--success' ? ok('a row read by another row is used; the true leftovers are still named') : bad('sheet read', named || 'no move');
+  rmSync(work, { recursive: true, force: true });
+}
+
 console.log('mcp server:');
 {
   const msgs = [

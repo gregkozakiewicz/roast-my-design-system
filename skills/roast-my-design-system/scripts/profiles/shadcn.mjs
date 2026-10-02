@@ -199,6 +199,10 @@ function readSheet(root, wsRoot, cssPath, files = null) {
     const rel = file.slice(root.length + 1);
     const others = [...(files.code ?? []), ...(files.styles ?? [])].filter((f) => f !== rel).slice(0, 4000);
     const pending = new Set(custom.filter((r) => !/^(font|shadow|tracking|spacing|radius|ease|breakpoint|typeset)/.test(r)));
+    // a read inside the sheet itself counts: --sidebar: var(--surface-2)
+    // makes --surface-2 part of the theme, whether or not a component names
+    // it (9.7.1; its own rows, light and dark, are definitions, not reads)
+    for (const r of [...pending]) if (new RegExp(`var\\(\\s*--${r}(?![\\w-])`).test(css)) pending.delete(r);
     for (const f of others) {
       if (!pending.size) break;
       const src = read(join(root, f));

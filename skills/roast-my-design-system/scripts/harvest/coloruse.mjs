@@ -128,6 +128,16 @@ const COLOUR_PROP_RE = /^(?:color|background(?:-color)?|border(?:-(?:top|right|b
 const DARK_CHAIN_RE = /(^|[^a-z])dark(?![a-z])/i;
 const DARK_FILE_RE = /(^|[/._-])dark([/._-]|$)/i;
 const ROOT_RE = /(^|[\s,(])(?::root|html|:host|body)\b|@theme/;
+// A selector list with a bare root selector in it is a root statement
+// whatever its other members say: documenso's `:root, .dark-mode-disabled`
+// was ranked dark for the word in its second selector and the sheet earned
+// no receipt line (9.7.1). `:root.dark` and `html[data-theme=dark]` are not
+// bare, and stay dark, and so does a :root under a dark at-rule.
+const bareRoot = (chain) => {
+  const parts = chain.split(' > ');
+  if (DARK_CHAIN_RE.test(parts.slice(0, -1).join(' > '))) return false;
+  return parts[parts.length - 1].split(',').some((sel) => /^(?::root|html|:host|body)$/.test(sel.trim()));
+};
 // theme reads this pass cannot follow (D4): a JavaScript theme object outside
 // the four kits (emotion, styled-components), and Sass or Less variables in
 // a colour property. Read by the colour words a theme object uses, at any
@@ -392,7 +402,7 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
   const addStatements = (st, f, pkg) => {
     const fileDark = DARK_FILE_RE.test(f);
     for (const d of st.defs) {
-      const rank = fileDark || DARK_CHAIN_RE.test(d.chain) ? 2 : ROOT_RE.test(d.chain) ? 0 : 1;
+      const rank = fileDark ? 2 : bareRoot(d.chain) ? 0 : DARK_CHAIN_RE.test(d.chain) ? 2 : ROOT_RE.test(d.chain) ? 0 : 1;
       const list = defs.get(d.name) ?? [];
       list.push({ pkg, value: d.value, rank, order: order++ });
       defs.set(d.name, list);

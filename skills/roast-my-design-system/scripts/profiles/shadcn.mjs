@@ -124,10 +124,12 @@ function themeContract(root, files) {
   return seen.size;
 }
 
-/** Rows declared under a selector in a CSS text: name -> value. */
+/** Rows declared under a selector in a CSS text: name -> value. The
+ *  selector may head a list (documenso: `:root, .dark-mode-disabled`) or
+ *  carry a :not() (`.dark:not(.dark-mode-disabled)`), 9.7.1. */
 function rowsUnder(css, selector) {
   const out = new Map();
-  const re = new RegExp(`(^|[\\s,}])${selector}\\s*\\{([^}]*)\\}`, 'g');
+  const re = new RegExp(`(^|[\\s,}])${selector}(?::not\\([^)]*\\))?\\s*(?:,[^{}]*)?\\{([^}]*)\\}`, 'g');
   for (const m of css.matchAll(re)) {
     for (const d of m[2].matchAll(/--([a-z0-9-]+)\s*:\s*([^;]+);/gi)) out.set(d[1], d[2].trim());
   }
@@ -150,7 +152,7 @@ function sheetRows(css) {
       if (!/--background\s*:/.test(m[2]) || sel.startsWith('@')) continue;
       const rows = new Map();
       for (const d of m[2].matchAll(/--([a-z0-9-]+)\s*:\s*([^;]+);/gi)) rows.set(d[1], d[2].trim());
-      if (/\.dark\b/.test(sel)) { if (!dark.has('background')) dark = rows; }
+      if (/\.dark(?![\w-])/.test(sel)) { if (!dark.has('background')) dark = rows; }
       else if (!light.has('background')) { light = rows; scope = sel; }
       if (light.has('background') && dark.has('background')) break;
     }

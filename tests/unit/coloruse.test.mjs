@@ -180,6 +180,13 @@ test('a dark at-rule stated first does not win over the light :root', () => {
   assert.equal(byCanon(u, '#fefefe', 'token')?.classes, 1);
 });
 
+// 9.7.1: documenso's `:root, .dark-mode-disabled` was ranked dark for the
+// word in its second selector; a list with a bare root in it is root
+test('a selector list headed by :root is a root statement whatever follows it', () => {
+  const u = run({ 'app.css': '.dark:not(.dark-mode-disabled) { --primary: #010101; }\n:root,\n.dark-mode-disabled { --primary: #fefefe; }\n@theme inline { --color-primary: var(--primary); }', 'a.tsx': '<p className="bg-primary" />' });
+  assert.equal(byCanon(u, '#fefefe', 'token')?.classes, 1);
+});
+
 test('a light statement under a plain selector beats a .dark one stated first', () => {
   const u = run({ 'app.css': '.dark { --primary: #010101; }\n.theme { --primary: #fefefe; }\n@theme inline { --color-primary: var(--primary); }', 'a.tsx': '<p className="bg-primary" />' });
   assert.equal(byCanon(u, '#fefefe', 'token')?.classes, 1);

@@ -2,6 +2,43 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 9.9.0 — 2026-10-03
+
+The colour usage bar reads more of the repo. No score changes on any of
+the 205 scanned repos; the bar is display only.
+
+- **Colour names, color-mix() and light-dark() are read.** A theme value
+  written as a name such as whitesmoke, mixed with color-mix() or chosen
+  with light-dark() was drawn as a cell with no swatch. All 148 CSS colour
+  names now resolve, color-mix() is mixed by weight, and light-dark()
+  takes its daylight side. A hand-written colour name in a stylesheet now
+  counts as the stray it is.
+- **A class reads the theme its package can see.** A class name a package
+  did not define was answered from any package in the repo. formbricks'
+  web app imports only its own stylesheet, and its shadcn class names were
+  drawn in a sibling package's colours. The bar now follows the
+  stylesheets a package imports from code and from other sheets, a bare
+  package name through its exports map, a v4 sheet's @config and @source
+  lines, and the presets a config reaches. A package with no stylesheet
+  import the scan can follow keeps the old reading. A config value built
+  in code, such as react-email's slate from @radix-ui/colors, is the
+  theme's, drawn without a swatch, rather than a dead name.
+- **Sass and Less variables are read.** $name and @name statements across
+  the repo's stylesheets are followed to a literal. A read in a colour
+  property counts as the theme by name, with a swatch when the value is
+  readable and without one when a function builds it. A variable
+  statement's hex now counts as a definition, not a hand-written stray.
+- **JavaScript theme objects are read.** A theme kept as an object literal
+  is flattened to paths such as font.color.tertiary, references are
+  followed, and functions are left unread. No code is run. A read such as
+  theme.colors.primary600 matches an object keyed primary600.
+- **Nine repos move from the written-value bar to the use bar:**
+  govuk-frontend, devlake, appsmith, redash, grafana, n8n, outline, twenty
+  and bruno. Ten keep the written-value bar, because their theme comes
+  from a package outside the repo or is built in code, and the page now
+  says so. The "how this is counted" fold says how many Sass, Less and
+  JavaScript values the by-name count includes.
+
 ## 9.8.0 — 2026-10-03
 
 Three wording changes. No score changes on any of the 205 scanned repos.

@@ -73,6 +73,7 @@ import { join, posix } from 'node:path';
 import { readSource } from './walk.mjs';
 import { isEmail, foreignStylesheet, CRASH_PAGE_RE } from '../lib/exempt.mjs';
 import { canonical } from '../lib/color.mjs';
+import { NAMED_COLOURS } from '../lib/named-colours.mjs';
 import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
 import { PALETTE } from '../profiles/shadcn-data.mjs';
 import { blankComments, DEMO_PATH_RE, PALETTE_CLASS_RE } from './paint.mjs';
@@ -168,7 +169,33 @@ const INSTALLED_MIN = 20;
 const SHOWN = 60;
 
 // the two named colours common enough in a theme file to read (--bg: white)
-const NAMED = { white: '#ffffff', black: '#000000' };
+// every CSS colour name resolves to its hex (9.9.0; was white and black)
+const NAMED = NAMED_COLOURS;
+// a comma-separated list split at depth zero: "var(--a, red) 40%, white"
+function splitTop(text) {
+  const out = []; let depth = 0, last = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '(') depth++; else if (ch === ')') depth--;
+    else if (ch === ',' && depth === 0) { out.push(text.slice(last, i)); last = i + 1; }
+  }
+  out.push(text.slice(last));
+  return out.map((x) => x.trim()).filter(Boolean);
+}
+// two canonical colours ("r,g,b,a%") mixed by weight in sRGB, as rgb()/rgba()
+function mixCanon(a, b, pa, pb) {
+  const A = a.split(',').map(Number), B = b.split(',').map(Number);
+  const total = pa + pb;
+  if (!total) return null;
+  const wa = pa / total, wb = pb / total;
+  // premultiplied, as the spec mixes: a transparent side thins the colour
+  // without pulling it towards black
+  const aa = (A[3] / 100) * wa, ab = (B[3] / 100) * wb;
+  const alpha = aa + ab;
+  if (!alpha) return 'rgba(0, 0, 0, 0)';
+  const ch = (i) => Math.round((A[i] * aa + B[i] * ab) / alpha);
+  return alpha >= 0.995 ? `rgb(${ch(0)}, ${ch(1)}, ${ch(2)})` : `rgba(${ch(0)}, ${ch(1)}, ${ch(2)}, ${Math.round(alpha * 100) / 100})`;
+}
 const NOT_A_VALUE_RE = /^(?:transparent|currentcolor|inherit|initial|unset|none|revert|revert-layer)$/i;
 // a value that is plainly one colour the scan cannot read: color-mix(),
 // light-dark(), a colour function with a template in it, a Sass or Less
@@ -585,6 +612,32 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
       const c = canonical(inner);
       return c ? { canon: c, literal: tripletToHsl(inner) ?? inner } : OPAQUE;
     }
+    // color-mix(in <space>, A p%, B q%): both sides resolved the same way,
+    // then mixed in sRGB (9.9.0). The spec mixes in the named space; for the
+    // mixes a theme writes (a brand with white, black or transparent) the
+    // sRGB result sits within the twin threshold of the real one, and a
+    // swatch that is nearly right beats an opaque cell. light-dark(a, b)
+    // is its daylight side.
+    m = /^color-mix\(\s*in\s+[\w-]+(?:\s+(?:shorter|longer|increasing|decreasing)\s+hue)?\s*,\s*([\s\S]+)\)$/i.exec(v);
+    if (m) {
+      const sides = splitTop(m[1]);
+      if (sides.length === 2) {
+        const side = (t) => { const pm = /^([\s\S]*?)\s*(\d+(?:\.\d+)?)%$/.exec(t.trim()); return { colour: (pm ? pm[1] : t).trim(), pct: pm ? Number(pm[2]) : null }; };
+        const a = side(sides[0]), b = side(sides[1]);
+        let pa = a.pct, pb = b.pct;
+        if (pa === null && pb === null) { pa = 50; pb = 50; } else if (pa === null) pa = 100 - pb; else if (pb === null) pb = 100 - pa;
+        // transparent is a colour in a mix: it thins the other side
+        const clear = { canon: '0,0,0,0', literal: 'transparent' };
+        const resolveSide = (c) => (/^transparent$/i.test(c) ? clear : resolveValue(c, pkg, depth + 1));
+        const ra = resolveSide(a.colour), rb = resolveSide(b.colour);
+        if (ra === UNDEF || rb === UNDEF) return UNDEF;
+        const mixed = ra?.canon && rb?.canon ? mixCanon(ra.canon, rb.canon, pa, pb) : null;
+        if (mixed) return { canon: canonical(mixed), literal: mixed };
+        return OPAQUE;
+      }
+    }
+    m = /^light-dark\(\s*([\s\S]+)\)$/i.exec(v);
+    if (m) { const sides = splitTop(m[1]); if (sides.length === 2) return resolveValue(sides[0], pkg, depth + 1); }
     if (OPAQUE_RE.test(v) && (!/^[a-z]+$/i.test(v) || CSS_COLOUR_WORD_RE.test(v))) return OPAQUE;
     return null;
   };

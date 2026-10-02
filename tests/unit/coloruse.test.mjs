@@ -375,3 +375,44 @@ test("within one package, a --color-NAME comes before the config's NAME", () => 
   assert.equal(byCanon(u, '#101010', 'token')?.classes, 1);
   assert.ok(!byCanon(u, '#202020', 'token'));
 });
+
+// ---------- 9.9.0: named colours, color-mix() and light-dark() ----------
+
+test('a theme value written as a CSS colour name resolves to a swatch', () => {
+  const u = run({ 'app.css': '@theme { --color-canvas: whitesmoke; }', 'a.tsx': '<p className="bg-canvas" />' });
+  const s = byCanon(u, '#f5f5f5', 'token');
+  assert.ok(s, JSON.stringify(u.segments));
+  assert.equal(s.classes, 1);
+});
+
+test('a word that is not a colour name still paints nothing', () => {
+  const u = run({ 'app.css': '@theme { --color-brand: brandish; }', 'a.tsx': '<p className="bg-brand" />' });
+  assert.ok(!u.segments.some((s) => s.canon && s.names.includes('--color-brand')), JSON.stringify(u.segments));
+});
+
+test('color-mix() of two literals is mixed by weight', () => {
+  const u = run({ 'app.css': '@theme { --color-tint: color-mix(in srgb, #000000 25%, #ffffff); }', 'a.tsx': '<p className="bg-tint" />' });
+  assert.equal(byCanon(u, 'rgb(191, 191, 191)', 'token')?.classes, 1, JSON.stringify(u.segments));
+});
+
+test('color-mix() follows a var() on either side, and a transparent side thins the alpha', () => {
+  const u = run({
+    'app.css': ':root { --brand: #0000ff; }\n@theme inline { --color-wash: color-mix(in oklab, var(--brand) 40%, transparent); }',
+    'a.tsx': '<p className="bg-wash" />',
+  });
+  const s = u.segments.find((x) => x.names.includes('--color-wash'));
+  assert.ok(s?.canon, JSON.stringify(u.segments));
+  assert.equal(s.canon, '0,0,255,40');
+});
+
+test('color-mix() over a name defined nowhere is a token with no swatch, as a bare var() is', () => {
+  const u = run({ 'app.css': '@theme { --color-wash: color-mix(in srgb, var(--nowhere) 40%, white); }', 'a.tsx': '<p className="bg-wash" />' });
+  const s = u.segments.find((x) => x.names.includes('--color-wash'));
+  assert.ok(s && !s.canon, JSON.stringify(u.segments));
+  assert.deepEqual(u.deadNames.top, []);
+});
+
+test('light-dark() reads its daylight side', () => {
+  const u = run({ 'app.css': '@theme { --color-paper: light-dark(#fefefe, #101010); }', 'a.tsx': '<p className="bg-paper" />' });
+  assert.equal(byCanon(u, '#fefefe', 'token')?.classes, 1, JSON.stringify(u.segments));
+});

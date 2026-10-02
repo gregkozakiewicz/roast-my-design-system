@@ -28,6 +28,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { canonical } from '../lib/color.mjs';
+import { shadcnSecondKit, withoutWords } from './kit-common.mjs';
 import { CATALOGUE, BLOCK_COMPONENTS, REGISTRY_DIRS, KNOWN_ROWS, TWEAKCN_ROWS, LIGHT_ONLY_ROWS, FACTORY_SPACING,
   FRONTS, LEGACY_FRONTS, BASES, BASE_COLORS, ICON_LIBRARIES, RADIUS_MAP, THEMES, SHADCN_ROWS } from './shadcn-data.mjs';
 
@@ -351,7 +352,11 @@ export default {
       .filter((d) => registryNames.has(basename(d).toLowerCase()) && !profile.uiDirs.some((u) => d === u || d.startsWith(`${u}/`))))]
       .filter((d) => files.code.filter((f) => f.startsWith(`${d}/`) && /\.[jt]sx$/.test(f)).length >= 2);
     if (registryDirs.length) evidence.push(`${registryDirs.length} installed registr${registryDirs.length === 1 ? 'y' : 'ies'} beside it: ${registryDirs.map((d) => basename(d)).join(', ')}`);
+    // a package kit beside the folder (nhost's 57 MUI files): named, not scored
+    const second = shadcnSecondKit(root, files.code);
+    if (second) evidence.push(`${second.name} imported in ${second.files} files${withoutWords(second, 'shadcn')}: named, not scored`);
     profile.shadcn = {
+      second,
       installs: installs.map((i) => ({ config: i.config, uiDir: i.uiDir, catalogueNames: i.catalogueNames })),
       // the theme contract: how many of shadcn's rows any stylesheet defines,
       // and the file carrying most of them. The configured sheet can hold

@@ -6,6 +6,7 @@
  * character budget (~400 tokens), find calls return one answer, not a ledger,
  * and review reads the git diff itself so the agent never pastes code back.
  */
+import { secondKitHow } from '../profiles/kit-common.mjs';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, realpathSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -57,7 +58,7 @@ export function getContext(k, { path = null } = {}) {
     // counted in the first kit's files: some may sit on the second kit's
     // components, which the live checks name one by one
     if (c || p) L.push(`  Already written onto components in ${kit.name} files: ${[c ? `${c} colour${c === 1 ? '' : 's'} (${kit.colour.samples.slice(0, 3).map((x) => x.value).join(', ')})` : '', p ? `${p} pixel size${p === 1 ? '' : 's'}` : ''].filter(Boolean).join(' and ')}; do not add more.`);
-    L.push(`  On ${sk.name} components${sk.pkg ? ` (${sk.pkg})` : ''}: copy how nearby files style them.`);
+    L.push(`  On ${sk.name} components${sk.pkg ? ` (${sk.pkg})` : ''}: ${secondKitHow(sk)}`);
   } else if (k.kit) {
     const kit = k.kit, adv = kit.def?.advice;
     const theme = kit.themeFiles?.[0];
@@ -77,6 +78,10 @@ export function getContext(k, { path = null } = {}) {
     const pick = (re, i) => (pal?.names ?? []).find((n) => re.test(n)) ?? pal?.names?.[i] ?? 'brand';
     const examples = pal?.source === 'tailwind' ? `bg-${pick(/surface|(^|-)bg(-|$)|background|canvas/, 0)}, text-${pick(/ink|text|fg|foreground/, 1)}` : 'bg-primary, text-muted-foreground';
     L.push(`TOKENS: ${k.tokenColors.length} colour tokens in ${t.tokenFile}. Use them${pal ? ` as classes (${examples}); never a palette class (text-gray-500, ring-green-500) and` : ';'} never hardcode a colour. Do not add a token that duplicates an existing one; reuse it.${strays ? ` (${strays} hardcoded strays already exist; do not add more.)` : ''}`);
+    // a package kit beside the shadcn folder (nhost's 57 MUI files, 9.8.0):
+    // named so the agent does not put shadcn classes on its components
+    const s2 = k.shadcn?.second;
+    if (s2) L.push(`ALSO: ${s2.name}${s2.pkg ? ` (${s2.pkg})` : ''} in ${s2.files} files${s2.dir ? ` in ${s2.dir}` : ''}${s2.withoutFirst === s2.files ? ', none of them with shadcn' : ''}. Follow the kit the file already uses. On ${s2.name} components: ${secondKitHow(s2)} Never put one kit's styling on the other's components.`);
   } else if (t.colors.length) {
     L.push(`TOKENS: none defined. ${t.colors.length} distinct colours already in play; reuse one, never invent another.`);
   }

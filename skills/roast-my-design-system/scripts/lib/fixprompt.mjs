@@ -7,7 +7,7 @@
  * plan. Born from the first user feedback (Willem, 2026-08-31).
  */
 
-import { KITS } from '../profiles/kit-common.mjs';
+import { KITS, secondKitHow } from '../profiles/kit-common.mjs';
 import '../profiles/mui.mjs';
 import '../profiles/mantine.mjs';
 import '../profiles/chakra.mjs';
@@ -45,7 +45,7 @@ export function fixPrompt({ title, sub, deltaText, repoName, metric = null, kit 
   const also = second ? `- This repo also uses ${second.name}${second.pkg ? ` (${second.pkg})` : ''}.` : '';
   const secondLine = !adv || !second ? null
     : ['kitColour', 'kitPx'].includes(metric)
-    ? `${also} Make these changes only on ${kit} components and the wrappers around them. On ${second.name} components, copy how nearby files style them.`
+    ? `${also} Make these changes only on ${kit} components and the wrappers around them. On ${second.name} components, ${secondKitHow(second)}`
     : metric === 'inlineStyles'
     ? `${also} On ${second.name} components, move a style the way nearby files do. Never put one kit's styling on the other's components.`
     : null;

@@ -4,7 +4,7 @@
  * Output: { text, ruleCount } — paste-ready agent-rules markdown, every rule
  * with a receipt from the scanned repo.
  */
-import { KITS, withoutWords } from '../profiles/kit-common.mjs';
+import { KITS, withoutWords, secondKitHow } from '../profiles/kit-common.mjs';
 import { distinctTypefaces } from '../lib/typefaces.mjs';
 import { nearColorPairs } from './../lib/nearpairs.mjs';
 import { neverImportedComponents } from '../lib/neverimported.mjs';
@@ -248,6 +248,9 @@ if (neverImported.length >= 3) {
       else rule(`${sheetFile ? `\`${sheetFile}\` defines` : 'The theme file defines'} none of shadcn's colour variables, so \`bg-background\` and \`text-muted-foreground\` have nothing behind them here. Until the theme variables are adopted, stay with the palette classes the surrounding file already uses; do not introduce semantic classes with no variable behind them, and do not add a second palette.`);
       if (paint?.tin?.uses) lines.push(`  (${paint.tin.uses} palette colour${paint.tin.uses === 1 ? '' : 's'} already sit in own code, ${paint.tin.samples.slice(0, 3).map((s) => `\`${s.value}\` ×${s.count}`).join(', ')}; do not add to them.)`);
     }
+    // a package kit beside the folder (nhost's 57 MUI files, 9.8.0): the
+    // rules here are shadcn's; its components follow their own files
+    if (sc.second) rule(`This repo also uses ${sc.second.name}${sc.second.pkg ? ` (\`${sc.second.pkg}\`)` : ''}, imported in ${sc.second.files} files${sc.second.dir ? ` in \`${sc.second.dir}\`` : ''}${withoutWords(sc.second, 'shadcn')}. The rules in this section are for shadcn components. On ${sc.second.name} components, ${secondKitHow(sc.second)} Never put one kit's styling on the other's components.`);
     rule('Before adding classes to a shadcn component, use one of its variants (`variant="outline"`, `size="sm"`). `className` on a shadcn component is for layout only: width, margin, position. Never colour, never typography.');
     if (paint?.typo?.uses) lines.push(`  (${paint.typo.uses} shadcn component${paint.typo.uses === 1 ? '' : 's'} get a text size or weight through className, like ${paint.typo.samples.slice(0, 2).map((s) => `\`${s.value}\``).join(' and ')}; add a size variant instead.)`);
     if (paint?.doors?.uses) lines.push(`  (${paint.doors.uses} shadcn component${paint.doors.uses === 1 ? '' : 's'} already recoloured through className, like ${paint.doors.samples.slice(0, 2).map((s) => `\`${s.value}\``).join(' and ')}; do not add to them.)`);
@@ -317,7 +320,7 @@ export function secondKitLead(k) {
 /** the kit section's own rules are the first kit's; this says so */
 export function secondKitRule(k) {
   const s = k.second;
-  return `The rules in this section are for ${k.name} components. ${s.name}${s.pkg ? ` (\`${s.pkg}\`)` : ''} is imported in ${s.files} files${withoutWords(s, k.name)}. On ${s.name} components, copy how nearby files style them.`;
+  return `The rules in this section are for ${k.name} components. ${s.name}${s.pkg ? ` (\`${s.pkg}\`)` : ''} is imported in ${s.files} files${withoutWords(s, k.name)}. On ${s.name} components, ${secondKitHow(s)}`;
 }
 
 // ---------- shadcn in utility-class mode (words approved by Greg, 2026-10-01) ----------

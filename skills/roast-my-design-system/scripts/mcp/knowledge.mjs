@@ -226,6 +226,8 @@ export function loadKnowledge(root) {
     shadcn: P.isShadcn && profile.shadcn ? {
       sheet: profile.shadcn.sheet?.found ? profile.shadcn.sheet.file : null,
       doors: [...P.uiDirs, ...(profile.shadcn.blockFiles ?? [])],
+      // a package kit beside the folder, named and not scored (9.8.0)
+      second: profile.shadcn.second ?? null,
     } : null,
     agentFiles: (context ?? []).filter((c) => c.kind === 'agent-rules'),
   };

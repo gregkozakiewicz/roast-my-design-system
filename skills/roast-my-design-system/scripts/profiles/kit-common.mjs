@@ -46,14 +46,14 @@ const nestedCatalogueImport = (src) => [...src.matchAll(SHADCN_NESTED_RE)].some(
 function importCounts(root, codeFiles) {
   if (importCache.has(codeFiles)) return importCache.get(codeFiles);
   const counts = Object.fromEntries([...Object.keys(KITS), 'shadcn'].map((k) => [k, 0]));
-  const listed = Object.fromEntries(KIT_LIST.map((k) => [k.name, []]));
+  const listed = Object.fromEntries([...KIT_LIST.map((k) => [k.name, []]), ['shadcn/ui', []]]);
   const direct = Object.fromEntries(Object.keys(KITS).map((k) => [k, []]));
   for (const f of codeFiles) {
     if (!/\.[jt]sx?$/.test(f)) continue;
     const src = readSafe(join(root, f));
     for (const [k, d] of Object.entries(KITS)) if (d.importRe.test(src)) { counts[k] += 1; direct[k].push(f); }
     // a shadcn catalogue is a kit too: components/ui imports
-    if (SHADCN_IMPORT_RE.test(src) || nestedCatalogueImport(src)) counts.shadcn += 1;
+    if (SHADCN_IMPORT_RE.test(src) || nestedCatalogueImport(src)) { counts.shadcn += 1; listed['shadcn/ui'].push(f); }
     for (const name of new Set(importSources(src).map(kitOfSource).filter(Boolean))) listed[name].push(f);
   }
   const out = { counts, files: { listed, direct } };
@@ -90,8 +90,10 @@ function secondKit(root, def, paint, imports, email, codeFiles) {
   // a tenth of the first kit as the words count it: its layer included
   const firstUse = paint.kitFiles;
   const usable = (f) => !SKIP_PATH_RE.test(f);
-  const found = KIT_LIST.filter((k) => k.name !== def.name)
-    .map((k) => ({ name: k.name, list: (imports.files.listed[k.name] ?? []).filter(usable) }))
+  // a shadcn folder beside a kit is a second kit too (zupass: Chakra and
+  // components/ui, 9.8.0); its files are the ones that import the folder
+  const found = [...KIT_LIST.filter((k) => k.name !== def.name).map((k) => k.name), 'shadcn/ui']
+    .map((name) => ({ name, list: (imports.files.listed[name] ?? []).filter(usable) }))
     .filter((c) => c.list.length >= SECOND_MIN_FILES && (c.list.length >= SECOND_FILES || c.list.length >= SECOND_SHARE * firstUse))
     .sort((a, b) => b.list.length - a.list.length || a.name.localeCompare(b.name));
   if (!found.length) return null;
@@ -103,9 +105,11 @@ function secondKit(root, def, paint, imports, email, codeFiles) {
   for (const f of s.list) {
     let src;
     try { if (statSync(join(root, f)).size > 1e6) continue; src = readFileSync(join(root, f), 'utf8'); } catch { continue; }
-    const fromS = importSources(src).filter((p) => kitOfSource(p) === s.name);
+    const fromS = s.name === 'shadcn/ui'
+      ? [...src.matchAll(/from\s+['"]([@~./\w-]*components\/ui)\/[\w/-]+['"]/g)].map((m) => m[1])
+      : importSources(src).filter((p) => kitOfSource(p) === s.name);
     if (!fromS.length) continue;
-    for (const p of fromS) pkgs.set(pkgRoot(p), (pkgs.get(pkgRoot(p)) ?? 0) + 1);
+    for (const p of fromS) pkgs.set(s.name === 'shadcn/ui' ? p : pkgRoot(p), (pkgs.get(s.name === 'shadcn/ui' ? p : pkgRoot(p)) ?? 0) + 1);
     if (!firstRe.test(src)) { without.push(f); continue; }
     mixed.push(f);
     const hits = kitPaintInSource(src, def, { file: f, layers: paint.layers, email });
@@ -135,8 +139,45 @@ function secondKit(root, def, paint, imports, email, codeFiles) {
   };
 }
 
+// A package kit beside a shadcn folder (nhost: 631 files import the folder,
+// 57 import MUI; 9.8.0): named in the rules file, the MCP context and the
+// report's receipt, never scored. The same thresholds as the kit side.
+export function shadcnSecondKit(root, codeFiles) {
+  const imports = importCounts(root, codeFiles);
+  const usable = (f) => !SKIP_PATH_RE.test(f);
+  const first = (imports.files.listed['shadcn/ui'] ?? []).filter(usable);
+  const found = KIT_LIST
+    .map((k) => ({ name: k.name, list: (imports.files.listed[k.name] ?? []).filter(usable) }))
+    .filter((c) => c.list.length >= SECOND_MIN_FILES && (c.list.length >= SECOND_FILES || c.list.length >= SECOND_SHARE * first.length))
+    .sort((a, b) => b.list.length - a.list.length || a.name.localeCompare(b.name));
+  if (!found.length) return null;
+  const [s] = found;
+  const firstSet = new Set(first);
+  const pkgs = new Map();
+  for (const f of s.list) {
+    for (const p of importSources(readSafe(join(root, f))).filter((x) => kitOfSource(x) === s.name)) pkgs.set(pkgRoot(p), (pkgs.get(pkgRoot(p)) ?? 0) + 1);
+  }
+  const without = s.list.filter((f) => !firstSet.has(f)).length;
+  return {
+    name: s.name,
+    pkg: [...pkgs.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? null,
+    registered: !!KITS[s.name],
+    files: s.list.length,
+    withoutFirst: without,
+    mixed: s.list.length - without,
+    dir: cleanFolder(s.list, first),
+    firstDir: cleanFolder(first, s.list),
+  };
+}
+
 // ", 20 of them without Mantine", or ", none of them with Mantine" when no
 // file has both
+// How to style the second kit's components, in one sentence shared by the
+// rules file, the MCP context and the fix prompts. shadcn's rule is known;
+// any other kit's components follow the files around them (9.8.0).
+export const secondKitHow = (sk) => (sk.name === 'shadcn/ui'
+  ? 'use its variants and the theme classes (bg-background, text-muted-foreground), never a palette colour.'
+  : 'copy how nearby files style them.');
 export const withoutWords = (sk, first) => (!sk.withoutFirst ? '' : sk.withoutFirst === sk.files ? `, none of them with ${first}` : `, ${sk.withoutFirst} of them without ${first}`);
 
 export function kitProfile(def) {

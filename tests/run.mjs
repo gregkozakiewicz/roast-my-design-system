@@ -1284,6 +1284,49 @@ console.log('a theme row the sheet itself reads (9.7.1):');
   rmSync(work, { recursive: true, force: true });
 }
 
+// 9.8.0: a second kit is named on shadcn repos too, in both directions.
+// nhost keeps a shadcn folder and 57 MUI files; zupass is built on Chakra
+// and keeps a shadcn folder in one app. Named in the rules file and the
+// MCP context, never scored.
+console.log('second kits on shadcn repos (9.8.0):');
+{
+  // a shadcn repo with MUI beside it
+  const work = mkdtempSync(join(tmpdir(), 'roast-shadcn2nd-'));
+  const app = join(work, 'app');
+  cpSync(join(FIXTURES, 'shadcnv3'), app, { recursive: true });
+  mkdirSync(join(app, 'app/admin'), { recursive: true });
+  for (let i = 0; i < 12; i++) writeFileSync(join(app, `app/admin/Old${i}.tsx`), `import { Box } from '@mui/material';\nexport const Old${i} = () => <Box>${i}</Box>;\n`);
+  const k = loadKnowledge(app);
+  k.shadcn?.second?.name === 'MUI' && k.shadcn.second.files === 12 && k.shadcn.second.withoutFirst === 12
+    ? ok('a shadcn repo names the package kit beside it, with its file count') : bad('shadcn second kit', JSON.stringify(k.shadcn?.second));
+  const ctx = mcpTools.getContext(k, {});
+  const ctxText = typeof ctx === 'string' ? ctx : ctx.text;
+  /^ALSO: MUI \(@mui\/material\) in 12 files in app\/admin, none of them with shadcn\./m.test(ctxText) && ctxText.includes('On MUI components: copy how nearby files style them.')
+    ? ok('the context names the second kit, its folder and how to style it') : bad('shadcn second kit context', ctxText.split('\n').find((l) => l.startsWith('ALSO')) ?? 'no ALSO line');
+  const r = spawnSync(process.execPath, [resolve(ENGINE, '../../../cli/roast.mjs'), app, '--rules', '--no-open', '--out', join(work, 'r.html')], { encoding: 'utf8' });
+  const rules = existsSync(join(app, 'design-system-rules.md')) ? readFileSync(join(app, 'design-system-rules.md'), 'utf8') : '';
+  rules.includes('This repo also uses MUI (`@mui/material`), imported in 12 files in `app/admin`, none of them with shadcn. The rules in this section are for shadcn components.')
+    ? ok('the rules file names the second kit beside the shadcn rules') : bad('shadcn second kit rules', rules.split('\n').find((l) => l.includes('also uses')) ?? `no line (${r.status})`);
+  rmSync(work, { recursive: true, force: true });
+
+  // a kit repo with a shadcn folder beside it
+  const work2 = mkdtempSync(join(tmpdir(), 'roast-kit2nd-'));
+  const app2 = join(work2, 'app');
+  cpSync(join(FIXTURES, 'muikit'), app2, { recursive: true });
+  mkdirSync(join(app2, 'web/components/ui'), { recursive: true });
+  mkdirSync(join(app2, 'web/screens'), { recursive: true });
+  writeFileSync(join(app2, 'web/components/ui/button.tsx'), 'export const Button = (p) => <button className="bg-primary" {...p} />;\n');
+  for (let i = 0; i < 12; i++) writeFileSync(join(app2, `web/screens/Screen${i}.tsx`), `import { Button } from '@/components/ui/button';\nexport const Screen${i} = () => <Button>${i}</Button>;\n`);
+  const k2 = loadKnowledge(app2);
+  k2.kit?.name === 'MUI' && k2.kit.second?.name === 'shadcn/ui' && k2.kit.second.files === 12 && k2.kit.second.dir === 'web'
+    ? ok('a kit repo names the shadcn folder beside it as its second kit') : bad('kit second shadcn', JSON.stringify(k2.kit?.second));
+  const ctx2 = mcpTools.getContext(k2, {});
+  const ctx2Text = typeof ctx2 === 'string' ? ctx2 : ctx2.text;
+  ctx2Text.includes('On shadcn/ui components (@/components/ui): use its variants and the theme classes (bg-background, text-muted-foreground), never a palette colour.')
+    ? ok('shadcn as the second kit gets shadcn\'s own rule, not "copy nearby files"') : bad('shadcn second rule', ctx2Text.split('\n').find((l) => l.includes('shadcn/ui components')) ?? 'no line');
+  rmSync(work2, { recursive: true, force: true });
+}
+
 console.log('mcp server:');
 {
   const msgs = [

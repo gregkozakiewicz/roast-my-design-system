@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 10.0.0 — unreleased
+## 10.0.0 — 2026-10-03
 
 The benchmark is rebuilt, so scores move. 17 of 205 scanned repos change,
 13 up and 4 down, none by more than 10 points. The hosted examples keep

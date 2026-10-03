@@ -20,6 +20,14 @@ node tools/benchmark/build.mjs --clones ~/roast-clones
 node tools/benchmark/build-refs.mjs --clones ~/roast-clones
 ```
 
+Every builder measures through `measure.mjs`, which runs the scan's own
+harvest on each clone and reads the numbers from the same functions the
+score uses. Until 10.0.0 each builder recomputed the metrics by hand and had
+drifted from the scan (it did not skip email templates, counted greys from
+hex alone, and read nothing of the paint or kit checks). The yardstick counts
+exactly like the ruler it is held against; a change to what the scan counts
+is a change to the benchmark on the next rebuild, never a second opinion.
+
 The first writes the 34-repo core-fleet statistics and the Ideal Design System norms; the
 second scans the 10 reference systems (clone dirs named `org-repo`, see the
 SCOPES table inside) and merges them into the same file. Rebuilding moves
@@ -78,3 +86,22 @@ node tools/benchmark/build-slice.mjs --clones ~/roast-clones --kind mui --repos 
 Each slice carries `kitColour` and `kitPx` and its own ideals for them, set
 in `IDEAL_BY_KIND` in `ideal.mjs` at the top of the tidiest third of the
 slice (2026-09-17: mui 4/4, mantine 1/3, chakra 3/4, antd 6/7).
+
+
+## The web-components group
+
+A library built as web components (Stencil, Lit) is compared with other such
+systems, not with the React fleet: about 41 of its 350 `!important`
+declarations are web-component idioms, and the React medians read them as
+drift. The candidates are in `webcomponents-repos.txt`; the engine decides
+membership (`benchKind` in `diagnose/score.mjs`: kind library, framework web
+components). Baloise's repo reads as shadcn through its token app and sits
+that slice out.
+
+```bash
+node tools/benchmark/build-slice.mjs --clones ~/roast-clones --kind webcomponents --repos tools/benchmark/webcomponents-repos.txt
+```
+
+Seven systems on 2026-10-03: Spectrum Web Components, Shoelace, Scale, Ionic,
+Material Web, Siemens iX and Lion. The slice carries the general statistics
+and no kind-only tile.

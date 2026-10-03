@@ -13,13 +13,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { walkRepo, profileRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
-import { harvestComponents } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
-import { harvestTokens } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
-import { findDuplicates } from '../../skills/roast-my-design-system/scripts/harvest/duplicates.mjs';
-import { distinctTypefaces } from '../../skills/roast-my-design-system/scripts/lib/typefaces.mjs';
-import { nearColorPairs } from '../../skills/roast-my-design-system/scripts/lib/nearpairs.mjs';
-import { neverImportedComponents } from '../../skills/roast-my-design-system/scripts/lib/neverimported.mjs';
+import { measure, cloneDir } from './measure.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -40,45 +34,22 @@ const wanted = readFileSync(reposFile, 'utf8').split('\n')
 const present = new Set(readdirSync(clonesDir));
 const rows = [];
 for (const full of wanted) {
-  const name = full.split('/')[1];
-  const dir = [name, name.toLowerCase()].find((d) => present.has(d) && existsSync(join(clonesDir, d, '.git')));
-  if (!dir) { console.error(`  ✗ missing clone: ${full}`); continue; }
+  const dir = cloneDir(clonesDir, full, present);
+  if (!dir || !existsSync(join(clonesDir, dir, '.git'))) { console.error(`  ✗ missing clone: ${full}`); continue; }
   const root = join(clonesDir, dir);
   const t0 = Date.now();
   try {
-    const files = walkRepo(root);
-    const profile = profileRepo(root, files);
-    if (!['next', 'remix', 'vite-react', 'react'].includes(profile.framework)) {
-      console.error(`  ✗ ${full}: not a React repo (${profile.framework}) — skipped`);
+    // the scan's own harvest and the score's own metrics (measure.mjs)
+    const { h, metrics } = measure(root);
+    const framework = h.profile?.framework ?? 'unknown';
+    if (!['next', 'remix', 'vite-react', 'react'].includes(framework)) {
+      console.error(`  ✗ ${full}: not a React repo (${framework}) — skipped`);
       continue;
     }
-    const { components } = harvestComponents(root, files.code);
-    const tokens = harvestTokens(root, files.styles, files.code);
-    const dupes = findDuplicates(components, profile.uiDir, root);
-    const reusable = components.filter((c) => !c.isPage);
-    rows.push({
-      repo: full,
-      framework: profile.framework,
-      designSystem: profile.designSystem.kind,
-      codeFiles: files.code.length,
-      metrics: {
-        colors: tokens.colors.length,
-        greys: tokens.greyCount,
-        spacing: tokens.spacing.length + tokens.tailwind.spacing.filter((v) => v.value.startsWith('[')).length,
-        typefaces: distinctTypefaces(tokens.fontFamilies).length,
-        fontSizes: tokens.fontSizes.length + tokens.tailwind.textSizes.length,
-        radii: tokens.radii.length + tokens.tailwind.radii.length,
-        shadows: tokens.shadows.length,
-        exactDuplicates: dupes.exactDuplicates.length,
-        inlineStyles: tokens.inlineStyles.count,
-        arbitrary: (tokens.tailwind.arbitrary ?? []).reduce((sum, a) => sum + a.count, 0),
-        nearPairs: nearColorPairs(tokens.colors).length,
-        important: tokens.important?.count ?? 0,
-        neverImported: neverImportedComponents(components, profile.uiDir).length,
-        components: reusable.length,
-      },
-    });
-    console.log(`  ✓ ${full} (${files.code.length} files, ${Date.now() - t0}ms)`);
+    // the general table carries no kind-only tile
+    const { paintTin, doorOverrides, kitColour, kitPx, ...general } = metrics;
+    rows.push({ repo: full, framework, designSystem: h.profile?.designSystem?.kind ?? 'none', codeFiles: h.files?.code ?? 0, metrics: general });
+    console.log(`  ✓ ${full} (${h.files?.code ?? 0} files, ${Date.now() - t0}ms)`);
   } catch (e) {
     console.error(`  ✗ ${full}: ${e.message}`);
   }

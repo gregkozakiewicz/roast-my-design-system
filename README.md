@@ -89,7 +89,7 @@ Fix, rescan, press the next button.
 
 0 to 100. The same number every run.
 
-Measured against three yardsticks: the ideal norms of a design system, the median of 34 product repos at the core of a 112-repo benchmark, and 10 reputable systems (Primer, Polaris, Carbon, shadcn/ui and others).
+Measured against three yardsticks: the ideal norms of a design system, the median of 34 product repos at the core of a 119-repo benchmark, and 10 reputable systems (Primer, Polaris, Carbon, shadcn/ui and others).
 
 Monorepos get a score per package. `packages/ui` at 80 stops hiding `apps/web` at 40.
 
@@ -138,7 +138,7 @@ Eleven reports, hosted exactly as the tool writes them. Every number determinist
 - **[dubinc/dub](https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html)**: 642 arbitrary bracket values, 21 duplicated components, and the chart-palette gap named. Score 20.
 - **[telekom/scale](https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html)** (Stencil): 95 Stencil components read by tag; 66 spacing values outside the scale where about 12 would do; Claude's notes embedded. Score 55.
 - **[magicuidesign/magicui](https://gregkozakiewicz.github.io/roast-my-design-system/examples/magicui.html)** (registry): counted on the components it publishes, 52 off-theme colours per 100 files in the code it ships, its docs site kept out and named. Score 78.
-- **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): hardcoded colours sitting beside 744 colour tokens, and 37 !important declarations. Score 66.
+- **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): hardcoded colours sitting beside 740 colour tokens, and 37 !important declarations. Score 72.
 
 The full report for vercel/ai-chatbot. The verdict answers what the agent will learn here, the gap section comes first, then "What the repo teaches the agent", Claude's read of the scan:
 
@@ -154,7 +154,7 @@ The same report in light mode (one file, built-in toggle):
 - **Read-only. No network. No telemetry.** The test suite fails if package.json ever declares a dependency.
 - **Honest gaps.** What the scan cannot read says "not measured" and drops out of the score.
 - **Honest exclusions.** Tests, stories, docs sites, artwork and email templates are left out. Your own exclusions are printed in the report header with file counts.
-- **A real benchmark.** 112 public React repos. A core fleet of 34 sets the medians; the rest feed the kit profiles, so a shadcn repo is compared with shadcn repos. The builder is in `tools/benchmark/`.
+- **A real benchmark.** 119 public repos. A core fleet of 34 React repos sets the medians; the rest feed the kit and web-component groups, so a shadcn repo is compared with shadcn repos and a Lit system with Lit and Stencil systems. The builder is in `tools/benchmark/`.
 - **Importable scoring.** `scoreHarvest(harvest)` returns the score and metrics as plain data. The report and a CI check get the same numbers.
 
 The long version, with scan scoping and what the plugin runs on your machine, is in [docs/reference.md](docs/reference.md).

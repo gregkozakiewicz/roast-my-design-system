@@ -31,7 +31,7 @@ import { feedbackUrl, FEEDBACK_ASK, FEEDBACK_CTA } from '../lib/feedback.mjs';
 import { fixPrompt } from '../lib/fixprompt.mjs';
 import { WHY } from './why.mjs';
 import { parseColor, luminance, isGrey } from '../lib/color.mjs';
-import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION } from './score.mjs';
+import { loadBenchmark, benchHelpers, makeHealthOf, coreMetrics, tileHealths, scoreOfTiles, scoreBreakdown, scorePackage as scorePackageOf, ZERO_IDEAL, WARN_TOLERANCE, SCORE_OF, SCHEMA_VERSION, benchKind } from './score.mjs';
 import { ownSpacing, profileOf, installedOf, splitArbitrary, installedByOwner } from '../profiles/index.mjs';
 import { KITS } from '../profiles/kit-common.mjs';
 import { rulesOn as lintRulesOn, describeRule as lintDescribe, entryMatcher as lintMatcher, RULE_TILE as LINT_TILE } from '../profiles/shadcn-lint.mjs';
@@ -55,14 +55,14 @@ const h = JSON.parse(readFileSync(inPath, 'utf8'));
 // The yardstick: the general benchmark, read through the slice for this
 // repo's kind when the benchmark carries one (a shadcn repo is compared with
 // the shadcn repos in the fleet).
-const B = benchHelpers(bench, profileOf(h).kind);
+const B = benchHelpers(bench, benchKind(h));
 const { percentile, cleanerPct, ideal, median, displayAvg, refMedian } = B;
 // The group the medians come from, by name: a registry is compared with the
 // shadcn repos, an MUI product with the MUI ones. The verdict said "the
 // median of 34 scanned repos" when the medians came from a kit's own group,
 // on 51 of 204 fleet scans, and the tiles said "Avg registry repo" for a
 // group that does not exist (2026-10-01).
-const GROUP_NAMES = { shadcn: 'shadcn', registry: 'shadcn', tailwind: 'Tailwind', mui: 'MUI', mantine: 'Mantine', chakra: 'Chakra', antd: 'Ant Design' };
+const GROUP_NAMES = { shadcn: 'shadcn', registry: 'shadcn', tailwind: 'Tailwind', mui: 'MUI', mantine: 'Mantine', chakra: 'Chakra', antd: 'Ant Design', webcomponents: 'web-component' };
 const benchGroup = B.sliceInfo ? { name: GROUP_NAMES[B.sliceInfo.kind] ?? B.sliceInfo.kind, repoCount: B.sliceInfo.repoCount } : null;
 const healthOf = makeHealthOf(B);
 const M = coreMetrics(h);

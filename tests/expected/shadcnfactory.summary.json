@@ -2,13 +2,13 @@
   "repo": "factory-kit",
   "schemaVersion": 1,
   "benchmark": {
-    "builtAt": "2026-09-25T20:59:26.746Z",
+    "builtAt": "2026-10-03T00:30:02.902Z",
     "repoCount": 34,
     "referenceSystems": 10,
     "slice": {
       "kind": "shadcn",
       "repoCount": 16,
-      "builtAt": "2026-09-25T20:59:45.044Z"
+      "builtAt": "2026-10-03T00:30:48.790Z"
     }
   },
   "score": 100,

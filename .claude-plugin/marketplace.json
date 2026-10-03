@@ -1,6 +1,6 @@
 {
   "name": "roast-my-design-system",
-  "description": "Roast your repo's design system with real data: a health score, the receipts, and the first fixes ranked by payoff. Deterministic scan, 112-repo benchmark, 10 reputable systems, shareable light/dark HTML report.",
+  "description": "Roast your repo's design system with real data: a health score, the receipts, and the first fixes ranked by payoff. Deterministic scan, 119-repo benchmark, 10 reputable systems, shareable light/dark HTML report.",
   "owner": {
     "name": "Greg Kozakiewicz",
     "url": "https://github.com/gregkozakiewicz"
@@ -9,7 +9,7 @@
     {
       "name": "roast-my-design-system",
       "displayName": "Roast my design system",
-      "description": "Roast your repo's design system with real data: a health score, the receipts, and the first fixes ranked by payoff. Deterministic scan, 112-repo benchmark, 10 reputable systems, shareable light/dark HTML report.",
+      "description": "Roast your repo's design system with real data: a health score, the receipts, and the first fixes ranked by payoff. Deterministic scan, 119-repo benchmark, 10 reputable systems, shareable light/dark HTML report.",
       "author": {
         "name": "Greg Kozakiewicz",
         "url": "https://github.com/gregkozakiewicz"

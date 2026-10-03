@@ -19,15 +19,8 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { walkRepo, profileRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
-import { harvestComponents } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
-import { harvestTokens } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
-import { findDuplicates } from '../../skills/roast-my-design-system/scripts/harvest/duplicates.mjs';
-import { countPaint } from '../../skills/roast-my-design-system/scripts/harvest/paint.mjs';
-import { decideProfile, profileOf, installedDirs, splitArbitrary } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
-import { distinctTypefaces } from '../../skills/roast-my-design-system/scripts/lib/typefaces.mjs';
-import { nearColorPairs } from '../../skills/roast-my-design-system/scripts/lib/nearpairs.mjs';
-import { neverImportedComponents } from '../../skills/roast-my-design-system/scripts/lib/neverimported.mjs';
+import { measure, cloneDir } from './measure.mjs';
+import { benchKind } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
 import { IDEAL_2026, IDEAL_BY_KIND } from './ideal.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -44,62 +37,34 @@ const wanted = readFileSync(reposFile, 'utf8').split('\n').map((l) => l.trim()).
 const present = new Set(readdirSync(clonesDir));
 const rows = [];
 for (const full of wanted) {
-  const name = full.split('/')[1];
-  const dir = [name, name.toLowerCase(), full.replace('/', '-')].find((d) => present.has(d) && existsSync(join(clonesDir, d, '.git')));
-  if (!dir) { console.error(`  ✗ missing clone: ${full}`); continue; }
+  const dir = cloneDir(clonesDir, full, present);
+  if (!dir || !existsSync(join(clonesDir, dir, '.git'))) { console.error(`  ✗ missing clone: ${full}`); continue; }
   const root = join(clonesDir, dir);
   const t0 = Date.now();
   try {
-    const files = walkRepo(root);
-    const profile = profileRepo(root, files);
-    const { components } = harvestComponents(root, files.code);
-    decideProfile(profile, components, files, root);
-    const P = profileOf(profile);
-    if (P.kind !== kind) { console.log(`  · ${full}: ${P.kind}, not in the ${kind} slice`); continue; }
+    // the scan's own harvest and the score's own metrics (measure.mjs): the
+    // kind, the paint tiles and the kit tiles are exactly the report's
+    const { h, P, metrics } = measure(root);
+    // membership is the engine's benchmark group (benchKind): a kit product by
+    // its kit, a web-components library by its stack
+    const group = benchKind(h);
+    if (group !== kind) { console.log(`  · ${full}: ${group}, not in the ${kind} slice`); continue; }
     // a theme nobody uses yet is shown, not scored, so it is no yardstick either
-    if (kind === 'tailwind' && !profile.tailwind?.adopted) { console.log(`  · ${full}: theme not adopted yet, not in the slice`); continue; }
-    const tokens = harvestTokens(root, files.styles, files.code);
-    const dupes = findDuplicates(components, profile.uiDir, root);
-    const reusable = components.filter((c) => !c.isPage);
-    // the tiles only this kind measures, counted as the harvest counts them
-    const allInstalled = installedDirs(P);
-    const doorFiles = new Set(allInstalled.flatMap((d) => files.code.filter((f) => f === d || f.startsWith(`${d}/`))));
-    const kitNames = new Set(components.filter((c) => doorFiles.has(c.file)).map((c) => c.name));
-    // as the harvest counts: registries in, catalogue and blocks out
-    const paint = kind === 'tailwind'
-      ? countPaint(root, files.code, { retuned: profile.tailwind?.retuned ?? [], families: profile.tailwind?.families ?? null })
-      : countPaint(root, files.code, { uiDirs: [...P.uiDirs, ...(profile.shadcn?.blockFiles ?? [])], kitNames });
-    const ownArbitrary = splitArbitrary(tokens.tailwind.arbitrary ?? [], allInstalled).own;
+    if (kind === 'tailwind' && !h.profile?.tailwind?.adopted) { console.log(`  · ${full}: theme not adopted yet, not in the slice`); continue; }
+    const sc = h.profile?.shadcn ?? null, tw = h.profile?.tailwind ?? null;
+    const { kitColour, kitPx, ...rest } = metrics;
     rows.push({
       repo: full,
       confidence: P.confidence,
-      style: profile.shadcn?.kit?.style ?? null,
-      baseColor: profile.shadcn?.kit?.baseColor ?? null,
-      tailwind: profile.shadcn?.kit?.tailwind ?? profile.tailwindVersion ?? null,
-      ...(kind === 'tailwind' ? { themeNames: profile.tailwind.names.length, retuned: profile.tailwind.retuned.length, themeUses: profile.tailwind.uses } : {}),
-      codeFiles: files.code.length,
-      ownFiles: paint.ownFiles,
-      metrics: {
-        colors: tokens.colors.length,
-        greys: tokens.greyCount,
-        spacing: tokens.spacing.length + tokens.tailwind.spacing.filter((v) => v.value.startsWith('[')).length,
-        typefaces: distinctTypefaces(tokens.fontFamilies).length,
-        fontSizes: tokens.fontSizes.length + tokens.tailwind.textSizes.length,
-        radii: tokens.radii.length + tokens.tailwind.radii.length,
-        shadows: tokens.shadows.length,
-        exactDuplicates: dupes.exactDuplicates.length,
-        inlineStyles: tokens.inlineStyles.count,
-        arbitrary: ownArbitrary.reduce((sum, a) => sum + a.count, 0),
-        nearPairs: nearColorPairs(tokens.colors).length,
-        important: tokens.important?.count ?? 0,
-        neverImported: neverImportedComponents(components, profile.uiDir).length,
-        components: reusable.length,
-        paintTin: paint.tin.per100,
-        doorOverrides: paint.doors.per100,
-        ...(profile.kit ? { kitColour: profile.kit.colour.per100, kitPx: profile.kit.px.per100 } : {}),
-      },
+      style: sc?.kit?.style ?? null,
+      baseColor: sc?.kit?.baseColor ?? null,
+      tailwind: sc?.kit?.tailwind ?? h.profile?.tailwindVersion ?? null,
+      ...(kind === 'tailwind' && tw ? { themeNames: tw.names?.length ?? 0, retuned: tw.retuned?.length ?? 0, themeUses: tw.uses ?? 0 } : {}),
+      codeFiles: h.files?.code ?? 0,
+      ownFiles: (P.isTailwind ? tw?.paint : sc?.paint)?.ownFiles ?? null,
+      metrics: { ...rest, ...(h.profile?.kit ? { kitColour, kitPx } : {}) },
     });
-    console.log(`  ✓ ${full} (${P.confidence}, ${files.code.length} files, ${Date.now() - t0}ms)`);
+    console.log(`  ✓ ${full} (${P.confidence}, ${h.files?.code ?? 0} files, ${Date.now() - t0}ms)`);
   } catch (e) {
     console.error(`  ✗ ${full}: ${e.message}`);
   }

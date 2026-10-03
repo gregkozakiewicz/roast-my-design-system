@@ -1,0 +1,11 @@
+# Web-component design systems (Stencil, Lit): the group a web-components
+# library is compared with (10.0.0). Measured 2026-10-01: eight systems,
+# seven read as libraries; the engine decides membership (benchKind).
+adobe/spectrum-web-components
+shoelace-style/shoelace
+telekom/scale
+ionic-team/ionic-framework
+material-components/material-web
+siemens/ix
+baloise/design-system
+ing-bank/lion

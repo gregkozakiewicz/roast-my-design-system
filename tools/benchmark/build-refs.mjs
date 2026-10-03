@@ -17,13 +17,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { walkRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
-import { harvestComponents } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
-import { harvestTokens } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
-import { findDuplicates } from '../../skills/roast-my-design-system/scripts/harvest/duplicates.mjs';
-import { distinctTypefaces } from '../../skills/roast-my-design-system/scripts/lib/typefaces.mjs';
-import { nearColorPairs } from '../../skills/roast-my-design-system/scripts/lib/nearpairs.mjs';
-import { neverImportedComponents } from '../../skills/roast-my-design-system/scripts/lib/neverimported.mjs';
+import { measure } from './measure.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -70,32 +64,11 @@ for (const s of SCOPES) {
   if (!existsSync(root)) { console.error(`  ✗ ${s.repo}: scope ${s.scope} not found`); continue; }
   const t0 = Date.now();
   try {
-    const files = walkRepo(root);
-    const { components } = harvestComponents(root, files.code);
-    const tokens = harvestTokens(root, files.styles, files.code);
-    const dupes = findDuplicates(components, null, root);
-    const reusable = components.filter((c) => !c.isPage);
-    systems.push({
-      name: s.name, repo: s.repo, scope: s.scope, note: s.note,
-      codeFiles: files.code.length,
-      metrics: {
-        colors: tokens.colors.length,
-        greys: tokens.greyCount,
-        spacing: tokens.spacing.length + tokens.tailwind.spacing.filter((v) => v.value.startsWith('[')).length,
-        typefaces: distinctTypefaces(tokens.fontFamilies).length,
-        fontSizes: tokens.fontSizes.length + tokens.tailwind.textSizes.length,
-        radii: tokens.radii.length + tokens.tailwind.radii.length,
-        shadows: tokens.shadows.length,
-        exactDuplicates: dupes.exactDuplicates.length,
-        inlineStyles: tokens.inlineStyles.count,
-        arbitrary: (tokens.tailwind.arbitrary ?? []).reduce((sum, a) => sum + a.count, 0),
-        nearPairs: nearColorPairs(tokens.colors).length,
-        important: tokens.important?.count ?? 0,
-        neverImported: neverImportedComponents(components, null).length,
-        components: reusable.length,
-      },
-    });
-    console.log(`  ✓ ${s.name} (${files.code.length} files, ${Date.now() - t0}ms)`);
+    // the scan's own harvest at the curated scope (measure.mjs)
+    const { h, metrics } = measure(root);
+    const { paintTin, doorOverrides, kitColour, kitPx, ...general } = metrics;
+    systems.push({ name: s.name, repo: s.repo, scope: s.scope, note: s.note, codeFiles: h.files?.code ?? 0, metrics: general });
+    console.log(`  ✓ ${s.name} (${h.files?.code ?? 0} files, ${Date.now() - t0}ms)`);
   } catch (e) {
     console.error(`  ✗ ${s.repo}: ${e.message}`);
   }

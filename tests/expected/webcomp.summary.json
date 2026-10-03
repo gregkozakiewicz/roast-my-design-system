@@ -2,9 +2,14 @@
   "repo": "acme-components",
   "schemaVersion": 1,
   "benchmark": {
-    "builtAt": "2026-09-25T20:59:26.746Z",
+    "builtAt": "2026-10-03T00:30:02.902Z",
     "repoCount": 34,
-    "referenceSystems": 10
+    "referenceSystems": 10,
+    "slice": {
+      "kind": "webcomponents",
+      "repoCount": 7,
+      "builtAt": "2026-10-03T00:38:46.856Z"
+    }
   },
   "score": 100,
   "noSystemLikely": false,

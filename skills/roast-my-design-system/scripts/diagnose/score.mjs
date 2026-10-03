@@ -44,6 +44,18 @@ export function loadBenchmark() {
  * that slice: a shadcn repo is compared with shadcn repos. The curated
  * ideals and the reputable-systems line are the same for every kind.
  */
+/**
+ * The benchmark group a harvest is compared with: its kind, except that a
+ * library built as web components (Stencil, Lit) reads the web-components
+ * slice (10.0.0). Eight such systems were measured 2026-10-01: against the
+ * React fleet their !important and inline counts read as drift when about
+ * 41 of 350 are web-component idioms; the group is the fairer ruler.
+ */
+export function benchKind(h) {
+  const P = profileOf(h);
+  return P.kind === 'library' && /^web components/.test(h.profile?.framework ?? '') ? 'webcomponents' : P.kind;
+}
+
 export function benchHelpers(bench, kind = 'product') {
   // registries are compared with the shadcn repos, labelled as such (Greg,
   // 2026-09-13). A tailwind repo reads the tailwind slice (11 repos,
@@ -209,7 +221,7 @@ export function coreMetrics(h, opts = {}) {
  * ownScore is null when nothing installed carries any weight (no registries).
  */
 export function scoreBreakdown(h, bench = loadBenchmark()) {
-  const b = benchHelpers(bench, profileOf(h).kind);
+  const b = benchHelpers(bench, benchKind(h));
   const healthOf = makeHealthOf(b);
   const all = scoreOfTiles(tileHealths(coreMetrics(h), healthOf));
   const P = profileOf(h);
@@ -284,7 +296,7 @@ export function scorePackage(m, healthOf, b) {
 
 /** The whole judgement of one harvest, as data. */
 export function scoreHarvest(h, bench = loadBenchmark()) {
-  const b = benchHelpers(bench, profileOf(h).kind);
+  const b = benchHelpers(bench, benchKind(h));
   const healthOf = makeHealthOf(b);
   const metrics = coreMetrics(h);
   const tiles = tileHealths(metrics, healthOf);

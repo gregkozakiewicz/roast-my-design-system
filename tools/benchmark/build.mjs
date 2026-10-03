@@ -23,7 +23,7 @@ function arg(name, fallback) {
 }
 const clonesDir = resolve(arg('clones', '.'));
 const reposFile = resolve(arg('repos', join(HERE, 'repos.txt')));
-const outPath = resolve(arg('out', join(HERE, '../../skills/roast-my-design-system/scripts/benchmark/benchmark.json')));
+const outPath = resolve(arg('out', join(HERE, '../../plugin/skills/roast-my-design-system/scripts/benchmark/benchmark.json')));
 
 import { IDEAL_2026 } from './ideal.mjs';
 

@@ -2,7 +2,7 @@
 // through one accessor. Same answers the harvest block used to give inline.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { decideProfile, profileOf, PROFILES } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
+import { decideProfile, profileOf, PROFILES } from '../../plugin/skills/roast-my-design-system/scripts/profiles/index.mjs';
 
 const comp = (n, isPage = false) => Array.from({ length: n }, (_, i) => ({ name: `C${i}`, isPage, file: `src/c${i}.tsx`, usageCount: 1 }));
 const files = (code) => ({ code: Array.from({ length: code }, (_, i) => `src/f${i}.tsx`), styles: [], other: [] });

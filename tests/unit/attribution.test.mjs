@@ -9,10 +9,10 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { walkRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
-import { harvestComponents, tsconfigAliases } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
-import { loadExclusions } from '../../skills/roast-my-design-system/scripts/lib/exclusions.mjs';
-import { resolveWorkspaces } from '../../skills/roast-my-design-system/scripts/lib/workspaces.mjs';
+import { walkRepo } from '../../plugin/skills/roast-my-design-system/scripts/harvest/walk.mjs';
+import { harvestComponents, tsconfigAliases } from '../../plugin/skills/roast-my-design-system/scripts/harvest/components.mjs';
+import { loadExclusions } from '../../plugin/skills/roast-my-design-system/scripts/lib/exclusions.mjs';
+import { resolveWorkspaces } from '../../plugin/skills/roast-my-design-system/scripts/lib/workspaces.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
 

@@ -9,7 +9,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ENGINE = join(HERE, '../../skills/roast-my-design-system/scripts');
+const ENGINE = join(HERE, '../../plugin/skills/roast-my-design-system/scripts');
 const scan = (root) => {
   execFileSync(process.execPath, [join(ENGINE, 'harvest/index.mjs'), root, '--out', join(root, 'h.json')], { stdio: 'ignore' });
   execFileSync(process.execPath, [join(ENGINE, 'diagnose/index.mjs'), join(root, 'h.json'), '--out', join(root, 'r.html'), '--summary', join(root, 's.json')], { stdio: 'ignore' });

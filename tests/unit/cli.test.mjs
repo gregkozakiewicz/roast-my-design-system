@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const BIN = join(HERE, '../../cli/roast.mjs');
+const BIN = join(HERE, '../../plugin/cli/roast.mjs');
 const CLEAN = join(HERE, '../fixtures/clean');
 const run = (...args) => spawnSync(process.execPath, [BIN, ...args], { encoding: 'utf8' });
 

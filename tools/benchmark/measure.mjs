@@ -15,12 +15,12 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { coreMetrics } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
-import { profileOf } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
-import { distinctTypefaces } from '../../skills/roast-my-design-system/scripts/lib/typefaces.mjs';
+import { coreMetrics } from '../../plugin/skills/roast-my-design-system/scripts/diagnose/score.mjs';
+import { profileOf } from '../../plugin/skills/roast-my-design-system/scripts/profiles/index.mjs';
+import { distinctTypefaces } from '../../plugin/skills/roast-my-design-system/scripts/lib/typefaces.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const HARVEST = resolve(HERE, '../../skills/roast-my-design-system/scripts/harvest/index.mjs');
+const HARVEST = resolve(HERE, '../../plugin/skills/roast-my-design-system/scripts/harvest/index.mjs');
 
 /**
  * Run the scan's harvest on `root` and return { h, P, metrics }: the harvest,

@@ -12,7 +12,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ENGINE = join(HERE, '../../skills/roast-my-design-system/scripts');
+const ENGINE = join(HERE, '../../plugin/skills/roast-my-design-system/scripts');
 const bench = JSON.parse(readFileSync(join(ENGINE, 'benchmark/benchmark.json'), 'utf8'));
 
 test('a messy shadcn repo is called messier than the shadcn group, by its own count', () => {

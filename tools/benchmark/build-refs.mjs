@@ -26,7 +26,7 @@ function arg(name, fallback) {
   return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 }
 const clonesDir = resolve(arg('clones', '.'));
-const outPath = resolve(arg('out', join(HERE, '../../skills/roast-my-design-system/scripts/benchmark/benchmark.json')));
+const outPath = resolve(arg('out', join(HERE, '../../plugin/skills/roast-my-design-system/scripts/benchmark/benchmark.json')));
 
 // The curated fleet. `scope` is the canonical-system subdir; `note` records
 // why the raw numbers look the way they do (surfaced during curation, kept

@@ -2,6 +2,24 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.1.0 — unreleased
+
+The plugin's files move into one folder. Nothing the scan, the report, the
+rules or the MCP server does changes.
+
+- **The plugin lives in `plugin/`.** The manifest, the two skills, the
+  hooks and the command-line entry point now sit in `plugin/`, with the
+  tests, the docs, the benchmark builder and the examples outside it. The
+  claude.ai plugin directory counts every file in the folder that holds
+  the manifest and holds a plugin for review above 512 files. With the
+  manifest at the repo root the count was 716, 585 of them test files;
+  the plugin folder now holds 69. The marketplace entry points at the new
+  folder, the npm package ships the same files from the new path, and the
+  guard imports the engine through the same `roast-my-design-system/engine`
+  alias as before.
+- **Installing by hand:** the copy commands in the README now read
+  `plugin/skills/...`.
+
 ## 10.0.0 — 2026-10-03
 
 The benchmark is rebuilt, so scores move. 17 of 205 scanned repos change,

@@ -3,10 +3,10 @@
 // somebody once put in a fixture.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { extractStyling, arbitraryLengths, tripletToHsl, isTransparent, normalizeHex, colourListShare } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
-import { definedComponents, webComponentDefs, sliceObject } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
-import { extraValue, EXTRA_KINDS, BENIGN_VALUE_RE } from '../../skills/roast-my-design-system/scripts/lib/declarations.mjs';
-import { typefaceOf, distinctTypefaces } from '../../skills/roast-my-design-system/scripts/lib/typefaces.mjs';
+import { extractStyling, arbitraryLengths, tripletToHsl, isTransparent, normalizeHex, colourListShare } from '../../plugin/skills/roast-my-design-system/scripts/harvest/tokens.mjs';
+import { definedComponents, webComponentDefs, sliceObject } from '../../plugin/skills/roast-my-design-system/scripts/harvest/components.mjs';
+import { extraValue, EXTRA_KINDS, BENIGN_VALUE_RE } from '../../plugin/skills/roast-my-design-system/scripts/lib/declarations.mjs';
+import { typefaceOf, distinctTypefaces } from '../../plugin/skills/roast-my-design-system/scripts/lib/typefaces.mjs';
 
 const colours = (r) => r.colors.map((c) => c.value).sort();
 
@@ -120,7 +120,7 @@ test('a list-shaped palette is told apart from a named one', () => {
 // 8.9.2: a length inside an inline style block counts as spacing only on a
 // spacing property. A shadow's offsets, a width and a font size are not.
 test('inline style lengths are spacing only on spacing properties', async () => {
-  const { extractStyling } = await import('../../skills/roast-my-design-system/scripts/harvest/tokens.mjs');
+  const { extractStyling } = await import('../../plugin/skills/roast-my-design-system/scripts/harvest/tokens.mjs');
   const src = "export const X = () => <div style={{ boxShadow: '0 3px 9px rgba(0,0,0,.3)', width: '200px', fontSize: '13px', padding: '13px', marginTop: '7px', gap: '5px' }}>x</div>;\n";
   const got = extractStyling(src);
   const values = got.spacing.map((s) => s.value).sort();

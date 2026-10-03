@@ -2,7 +2,7 @@
 // through whole fixtures; a wrong matrix would move a score without saying why.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseColor, isGrey, canonical, luminance } from '../../skills/roast-my-design-system/scripts/lib/color.mjs';
+import { parseColor, isGrey, canonical, luminance } from '../../plugin/skills/roast-my-design-system/scripts/lib/color.mjs';
 
 const near = (a, b, eps = 1.5) => Math.abs(a - b) <= eps;
 const rgb = (c) => [Math.round(c.r), Math.round(c.g), Math.round(c.b)];

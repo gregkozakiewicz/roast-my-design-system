@@ -6,10 +6,10 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { loadKnowledge } from '../../skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
-import { validateContent } from '../../skills/roast-my-design-system/scripts/mcp/engine.mjs';
-import { isChartFile, chartTier } from '../../skills/roast-my-design-system/scripts/lib/charts.mjs';
-import { learnSystem } from '../../skills/roast-my-design-system/scripts/lib/guard-api.mjs';
+import { loadKnowledge } from '../../plugin/skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
+import { validateContent } from '../../plugin/skills/roast-my-design-system/scripts/mcp/engine.mjs';
+import { isChartFile, chartTier } from '../../plugin/skills/roast-my-design-system/scripts/lib/charts.mjs';
+import { learnSystem } from '../../plugin/skills/roast-my-design-system/scripts/lib/guard-api.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
 

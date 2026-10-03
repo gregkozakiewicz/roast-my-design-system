@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Smoke test
         run: |
-          node cli/roast.mjs . --no-open --out /tmp/self-roast.html
+          node plugin/cli/roast.mjs . --no-open --out /tmp/self-roast.html
           test -s /tmp/self-roast.html
       - name: Snapshot and unit tests
         run: node tests/run.mjs

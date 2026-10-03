@@ -4,9 +4,9 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync, utimesSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { walkRepo, readSource, MAX_SOURCE_BYTES } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
-import { loadExclusions, parseRoastignore } from '../../skills/roast-my-design-system/scripts/lib/exclusions.mjs';
-import { resolveWorkspaces } from '../../skills/roast-my-design-system/scripts/lib/workspaces.mjs';
+import { walkRepo, readSource, MAX_SOURCE_BYTES } from '../../plugin/skills/roast-my-design-system/scripts/harvest/walk.mjs';
+import { loadExclusions, parseRoastignore } from '../../plugin/skills/roast-my-design-system/scripts/lib/exclusions.mjs';
+import { resolveWorkspaces } from '../../plugin/skills/roast-my-design-system/scripts/lib/workspaces.mjs';
 
 const scratch = (files) => {
   const root = mkdtempSync(join(tmpdir(), 'roast-unit-'));
@@ -114,7 +114,7 @@ test('readSource reads fresh unless the scan turned its memory on', async () => 
   const { mkdtempSync, writeFileSync, rmSync } = await import('node:fs');
   const { join } = await import('node:path');
   const { tmpdir } = await import('node:os');
-  const { readSource, cachedSource } = await import('../../skills/roast-my-design-system/scripts/harvest/walk.mjs');
+  const { readSource, cachedSource } = await import('../../plugin/skills/roast-my-design-system/scripts/harvest/walk.mjs');
   const dir = mkdtempSync(join(tmpdir(), 'roast-read-'));
   try {
     const f = join(dir, 'a.tsx');
@@ -135,7 +135,7 @@ test('with the memory on, a file is read from disk once', async () => {
   try {
     const f = join(dir, 'a.tsx');
     writeFileSync(f, 'one');
-    const walk = new URL('../../skills/roast-my-design-system/scripts/harvest/walk.mjs', import.meta.url).href;
+    const walk = new URL('../../plugin/skills/roast-my-design-system/scripts/harvest/walk.mjs', import.meta.url).href;
     const out = execFileSync(process.execPath, ['--input-type=module', '-e', `
       import { enableReadCache, readSource, cachedSource } from '${walk}';
       import { writeFileSync } from 'node:fs';

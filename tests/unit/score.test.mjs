@@ -2,7 +2,7 @@
 // summary.json promises to anyone comparing two scans.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { benchHelpers, makeHealthOf, tileHealths, scoreOfTiles, scorePackage, scoreHarvest, coreMetrics, SCHEMA_VERSION, TILES } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
+import { benchHelpers, makeHealthOf, tileHealths, scoreOfTiles, scorePackage, scoreHarvest, coreMetrics, SCHEMA_VERSION, TILES } from '../../plugin/skills/roast-my-design-system/scripts/diagnose/score.mjs';
 
 const bench = {
   builtAt: '2026-01-01T00:00:00.000Z', repoCount: 3,

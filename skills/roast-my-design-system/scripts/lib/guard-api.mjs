@@ -18,7 +18,8 @@ import { decideProfile, profileOf, installedDirs, installedFile, installedFrom }
 import { KITS } from '../profiles/kit-common.mjs';
 import { kitPaintFindings } from './kitpaint.mjs';
 import { paletteFindings } from './palette.mjs';
-import { PALETTE_CLASS_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
+import { PALETTE_CLASS_RE, blankComments } from '../harvest/paint.mjs';
+import { isDemoPath } from './demo.mjs';
 import { harvestTokens, extractStyling, classStringStyling, normalizeHex, isGrey } from '../harvest/tokens.mjs';
 import { harvestComponents, definedComponents, tsconfigAliases } from '../harvest/components.mjs';
 import { findDuplicates } from '../harvest/duplicates.mjs';
@@ -71,10 +72,10 @@ export { WIDGET_CSS_RE, WIDGET_CONFIG_RE, LIBRARY_CLASS_RE, isLibraryClass } fro
 // blankComments (8.4.5) is what the report and the live checks run on a file
 // before matching, so a class named in a comment paints nothing; a guard that
 // matches the raw text counts it, and disagrees with the report.
-// DEMO_PATH_RE (9.3.2) is the folders the palette count leaves out, stories,
-// examples and demos: a guard that skips them flags palette classes in the
-// same files the report counts.
-export { PALETTE_CLASS_RE, DEMO_PATH_RE, blankComments };
+// isDemoPath(file) (10.1.4, was the pattern DEMO_PATH_RE since 9.3.2) is the
+// one rule for what a demo is, stories, examples, demos and tests: the walk
+// leaves those files out and the palette count does too.
+export { PALETTE_CLASS_RE, isDemoPath, blankComments };
 // The palette rule itself (9.4.0): paletteFindings(fileText, system.profile
 // .palette, { file }) returns the worded findings the live checks give for
 // the same file, with the index of each in the text; empty when the rule is
@@ -230,6 +231,12 @@ export function learnSystem(repoRoot, { exclude = [] } = {}) {
     // non-canonical copy hard-codes: the `dupes` avoidedImportFindings reads
     duplicates: dupeCopiesOf(hardDupes, ledger, read),
     files: { styles: files.styles.length, code: files.code.length },
+    // Every file the report's walk read (10.1.4), by path from the scanned
+    // folder. The walk leaves out docs sites, examples, demos, stories and
+    // tests, and reads a website that holds the product; a guard that judges
+    // only the files in this set judges what the report reads, by
+    // construction rather than by a second list of folder names.
+    filesRead: new Set([...files.code, ...files.styles, ...files.other]),
     // How the repo was read (7.1 to 7.7), decided once by the same profiles
     // the report uses, so a guard treats installed code, a registry's
     // published folders and a widget's stylesheet the way the score does.

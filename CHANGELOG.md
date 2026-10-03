@@ -2,6 +2,38 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.1.4 — 2026-10-03
+
+One rule for what a demo is, the Roast icon on the report, and a list of
+the files the scan read for the guard.
+
+- **One rule for stories, examples and demos.** Two places decided what a
+  demo is. The scan left out `examples/`, `demos/`, tests and
+  `*.stories.tsx` files, and read a `stories/` folder. The palette tile
+  and the live palette check left the `stories/` folder out as well. So a
+  story folder's colours were missing from the palette count and present
+  in every other tile. Both now read one rule in `lib/demo.mjs`. Left out
+  from this release: folders named `stories`, `__stories__`, `_stories`,
+  `storybook` and `fixture`, folders whose name starts with `storybook`
+  (an in-app storybook kept as `routes/storybook.colors/`), and a
+  component's stories kept as `stories.tsx`. Names are matched exactly: a
+  file called `story.ts` or `storybook-icon.tsx` is still read.
+- **Scores.** Of 210 repos scanned before and after, 3 scores move, all
+  up: adobe/spectrum-web-components 72 to 83, adobe/react-spectrum 45 to
+  50, twenty 40 to 45. Thirteen more change a count without changing the
+  score. The benchmark is not rebuilt. A component that only its own
+  stories import now reads as never imported (formbricks: 3 to 10).
+- **The report carries the Roast icon.** The browser tab and a phone's
+  home screen showed an older pencil icon and the author's mark. Both now
+  show the product icon from `assets/roastmds.svg`. The footer keeps the
+  author's mark beside his name.
+- **For the guard: the files the scan read.** `learnSystem()` returns
+  `filesRead`, every file the scan's walk read, so guard-my-design-system
+  can judge only those files. `isDemoPath(file)` replaces the pattern
+  `DEMO_PATH_RE` in the engine's doorway.
+- The Spectrum example page, the README and the landing page show the new
+  score.
+
 ## 10.1.3 — 2026-10-03
 
 Six small changes so the plugin directory's report reads cleaner. Nothing

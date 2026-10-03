@@ -77,7 +77,8 @@ import { themePaths, lookupThemePath } from './jstheme.mjs';
 import { NAMED_COLOURS } from '../lib/named-colours.mjs';
 import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
 import { PALETTE } from '../profiles/shadcn-data.mjs';
-import { blankComments, DEMO_PATH_RE, PALETTE_CLASS_RE } from './paint.mjs';
+import { blankComments, PALETTE_CLASS_RE } from './paint.mjs';
+import { isDemoPath } from '../lib/demo.mjs';
 import { tripletToHsl, isTransparent, normalizeHex, HEX_RE, FUNC_COLOR_RE, isVarRef, funcColour, inDeclaration, isIdentifierHex } from './tokens.mjs';
 import { doorFile } from '../profiles/installed.mjs';
 import { driftClasses } from '../lib/palette.mjs';
@@ -751,7 +752,7 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
       if (/\.(ts|js)$/.test(f)) for (const h of src.matchAll(HEX_RE)) if (!isIdentifierHex(h[0])) addDefWrite(canonical(normalizeHex(h[0])), f);
       continue;
     }
-    if (DEMO_PATH_RE.test(f)) continue;
+    if (isDemoPath(f)) continue;
     codeFiles.push(extractUses(f, pkg, raw, blocks.length > 0, isDoor(f)));
   }
   // .mjs and .cjs configs and presets: their names, never their hex (the
@@ -1029,7 +1030,7 @@ export function colourUse(root, files, tokens, { email = null, P = null, palette
     return r;
   };
   for (const { f, pkg, st, text, inCode } of sheets) {
-    if (DEMO_PATH_RE.test(f) || isDoor(f)) continue;
+    if (isDemoPath(f) || isDoor(f)) continue;
     if (tw && text.includes('@apply')) for (const a of text.match(/@apply[^;}]*/g) ?? []) classUses(records(a), f, pkg, { apply: true });
     for (const d of st.decls) {
       for (const m of d.value.matchAll(VAR_RE)) {

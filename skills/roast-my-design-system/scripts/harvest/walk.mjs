@@ -5,6 +5,7 @@
  */
 import { CATALOGUE } from '../profiles/shadcn-data.mjs';
 import { emailContextOf, printedFilesOf } from '../lib/exempt.mjs';
+import { isDemoDir, isDemoFile } from '../lib/demo.mjs';
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 
@@ -36,22 +37,14 @@ export function readSource(p) {
 // Skipped because they are output or machinery, never because they might
 // hold the product's UI: never named in the report as "UI we skipped".
 const BUILD_ONLY = new Set(['node_modules', '.next', '.git', 'dist', 'build', 'out', 'coverage', '.turbo', '.vercel', '.cache', 'storybook-static']);
-const SKIP_DIRS = new Set([
-  'node_modules', '.next', '.git', 'dist', 'build', 'out', 'coverage',
-  '.turbo', '.vercel', '.cache', 'storybook-static',
-  // Documentation sites (Docusaurus and friends) carry their own theme and
-  // demo fixtures — that styling is not the product's design language.
-  'docs', 'dev-docs', 'website', 'documentation',
-  // Example integrations and demo apps are not the product's design language.
-  'examples', 'example', 'demos', 'demo', 'playground', 'fixtures',
-  // Test/fixture surfaces are not the product's design language — counting a
-  // story's `export const Default` 36× would poison the diagnosis numbers.
-  '__tests__', '__mocks__', '__fixtures__', '__testfixtures__', '__snapshots__',
-  'cypress', 'e2e', 'playwright', 'test', 'tests', '.storybook',
-]);
-
-// Same idea at file granularity: Button.test.tsx / Button.stories.tsx / *.cy.ts
-const TEST_FILE_RE = /\.(test|spec|stories|story|cy)\.[cm]?[jt]sx?$/;
+// Documentation sites (Docusaurus and friends) carry their own theme and
+// demo fixtures — that styling is not the product's design language.
+const DOCS_DIRS = new Set(['docs', 'dev-docs', 'website', 'documentation']);
+// Left out by name: output and machinery, a docs site, and a demo, a story
+// or a test. What a demo is lives in lib/demo.mjs, the one rule the palette
+// tile and the live checks read too (10.1.4).
+// Folders only: likec4's storybook-icon.tsx is an icon, not a Storybook.
+const skipDir = (e) => !e.isFile() && (BUILD_ONLY.has(e.name) || DOCS_DIRS.has(e.name) || isDemoDir(e.name));
 
 // public/ is static assets in almost every repo — but grafana keeps its whole
 // frontend under public/app. Skip it only when a quick probe finds no real
@@ -63,9 +56,9 @@ function hasComponentSource(dir, depth = 0) {
   let entries = [];
   try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return false; }
   for (const e of entries) {
-    if (e.name.startsWith('.') || SKIP_DIRS.has(e.name)) continue;
+    if (e.name.startsWith('.') || skipDir(e)) continue;
     if (e.isDirectory()) { if (hasComponentSource(join(dir, e.name), depth + 1)) return true; }
-    else if (SOURCE_PROBE_RE.test(e.name) && !TEST_FILE_RE.test(e.name)) return true;
+    else if (SOURCE_PROBE_RE.test(e.name) && !isDemoFile(e.name)) return true;
   }
   return false;
 }
@@ -110,9 +103,9 @@ export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = ne
     try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
     for (const e of entries) {
       if (e.name.startsWith('.') && e.name !== '.cursorrules') continue;
-      if (SKIP_DIRS.has(e.name) || e.isSymbolicLink()) continue;
+      if (skipDir(e) || e.isSymbolicLink()) continue;
       if (e.isDirectory()) { countExcluded(join(dir, e.name), depth + 1, hit); continue; }
-      if (TEST_FILE_RE.test(e.name)) continue;
+      if (isDemoFile(e.name)) continue;
       hit.files += 1;
     }
   };
@@ -131,7 +124,7 @@ export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = ne
       for (const e of es) {
         if (e.name.startsWith('.') || e.name === 'node_modules') continue;
         if (e.isDirectory()) walkIn(join(d, e.name), depth + 1);
-        else if (UI_FILE_RE.test(e.name) && !TEST_FILE_RE.test(e.name)) n += 1;
+        else if (UI_FILE_RE.test(e.name) && !isDemoFile(e.name)) n += 1;
       }
     };
     walkIn(dir, 0);
@@ -143,7 +136,7 @@ export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = ne
     try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
     for (const e of entries) {
       if (e.name.startsWith('.') && e.name !== '.cursorrules') continue;
-      if ((SKIP_DIRS.has(e.name) && !readAnyway.has(e.name)) || LEGACY_DIR_RE.test(e.name)) {
+      if ((skipDir(e) && !readAnyway.has(e.name)) || LEGACY_DIR_RE.test(e.name)) {
         if (e.isDirectory() && !BUILD_ONLY.has(e.name)) countSkipped(join(dir, e.name), e.name);
         continue;
       }
@@ -159,11 +152,11 @@ export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = ne
       const hit = excluded(rel);
       if (hit) {
         if (e.isDirectory()) countExcluded(p, depth + 1, hit);
-        else if (!TEST_FILE_RE.test(e.name)) hit.files += 1;
+        else if (!isDemoFile(e.name)) hit.files += 1;
         continue;
       }
       if (e.isDirectory()) { recurse(p, depth + 1); continue; }
-      if (TEST_FILE_RE.test(e.name)) continue;
+      if (isDemoFile(e.name)) continue;
       const ext = extname(e.name);
       if (STYLE_EXTS.has(ext)) files.styles.push(rel);
       else if (CODE_EXTS.has(ext)) files.code.push(rel);

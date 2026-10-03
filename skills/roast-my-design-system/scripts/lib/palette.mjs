@@ -31,7 +31,8 @@
  * the theme file, the theme colour nearest by value that suits the utility,
  * and what to add when none fits.
  */
-import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, DEMO_PATH_RE, blankComments } from '../harvest/paint.mjs';
+import { PALETTE_CLASS_RE, GREY_HUE_RE, DARK_WB_RE, blankComments } from '../harvest/paint.mjs';
+import { isDemoPath } from './demo.mjs';
 import { TAILWIND_DEFAULTS } from '../profiles/tailwind-defaults.mjs';
 import { oklab } from './color.mjs';
 import { doorFile } from '../profiles/installed.mjs';
@@ -85,7 +86,7 @@ export function decidePalette(profile, P, readTheme = null) {
 export function paletteFindings(text, palette, { file = null, css = null } = {}) {
   if (!palette || !text) return [];
   if (css ?? (file ? CSS_FILE_RE.test(file) : false)) return [];
-  if (file && (DEMO_PATH_RE.test(file) || doorFile(palette.doors, file))) return [];
+  if (file && (isDemoPath(file) || doorFile(palette.doors, file))) return [];
   const themeFile = palette.file ?? 'the theme sheet';
   // the example name follows the utility: a text- class wants an ink or
   // foreground name, a bg- class a surface or background name

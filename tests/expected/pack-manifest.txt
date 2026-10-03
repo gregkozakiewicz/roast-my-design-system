@@ -22,6 +22,7 @@ skills/roast-my-design-system/scripts/lib/avoidedimports.mjs
 skills/roast-my-design-system/scripts/lib/charts.mjs
 skills/roast-my-design-system/scripts/lib/color.mjs
 skills/roast-my-design-system/scripts/lib/declarations.mjs
+skills/roast-my-design-system/scripts/lib/demo.mjs
 skills/roast-my-design-system/scripts/lib/exclusions.mjs
 skills/roast-my-design-system/scripts/lib/exempt.mjs
 skills/roast-my-design-system/scripts/lib/feedback.mjs

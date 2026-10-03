@@ -1549,6 +1549,29 @@ if (existsSync(bin)) {
     ? ok('a palette class in a comment paints nothing, and line numbers hold')
     : bad('blankComments', `got ${named(blanked).join(',') || 'nothing'}`);
 
+  // 10.1.4: one demo rule. The walk and the palette tile ask lib/demo.mjs,
+  // and the doorway hands a guard the files the walk read.
+  {
+    const work = mkdtempSync(join(tmpdir(), 'roast-demo-'));
+    const put = (f, text = 'export const X = () => <div className="text-gray-500">x</div>;\n') => {
+      mkdirSync(dirname(join(work, f)), { recursive: true });
+      writeFileSync(join(work, f), text);
+    };
+    const out = ['src/stories/Card.tsx', 'src/card/__stories__/data.ts', 'app/routes/storybook.colors/route.tsx',
+      'src/button/stories.tsx', 'src/button/Button.stories.tsx', 'examples/app/page.tsx', 'docs/theme.css'];
+    const kept = ['src/button/Button.tsx', 'src/icons/storybook-icon.tsx', 'src/prompts/story.ts', 'src/billing/sandbox.tsx', 'src/app.css'];
+    for (const f of [...out, ...kept]) put(f);
+    const demo = out.slice(0, 6);
+    demo.every((f) => api.isDemoPath(f)) && kept.every((f) => !api.isDemoPath(f))
+      ? ok('a story folder, a storybook route and stories.tsx are demos; an icon and a prompt named after one are not')
+      : bad('isDemoPath', [...demo.filter((f) => !api.isDemoPath(f)), ...kept.filter((f) => api.isDemoPath(f))].join(', '));
+    const read = api.learnSystem(work).filesRead;
+    read instanceof Set && kept.every((f) => read.has(f)) && out.every((f) => !read.has(f))
+      ? ok('doorway: filesRead is the walk, demos, stories and the docs site left out')
+      : bad('filesRead', [...out.filter((f) => read?.has(f)), ...kept.filter((f) => !read?.has(f))].join(', '));
+    rmSync(work, { recursive: true, force: true });
+  }
+
   // 8.4.6: the kit and the kit judgement go through the same doorway, so a
   // guard says about a kit line exactly what validate and review say
   const sys = api.learnSystem(join(FIXTURES, 'muikit'));

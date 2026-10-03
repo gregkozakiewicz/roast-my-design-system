@@ -142,7 +142,7 @@ Eleven reports, hosted exactly as the tool writes them. Every number determinist
 - **[dubinc/dub](https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html)**: 642 arbitrary bracket values, 21 duplicated components, and the chart-palette gap named. Score 20.
 - **[telekom/scale](https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html)** (Stencil): 95 Stencil components read by tag; 66 spacing values outside the scale where about 12 would do; Claude's notes embedded. Score 55.
 - **[magicuidesign/magicui](https://gregkozakiewicz.github.io/roast-my-design-system/examples/magicui.html)** (registry): counted on the components it publishes, 52 off-theme colours per 100 files in the code it ships, its docs site kept out and named. Score 78.
-- **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): hardcoded colours sitting beside 740 colour tokens, and 37 !important declarations. Score 72.
+- **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): 740 colour tokens with 8 hardcoded colours beside them, and 37 !important declarations. Score 83.
 
 The full report for vercel/ai-chatbot. The verdict answers what the agent will learn here, the gap section comes first, then "What the repo teaches the agent", Claude's read of the scan:
 

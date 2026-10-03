@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 10.1.2 — unreleased
+## 10.1.2 — 2026-10-03
 
 The test fixtures and their snapshots are stored one file each. Nothing
 the scan, the report, the rules, the MCP server or the npm package does

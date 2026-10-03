@@ -101,6 +101,10 @@ Monorepos get a score per package. `packages/ui` at 80 stops hiding `apps/web` a
 
 And 8 more kinds, all in [What it measures](#what-it-measures). One HTML file. Open it, Slack it, email it.
 
+The colour usage bar shows where the repo's colour comes from: of every 100 colour uses, how many read a theme colour by name, how many use Tailwind's palette, and how many are strays written by hand. It follows CSS variables, Tailwind themes, Sass and Less variables and JavaScript theme objects to do the counting.
+
+The header names what the repo is built on: shadcn/ui, a Tailwind theme, MUI, Mantine, Chakra or Ant Design, and both kits when a repo uses two.
+
 ### Rules for your agent
 
 Generated from your repo, into `design-system-rules.md`:
@@ -171,7 +175,7 @@ Stencil, Lit, custom elements
 Tailwind, shadcn/ui, MUI, Mantine, Chakra UI, Ant Design
 CSS Modules, Sass, Less, Emotion, styled-components, vanilla-extract, CVA, Stitches
 
-Four kinds of repo: product, library, shadcn install, registry. Each compared with repos built the same way.
+Every repo is compared with repos built the same way: a shadcn install with shadcn installs, a product on MUI, Mantine, Chakra or Ant Design with products on that kit, a Tailwind theme with Tailwind themes, a Lit or Stencil system with other web-component systems, and a shadcn registry with the shadcn group. A repo that uses two kits is told so, and its rules name both.
 
 ### Recognised, not measured yet
 
@@ -396,17 +400,19 @@ The tool reads the repository you point it at and writes its output next to it. 
 
 | Metric | Ideal Design System | Median of the 34-repo core fleet | Median of 10 reputable systems |
 |---|---|---|---|
-| Distinct colours | ~24 | 118 | 14 |
-| Shades of grey | up to 13 | 21 | 2 |
-| Off-scale spacing values | ~12 | 23 | 5 |
+| Distinct colours | ~24 | 119 | 14 |
+| Shades of grey | up to 13 | 28 | 4 |
+| Off-scale spacing values | ~12 | 24 | 5 |
 | Typefaces | 2 to 3 | 3 | 1 |
 | Off-scale border radii | up to 10 | 14 | 0 |
-| Duplicated components | 0 | 21 | 9 |
+| Duplicated components | 0 | 16 | 9 |
 | Inline style blocks | 0 | 51 | 12 |
-| Arbitrary Tailwind values | ~20 | 77 | 0 |
-| Near-identical colour pairs | 0 | 8 | 1 |
+| Arbitrary Tailwind values | ~20 | 56 | 0 |
+| Near-identical colour pairs | 0 | 7 | 1 |
 | !important declarations | 0 | 5 | 3 |
 | Components never imported | 0 | 0 | 0 |
+
+Benchmark rebuilt 3 October 2026 (version 10.0.0), counted by the scan's own harvest.
 
 Yes, the median repo is already a mess. That is the point. An agent arriving in it will copy the mess faithfully and, where the mess runs out, add some of its own.
 

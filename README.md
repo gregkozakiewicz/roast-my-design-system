@@ -25,23 +25,25 @@ Version history is in [CHANGELOG.md](CHANGELOG.md).
 
 ### It invents where the repo has no answer.
 
-We tested this on 10 real open-source products, 259 agent sessions, with and without this tool.
+We tested this on 10 real open-source products, in 355 agent sessions, with and without this tool.
 
 Findings each session added, counted by this tool's own rules:
 
-| Task | Model | Without roast | Roast MCP and rules installed | Roast edit hook on |
-|---|---|---|---|---|
-| Add a panel, build a dashboard, tighten a list (80 sessions) | Sonnet 5 | 7 | 9 | not run |
-| A Christmas theme, 10 products | Sonnet 5 | 28 | 2 | not run |
-| A new chart, 4 products, 5 runs each | Sonnet 5 | 10 in 20 runs | 0 in 20 runs, hook installed too but it never had to speak | |
-| A new chart, 4 products | Haiku 4.5 | 25 | 39 | 0 in 14 of 15 runs |
-| Chart, status colour, empty state, new component | Haiku 4.5 | 42 in 16 runs | 49 in 16 runs | 3 in 51 runs |
+| Task | Model | When | Without roast | Roast MCP and rules installed | Roast plugin with its edit hook |
+|---|---|---|---|---|---|
+| A new chart and a new component, 4 products, 3 runs each | Sonnet 5 | Oct 2026, roast 10.1 | 21 in 24 runs | not run | 7 in 24 runs |
+| A new chart and a new component, 4 products, 3 runs each | Haiku 4.5 | Oct 2026, roast 10.1 | 72 in 24 runs | not run | 1 in 24 runs |
+| Add a panel, build a dashboard, tighten a list (80 sessions) | Sonnet 5 | Sept 2026 | 7 | 9 | not run |
+| A Christmas theme, 10 products | Sonnet 5 | Sept 2026 | 28 | 2 | not run |
+| A new chart, 4 products, 5 runs each | Sonnet 5 | Sept 2026 | 10 in 20 runs | not run | 0 in 20 runs |
+| A new chart, 4 products | Haiku 4.5 | Sept 2026 | 25 | 39 | 0 in 14 of 15 runs |
+| Chart, status colour, empty state, new component | Haiku 4.5 | Sept 2026 | 42 in 16 runs | 49 in 16 runs | 3 in 51 runs |
 
-Routine work stayed on-system either way. Invention drifted.
+Routine work stayed on-system with or without the tool. Work that needed something new did not.
 
-Sonnet called the MCP tools in about one session in three. Haiku never did, so for Haiku the MCP on its own changed nothing. The edit hook runs without being asked, and that is the column that goes to zero.
+An agent does not always call a tool when it should. In October, Sonnet called the MCP tools in 7 of 24 sessions and Haiku in 2 of 24. The edit hook runs without being asked. That is the column with the lowest numbers.
 
-Where did the agent invent? Where the repo had nothing to copy. Dub has no chart palette. Its own charts hardcode 17 colours. Asked for a chart, Haiku hardcoded 9 more.
+Where did the agent invent? Where the repo had nothing to copy. Dub has no chart palette. Its own charts hardcode 17 colours. Asked for a chart, Haiku hardcoded 9 more. In October, 5 of the 7 findings Sonnet left with the plugin on were chart colours on Dub. The agent kept them and wrote a comment saying the repo has no chart palette.
 
 So the mess an agent adds is a map of the gaps in your system.
 
@@ -124,9 +126,9 @@ Every number comes from a deterministic read of your files. Claude writes the ex
 
 ## How the runs were done
 
-Claude Code, headless, on 10 public products pinned to one commit each: cal.com, Dub, Metabase, Plausible, SigNoz, trigger.dev and four more. 259 sessions, Sonnet 5 and Haiku 4.5, September 2026. Every changed file was judged by this tool's rules at the end of the session and at the pinned commit; a finding counts only if the session added it.
+Claude Code, headless, on 10 public products pinned to one commit each: cal.com, Dub, Metabase, Plausible, SigNoz, trigger.dev and four more. 259 sessions in September 2026 and 96 in October 2026 on roast 10.1, with Sonnet 5 and Haiku 4.5. The October sessions repeat the chart and new-component tasks on Plausible, SigNoz, trigger.dev and Dub at the same commits. Every changed file was judged by this tool's rules at the end of the session and at the pinned commit. A finding counts only if the session added it.
 
-Nothing was rendered. Zero findings means on-system by these rules: a floor, not a design review. Method, tables and limits are in the research write-up, which will be published separately.
+Nothing was rendered. Zero findings means the code follows these rules. It does not mean the design was reviewed. Method, tables and limits are in the research write-up, which will be published separately.
 
 ## Live examples
 

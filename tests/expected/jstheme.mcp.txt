@@ -1,6 +1,6 @@
 === get_context ===
 Design system context for fixture-jstheme (scanned DATE). Rules derived from this repo's real code.
-TOKENS: 22 colour tokens in src/theme.ts. Use them; never hardcode a colour. Do not add a token that duplicates an existing one; reuse it. (5 hardcoded strays already exist; do not add more.)
+TOKENS: 20 colour tokens in src/theme.ts. Use them; never hardcode a colour. Do not add a token that duplicates an existing one; reuse it. (5 hardcoded strays already exist; do not add more.)
 USE THESE, DO NOT REBUILD THEM:
   <Card> from src/components/Card.tsx (1x)
 SPACING: nothing on record yet. Whatever you pick, the next agent will copy; pick something divisible by 4.

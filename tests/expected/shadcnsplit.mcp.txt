@@ -1,6 +1,6 @@
 === get_context ===
 Design system context for split-sheet (scanned DATE). Rules derived from this repo's real code.
-TOKENS: 17 colour tokens in packages/survey/src/styles/globals.css. Use them as classes (bg-primary, text-muted-foreground); never a palette class (text-gray-500, ring-green-500) and never hardcode a colour. Do not add a token that duplicates an existing one; reuse it.
+TOKENS: 9 colour tokens in packages/survey/src/styles/globals.css. Use them as classes (bg-primary, text-muted-foreground); never a palette class (text-gray-500, ring-green-500) and never hardcode a colour. Do not add a token that duplicates an existing one; reuse it.
 USE THESE, DO NOT REBUILD THEM:
   <Badge> from src/components/ui/badge.tsx (1x)
   <Button> from src/components/ui/button.tsx (1x)

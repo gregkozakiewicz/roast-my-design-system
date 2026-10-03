@@ -77,7 +77,10 @@ export function getContext(k, { path = null } = {}) {
     const pal = k.shadcn ? k.palette : null;
     const pick = (re, i) => (pal?.names ?? []).find((n) => re.test(n)) ?? pal?.names?.[i] ?? 'brand';
     const examples = pal?.source === 'tailwind' ? `bg-${pick(/surface|(^|-)bg(-|$)|background|canvas/, 0)}, text-${pick(/ink|text|fg|foreground/, 1)}` : 'bg-primary, text-muted-foreground';
-    L.push(`TOKENS: ${k.tokenColors.length} colour tokens in ${t.tokenFile}. Use them${pal ? ` as classes (${examples}); never a palette class (text-gray-500, ring-green-500) and` : ';'} never hardcode a colour. Do not add a token that duplicates an existing one; reuse it.${strays ? ` (${strays} hardcoded strays already exist; do not add more.)` : ''}`);
+    // the count is the tokens that file states; the repo-wide count only
+    // when the file states none it can see (a kit theme read by values)
+    const inFile = (t.colors ?? []).filter((c) => c.isToken && (c.files ?? []).some((f) => f.file === t.tokenFile)).length;
+    L.push(`TOKENS: ${inFile || k.tokenColors.length} colour tokens in ${t.tokenFile}. Use them${pal ? ` as classes (${examples}); never a palette class (text-gray-500, ring-green-500) and` : ';'} never hardcode a colour. Do not add a token that duplicates an existing one; reuse it.${strays ? ` (${strays} hardcoded strays already exist; do not add more.)` : ''}`);
     // a package kit beside the shadcn folder (nhost's 57 MUI files, 9.8.0):
     // named so the agent does not put shadcn classes on its components
     const s2 = k.shadcn?.second;

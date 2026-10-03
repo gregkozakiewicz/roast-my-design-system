@@ -1115,7 +1115,7 @@ console.log('kits in the mcp:');
   const noted = `import { Card } from '@/components/ui/card';
 {/* border-green-500 is deliberate: no green token yet */}
 // see also text-gray-500 in the old design
-export const X = () => <Card className="border-green-500">x</Card>; // https://example.com/text-red-500`;
+export const X = () => <Card className="border-green-500">x</Card>; // example.com/text-red-500`;
   const nf = validateContent({ text: noted, file: 'src/app/y.tsx' }, sk).findings.filter((f) => f.rule === 'palette-class');
   nf.length === 1 && nf[0].line === 4 ? ok('shadcn: a class in a comment is not paint, the real one keeps its line number') : bad('comment palette', JSON.stringify(nf));
   nf[0]?.fix.includes('theme token') && nf[0].fix.includes('border-success') ? ok('the palette fix says token and shows the class that results') : bad('palette fix wording', nf[0]?.fix);

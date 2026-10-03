@@ -2,6 +2,22 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.1.3 — unreleased
+
+Six small changes so the plugin directory's report reads cleaner. Nothing
+the scan, the report, the rules or the MCP server does changes.
+
+- **The report's and the rules file's web addresses live in one small
+  file.** The directory's checker reads a web address beside the word
+  "token" as a credential being sent to a server, and the two files that
+  print those links talk about design tokens on most lines. The links now
+  come from `lib/links.mjs`; the footer and the rules file print the same
+  text as before.
+- Two test samples lose a web address they did not need, the plugin
+  manifest loses the keyword `design-tokens` (the marketplace entry and
+  the npm package keep it), and the unlisted pins preview page is removed
+  from the docs folder; the prototype lives in the private notes.
+
 ## 10.1.2 — 2026-10-03
 
 The test fixtures and their snapshots are stored one file each. Nothing

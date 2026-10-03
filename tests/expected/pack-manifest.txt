@@ -32,6 +32,7 @@ skills/roast-my-design-system/scripts/lib/handmade.mjs
 skills/roast-my-design-system/scripts/lib/kitlist.mjs
 skills/roast-my-design-system/scripts/lib/kitpaint.mjs
 skills/roast-my-design-system/scripts/lib/lasttouched.mjs
+skills/roast-my-design-system/scripts/lib/links.mjs
 skills/roast-my-design-system/scripts/lib/named-colours.mjs
 skills/roast-my-design-system/scripts/lib/nearpairs.mjs
 skills/roast-my-design-system/scripts/lib/neverimported.mjs

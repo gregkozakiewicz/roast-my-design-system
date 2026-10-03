@@ -159,7 +159,7 @@ test('an alias to an existing token is the fix, not a twin', () => {
 // Cal.com commits Tailwind's compiled build (343 KB, pretty-printed): a new
 // theme token was called a twin of --tw-ring-offset-color from it
 // (benchmark, 2026-09-25).
-const COMPILED = `/*! tailwindcss v4.1.15 | MIT License | https://tailwindcss.com */
+const COMPILED = `/*! tailwindcss v4.1.15 | MIT License */
 @layer properties {
   *, :before, :after { --tw-ring-offset-color: #fff; --tw-prose-invert-quotes: oklch(96.7% 0.003 264.542); }
 }

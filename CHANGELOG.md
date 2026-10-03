@@ -2,6 +2,41 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.0.0 — unreleased
+
+The benchmark is rebuilt, so scores move. 17 of 205 scanned repos change,
+13 up and 4 down, none by more than 10 points. The hosted examples keep
+their scores except Spectrum, which goes from 66 to 72.
+
+- **The benchmark counts like the scan.** The three builders recomputed
+  every number by hand and had drifted from the scan since the benchmark
+  was built on 9.0.0. They did not skip email templates, they counted
+  greys from hex values alone, they counted duplicate pairs that compose
+  each other, and they counted brackets inside installed shadcn code. One
+  measurer now runs the scan's own harvest on each repo and takes the
+  numbers from the functions the score uses. The fleet medians move: greys
+  21 to 28, duplicates 21 to 16, brackets 77 to 56. The shadcn group: greys
+  11 to 15, duplicates 21 to 14, inline styles 45 to 33, brackets 131 to
+  201. All 34 fleet repos, 10 reference systems and 6 groups were rebuilt
+  from the same clones on 3 October 2026.
+- **A web-components group.** A library built with Stencil or Lit is now
+  compared with seven such systems (Spectrum Web Components, Shoelace,
+  Scale, Ionic, Material Web, Siemens iX, Lion) instead of the React
+  fleet. The tiles say "Avg web-component repo". The benchmark now covers
+  119 repos.
+- **On a shadcn repo the theme sheet is the token file.** The token file
+  was the file with the most token colours. On 26 of 50 shadcn repos that
+  was not the theme sheet: nhost's was an MUI theme file, casdoor's a
+  swagger bundle. The rules file, the report and the MCP context now name
+  the sheet, and the MCP context counts the tokens that file states.
+- **A CSS keyword is not a typeface.** A font-family of "inherit
+  !important" reached the typeface list, and lightdash's context named it.
+  !important is stripped and the keywords are left out.
+- **Smaller files for the plugin directory.** The unlisted pins preview
+  page carried its screenshots as text; they are image files now, and the
+  page is 160 KB at the same address. The README's full-page screenshot
+  is a 770 KB JPEG instead of a 1.1 MB PNG.
+
 ## 9.9.0 — 2026-10-03
 
 The colour usage bar reads more of the repo. No score changes on any of

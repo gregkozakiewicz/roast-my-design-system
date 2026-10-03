@@ -142,7 +142,7 @@ Eleven reports, hosted exactly as the tool writes them. Every number determinist
 
 The full report for vercel/ai-chatbot. The verdict answers what the agent will learn here, the gap section comes first, then "What the repo teaches the agent", Claude's read of the scan:
 
-![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then where the agent will have to guess, the fixes you can make right now, each with what it is worth and its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.png?v=9.9.0)
+![The full diagnosis report for vercel/ai-chatbot in dark mode: a fixed side panel with the health score and what it measures, the stack, how the repo was read as a shadcn install, an index of every section and what is not the team's and not counted; then where the agent will have to guess, the fixes you can make right now, each with what it is worth and its copy-the-fix-prompt button, the wrapped present with the agent rules, an agent trap callout, 3-yardstick tiles including the 2 shadcn tiles, the adoption map treemap, palette forensics, the shadcn theme variable by variable, spacing receipts, typography specimens, offenders, duplicates, and the component usage ledger](assets/report-full-dark.jpg?v=9.9.0)
 
 The same report in light mode (one file, built-in toggle):
 

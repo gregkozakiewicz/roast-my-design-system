@@ -509,7 +509,9 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
     for (const m of text.matchAll(RADIUS_PROPS)) { const v = m[1].trim(); if (!isTokenRef(v)) radii.add(v, file); }
     for (const m of text.matchAll(FONTSIZE_PROPS)) { const v = m[1].trim(); if (!isTokenRef(v)) fontSizes.add(v, file); }
     for (const m of text.matchAll(FONTFAMILY_PROPS)) {
-      const v = m[1].trim().replace(/\s+/g, ' ');
+      // !important changes nothing about which face it is (lightdash's
+      // "inherit !important" was a typeface in the context, 9.9.1)
+      const v = m[1].trim().replace(/\s+/g, ' ').replace(/\s*!important$/i, '');
       // var(--x) and inherit are disciplined token usage, not declarations —
       // and so are Sass token references ($label-text-font, map.get($tokens,
       // ...)), Material Web's whole idiom: 59 fake "typefaces" once counted

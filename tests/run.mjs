@@ -893,6 +893,10 @@ console.log('declared scales:');
   const disciplined = mcpTools.validate(dk, { code: '.ok { border-radius: var(--r); font-size: inherit; box-shadow: none; font-family: var(--font); }' });
   disciplined.startsWith('No measured violations found')
     ? ok('var(), inherit and none are disciplined, not mess') : bad('benign values', disciplined);
+  // 9.9.1: a keyword with !important is still a keyword, not a typeface
+  const { typefaceOf } = await import(pathToFileURL(join(ENGINE, 'lib/typefaces.mjs')).href);
+  typefaceOf('inherit !important') === null && typefaceOf('"Inter", sans-serif !important') === 'Inter' && typefaceOf('revert') === null
+    ? ok('inherit !important is not a typeface, Inter !important is Inter') : bad('typeface keyword', `${typefaceOf('inherit !important')} / ${typefaceOf('"Inter", sans-serif !important')}`);
 
   // in code these live in class strings, where the arbitrary check already looks
   const inCode = mcpTools.validate(dk, { code: 'export const A = () => <div className="rounded-lg text-sm shadow-md" />;' });

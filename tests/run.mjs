@@ -1346,7 +1346,23 @@ console.log('second kits on shadcn repos (9.8.0):');
   rmSync(work2, { recursive: true, force: true });
 }
 
-console.log('mcp server:');
+// 9.9.1: on a shadcn repo the theme sheet the palette rule judges against is
+// the token file, whatever file holds more literals (nhost's was its MUI
+// theme, casdoor's a swagger bundle). Utility-class mode is untouched.
+console.log('the token file on a shadcn repo (9.9.1):');
+{
+  const work = mkdtempSync(join(tmpdir(), 'roast-tokenfile-'));
+  const app = join(work, 'app');
+  cpSync(join(FIXTURES, 'shadcnv3'), app, { recursive: true });
+  writeFileSync(join(app, 'app/palette.ts'), `export const palette = {\n${Array.from({ length: 24 }, (_, i) => `  c${i}: '#${(0x101010 + i * 0x0a0a0a).toString(16).padStart(6, '0')}',`).join('\n')}\n};\n`);
+  const k = loadKnowledge(app);
+  k.tokens.tokenFile === 'styles/globals.css' ? ok('the MCP knowledge names the theme sheet as the token file') : bad('token file (mcp)', k.tokens.tokenFile);
+  spawnSync(process.execPath, [resolve(ENGINE, '../../../cli/roast.mjs'), app, '--rules', '--no-open', '--out', join(work, 'r.html')], { encoding: 'utf8' });
+  const rules = existsSync(join(app, 'design-system-rules.md')) ? readFileSync(join(app, 'design-system-rules.md'), 'utf8') : '';
+  rules.includes('Design tokens live in `styles/globals.css`') ? ok('the rules file names the theme sheet as the token file') : bad('token file (rules)', rules.split('\n').find((l) => l.includes('Design tokens live')) ?? 'no line');
+  rmSync(work, { recursive: true, force: true });
+}
+
 {
   const msgs = [
     { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18' } },

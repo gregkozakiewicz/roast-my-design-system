@@ -111,6 +111,17 @@ if (profileOf(profile).isRegistry) {
   profile.uiDirs = []; profile.uiDir = null; profile.vendoredUi = false;
   profile.registry.counted = { code: files.code.length, styles: files.styles.length };
 }
+// On a shadcn repo whose theme sheet is the vocabulary the palette rule
+// judges against, that sheet is the token file the report and the rules
+// name: the file holding the most literals can be an MUI theme (nhost), a
+// swagger bundle (casdoor) or a query file (supabase), 26 of 50 shadcn
+// repos (2026-10-03, 9.9.1). The MCP knowledge makes the same choice.
+// Utility-class mode has no palette rule and keeps the literal count's pick.
+{
+  const P = profileOf(profile);
+  const paletteSheet = P.isShadcn && profile.palette?.file ? profile.palette.file : null;
+  if (paletteSheet && tokens.tokenFile !== paletteSheet) tokens = { ...tokens, tokenFile: paletteSheet };
+}
 // A Tailwind repo with its own theme gets the one check that matters there:
 // a palette colour written where one of its own names exists. Counted over
 // own code, never in exempt files, the same counter the kits use.

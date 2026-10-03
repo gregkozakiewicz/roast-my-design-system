@@ -92,6 +92,13 @@ export function loadKnowledge(root) {
   // the files that state the palette (token stylesheets, a Tailwind config,
   // a kit theme, palette data): the only files where a token's raw value is
   // the definition rather than a paste of it
+  // On a shadcn repo whose theme sheet is the vocabulary the palette rule
+  // judges against, that sheet is the token file the agent is sent to: the
+  // file holding the most literals can be an MUI theme (nhost), a swagger
+  // bundle (casdoor) or a query file (supabase), 26 of 50 shadcn repos
+  // (2026-10-03, 9.9.1). Utility-class mode keeps the literal count's pick.
+  const paletteSheet = P.isShadcn && profile.palette?.file ? profile.palette.file : null;
+  if (paletteSheet && tokens.tokenFile !== paletteSheet) tokens = { ...tokens, tokenFile: paletteSheet };
   const tokenSources = new Set([...(tokens.tokenSources ?? []), ...(kit?.themeFiles ?? []), tokens.tokenFile].filter(Boolean));
 
   // spacing the repo already uses: raw CSS values with counts, plus whether

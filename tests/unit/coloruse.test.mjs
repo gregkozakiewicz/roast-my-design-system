@@ -6,10 +6,10 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { colourUse } from '../../plugin/skills/roast-my-design-system/scripts/harvest/coloruse.mjs';
-import { harvestTokens } from '../../plugin/skills/roast-my-design-system/scripts/harvest/tokens.mjs';
-import { paletteFindings } from '../../plugin/skills/roast-my-design-system/scripts/lib/palette.mjs';
-import { canonical } from '../../plugin/skills/roast-my-design-system/scripts/lib/color.mjs';
+import { colourUse } from '../../skills/roast-my-design-system/scripts/harvest/coloruse.mjs';
+import { harvestTokens } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
+import { paletteFindings } from '../../skills/roast-my-design-system/scripts/lib/palette.mjs';
+import { canonical } from '../../skills/roast-my-design-system/scripts/lib/color.mjs';
 
 const STYLE_RE = /\.(css|scss|sass|less)$/;
 function run(fileMap, opts = {}) {

@@ -16,9 +16,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SCRIPTS = join(HERE, '../skills/roast-my-design-system/scripts');
-// the engine's own version constant, which the release script keeps in step
-// with package.json; the package file sits above the plugin folder (10.1.0)
-const { VERSION } = await import(pathToFileURL(join(SCRIPTS, 'lib/version.mjs')).href);
+const VERSION = JSON.parse(readFileSync(join(HERE, '../package.json'), 'utf8')).version;
 
 const argv = process.argv.slice(2);
 function flag(name) {

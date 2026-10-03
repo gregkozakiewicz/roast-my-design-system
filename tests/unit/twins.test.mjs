@@ -10,14 +10,14 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { loadKnowledge } from '../../plugin/skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
-import { getContext, validate, reviewData } from '../../plugin/skills/roast-my-design-system/scripts/mcp/tools.mjs';
-import { validateContent } from '../../plugin/skills/roast-my-design-system/scripts/mcp/engine.mjs';
-import { harvestTokens } from '../../plugin/skills/roast-my-design-system/scripts/harvest/tokens.mjs';
-import { walkRepo } from '../../plugin/skills/roast-my-design-system/scripts/harvest/walk.mjs';
-import { nearColorPairs } from '../../plugin/skills/roast-my-design-system/scripts/lib/nearpairs.mjs';
-import { tokenTwinFindings, tokenDefsOf, repoTokenDefs } from '../../plugin/skills/roast-my-design-system/scripts/lib/tokentwins.mjs';
-import { importsOf, resolveSpec, canonicalCopy } from '../../plugin/skills/roast-my-design-system/scripts/lib/avoidedimports.mjs';
+import { loadKnowledge } from '../../skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
+import { getContext, validate, reviewData } from '../../skills/roast-my-design-system/scripts/mcp/tools.mjs';
+import { validateContent } from '../../skills/roast-my-design-system/scripts/mcp/engine.mjs';
+import { harvestTokens } from '../../skills/roast-my-design-system/scripts/harvest/tokens.mjs';
+import { walkRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
+import { nearColorPairs } from '../../skills/roast-my-design-system/scripts/lib/nearpairs.mjs';
+import { tokenTwinFindings, tokenDefsOf, repoTokenDefs } from '../../skills/roast-my-design-system/scripts/lib/tokentwins.mjs';
+import { importsOf, resolveSpec, canonicalCopy } from '../../skills/roast-my-design-system/scripts/lib/avoidedimports.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
 
@@ -237,7 +237,7 @@ test('imports resolve relatively, through an alias, and by default name', () => 
 // ---------- the guard doorway (8.6.1) ----------
 
 test('the doorway hands the guard the same lists, and the same words come out', async () => {
-  const api = await import('../../plugin/skills/roast-my-design-system/scripts/lib/guard-api.mjs');
+  const api = await import('../../skills/roast-my-design-system/scripts/lib/guard-api.mjs');
   const s = api.learnSystem(root);
   assert.ok(s.tokenDefs.some((d) => d.name === '--color-warning-soft' && d.darkValue === '#2b2112'));
   const dupe = s.duplicates.get('Button');

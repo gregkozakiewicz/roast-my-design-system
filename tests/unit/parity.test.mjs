@@ -15,9 +15,9 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { loadKnowledge } from '../../plugin/skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
-import { validateContent } from '../../plugin/skills/roast-my-design-system/scripts/mcp/engine.mjs';
-import { canBeDuplicate, duplicateCopies, isPageFile, looksLikeJSXFile } from '../../plugin/skills/roast-my-design-system/scripts/lib/guard-api.mjs';
+import { loadKnowledge } from '../../skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
+import { validateContent } from '../../skills/roast-my-design-system/scripts/mcp/engine.mjs';
+import { canBeDuplicate, duplicateCopies, isPageFile, looksLikeJSXFile } from '../../skills/roast-my-design-system/scripts/lib/guard-api.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
 const HERE = dirname(fileURLToPath(import.meta.url));

@@ -1,7 +1,7 @@
 # Rebuilding the benchmark
 
 The score compares every repo against two yardsticks that live in
-`plugin/skills/roast-my-design-system/scripts/benchmark/benchmark.json`: the median of
+`skills/roast-my-design-system/scripts/benchmark/benchmark.json`: the median of
 34 public React repos and 10 reputable design systems scanned at a curated
 scope. This folder holds the scripts that make that file, so the numbers can
 be checked by anyone rather than taken on trust.

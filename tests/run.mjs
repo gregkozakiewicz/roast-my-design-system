@@ -9,7 +9,7 @@
  *                                diff before committing: expected files are
  *                                the contract)
  *
- * Runs against the engine in plugin/skills/roast-my-design-system/scripts/, the one
+ * Runs against the engine in skills/roast-my-design-system/scripts/, the one
  * copy that ships. (It still finds a sibling src/ if one exists, a leftover
  * from the days of two repos.)
  */
@@ -27,7 +27,7 @@ for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_OBJECT_DIREC
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ENGINE = existsSync(join(HERE, '../src/harvest/index.mjs'))
   ? resolve(HERE, '../src')
-  : resolve(HERE, '../plugin/skills/roast-my-design-system/scripts');
+  : resolve(HERE, '../skills/roast-my-design-system/scripts');
 const FIXTURES = join(HERE, 'fixtures');
 const EXPECTED = join(HERE, 'expected');
 const UPDATE = process.argv.includes('--update');
@@ -1418,7 +1418,7 @@ if (existsSync(bin)) {
   // once wrote a dependency into package.json and five releases shipped it
   // (5.4.1's conformance sweep left checkmcp behind; Greg caught it on
   // Socket, fixed in 5.5.4). The promise now has a tripwire.
-  const pkg = JSON.parse(readFileSync(resolve(ENGINE, '../../../../package.json'), 'utf8'));
+  const pkg = JSON.parse(readFileSync(resolve(ENGINE, '../../../package.json'), 'utf8'));
   const declared = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies, ...pkg.optionalDependencies });
   declared.length === 0 ? ok('package declares zero dependencies')
     : bad('package declares zero dependencies', `found: ${declared.join(', ')}`);
@@ -1427,7 +1427,7 @@ if (existsSync(bin)) {
   // the tarball or expected cargo going missing (a bad sync) both fail here.
   // Born from 5.5.4: a stray `npm install` shipped a dependency for four days
   // before a human noticed. Machines notice now.
-  const packRoot = resolve(ENGINE, '../../../..');
+  const packRoot = resolve(ENGINE, '../../..');
   const packRun = spawnSync('npm', ['pack', '--dry-run', '--json'], { cwd: packRoot, encoding: 'utf8' });
   try {
     const parsed = JSON.parse(packRun.stdout);

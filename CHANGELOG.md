@@ -2,6 +2,19 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.1.1 — unreleased
+
+The plugin's files are back where they were, at the repository root.
+
+- **10.1.0 moved the plugin into `plugin/`** to bring the claude.ai plugin
+  directory's file count under its 512 limit. The directory does not let
+  a submission change its plugin path, so the move would have meant a new
+  submission and a new place in the review queue. The files are back at
+  the root, the marketplace entry points at `./`, the npm package ships
+  from the same paths as 10.0.0, and the guard's engine alias is as it
+  was.
+- The plugin's icon and the fixes to file sizes from 10.0.0 stay.
+
 ## 10.1.0 — 2026-10-03
 
 The plugin's files move into one folder. Nothing the scan, the report, the

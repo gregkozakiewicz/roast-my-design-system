@@ -3,8 +3,8 @@
 // colours stay in the score; the breakdown says what installed code costs.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { splitArbitrary, installedDirs } from '../../plugin/skills/roast-my-design-system/scripts/profiles/index.mjs';
-import { coreMetrics, scoreBreakdown, tileHealths, makeHealthOf, benchHelpers, loadBenchmark } from '../../plugin/skills/roast-my-design-system/scripts/diagnose/score.mjs';
+import { splitArbitrary, installedDirs } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
+import { coreMetrics, scoreBreakdown, tileHealths, makeHealthOf, benchHelpers, loadBenchmark } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
 
 const entries = [
   { value: '[3px]', count: 9, files: [{ file: 'components/ui/badge.tsx', count: 2 }, { file: 'components/ui/tabs.tsx', count: 1 }, { file: 'app/page.tsx', count: 3 }] }, // 3 listed uses unattributed: own by remainder
@@ -75,7 +75,7 @@ test('a spacing bracket in installed code is split out even when it is not among
   const { tmpdir } = await import('node:os');
   const { execFileSync } = await import('node:child_process');
   const { fileURLToPath } = await import('node:url');
-  const { ownSpacing } = await import('../../plugin/skills/roast-my-design-system/scripts/profiles/index.mjs');
+  const { ownSpacing } = await import('../../skills/roast-my-design-system/scripts/profiles/index.mjs');
   const here = dirname(fileURLToPath(import.meta.url));
   const root = mkdtempSync(join(tmpdir(), 'roast-spacing-every-'));
   try {
@@ -84,7 +84,7 @@ test('a spacing bracket in installed code is split out even when it is not among
     const button = join(root, 'components/ui/button.tsx');
     writeFileSync(button, readFileSync(button, 'utf8').replace('cn("bg-card', 'cn("p-[13px] bg-card'));
     const out = join(root, 'h.json');
-    execFileSync(process.execPath, [join(here, '../../plugin/skills/roast-my-design-system/scripts/harvest/index.mjs'), root, '--out', out], { stdio: 'ignore' });
+    execFileSync(process.execPath, [join(here, '../../skills/roast-my-design-system/scripts/harvest/index.mjs'), root, '--out', out], { stdio: 'ignore' });
     const h = JSON.parse(readFileSync(out, 'utf8'));
     const entry = h.tokens.tailwind.spacing.find((e) => e.value === '[13px]');
     assert.equal(entry.count, 13);

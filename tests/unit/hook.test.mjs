@@ -7,10 +7,10 @@ import { cpSync, mkdtempSync, rmSync, writeFileSync, appendFileSync, readFileSyn
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { newSince } from '../../plugin/skills/roast-my-design-system/scripts/mcp/hook.mjs';
+import { newSince } from '../../skills/roast-my-design-system/scripts/mcp/hook.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const BIN = join(HERE, '../../plugin/cli/roast.mjs');
+const BIN = join(HERE, '../../cli/roast.mjs');
 const MESSY = join(HERE, '../fixtures/messy');
 
 // a git copy of the messy fixture, committed, so "before" has a HEAD to read

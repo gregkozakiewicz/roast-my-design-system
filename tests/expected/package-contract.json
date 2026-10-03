@@ -34,15 +34,15 @@
   "author": "Greg Kozakiewicz (https://gregkozakiewicz.com)",
   "type": "module",
   "exports": {
-    "./engine": "./plugin/skills/roast-my-design-system/scripts/lib/guard-api.mjs",
+    "./engine": "./skills/roast-my-design-system/scripts/lib/guard-api.mjs",
     "./package.json": "./package.json"
   },
   "bin": {
-    "roast-my-design-system": "plugin/cli/roast.mjs"
+    "roast-my-design-system": "cli/roast.mjs"
   },
   "files": [
-    "plugin/cli/",
-    "plugin/skills/roast-my-design-system/scripts/"
+    "cli/",
+    "skills/roast-my-design-system/scripts/"
   ],
   "engines": {
     "node": ">=18"

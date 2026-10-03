@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import tailwind from '../../plugin/skills/roast-my-design-system/scripts/profiles/tailwind.mjs';
+import tailwind from '../../skills/roast-my-design-system/scripts/profiles/tailwind.mjs';
 
 const theme = `@import "tailwindcss";
 @theme {
@@ -97,14 +97,14 @@ test('a repo whose interface is mostly Svelte or Vue is not judged as a Tailwind
 });
 
 test('a slice ideal replaces the general one for that kind only', async () => {
-  const { benchHelpers } = await import('../../plugin/skills/roast-my-design-system/scripts/diagnose/score.mjs');
+  const { benchHelpers } = await import('../../skills/roast-my-design-system/scripts/diagnose/score.mjs');
   const bench = { ideal2026: { paintTin: { value: 25 } }, stats: {}, slices: { tailwind: { stats: {}, ideal2026: { paintTin: { value: 3 } } } } };
   assert.equal(benchHelpers(bench, 'tailwind').ideal('paintTin'), 3);
   assert.equal(benchHelpers(bench, 'shadcn').ideal('paintTin'), 25);
 });
 
 test('a theme of brand colours only does not turn palette greys into drift', async () => {
-  const { countPaint } = await import('../../plugin/skills/roast-my-design-system/scripts/harvest/paint.mjs');
+  const { countPaint } = await import('../../skills/roast-my-design-system/scripts/harvest/paint.mjs');
   const page = { 'src/a.tsx': '<div className="bg-brand-500 text-brand-600 border-brand-50 text-gray-500 dark:bg-black bg-red-500" />' };
   const { profile } = recognise(page, small(['brand-50', 'brand-500', 'brand-600']));
   assert.deepEqual(profile.tailwind.families, { grey: false, colour: true });

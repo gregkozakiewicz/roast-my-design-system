@@ -42,7 +42,7 @@
       "homepage": "https://github.com/gregkozakiewicz/roast-my-design-system",
       "repository": "https://github.com/gregkozakiewicz/roast-my-design-system",
       "license": "MIT",
-      "source": "./plugin"
+      "source": "./"
     }
   ]
 }

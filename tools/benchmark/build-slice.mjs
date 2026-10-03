@@ -20,7 +20,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { measure, cloneDir } from './measure.mjs';
-import { benchKind } from '../../plugin/skills/roast-my-design-system/scripts/diagnose/score.mjs';
+import { benchKind } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
 import { IDEAL_2026, IDEAL_BY_KIND } from './ideal.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -30,7 +30,7 @@ function arg(name, fallback) {
 }
 const clonesDir = resolve(arg('clones', '.'));
 const reposFile = resolve(arg('repos', join(HERE, 'repos.txt')));
-const outPath = resolve(arg('out', join(HERE, '../../plugin/skills/roast-my-design-system/scripts/benchmark/benchmark.json')));
+const outPath = resolve(arg('out', join(HERE, '../../skills/roast-my-design-system/scripts/benchmark/benchmark.json')));
 const kind = arg('kind', 'shadcn');
 
 const wanted = readFileSync(reposFile, 'utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));

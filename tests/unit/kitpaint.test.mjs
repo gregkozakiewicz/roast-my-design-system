@@ -6,8 +6,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { countKitPaint } from '../../plugin/skills/roast-my-design-system/scripts/lib/kitpaint.mjs';
-import { MUI } from '../../plugin/skills/roast-my-design-system/scripts/profiles/mui.mjs';
+import { countKitPaint } from '../../skills/roast-my-design-system/scripts/lib/kitpaint.mjs';
+import { MUI } from '../../skills/roast-my-design-system/scripts/profiles/mui.mjs';
 
 function count(files) {
   const root = mkdtempSync(join(tmpdir(), 'roast-kit-'));
@@ -74,8 +74,8 @@ test("another library's createTheme is not the MUI theme; a nested ThemeProvider
 });
 
 test("each kit's advice names its own idioms, never another kit's", async () => {
-  const { KITS } = await import('../../plugin/skills/roast-my-design-system/scripts/profiles/kit-common.mjs');
-  await import('../../plugin/skills/roast-my-design-system/scripts/profiles/mantine.mjs');
+  const { KITS } = await import('../../skills/roast-my-design-system/scripts/profiles/kit-common.mjs');
+  await import('../../skills/roast-my-design-system/scripts/profiles/mantine.mjs');
   const m = KITS.Mantine.advice;
   const text = [m.colourHow, m.spacingHow({}), m.rulesTheme('x'), m.promptColour, m.promptSpacing, m.promptInline].join(' ');
   assert.doesNotMatch(text, /\bsx\b|MUI|theme\.palette/);
@@ -84,7 +84,7 @@ test("each kit's advice names its own idioms, never another kit's", async () => 
 });
 
 test('Mantine spacing written as a number or rem() is pixels; a theme size is not', async () => {
-  const { MANTINE } = await import('../../plugin/skills/roast-my-design-system/scripts/profiles/mantine.mjs');
+  const { MANTINE } = await import('../../skills/roast-my-design-system/scripts/profiles/mantine.mjs');
   const root = mkdtempSync(join(tmpdir(), 'roast-kit-'));
   try {
     writeFileSync(join(root, 'Card.tsx'), `import { Box, rem } from '@mantine/core';\nexport const C = () => <Box p={10} mt="md" gap={0} style={{ padding: rem(12) }} />;\n`);
@@ -111,7 +111,7 @@ test('an array of eight or more colours is a palette, not paint', () => {
 });
 
 test('Mantine spacing below its smallest step is not counted', async () => {
-  const { MANTINE } = await import('../../plugin/skills/roast-my-design-system/scripts/profiles/mantine.mjs');
+  const { MANTINE } = await import('../../skills/roast-my-design-system/scripts/profiles/mantine.mjs');
   const root = mkdtempSync(join(tmpdir(), 'roast-kit-'));
   try {
     writeFileSync(join(root, 'Row.tsx'), `import { Group } from '@mantine/core';\nexport const R = () => <Group gap={4} p={16} mt={6} />;\n`);

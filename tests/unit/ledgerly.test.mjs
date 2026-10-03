@@ -6,9 +6,9 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { loadKnowledge } from '../../plugin/skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
-import { getContext, findComponent } from '../../plugin/skills/roast-my-design-system/scripts/mcp/tools.mjs';
-import { validateContent } from '../../plugin/skills/roast-my-design-system/scripts/mcp/engine.mjs';
+import { loadKnowledge } from '../../skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
+import { getContext, findComponent } from '../../skills/roast-my-design-system/scripts/mcp/tools.mjs';
+import { validateContent } from '../../skills/roast-my-design-system/scripts/mcp/engine.mjs';
 
 const THEME = `@import "tailwindcss";
 @theme {

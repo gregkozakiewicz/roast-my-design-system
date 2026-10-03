@@ -7,10 +7,10 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { loadKnowledge } from '../../plugin/skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
-import { validateContent, checksFor, BUTTON_CHECK } from '../../plugin/skills/roast-my-design-system/scripts/mcp/engine.mjs';
-import { handmadeButtons, buttonFor } from '../../plugin/skills/roast-my-design-system/scripts/lib/handmade.mjs';
-import { learnSystem } from '../../plugin/skills/roast-my-design-system/scripts/lib/guard-api.mjs';
+import { loadKnowledge } from '../../skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
+import { validateContent, checksFor, BUTTON_CHECK } from '../../skills/roast-my-design-system/scripts/mcp/engine.mjs';
+import { handmadeButtons, buttonFor } from '../../skills/roast-my-design-system/scripts/lib/handmade.mjs';
+import { learnSystem } from '../../skills/roast-my-design-system/scripts/lib/guard-api.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
 

@@ -5,13 +5,13 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { designGaps } from '../../plugin/skills/roast-my-design-system/scripts/lib/gaps.mjs';
-import { loadKnowledge } from '../../plugin/skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
-import { getContext } from '../../plugin/skills/roast-my-design-system/scripts/mcp/tools.mjs';
-import { learnSystem } from '../../plugin/skills/roast-my-design-system/scripts/lib/guard-api.mjs';
+import { designGaps } from '../../skills/roast-my-design-system/scripts/lib/gaps.mjs';
+import { loadKnowledge } from '../../skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
+import { getContext } from '../../skills/roast-my-design-system/scripts/mcp/tools.mjs';
+import { learnSystem } from '../../skills/roast-my-design-system/scripts/lib/guard-api.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
-const BIN = join(process.cwd(), 'plugin/cli/roast.mjs');
+const BIN = join(process.cwd(), 'cli/roast.mjs');
 
 const precedents = [{ file: 'ui/Sales.tsx', count: 6, sample: ['#111111', '#222222', '#333333'] }, { file: 'ui/Usage.tsx', count: 3, sample: [] }];
 

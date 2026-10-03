@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { sheetColourRows } from '../../plugin/skills/roast-my-design-system/scripts/profiles/shadcn.mjs';
+import { sheetColourRows } from '../../skills/roast-my-design-system/scripts/profiles/shadcn.mjs';
 
 const rows = (css) => {
   const dir = mkdtempSync(join(tmpdir(), 'roast-sheet-'));

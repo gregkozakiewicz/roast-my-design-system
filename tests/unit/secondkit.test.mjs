@@ -12,9 +12,9 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ENGINE = join(HERE, '../../plugin/skills/roast-my-design-system/scripts');
+const ENGINE = join(HERE, '../../skills/roast-my-design-system/scripts');
 const FIX = join(HERE, '../fixtures');
-const BIN = join(HERE, '../../plugin/cli/roast.mjs');
+const BIN = join(HERE, '../../cli/roast.mjs');
 
 const { walkRepo, profileRepo } = await import(join(ENGINE, 'harvest/walk.mjs'));
 const { loadExclusions } = await import(join(ENGINE, 'lib/exclusions.mjs'));

@@ -311,7 +311,7 @@ If those commands error, your Claude Code is older than the plugin marketplace. 
 
 ```bash
 git clone https://github.com/gregkozakiewicz/roast-my-design-system.git
-cp -r roast-my-design-system/plugin/skills/roast-my-design-system roast-my-design-system/plugin/skills/review ~/.claude/skills/
+cp -r roast-my-design-system/skills/roast-my-design-system roast-my-design-system/skills/review ~/.claude/skills/
 ```
 
 (Use `.claude/skills/` inside a repo to share it with your team. The `review` skill needs the `roast-my-design-system` folder beside it.)
@@ -320,7 +320,7 @@ cp -r roast-my-design-system/plugin/skills/roast-my-design-system roast-my-desig
 
 ```bash
 git clone https://github.com/gregkozakiewicz/roast-my-design-system.git
-cp -r roast-my-design-system/plugin/skills/roast-my-design-system ~/.codex/skills/
+cp -r roast-my-design-system/skills/roast-my-design-system ~/.codex/skills/
 ```
 
 Invoke with `$roast-my-design-system`. Use `.codex/skills/` inside a repo to share with your team.

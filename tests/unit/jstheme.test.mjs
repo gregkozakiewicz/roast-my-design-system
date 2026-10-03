@@ -2,7 +2,7 @@
 // literals flattened to paths, references followed, functions left unread.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { objectPaths, themePaths, lookupThemePath } from '../../plugin/skills/roast-my-design-system/scripts/harvest/jstheme.mjs';
+import { objectPaths, themePaths, lookupThemePath } from '../../skills/roast-my-design-system/scripts/harvest/jstheme.mjs';
 
 const src = `
 import { lighten } from 'polished';

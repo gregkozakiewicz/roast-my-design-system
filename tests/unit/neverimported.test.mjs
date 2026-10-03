@@ -13,7 +13,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ENGINE = join(HERE, '../../plugin/skills/roast-my-design-system/scripts');
+const ENGINE = join(HERE, '../../skills/roast-my-design-system/scripts');
 const { rulesMarkdown } = await import(join(ENGINE, 'rules/build.mjs'));
 
 function scan(extra) {

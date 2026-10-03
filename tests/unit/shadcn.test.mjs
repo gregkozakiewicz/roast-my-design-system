@@ -6,11 +6,11 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { walkRepo, profileRepo } from '../../plugin/skills/roast-my-design-system/scripts/harvest/walk.mjs';
-import { harvestComponents } from '../../plugin/skills/roast-my-design-system/scripts/harvest/components.mjs';
-import { decideProfile, profileOf } from '../../plugin/skills/roast-my-design-system/scripts/profiles/index.mjs';
-import { countPaint } from '../../plugin/skills/roast-my-design-system/scripts/harvest/paint.mjs';
-import { coreMetrics, tileHealths, makeHealthOf, benchHelpers, loadBenchmark } from '../../plugin/skills/roast-my-design-system/scripts/diagnose/score.mjs';
+import { walkRepo, profileRepo } from '../../skills/roast-my-design-system/scripts/harvest/walk.mjs';
+import { harvestComponents } from '../../skills/roast-my-design-system/scripts/harvest/components.mjs';
+import { decideProfile, profileOf } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
+import { countPaint } from '../../skills/roast-my-design-system/scripts/harvest/paint.mjs';
+import { coreMetrics, tileHealths, makeHealthOf, benchHelpers, loadBenchmark } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
 
 const write = (root, files) => {
   for (const [p, body] of Object.entries(files)) {

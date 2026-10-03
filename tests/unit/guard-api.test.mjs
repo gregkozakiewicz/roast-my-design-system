@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as api from '../../plugin/skills/roast-my-design-system/scripts/lib/guard-api.mjs';
+import * as api from '../../skills/roast-my-design-system/scripts/lib/guard-api.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FIX = join(HERE, '..', 'fixtures');

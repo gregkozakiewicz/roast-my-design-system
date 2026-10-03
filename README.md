@@ -155,7 +155,7 @@ The same report in light mode (one file, built-in toggle):
 ## Why the numbers hold
 
 - **Deterministic.** A zero-dependency Node script reads every file and returns the same numbers every run. About a second on a normal repo.
-- **Read-only. No network. No telemetry.** The test suite fails if package.json ever declares a dependency.
+- **Read-only. No network. No telemetry.** The test suite fails if package.json ever declares a dependency. Every release runs 461 checks against 29 sample repos before it is tagged; the fixtures and their snapshots live in `tests/`, one JSON file each.
 - **Honest gaps.** What the scan cannot read says "not measured" and drops out of the score.
 - **Honest exclusions.** Tests, stories, docs sites, artwork and email templates are left out. Your own exclusions are printed in the report header with file counts.
 - **A real benchmark.** 119 public repos. A core fleet of 34 React repos sets the medians; the rest feed the kit and web-component groups, so a shadcn repo is compared with shadcn repos and a Lit system with Lit and Stencil systems. The builder is in `tools/benchmark/`.

@@ -1,6 +1,0 @@
-{
-  "name": "@colouruse/survey-ui",
-  "private": true,
-  "dependencies": { "react": "19.0.0" },
-  "devDependencies": { "tailwindcss": "^3.4.0" }
-}

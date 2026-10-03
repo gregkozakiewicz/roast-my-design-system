@@ -1,9 +1,0 @@
-{
-  "name": "fixture-monorepo",
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {
-    "react": "18.0.0"
-  }
-}

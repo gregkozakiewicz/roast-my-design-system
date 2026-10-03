@@ -7,6 +7,7 @@ import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { fixture } from './_fixture.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ENGINE = join(HERE, '../../skills/roast-my-design-system/scripts');
@@ -37,7 +38,7 @@ test('the harvest reads palette classes only where the repo shows Tailwind', () 
 test('a dark: override tooltip says the theme already sets its own dark-mode colours, where it does', () => {
   const root = mkdtempSync(join(tmpdir(), 'roast-use-dark-'));
   try {
-    cpSync(join(HERE, '../fixtures/shadcnfresh'), root, { recursive: true });
+    cpSync(fixture('shadcnfresh'), root, { recursive: true });
     writeFileSync(join(root, 'app/own.tsx'), `export const Own = () => <div className="dark:bg-black">${'<p className="text-primary bg-background" />'.repeat(15)}</div>;\n`);
     const { html } = scan(root);
     assert.match(html, /title="black ×1 as dark: overrides written by hand, where the theme already sets its own dark-mode colours/);

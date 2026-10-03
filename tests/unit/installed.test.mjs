@@ -5,6 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { splitArbitrary, installedDirs } from '../../skills/roast-my-design-system/scripts/profiles/index.mjs';
 import { coreMetrics, scoreBreakdown, tileHealths, makeHealthOf, benchHelpers, loadBenchmark } from '../../skills/roast-my-design-system/scripts/diagnose/score.mjs';
+import { fixture } from './_fixture.mjs';
 
 const entries = [
   { value: '[3px]', count: 9, files: [{ file: 'components/ui/badge.tsx', count: 2 }, { file: 'components/ui/tabs.tsx', count: 1 }, { file: 'app/page.tsx', count: 3 }] }, // 3 listed uses unattributed: own by remainder
@@ -79,7 +80,7 @@ test('a spacing bracket in installed code is split out even when it is not among
   const here = dirname(fileURLToPath(import.meta.url));
   const root = mkdtempSync(join(tmpdir(), 'roast-spacing-every-'));
   try {
-    cpSync(join(here, '../fixtures/shadcnfresh'), root, { recursive: true });
+    cpSync(fixture('shadcnfresh'), root, { recursive: true });
     for (let i = 1; i <= 6; i++) writeFileSync(join(root, `app/own${i}.tsx`), `export const O${i} = () => <div className="p-[13px] m-[13px]">o</div>;\n`);
     const button = join(root, 'components/ui/button.tsx');
     writeFileSync(button, readFileSync(button, 'utf8').replace('cn("bg-card', 'cn("p-[13px] bg-card'));

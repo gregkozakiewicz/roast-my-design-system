@@ -10,10 +10,11 @@ import { cpSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, re
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { fixture } from './_fixture.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ENGINE = join(HERE, '../../skills/roast-my-design-system/scripts');
-const FIX = join(HERE, '../fixtures');
+const FIX = dirname(fixture('twokits'));
 const BIN = join(HERE, '../../cli/roast.mjs');
 
 const { walkRepo, profileRepo } = await import(join(ENGINE, 'harvest/walk.mjs'));

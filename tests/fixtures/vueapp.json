@@ -1,0 +1,9 @@
+{
+ "files": {
+  "package.json": "{\n  \"name\": \"vue-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"vue\": \"^3.4.0\"\n  }\n}\n",
+  "src/App.vue": "<template>\n  <div class=\"app\"><slot /></div>\n</template>\n<script setup>\n</script>\n<style scoped>\n.app { color: #d94f30; margin: 11px; padding: 19px; }\n</style>\n",
+  "src/BaseButton.vue": "<template>\n  <div class=\"base-button\"><slot /></div>\n</template>\n<script setup>\n</script>\n<style scoped>\n.base-button { color: #d94f30; margin: 11px; padding: 19px; }\n</style>\n",
+  "src/NavBar.vue": "<template>\n  <div class=\"nav-bar\"><slot /></div>\n</template>\n<script setup>\n</script>\n<style scoped>\n.nav-bar { color: #d94f30; margin: 11px; padding: 19px; }\n</style>\n",
+  "src/main.js": "import { createApp } from \"vue\";\nconsole.log(\"app\");\n"
+ }
+}

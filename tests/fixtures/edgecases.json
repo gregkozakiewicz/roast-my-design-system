@@ -1,0 +1,13 @@
+{
+ "files": {
+  "app/page.tsx": "import { Card } from \"../components/Card\";\nimport { Button } from \"../components/Button\";\nexport default function Page() { return <main><Card title=\"x\" /><Button /></main>; }\n",
+  "components/Button.tsx": "export function Button() { return <button className=\"mt-[17px] -mx-[4px] w-[257px]\">ok</button>; }\n",
+  "components/Card.tsx": "export function Card({ title }: any) { return <div className=\"p-[13px] text-[10px] rounded-[9px]\" style={{ opacity: .5, color: \"#fff\" }}>{title}</div>; }\n",
+  "package.json": "{\n  \"name\": \"fixture-edgecases\",\n  \"dependencies\": {\n    \"react\": \"18.0.0\",\n    \"tailwindcss\": \"3.0.0\"\n  }\n}\n",
+  "styles/leak.css": {
+   "link": "../package.json"
+  },
+  "styles/site.css": "/* the old brand was #123456, kept here for the record */\n#face { color: #abcdef; }\n#add, .x { margin: 0 3px; }\n.card { border-radius: 7px; padding: 5px 11px; color: #ff8800; }\n.card:hover { color: #ff9900; } /* #bad000 in a trailing comment */\n.evil { color: rgb(0,0,0;position:fixed;inset:0;z-index:99999;background:#000); }\n",
+  "widgets/Button(.tsx": "export function Button() { return <button>copy</button>; }\n"
+ }
+}

@@ -5,9 +5,10 @@ import assert from 'node:assert/strict';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as api from '../../skills/roast-my-design-system/scripts/lib/guard-api.mjs';
+import { fixture } from './_fixture.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const FIX = join(HERE, '..', 'fixtures');
+const FIX = dirname(fixture('messy'));
 
 test('a shadcn kit tells the guard its installed folders and that the palette check applies', () => {
   const s = api.learnSystem(join(FIX, 'shadcnfactory'));

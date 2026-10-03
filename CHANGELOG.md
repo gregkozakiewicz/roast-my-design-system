@@ -2,6 +2,23 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.1.2 — unreleased
+
+The test fixtures and their snapshots are stored one file each. Nothing
+the scan, the report, the rules, the MCP server or the npm package does
+changes.
+
+- **Each test fixture is one JSON file.** The suite scans 29 small sample
+  repos and compares the result with saved snapshots. They were 403 loose
+  files plus 150 snapshot files, and the claude.ai plugin directory counts
+  every file in the repository against a limit of 512. Each fixture is now
+  `tests/fixtures/<name>.json` and each fixture's snapshots are
+  `tests/expected/<name>.json`, with text kept line by line so diffs still
+  read. The suite unpacks the fixtures into a temporary folder before it
+  runs; every check is the same and all 461 pass unchanged. The repository
+  has 225 tracked files. `node tests/fixtures.mjs unpack <name>` gives a
+  fixture back as a folder to edit, and `pack <name>` stores it again.
+
 ## 10.1.1 — 2026-10-03
 
 The plugin's files are back where they were, at the repository root.

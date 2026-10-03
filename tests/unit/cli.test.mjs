@@ -6,10 +6,11 @@ import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { fixture } from './_fixture.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const BIN = join(HERE, '../../cli/roast.mjs');
-const CLEAN = join(HERE, '../fixtures/clean');
+const CLEAN = fixture('clean');
 const run = (...args) => spawnSync(process.execPath, [BIN, ...args], { encoding: 'utf8' });
 
 test('--help exits 0 and names the flags', () => {

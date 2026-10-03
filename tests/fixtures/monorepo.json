@@ -1,0 +1,26 @@
+{
+ "files": {
+  "package.json": "{\n  \"name\": \"fixture-monorepo\",\n  \"workspaces\": [\n    \"packages/*\"\n  ],\n  \"dependencies\": {\n    \"react\": \"18.0.0\"\n  }\n}",
+  "packages/app/V0.tsx": "export function AppV0() { return <div style={{ margin: \"11px\" }}><em style={{ color: \"#a00b2c\" }}>v0</em></div>; }\n",
+  "packages/app/V1.tsx": "export function AppV1() { return <div style={{ margin: \"12px\" }}><em style={{ color: \"#a11b2c\" }}>v1</em></div>; }\n",
+  "packages/app/V2.tsx": "export function AppV2() { return <div style={{ margin: \"13px\" }}><em style={{ color: \"#a22b2c\" }}>v2</em></div>; }\n",
+  "packages/app/V3.tsx": "export function AppV3() { return <div style={{ margin: \"14px\" }}><em style={{ color: \"#a33b2c\" }}>v3</em></div>; }\n",
+  "packages/app/V4.tsx": "export function AppV4() { return <div style={{ margin: \"15px\" }}><em style={{ color: \"#a44b2c\" }}>v4</em></div>; }\n",
+  "packages/app/V5.tsx": "export function AppV5() { return <div style={{ margin: \"16px\" }}><em style={{ color: \"#a55b2c\" }}>v5</em></div>; }\n",
+  "packages/app/V6.tsx": "export function AppV6() { return <div style={{ margin: \"17px\" }}><em style={{ color: \"#a66b2c\" }}>v6</em></div>; }\n",
+  "packages/app/V7.tsx": "export function AppV7() { return <div style={{ margin: \"18px\" }}><em style={{ color: \"#a77b2c\" }}>v7</em></div>; }\n",
+  "packages/app/V8.tsx": "export function AppV8() { return <div style={{ margin: \"19px\" }}><em style={{ color: \"#a88b2c\" }}>v8</em></div>; }\n",
+  "packages/app/package.json": "{\n  \"name\": \"@fix/app\"\n}",
+  "packages/ui/AGENTS.md": "# UI package agent rules\n\nUse the shared Button from this package. Tokens live in tokens.css.\n",
+  "packages/ui/C0.tsx": "export function UiC0() { return <span className=\"btn\">u0</span>; }\n",
+  "packages/ui/C1.tsx": "export function UiC1() { return <span className=\"btn\">u1</span>; }\n",
+  "packages/ui/C2.tsx": "export function UiC2() { return <span className=\"btn\">u2</span>; }\n",
+  "packages/ui/C3.tsx": "export function UiC3() { return <span className=\"btn\">u3</span>; }\n",
+  "packages/ui/C4.tsx": "export function UiC4() { return <span className=\"btn\">u4</span>; }\n",
+  "packages/ui/C5.tsx": "export function UiC5() { return <span className=\"btn\">u5</span>; }\n",
+  "packages/ui/C6.tsx": "export function UiC6() { return <span className=\"btn\">u6</span>; }\n",
+  "packages/ui/C7.tsx": "export function UiC7() { return <span className=\"btn\">u7</span>; }\n",
+  "packages/ui/package.json": "{\n  \"name\": \"@fix/ui\"\n}",
+  "packages/ui/tokens.css": ":root { --ui-ink: #202024; --ui-paper: #fbfbf8; --ui-accent: #2f6f4f; }\n.btn { color: var(--ui-ink); padding: 8px; }\n"
+ }
+}

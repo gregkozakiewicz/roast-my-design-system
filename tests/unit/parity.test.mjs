@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { loadKnowledge } from '../../skills/roast-my-design-system/scripts/mcp/knowledge.mjs';
 import { validateContent } from '../../skills/roast-my-design-system/scripts/mcp/engine.mjs';
 import { canBeDuplicate, duplicateCopies, isPageFile, looksLikeJSXFile } from '../../skills/roast-my-design-system/scripts/lib/guard-api.mjs';
+import { fixture } from './_fixture.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -199,7 +200,7 @@ test('the doorway answers the same question for a guard', () => {
 });
 
 // ---------- installed code ----------
-const factory = join(HERE, '..', 'fixtures', 'shadcnfactory');
+const factory = fixture('shadcnfactory');
 const kf = loadKnowledge(factory);
 const installedFiles = kf.files.code.filter((f) => /\.(tsx|jsx)$/.test(f) && kf.installedDirs.some((d) => f.startsWith(`${d}/`)));
 

@@ -1,7 +1,0 @@
-{
-  "name": "fixture-cra",
-  "dependencies": {
-    "react": "16.8.0",
-    "react-redux": "7.0.0"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "name": "colouruse",
-  "private": true,
-  "workspaces": ["apps/*", "packages/*"],
-  "devDependencies": { "tailwindcss": "^4.1.0" }
-}

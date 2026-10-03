@@ -1,0 +1,9 @@
+{
+ "files": {
+  ".roastignore": "# separate world\njunk/\n",
+  "index.html": "<!doctype html><html><head><link rel=\"stylesheet\" href=\"site.css\"></head><body>ok</body></html>\n",
+  "junk/toy.html": "<div style=\"color:#ff0000\">toy</div>\n",
+  "junk/wild.css": ".x{color:#123456}.y{color:#654321}.z{color:#abcdef;margin:3px !important}\n",
+  "site.css": ":root { --a: #101014; --b: #fefefe; --c: #3355ff; }\nbody { color: var(--a); }\n"
+ }
+}

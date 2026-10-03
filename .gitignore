@@ -22,3 +22,4 @@ package-lock.json
 
 # Private idea notes, kept out of the repo and the GitHub Pages site
 docs/ideas/
+tests/fixtures-work/

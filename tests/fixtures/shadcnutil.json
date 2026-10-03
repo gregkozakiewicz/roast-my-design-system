@@ -1,0 +1,10 @@
+{
+ "files": {
+  "app/globals.css": "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n",
+  "app/page.tsx": "import { Button } from \"@/components/ui/button\";\n\nexport default function Page() {\n  return (\n    <main className=\"p-8 bg-white text-zinc-900\">\n      <h1 className=\"text-2xl font-bold\">Utility-class shadcn</h1>\n      <p className=\"text-zinc-500\">No CSS variables by design.</p>\n      <Button>Go</Button>\n      <span className=\"text-[#e11d48]\">one honest stray</span>\n    </main>\n  );\n}\n",
+  "components.json": "{ \"style\": \"new-york\", \"tailwind\": { \"config\": \"tailwind.config.js\", \"css\": \"app/globals.css\", \"baseColor\": \"zinc\", \"cssVariables\": false } }\n",
+  "components/ui/button.tsx": "import * as React from \"react\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\n\nconst buttonVariants = cva(\"inline-flex items-center rounded-md text-sm font-medium\", {\n  variants: {\n    variant: {\n      default: \"bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900\",\n      destructive: \"bg-red-500 text-zinc-50 hover:bg-red-500/90\",\n      outline: \"border border-zinc-200 bg-white hover:bg-zinc-100\",\n    },\n  },\n  defaultVariants: { variant: \"default\" },\n});\n\nexport interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {}\nexport function Button({ className, variant, ...props }: ButtonProps) {\n  return <button className={buttonVariants({ variant, className })} {...props} />;\n}\n",
+  "package.json": "{ \"name\": \"fixture-shadcnutil\", \"dependencies\": { \"next\": \"14.0.0\", \"react\": \"18.0.0\", \"tailwindcss\": \"3.4.0\", \"class-variance-authority\": \"0.7.0\" } }\n",
+  "tailwind.config.js": "module.exports = { darkMode: [\"class\"], content: [\"./app/**/*.tsx\", \"./components/**/*.tsx\"], theme: { extend: {} } };\n"
+ }
+}

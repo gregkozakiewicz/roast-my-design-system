@@ -11,6 +11,7 @@ import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { fixture } from './_fixture.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ENGINE = join(HERE, '../../skills/roast-my-design-system/scripts');
@@ -18,7 +19,7 @@ const { rulesMarkdown } = await import(join(ENGINE, 'rules/build.mjs'));
 
 function scan(extra) {
   const root = mkdtempSync(join(tmpdir(), 'roast-never-'));
-  cpSync(join(HERE, '../fixtures/shadcnmixed'), root, { recursive: true });
+  cpSync(fixture('shadcnmixed'), root, { recursive: true });
   for (const [f, body] of Object.entries(extra)) writeFileSync(join(root, f), body);
   const h = join(root, 'h.json'), s = join(root, 's.json'), html = join(root, 'r.html');
   execFileSync(process.execPath, [join(ENGINE, 'harvest/index.mjs'), root, '--out', h], { stdio: 'ignore' });

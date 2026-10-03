@@ -10,6 +10,7 @@ import { loadKnowledge } from '../../skills/roast-my-design-system/scripts/mcp/k
 import { validateContent } from '../../skills/roast-my-design-system/scripts/mcp/engine.mjs';
 import { isChartFile, chartTier } from '../../skills/roast-my-design-system/scripts/lib/charts.mjs';
 import { learnSystem } from '../../skills/roast-my-design-system/scripts/lib/guard-api.mjs';
+import { fixture } from './_fixture.mjs';
 
 for (const v of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE']) delete process.env[v];
 
@@ -121,7 +122,7 @@ test('the guard doorway learns the same chart system as the MCP knowledge', () =
 });
 
 test('installed kit code is never a chart precedent: a fresh shadcn install has no chart gap', () => {
-  const fresh = join(process.cwd(), 'tests/fixtures/shadcnfresh');
+  const fresh = fixture('shadcnfresh');
   const k = loadKnowledge(fresh);
   assert.deepEqual(k.charts.precedents, []);
   assert.deepEqual(k.gaps, []);

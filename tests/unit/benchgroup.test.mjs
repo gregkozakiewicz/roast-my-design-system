@@ -10,6 +10,7 @@ import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { fixture } from './_fixture.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ENGINE = join(HERE, '../../skills/roast-my-design-system/scripts');
@@ -18,7 +19,7 @@ const bench = JSON.parse(readFileSync(join(ENGINE, 'benchmark/benchmark.json'), 
 test('a messy shadcn repo is called messier than the shadcn group, by its own count', () => {
   const root = mkdtempSync(join(tmpdir(), 'roast-benchgroup-'));
   try {
-    cpSync(join(HERE, '../fixtures/shadcnfresh'), root, { recursive: true });
+    cpSync(fixture('shadcnfresh'), root, { recursive: true });
     // well past the shadcn group's medians on colours, spacing and inline styles
     const hex = (i) => `#${(0x203040 + i * 0x050301).toString(16).padStart(6, '0').slice(-6)}`;
     writeFileSync(join(root, 'app/messy.css'), Array.from({ length: 120 }, (_, i) => `.c${i} { color: ${hex(i)}; padding: ${i + 3}px; }`).join('\n'));

@@ -1,0 +1,6 @@
+{
+ "files": {
+  "assets/css/site.css": ":root {\n  --paper: #faf8f2;\n  --ink: #16161a;\n  --accent: #c04f2e;\n  --muted: #8a8578;\n  --line: #d9d4c7;\n  --space-1: 8px;\n}\nbody { background: var(--paper); color: var(--ink); font-family: 'Barlow Condensed', sans-serif; }\n.hero { padding: var(--space-1); border-color: var(--line); }\na { color: var(--accent); }\n.small { color: var(--muted); }\n",
+  "index.html": "<!doctype html><html><head><link rel=\"stylesheet\" href=\"assets/css/site.css\"></head><body><main class=\"hero\">hi</main></body></html>\n"
+ }
+}

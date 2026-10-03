@@ -1,13 +1,22 @@
 #!/usr/bin/env node
 /**
- * Snapshot test suite for the scan engine. Five fixture repos, frozen expected
- * outputs. Any engine change that moves a score, a tile, a verdict, a rule or
- * an exclusion shows up here as a diff before it can ship.
+ * Snapshot test suite for the scan engine. Twenty-nine fixture repos, frozen
+ * expected outputs. Any engine change that moves a score, a tile, a verdict,
+ * a rule or an exclusion shows up here as a diff before it can ship.
  *
- *   node test/run.mjs            run all checks, exit 1 on any mismatch
- *   node test/run.mjs --update   regenerate the expected files (review the
- *                                diff before committing: expected files are
- *                                the contract)
+ *   node tests/run.mjs            run all checks, exit 1 on any mismatch
+ *   node tests/run.mjs --update   regenerate the expected files (review the
+ *                                 diff before committing: expected files are
+ *                                 the contract)
+ *
+ * Since 10.1.2 each fixture is one JSON file in tests/fixtures/ and each
+ * fixture's snapshots are one JSON file in tests/expected/, because the
+ * claude.ai plugin directory counts every file in the repository against a
+ * limit of 512. The suite unpacks the fixtures into a temporary folder at
+ * start, so every test reads folders as before. To look at or edit a fixture:
+ *
+ *   node tests/fixtures.mjs unpack messy     the folder appears in tests/fixtures-work/
+ *   node tests/fixtures.mjs pack messy       write it back into the JSON
  *
  * Runs against the engine in skills/roast-my-design-system/scripts/, the one
  * copy that ships. (It still finds a sibling src/ if one exists, a leftover
@@ -28,7 +37,11 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ENGINE = existsSync(join(HERE, '../src/harvest/index.mjs'))
   ? resolve(HERE, '../src')
   : resolve(HERE, '../skills/roast-my-design-system/scripts');
-const FIXTURES = join(HERE, 'fixtures');
+// The fixtures live as one JSON file each (tests/fixtures.mjs) and are
+// unpacked here, once, into a temporary folder: every test below reads
+// folders exactly as it did when they were loose files (10.1.2).
+const { unpackAll } = await import(pathToFileURL(join(HERE, 'fixtures.mjs')).href);
+const FIXTURES = unpackAll(mkdtempSync(join(tmpdir(), 'roast-fixtures-')));
 const EXPECTED = join(HERE, 'expected');
 const UPDATE = process.argv.includes('--update');
 
@@ -61,12 +74,34 @@ function normalizeHarvest(h) {
   return c;
 }
 
+// A fixture's snapshots live together in tests/expected/<fixture>.json (10.1.2;
+// five loose files per fixture before, 152 in all, against the plugin
+// directory's 512-file limit). Each entry is keyed by the old file name:
+// JSON snapshots are stored as the object itself, text ones as an array of
+// lines, so a diff still reads line by line. A snapshot that belongs to no
+// fixture (the package contract, the tarball manifest) stays its own file.
+const FIXTURE_NAMES = new Set(readdirSync(FIXTURES));
+const bundleOf = (expectedFile) => { const stem = expectedFile.split('.')[0]; return FIXTURE_NAMES.has(stem) ? stem : null; };
+const readBundle = (stem) => { const p = join(EXPECTED, `${stem}.json`); return existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : {}; };
+const writeBundle = (stem, bundle) => writeFileSync(join(EXPECTED, `${stem}.json`), JSON.stringify(Object.fromEntries(Object.entries(bundle).sort(([a], [b]) => (a < b ? -1 : 1))), null, 1) + '\n');
+const toStored = (expectedFile, text) => (expectedFile.endsWith('.json') ? JSON.parse(text) : text.split('\n'));
+const fromStored = (expectedFile, v) => (expectedFile.endsWith('.json') ? JSON.stringify(v, null, 2) : v.join('\n'));
+
 function compare(name, actual, expectedFile) {
-  const p = join(EXPECTED, expectedFile);
   const text = typeof actual === 'string' ? actual : JSON.stringify(actual, null, 2);
-  if (UPDATE) { writeFileSync(p, text); ok(`${name} (expected updated)`); return; }
-  if (!existsSync(p)) { bad(name, `missing expected file ${expectedFile}; run with --update`); return; }
-  const want = readFileSync(p, 'utf8');
+  const stem = bundleOf(expectedFile);
+  let want = null;
+  if (stem) {
+    const bundle = readBundle(stem);
+    if (UPDATE) { bundle[expectedFile] = toStored(expectedFile, text); writeBundle(stem, bundle); ok(`${name} (expected updated)`); return; }
+    if (!(expectedFile in bundle)) { bad(name, `missing snapshot ${expectedFile} in expected/${stem}.json; run with --update`); return; }
+    want = fromStored(expectedFile, bundle[expectedFile]);
+  } else {
+    const p = join(EXPECTED, expectedFile);
+    if (UPDATE) { writeFileSync(p, text); ok(`${name} (expected updated)`); return; }
+    if (!existsSync(p)) { bad(name, `missing expected file ${expectedFile}; run with --update`); return; }
+    want = readFileSync(p, 'utf8');
+  }
   if (text === want) { ok(name); return; }
   const a = text.split('\n'), b = want.split('\n');
   const at = a.findIndex((l, i) => l !== b[i]);
@@ -91,6 +126,13 @@ console.log('unit:');
   else bad(`unit checks: ${failed} failed of ${passed + failed}`, (r.stdout.split('\n').filter((l) => /^\s*not ok|^\s+(message|error|expected|actual):|^\s+at /.test(l)).slice(0, 40).join('\n    ') || r.stderr.trim().slice(0, 2000)));
 }
 
+// trapped's orphan receipts come from `git log`; the unpacked copy gets one
+// commit, dated, so the receipt reads as it always did
+{
+  const root = join(FIXTURES, 'trapped');
+  const env = { ...process.env, GIT_AUTHOR_DATE: '2024-03-14T12:00:00Z', GIT_COMMITTER_DATE: '2024-03-14T12:00:00Z', GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_SYSTEM: '/dev/null' };
+  for (const args of [['init', '-q'], ['add', '-A'], ['-c', 'user.name=fixture', '-c', 'user.email=fixture@example.com', 'commit', '-q', '-m', 'fixture']]) spawnSync('git', args, { cwd: root, env, encoding: 'utf8' });
+}
 for (const fixture of readdirSync(FIXTURES).sort()) {
   console.log(`${fixture}:`);
   const root = join(FIXTURES, fixture);
@@ -106,8 +148,10 @@ for (const fixture of readdirSync(FIXTURES).sort()) {
   compare('compact rules snapshot', stripDates(stripVersion(rulesMarkdown(h, { compact: true }).text)), `${fixture}.compact.md`);
 
   // The report must embed no machine paths (the examples leak of 2026-08-16)
+  // (the fixture root itself is allowed, wherever it was unpacked)
   const html = readFileSync(join(tmp, `${fixture}.html`), 'utf8');
-  if (html.includes(tmpdir()) || /\/Users\/[a-z]+\//.test(html.replace(new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), ''))) {
+  const outsideRoot = html.replace(new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '');
+  if (outsideRoot.includes(tmpdir()) || /\/Users\/[a-z]+\//.test(outsideRoot)) {
     bad('report carries no machine paths', 'found a home or tmp path outside the scanned fixture root');
   } else ok('report carries no machine paths');
 
@@ -176,8 +220,10 @@ console.log('traps:');
 }
 
 // ---------- adoption map (5.5.0): drawn on trapped, dated from git ----------
-// The fixtures sit inside this repo's own git history, so orphan dates are
-// exercised on every run: real `git log` calls, real YYYY-MM-DD receipts.
+// The fixtures used to sit inside this repo's own git history. Unpacked into
+// a temporary folder they have none, so trapped gets one commit with a fixed
+// date before its scan (see the fixtures loop), and the receipt is still a
+// real `git log` call with a real YYYY-MM-DD.
 console.log('adoption map:');
 {
   const html = readFileSync(join(tmp, 'trapped.html'), 'utf8');
@@ -1445,7 +1491,7 @@ if (existsSync(bin)) {
   const r = spawnSync(process.execPath, [bin, join(FIXTURES, 'messy'), '--json', '--out', join(tmp, 'e2e.html')], { encoding: 'utf8' });
   try {
     const j = JSON.parse(r.stdout);
-    const want = JSON.parse(readFileSync(join(EXPECTED, 'messy.summary.json'), 'utf8'));
+    const want = readBundle('messy')['messy.summary.json'];
     j.score === want.score ? ok(`--json e2e score ${j.score}`) : bad('--json e2e score', `want ${want.score}, got ${j.score}`);
   } catch (e) { bad('--json e2e', `stdout was not clean JSON: ${e.message}`); }
 

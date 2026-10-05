@@ -20,6 +20,15 @@ a colour written by hand.
   rule in `lib/declarations.mjs`. A `var()` nested inside a fallback is
   still read as a use of that variable. A colour written beside a
   fallback still counts.
+- **A test that the report and the live checks agree.** The rule had been
+  fixed in the report's reader on 17 September and not in the reader the
+  live checks use, and no test compared the two. The suite now puts 23
+  sample lines through both and fails when they give different answers.
+  On its first run it found one more difference, which is listed in the
+  test as known and open: a colour written loose in a `.tsx` or `.jsx`
+  file (a constant, a prop, a styled-components block) is flagged by the
+  live checks and not counted by the report. Closing it changes what the
+  score measures, so it is not part of this release.
 - **Scores.** Of 210 repos scanned before and after, 2 scores move, both
   up: adobe/react-spectrum 50 to 55 and primer/react 55 to 60. 25 more
   change a count without changing the score. In one repo (doocs/md) 18

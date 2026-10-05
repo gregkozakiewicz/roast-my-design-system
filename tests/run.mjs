@@ -1458,6 +1458,78 @@ console.log('the token file on a shadcn repo (9.9.1):');
   } catch (e) { bad('server protocol', e.message); }
 }
 
+// ---------- the report and the live checks agree (10.1.5) ----------
+// Issue #2: `color: var(--TextColor, #333)` was left out of the report and
+// flagged by the live checks, because the rule had been written in one
+// reader and not the other. The suite tested each reader alone and never
+// asked whether they agree, and the fleet comparison only runs the report.
+// One list of sample lines, each put through both: the scan's harvest (is
+// the colour a stray in this file?) and validateContent (is there a colour
+// finding?). A sample where they differ fails the suite, unless it is one
+// of the KNOWN differences below, which fail when they stop being true so
+// the list cannot go stale.
+//
+// KNOWN, open (found by this test on its first run, 2026-10-05): a colour
+// written loose in a .tsx or .jsx file, outside a class string and an inline
+// style, is counted by the live checks and not by the report. The report
+// reads loose colours in .ts and .js files only. Changing either side moves
+// what the score measures, so it waits for a decision and a benchmark
+// rebuild.
+console.log('the report and the live checks agree:');
+{
+  const { validateContent } = await import(pathToFileURL(join(ENGINE, 'mcp/engine.mjs')).href);
+  // [file, text, name, counted by both?] — 'known' marks an open difference
+  const SAMPLES = [
+    ['src/s01.css', '.a { color: #a10101; }', 'a colour written in a stylesheet', true],
+    ['src/s02.css', '.a { color: var(--ink, #a20202); }', 'a var() fallback, hex', false],
+    ['src/s03.css', '.a { color: var(--ink, rgb(163, 3, 3)); }', 'a var() fallback, rgb()', false],
+    ['src/s04.css', '.a { color: var(--ink, var(--brand, #a40404)); }', 'a nested var() fallback', false],
+    ['src/s05.css', '/* was #a50505 */\n.a { color: var(--ink); }', 'a colour in a CSS comment', false],
+    ['src/s06.css', '#a60606 { color: var(--ink); }', 'an id selector that spells a hex', false],
+    ['src/s07.css', '.a { color: rgb(167, 7, 7); }', 'an rgb() colour in a stylesheet', true],
+    ['src/s08.css', '.a { box-shadow: 0 1px 2px #a80808; }', 'a colour inside a shadow', true],
+    ['src/s24.scss', '.a { .b & { color: var(--ink, #c50505); } }', 'a var() fallback in Sass', false],
+    ['src/S09.tsx', 'export const S09 = () => <div style={{ color: "#a90909" }}>x</div>;', 'a colour in an inline style', true],
+    ['src/S10.tsx', 'export const S10 = () => <div style={{ color: "var(--ink, #b10101)" }}>x</div>;', 'a var() fallback in an inline style', false],
+    ['src/S11.tsx', 'export const S11 = () => <div className="bg-[#b20202]">x</div>;', 'a colour in a bracket class', true],
+    ['src/S12.tsx', 'export const S12 = () => <div className="text-[var(--ink,#b30303)]">x</div>;', 'a var() fallback in a bracket class', false],
+    ['src/S15.tsx', 'const order = { id: "#1042" };\nexport const S15 = () => <div className="p-4">{order.id}</div>;', 'an order number that looks like a hex', false],
+    ['src/S16.tsx', 'export const S16 = () => <div className={cn("p-4", "text-[#b60606]")}>x</div>;', 'a colour in a class inside cn()', true],
+    ['src/s18.ts', 'export const tone = "#b80808";', 'a colour held in a constant in a .ts file', true],
+    ['src/s21.ts', 'import { css } from "lit";\nexport const s = css`:host { color: #c20202; padding: 4px; }`;', 'a colour in a Lit css block', true],
+    ['src/s22.ts', 'import { css } from "lit";\nexport const s = css`:host { color: var(--ink, #c30303); padding: 4px; }`;', 'a var() fallback in a Lit css block', false],
+    ['src/S13.tsx', '// the old brand was #b40404\nexport const S13 = () => <div className="p-4">x</div>;', 'a colour in a comment in a .tsx file', 'known'],
+    ['src/S14.tsx', 'const tone = "#b50505";\nexport const S14 = () => <div style={{ color: tone }}>x</div>;', 'a colour held in a constant in a .tsx file', 'known'],
+    ['src/S17.tsx', 'export const S17 = () => <svg width="8" height="8"><rect fill="#b70707" width="8" height="8" /></svg>;', 'a fill on a small inline SVG', 'known'],
+    ['src/S20.tsx', 'import styled from "styled-components";\nexport const S20 = styled.div`color: #c10101;`;', 'a colour in a styled-components block in a .tsx file', 'known'],
+    ['src/S23.tsx', 'export const S23 = () => <Icon color="#c40404" />;', 'a colour passed as a prop', 'known'],
+  ];
+  const work = mkdtempSync(join(tmpdir(), 'roast-agree-'));
+  const put = (f, t) => { mkdirSync(dirname(join(work, f)), { recursive: true }); writeFileSync(join(work, f), `${t}\n`); };
+  put('src/tokens.css', ':root { --ink: #111111; --brand: #3b6fe0; --paper: #ffffff; }');
+  put('src/App.tsx', 'export const App = () => <div className="p-4">x</div>;');
+  for (const [f, t] of SAMPLES) put(f, t);
+  const hp = join(work, 'harvest.json');
+  runEngine('harvest/index.mjs', [work, '--out', hp]);
+  const strays = JSON.parse(readFileSync(hp, 'utf8')).tokens.colors.filter((c) => !c.isToken);
+  const ak = loadKnowledge(work);
+  const wrong = [], stale = [];
+  for (const [f, t, name, want] of SAMPLES) {
+    const report = strays.some((c) => (c.files ?? []).some((x) => (x.file ?? x) === f));
+    const live = validateContent({ text: `${t}\n`, file: f }, ak).findings.some((x) => /colour|twin|palette/.test(x.rule));
+    if (want === 'known') { if (report === live) stale.push(name); continue; }
+    if (report !== want || live !== want) wrong.push(`${name}: report ${report ? 'counts' : 'skips'}, live checks ${live ? 'count' : 'skip'}, expected both to ${want ? 'count' : 'skip'}`);
+  }
+  const agreed = SAMPLES.filter((x) => x[3] !== 'known').length;
+  wrong.length === 0
+    ? ok(`${agreed} sample lines get the same answer from the report and the live checks`)
+    : bad('report and live checks disagree', wrong.join('\n    '));
+  stale.length === 0
+    ? ok(`${SAMPLES.length - agreed} known differences are still open (a loose colour in a .tsx file)`)
+    : bad('a known difference has closed: move it into the agreed list', stale.join(', '));
+  rmSync(work, { recursive: true, force: true });
+}
+
 // Determinism: the same fixture scanned twice must produce identical data.
 console.log('determinism:');
 const d1 = join(tmp, 'det1.json'), d2 = join(tmp, 'det2.json');

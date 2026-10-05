@@ -2,6 +2,31 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.1.5 — 2026-10-05
+
+One fix, reported in issue #2: the fallback inside `var()` was counted as
+a colour written by hand.
+
+- **A `var()` fallback is not a hardcoded colour.** In
+  `color: var(--TextColor, #333);` the `#333` only shows if the variable
+  is missing. The line reads the theme. The full report already left out
+  the simple case in a stylesheet. Three places still counted it:
+  - the live checks (`--check`, the check after each edit, the MCP
+    validate and review tools) flagged every fallback;
+  - the report counted a fallback written as `rgb()` or `hsl()`;
+  - the report counted a fallback inside an inline style in a component.
+
+  The report, the live checks and the guard now read fallbacks with one
+  rule in `lib/declarations.mjs`. A `var()` nested inside a fallback is
+  still read as a use of that variable. A colour written beside a
+  fallback still counts.
+- **Scores.** Of 210 repos scanned before and after, 2 scores move, both
+  up: adobe/react-spectrum 50 to 55 and primer/react 55 to 60. 25 more
+  change a count without changing the score. In one repo (doocs/md) 18
+  colours move from tokens to strays: they were fallback values in a
+  theme file that had been read as token definitions. No hosted example
+  changes its score. The benchmark is not rebuilt.
+
 ## 10.1.4 — 2026-10-03
 
 One rule for what a demo is, the Roast icon on the report, and a list of

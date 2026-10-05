@@ -13,7 +13,7 @@ import {
 import { join } from 'node:path';
 import { canonical, parseColor } from '../lib/color.mjs';
 import { readSource } from './walk.mjs';
-import { TOKEN_REF_SRC } from '../lib/declarations.mjs';
+import { TOKEN_REF_SRC, blankVarFallbacks } from '../lib/declarations.mjs';
 import { tokenCollisions, workspaceMatcher } from './collisions.mjs';
 
 // ---------- counters ----------
@@ -288,6 +288,9 @@ export function extractStyling(src, { css = false } = {}) {
   // Same rule as the harvest: a comment is not a stylesheet. Blanked to
   // spaces so every index below still points at the right line.
   if (css) src = src.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length));
+  // and a var() fallback is a read of the theme, in a stylesheet, an inline
+  // style or a class: the same reader as the harvest (issue #2, 10.1.5)
+  src = blankVarFallbacks(src);
   const out = { colors: [], spacing: [], arbitrary: [], inlineBlocks: [], important: [], tokenDefs: [] };
   if (css) {
     for (const m of src.matchAll(/!\s*important/gi)) out.important.push({ index: m.index });
@@ -437,11 +440,11 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
     // A comment is not a stylesheet: `/* the old brand was #123456 */` kept a
     // retired colour in the palette until 6.0.1. Blanked to spaces, so every
     // character offset below still points at the same place in the file.
-    const text = raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length))
-      // The fallback in var(--x, #fefefe) is what shows if the variable is
-      // missing: the declaration reads the theme, so the hex is not a stray
-      // (Lightdash's chart colours, 2026-09-17). Blanked, offsets kept.
-      .replace(/var\(\s*--[\w-]+\s*,([^()]*)\)/g, (m, fb) => m.replace(fb, ' '.repeat(fb.length)));
+    // The fallback in var(--x, #fefefe) is what shows if the variable is
+    // missing: the declaration reads the theme, so the hex is not a stray
+    // (Lightdash's chart colours, 2026-09-17). Blanked, offsets kept; one
+    // reader with the live checks since 10.1.5 (lib/declarations.mjs).
+    const text = blankVarFallbacks(raw.replace(/\/\*[\s\S]*?\*\//g, (m) => ' '.repeat(m.length)));
     const imp = (text.match(/!\s*important/gi) ?? []).length;
     const widget = WIDGET_CSS_RE.test(text) || widgetDirs.some((d) => file.startsWith(d));
     if (imp && widget) mediumFiles.push({ file, reason: WIDGET_REASON, count: imp });
@@ -568,6 +571,9 @@ export function harvestTokens(root, styleFiles, codeFiles, { email = null } = {}
     if (isEmail(f, src, email)) { skip(f, src); continue; }
     for (const m of src.matchAll(/[A-Za-z_][\w-]+/g)) ownClasses.add(m[0]);
     listShare.set(f, colourListShare(src));
+    // a var() fallback in an inline style or a class reads the theme, as it
+    // does in a stylesheet (issue #2, 10.1.5)
+    src = blankVarFallbacks(src);
 
     // CSS-in-tagged-templates (Lit css``, styled-components css``) IS the
     // stylesheet in those worlds: Shoelace keeps its entire component styling

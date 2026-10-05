@@ -552,6 +552,18 @@ console.log('false positives:');
     ? ok('4-digit hex in a bracket class is still a colour') : bad('bracket 4-digit', 'dropped');
   extractStyling('.a { background: #1042; }', { css: true }).colors.length === 1
     ? ok('4-digit hex in CSS is still a colour') : bad('css 4-digit', 'dropped');
+  // 10.1.5, issue #2: the fallback in var(--x, #333) reads the theme. The
+  // report blanked it in a stylesheet only, and only without brackets; the
+  // live checks and the guard counted every one.
+  const cssFb = extractStyling('.a { color: var(--TextColor, #333); background: var(--bg, rgb(51, 51, 51)); border-color: var(--a, var(--b, #444)); }', { css: true });
+  cssFb.colors.length === 0
+    ? ok('a var() fallback in CSS is not a colour: hex, rgb() and nested') : bad('css fallback', `got ${cssFb.colors.map((c) => c.value).join(', ')}`);
+  extractStyling('<div style={{ color: "var(--TextColor, #333)" }} />', { css: false }).colors.length === 0
+    ? ok('a var() fallback in an inline style is not a colour') : bad('inline fallback', 'counted');
+  const mixedSrc = '.a { color: var(--TextColor, #333); }\n.b { color: #555; }';
+  const mixed = extractStyling(mixedSrc, { css: true });
+  mixed.colors.length === 1 && mixed.colors[0].value === '#555555' && mixed.colors[0].index === mixedSrc.indexOf('#555')
+    ? ok('a colour written beside a fallback still counts, at its own place') : bad('beside fallback', JSON.stringify(mixed.colors));
 }
 
 // ---------- the five confirmed bugs of the 2026-09-11 review ----------

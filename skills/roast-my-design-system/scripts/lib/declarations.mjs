@@ -61,3 +61,48 @@ export function* fontDeclarations(text) {
     yield { raw, index: m.index + m[0].indexOf(m[1]) };
   }
 }
+
+/**
+ * The fallback in var(--x, #fefefe) is what shows if the variable is missing:
+ * the declaration reads the theme, so the literal is not a value written by
+ * hand. Blanked to spaces, so every index still points at the same place.
+ *
+ * One reader for the report and the live checks (10.1.5). Until then the
+ * report blanked a fallback only in a stylesheet and only when it held no
+ * brackets, so `var(--text, rgb(51, 51, 51))` and a fallback inside an inline
+ * style were counted, and the live checks and the guard counted every one
+ * (issue #2). A var() nested in the fallback is kept, with its own fallback
+ * blanked, because it is a read of the theme too.
+ */
+export function blankVarFallbacks(text) {
+  if (!text.includes('var(')) return text;
+  const out = text.split('');
+  const VAR_RE = /var\(\s*--[\w-]+\s*/g;
+  // the index after the bracket that closes the var( opened before `from`
+  const closeOf = (from) => {
+    let depth = 1;
+    for (let i = from; i < text.length; i++) {
+      if (text[i] === '(') depth++;
+      else if (text[i] === ')' && --depth === 0) return i;
+    }
+    return -1;
+  };
+  let m;
+  while ((m = VAR_RE.exec(text))) {
+    const afterName = m.index + m[0].length;
+    if (text[afterName] !== ',') continue;
+    const close = closeOf(afterName);
+    if (close < 0) continue;
+    for (let i = afterName + 1; i < close; i++) if (out[i] !== '\n') out[i] = ' ';
+  }
+  // put back each var(--name that sits inside a blanked fallback, and its
+  // comma and closing bracket, so the nested read still parses as a read
+  VAR_RE.lastIndex = 0;
+  while ((m = VAR_RE.exec(text))) {
+    const afterName = m.index + m[0].length;
+    for (let i = m.index; i < afterName; i++) out[i] = text[i];
+    if (text[afterName] === ',') { out[afterName] = ','; const c = closeOf(afterName); if (c >= 0) out[c] = ')'; }
+    else if (text[afterName] === ')') out[afterName] = ')';
+  }
+  return out.join('');
+}

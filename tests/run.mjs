@@ -1537,6 +1537,42 @@ console.log('the report and the live checks agree:');
   rmSync(work, { recursive: true, force: true });
 }
 
+// ---------- built or minified JavaScript is not the product's code ----------
+// casdoor and percona keep swagger-ui bundles beside the source (221 colours
+// each); DB-GPT keeps its Next.js build output inside a package. Until this
+// rule those colours were the repo's, and on percona they made it token-led.
+// The walk leaves such files out and names them; a short script with a
+// colour in it, whatever it is called, is still read.
+console.log('built or minified JavaScript:');
+{
+  const { walkRepo } = await import(pathToFileURL(join(ENGINE, 'harvest/walk.mjs')).href);
+  const work = mkdtempSync(join(tmpdir(), 'roast-built-'));
+  const put = (f, t) => { mkdirSync(dirname(join(work, f)), { recursive: true }); writeFileSync(join(work, f), t); };
+  put('src/tokens.css', ':root { --ink: #111111; --brand: #3b6fe0; }\n');
+  put('src/App.tsx', 'export const App = () => <div className="p-4">x</div>;\n');
+  put('vendor/swagger-ui.min.js', '!function(e){var t="#d10101";e.x=t}(this);\n');
+  put('static/chunk-4f3a.js', `(function(){${'var a=1;'.repeat(900)}var c="#d20202";})();\n`);
+  put('scripts/bundle.js', 'export const tone = "#d30303";\n');
+  const files = walkRepo(work);
+  const left = (files.builtFiles ?? []).map((x) => x.file).sort().join(',');
+  left === 'static/chunk-4f3a.js,vendor/swagger-ui.min.js'
+    ? ok('a .min.js and a file with one very long line are left out of the walk, and named')
+    : bad('built files', `left out: ${left || 'none'}`);
+  files.code.includes('scripts/bundle.js') && !files.code.includes('vendor/swagger-ui.min.js')
+    ? ok('a short script with a colour in it is still read, whatever it is called')
+    : bad('built files', JSON.stringify(files.code));
+  const hp = join(work, 'harvest.json');
+  runEngine('harvest/index.mjs', [work, '--out', hp]);
+  const h = JSON.parse(readFileSync(hp, 'utf8'));
+  const colours = h.tokens.colors.map((c) => c.value);
+  !colours.includes('#d10101') && !colours.includes('#d20202') && colours.includes('#d30303')
+    ? ok('their colours are not counted; the script\'s colour is')
+    : bad('built colours', colours.join(', '));
+  (h.files?.builtFiles ?? []).length === 2
+    ? ok('the harvest names the two files for the report') : bad('builtFiles in harvest', JSON.stringify(h.files?.builtFiles));
+  rmSync(work, { recursive: true, force: true });
+}
+
 // Determinism: the same fixture scanned twice must produce identical data.
 console.log('determinism:');
 const d1 = join(tmp, 'det1.json'), d2 = join(tmp, 'det2.json');

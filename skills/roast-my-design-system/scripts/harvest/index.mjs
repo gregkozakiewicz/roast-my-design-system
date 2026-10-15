@@ -344,6 +344,8 @@ const harvest = {
     // folders the walk skips on purpose, with the UI inside them: a scan that
     // saw almost nothing can say where the UI actually lives
     ...(files.skipped?.length ? { skippedDirs: files.skipped } : {}),
+    // built or minified JavaScript the walk left out, named in the report (10.2.0)
+    ...(files.builtFiles?.length ? { builtFiles: files.builtFiles } : {}),
     ...(files.readAnyway ? { readAnyway: files.readAnyway } : {}),
   },
   components,

@@ -240,6 +240,9 @@ export function foreignStylesheet(file, text = '') {
   // a CSS module is the team's own component styling, whatever it is called
   if (/\.module\.(?:css|scss|less)$/i.test(file)) return null;
   if (VENDOR_CSS_NAME_RE.test(file)) return "a library's stylesheet kept in the repo";
+  // .min.css says what it is even when it was pretty-printed afterwards
+  // (nhost keeps graphiql.min.css over 1,529 lines, 2026-10-15)
+  if (/\.min\.(?:css|scss|less)$/i.test(file)) return 'a minified stylesheet, shipped rather than written here';
   if (minifiedCss(text)) return 'a minified stylesheet, shipped rather than written here';
   if (COMPILED_TAILWIND_RE.test(text)) return "Tailwind's compiled output, generated from the source rather than written here";
   if (CONTENT_CSS_NAME_RE.test(file)) return 'a code or markdown theme: it styles content, not the interface';
@@ -265,3 +268,34 @@ export const isLibraryClass = (c) => LIBRARY_CLASS_RE.test(c);
  */
 export const WIDGET_CSS_RE = /@import\s+["']tailwindcss(?:\/utilities\.css)?["'][^;]*\bimportant\b/;
 export const WIDGET_CONFIG_RE = /\bimportant\s*:\s*["']#/;
+
+/**
+ * Built or minified JavaScript committed to the repo is not the product's
+ * code: a library kept beside the source (casdoor's and percona's swagger-ui
+ * bundles, 221 colours each), a framework's build output kept in a package
+ * (DB-GPT's _next/static chunks, 1 MB apiece with 200 to 500 colours each,
+ * dkron's ui-dist, yapi's static/prd). The walk skips dist/ and .next/ by
+ * name, and these sit elsewhere. Found 2026-10-15 when a comment blanker
+ * swallowed those files by accident and five scores moved. Same shape as
+ * foreignStylesheet: named in the report, left out of every count.
+ */
+const MINIFIED_JS_NAME_RE = /\.min\.[cm]?js$/i;
+// one line this long was never typed: a bundler wrote it, or a generator
+// pasted a blob (doocs/md keeps a 63,000-character line in a .ts file)
+const LONG_LINE = 5000;
+export const minifiedScript = (text) => {
+  let start = 0;
+  for (;;) {
+    const nl = text.indexOf('\n', start);
+    const end = nl < 0 ? text.length : nl;
+    if (end - start > LONG_LINE) return true;
+    if (nl < 0) return false;
+    start = nl + 1;
+  }
+};
+/** Why this code file is not the product's own, or null. */
+export function foreignScript(file, text = '') {
+  if (MINIFIED_JS_NAME_RE.test(file)) return 'a minified library file, shipped rather than written here';
+  if (minifiedScript(text)) return 'a built or minified file, shipped rather than written here';
+  return null;
+}

@@ -1791,6 +1791,14 @@ function skippedLine() {
     const list = [...byReason.entries()].map(([reason, files]) => `${files.slice(0, 3).map((x) => `<span class="mono">${esc(x)}</span>`).join(', ')}${files.length > 3 ? ` and ${n(files.length - 3)} more` : ''} · ${esc(reason)}`).join('; ');
     parts.push(`<div class="excl">${n(foreign.length)} stylesheet${foreign.length === 1 ? '' : 's'} not read: ${list}.</div>`);
   }
+  // built or minified JavaScript (a library kept beside the source, a
+  // framework's build output committed into a package): not the product's
+  // code, so not counted, and said here rather than hidden (10.2.0)
+  const built = h.files?.builtFiles ?? [];
+  if (built.length) {
+    const names = built.slice(0, 3).map((x) => `<span class="mono">${esc(basename(x.file))}</span>`).join(', ') + (built.length > 3 ? ` and ${n(built.length - 3)} more` : '');
+    parts.push(`<div class="excl">${n(built.length)} built or minified JavaScript file${built.length === 1 ? '' : 's'} not read: ${names}. Shipped rather than written here, so not the product's own code.</div>`);
+  }
   return parts.join('');
 }
 

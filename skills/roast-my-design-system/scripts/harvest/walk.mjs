@@ -4,7 +4,7 @@
  * stylesheets of any flavor, and config — not just a happy-path shadcn layout.
  */
 import { CATALOGUE } from '../profiles/shadcn-data.mjs';
-import { emailContextOf, printedFilesOf } from '../lib/exempt.mjs';
+import { emailContextOf, printedFilesOf, foreignScript } from '../lib/exempt.mjs';
 import { isDemoDir, isDemoFile } from '../lib/demo.mjs';
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
@@ -183,6 +183,21 @@ export function walkRepo(root, maxDepth = 14, exclusions = null, readAnyway = ne
     again.readAnyway = { dir: biggest.dir, files: biggest.files };
     return again;
   }
+  // Built or minified JavaScript is not the product's code (lib/exempt.mjs,
+  // 10.2.0): taken out of the walk here, so the harvest, the MCP knowledge
+  // and the guard all read the same files, and named in the report. Only a
+  // file big enough to hold a long line, or one called .min.js, is opened.
+  files.builtFiles = [];
+  files.code = files.code.filter((f) => {
+    const p = join(root, f);
+    let size = 0;
+    try { size = statSync(p).size; } catch { return true; }
+    if (size <= 5000 && !/\.min\.[cm]?js$/i.test(f)) return true;
+    const reason = foreignScript(f, readSource(p) ?? '');
+    if (!reason) return true;
+    files.builtFiles.push({ file: f, reason });
+    return false;
+  });
   // where the repo keeps its emails, read once here so every checker that
   // is handed the walk judges an email the same way (lib/exempt.mjs)
   files.email = emailContextOf(files, (f) => readSource(join(root, f)));

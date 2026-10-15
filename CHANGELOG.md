@@ -2,6 +2,39 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.2.0 — 2026-10-15
+
+Built or minified JavaScript committed to a repo is no longer read as the
+product's code.
+
+- **Built and minified JavaScript is left out, and named.** The scan
+  already skipped `dist/` and `.next/` by folder name and left out
+  minified stylesheets. It still read a library's bundle kept beside the
+  source (casdoor and percona keep Swagger UI's, 221 colours each) and a
+  framework's build output kept inside a package (DB-GPT keeps its Next.js
+  chunks, 1 MB each with 200 to 500 colours apiece; dkron keeps `ui-dist`;
+  yapi keeps `static/prd`). Those colours counted as the repo's own, and on
+  percona, doocs/md and DB-GPT they were enough to make the repo read as
+  token-led. A code file is now left out when its name ends in `.min.js`
+  or when it holds a line longer than 5,000 characters, which no one
+  typed. The report's header names the files: "5 built or minified
+  JavaScript files not read: swagger-ui-bundle.js, …". The same rule
+  applies in the walk, so the report, the MCP server and the guard read
+  the same files. A stylesheet called `.min.css` is left out by name too,
+  even when it was pretty-printed afterwards.
+- **Scores.** Of 210 repos scanned before and after, 6 move. Four up,
+  where a bundle's colours had been counted as strays: nhost 18 to 30,
+  yapi 19 to 24, dkron 80 to 85, casdoor 87 to 91. Two down, where a
+  bundle's colours had been counted as tokens and made the repo look
+  token-led: DB-GPT 39 to 30, doocs/md 55 to 50. 17 more change a count
+  without changing the score. No hosted example moves. The benchmark is
+  not rebuilt; yapi, DB-GPT and percona sit in its Ant Design and MUI
+  groups.
+- **One known edge.** A hand-written file that carries one pasted blob on
+  a single long line (doocs/md keeps a 63,000-character line inside a
+  component file) is left out whole. The report names it, so it is
+  visible rather than silent.
+
 ## 10.1.5 — 2026-10-05
 
 One fix, reported in issue #2: the fallback inside `var()` was counted as

@@ -1469,6 +1469,12 @@ console.log('the token file on a shadcn repo (9.9.1):');
 // of the KNOWN differences below, which fail when they stop being true so
 // the list cannot go stale.
 //
+// Also KNOWN, both wrong: a hex in a code comment in a .ts file is counted
+// by both readers. Blanking comments with the class-string blanker was tried
+// on 2026-10-15 and reverted: a `/*` inside minified vendored bundles
+// (swagger-ui) swallowed whole files, and 5 scores moved for the wrong
+// reason. Needs a JS-safe comment reader, and a rule for vendored bundles.
+//
 // KNOWN, open (found by this test on its first run, 2026-10-05): a colour
 // written loose in a .tsx or .jsx file, outside a class string and an inline
 // style, is counted by the live checks and not by the report. The report
@@ -1498,7 +1504,8 @@ console.log('the report and the live checks agree:');
     ['src/s18.ts', 'export const tone = "#b80808";', 'a colour held in a constant in a .ts file', true],
     ['src/s21.ts', 'import { css } from "lit";\nexport const s = css`:host { color: #c20202; padding: 4px; }`;', 'a colour in a Lit css block', true],
     ['src/s22.ts', 'import { css } from "lit";\nexport const s = css`:host { color: var(--ink, #c30303); padding: 4px; }`;', 'a var() fallback in a Lit css block', false],
-    ['src/S13.tsx', '// the old brand was #b40404\nexport const S13 = () => <div className="p-4">x</div>;', 'a colour in a comment in a .tsx file', 'known'],
+    ['src/s19.ts', '// the old brand was #b90909\nexport const n = 1;', 'a colour in a code comment in a .ts file (both count it; both wrong, see KNOWN)', true],
+    ['src/S13.tsx', '// the old brand was #b40404\nexport const S13 = () => <div className="p-4">x</div>;', 'a colour in a code comment in a .tsx file', 'known'],
     ['src/S14.tsx', 'const tone = "#b50505";\nexport const S14 = () => <div style={{ color: tone }}>x</div>;', 'a colour held in a constant in a .tsx file', 'known'],
     ['src/S17.tsx', 'export const S17 = () => <svg width="8" height="8"><rect fill="#b70707" width="8" height="8" /></svg>;', 'a fill on a small inline SVG', 'known'],
     ['src/S20.tsx', 'import styled from "styled-components";\nexport const S20 = styled.div`color: #c10101;`;', 'a colour in a styled-components block in a .tsx file', 'known'],

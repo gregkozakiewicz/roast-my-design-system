@@ -1550,8 +1550,11 @@ console.log('built or minified JavaScript:');
   const put = (f, t) => { mkdirSync(dirname(join(work, f)), { recursive: true }); writeFileSync(join(work, f), t); };
   put('src/tokens.css', ':root { --ink: #111111; --brand: #3b6fe0; }\n');
   put('src/App.tsx', 'export const App = () => <div className="p-4">x</div>;\n');
-  put('vendor/swagger-ui.min.js', '!function(e){var t="#d10101";e.x=t}(this);\n');
-  put('static/chunk-4f3a.js', `(function(){${'var a=1;'.repeat(900)}var c="#d20202";})();\n`);
+  // the samples are built from plain pieces here, so no file in this repo
+  // holds minified-looking code (the plugin directory reads the tests too)
+  const oneLiner = ['const', 'tone', '=', '"#d10101";'].join(' ');
+  put('vendor/swagger-ui.min.js', `${oneLiner}\n`);
+  put('static/chunk-4f3a.js', `${Array.from({ length: 900 }, (_, i) => `const a${i} = ${i};`).join(' ')} const c = "#d20202";\n`);
   put('scripts/bundle.js', 'export const tone = "#d30303";\n');
   const files = walkRepo(work);
   const left = (files.builtFiles ?? []).map((x) => x.file).sort().join(',');

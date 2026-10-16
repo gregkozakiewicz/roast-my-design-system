@@ -1797,7 +1797,7 @@ function skippedLine() {
   const built = h.files?.builtFiles ?? [];
   if (built.length) {
     const names = built.slice(0, 3).map((x) => `<span class="mono">${esc(basename(x.file))}</span>`).join(', ') + (built.length > 3 ? ` and ${n(built.length - 3)} more` : '');
-    parts.push(`<div class="excl">${n(built.length)} built or minified JavaScript file${built.length === 1 ? '' : 's'} not read: ${names}. Shipped rather than written here, so not the product's own code.</div>`);
+    parts.push(`<div class="excl">${n(built.length)} built, generated or minified JavaScript file${built.length === 1 ? '' : 's'} not read: ${names}. Shipped rather than written here, so not the product's own code.</div>`);
   }
   return parts.join('');
 }

@@ -2,6 +2,18 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.2.1 — 2026-10-16
+
+Two small corrections to 10.2.0. Nothing the scan counts changes.
+
+- The report's header line now reads "built, generated or minified
+  JavaScript files not read": the rule also catches generated source such
+  as Spectrum's icon tables and Airflow's API client, which nobody typed
+  either.
+- The test for that rule wrote a minified-looking line of JavaScript as
+  its sample. The sample is now built from plain pieces at test time, so
+  no file in the repository holds minified-looking code.
+
 ## 10.2.0 — 2026-10-15
 
 Built or minified JavaScript committed to a repo is no longer read as the

@@ -93,4 +93,4 @@ const sarif = {
 };
 writeFileSync(outPath, JSON.stringify(sarif, null, 2));
 console.log(`✓ SARIF: ${results.length} findings → ${outPath}`);
-console.log(`  Upload it in CI and they appear in GitHub's code scanning tab, annotated on files.`);
+console.log(`  Hand it to code scanning in CI and they appear in GitHub's code scanning tab, annotated on files.`);

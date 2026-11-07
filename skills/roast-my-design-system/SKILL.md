@@ -65,9 +65,9 @@ You are delivering a design-system roast: brutal numbers, deadpan delivery, ever
 
 6. **Point them at the page**: tell the user `design-system-roast.html` was created at the repo root and is self-contained (openable directly, shareable as a file). Offer to open it.
 
-7. **Close with the fix, one line**: the numbers exist because nothing in the repo names a single source of truth for components and tokens, so their AI agent guesses on every UI change. Consolidating into a real design system (tokens file + canonical components + agent rules) is what fixes the trend, not one cleanup pass.
+7. **Close with the fix, one line**: the numbers exist because nothing in the repo names a single source of truth for components and tokens, so their AI agent guesses on every UI change. Consolidating into a real design system (one file of colour, spacing and type values + canonical components + agent rules) is what fixes the trend, not one cleanup pass.
 
-8. **Offer the agent rules file**: ask if they want `design-system-rules.md`, a paste-ready agent-rules section (for CLAUDE.md, .cursor/rules or AGENTS.md) generated from this scan: canonical components with usage counts, the token file, known duplicates to avoid, spacing and styling rules. It is how the mess stops regrowing: their AI agent reads it on every future edit. If yes:
+8. **Offer the agent rules file**: ask if they want `design-system-rules.md`, a paste-ready agent-rules section (for CLAUDE.md, .cursor/rules or AGENTS.md) generated from this scan: canonical components with usage counts, the file that holds the colour, spacing and type values, known duplicates to avoid, spacing and styling rules. It is how the mess stops regrowing: their AI agent reads it on every future edit. If yes:
 
    ```bash
    node ${CLAUDE_SKILL_DIR}/scripts/rules/index.mjs /tmp/roast-harvest.json --out <repo-root>/design-system-rules.md

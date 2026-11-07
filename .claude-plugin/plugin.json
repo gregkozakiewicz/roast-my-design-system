@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "roast-my-design-system",
   "displayName": "Roast my design system",
-  "icon": "./assets/roastmds.svg",
   "description": "Roast your repo's design system with real data: a health score, the receipts behind it (every colour, spacing value, duplicated component and inline style), and the first fixes ranked by payoff. Deterministic scanner, benchmarked against 119 public repos and 10 reputable design systems, one shareable light/dark HTML report.",
   "version": "10.2.1",
   "author": {

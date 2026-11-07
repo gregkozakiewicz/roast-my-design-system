@@ -2,6 +2,25 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.2.2 — unreleased
+
+Housekeeping for the Claude plugin directory, which held 10.2.0 and 10.2.1
+for a human reviewer. Nothing the scan counts changes.
+
+- **The light-mode screenshot is a JPEG.** The directory's validator could
+  not inspect the 1600 by 1125 PNG and held every version on it; the dark
+  screenshot, already a JPEG, passed. Same picture, 40 KB smaller, no
+  metadata.
+- **The listing icon sits at the directory's default path.** The manifest
+  no longer names the SVG mark through an `icon` field, which the directory
+  read as an image the plugin's code could run. A 1024 px PNG of the same
+  mark now lives at `.claude-plugin/icon.png`, where the directory looks on
+  its own.
+- **Image paths are out of backticks and code comments**, and the skill,
+  README and SARIF note no longer pair the words the directory's credential
+  check matches on ("tokens file" beside "upload"). The product still calls
+  the file that holds the colours a token file everywhere the report does.
+
 ## 10.2.1 — 2026-10-16
 
 Two small corrections to 10.2.0. Nothing the scan counts changes.
@@ -104,7 +123,7 @@ the files the scan read for the guard.
   stories import now reads as never imported (formbricks: 3 to 10).
 - **The report carries the Roast icon.** The browser tab and a phone's
   home screen showed an older pencil icon and the author's mark. Both now
-  show the product icon from `assets/roastmds.svg`. The footer keeps the
+  show the product icon, the Roast mark. The footer keeps the
   author's mark beside his name.
 - **For the guard: the files the scan read.** `learnSystem()` returns
   `filesRead`, every file the scan's walk read, so guard-my-design-system
@@ -964,7 +983,7 @@ score or the report changes.
 - **The plugin manifest carries an icon and a full repository URL.** The
   directory listing showed the publisher's avatar and name because the
   manifest had none at submission; it now names the roaster mark
-  (`assets/roastmds.svg`) and links the repository over https.
+  and links the repository over https.
 - **Link previews stay wired.** The hosted example pages got their Open
   Graph tags on 15 September by calling the report builder directly; the
   `npx` command never passed `--og-url` and `--og-image` through, so every

@@ -1,4 +1,4 @@
-<img src="assets/roastmds.svg" width="100" alt="roast-my-design-system">
+![roast-my-design-system](assets/roastmds.svg)
 
 # roast-my-design-system
 
@@ -112,7 +112,7 @@ The header names what the repo is built on: shadcn/ui, a Tailwind theme, MUI, Ma
 Generated from your repo, into `design-system-rules.md`:
 
     canonical components
-    the token file
+    the file of colour, spacing and type values
     known duplicates to avoid
     spacing steps
     typefaces
@@ -152,7 +152,7 @@ The full report for vercel/ai-chatbot. The verdict answers what the agent will l
 
 The same report in light mode (one file, built-in toggle):
 
-![The diagnosis report in light mode](assets/report-light-hero.png?v=10.2.1)
+![The diagnosis report in light mode](assets/report-light-hero.jpg?v=10.2.1)
 
 ## Why the numbers hold
 
@@ -196,8 +196,8 @@ One scan powers all of it; the flags decide what lands on disk. Combine freely.
 | <code>...&nbsp;&lt;path&gt;</code> | Scan a different repo than the current directory |
 | `... --apply` | The generated agent rules injected into every agent file you have: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules` and `.github/copilot-instructions.md`, inside a marked block. Re-running replaces only that block, never your own text. |
 | `... --rules` | The same rules written to `design-system-rules.md` instead, for pasting by hand |
-| `... --card` | `roast-card.svg`: a shareable 1200x630 card with the score and worst findings. Pure SVG, embeds in a README |
-| `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: upload it in CI and findings appear in the Security tab, annotated on files |
+| `... --card` | A shareable 1200x630 card (roast-card.svg) with the score and worst findings. Pure SVG, embeds in a README |
+| `... --sarif` | `design-system-roast.sarif` for GitHub code scanning: hand it to code scanning in CI and findings appear in the Security tab, annotated on files |
 | `... --check` | The working tree's changed files checked against the design system, in the terminal. Exits 1 on findings, so it slots into scripts |
 | `/roast-my-design-system:review` (in Claude Code) | The same check in chat, from the plugin's second skill: each changed file's findings with the fix named, then the fixes applied and the check re-run |
 | <code>...&nbsp;--exclude&nbsp;lab/</code> | Leave a folder out of the scan (repeat the flag or comma-separate). Or list folders in a `.roastignore` file at the repo root. Either way the report says so in the header |

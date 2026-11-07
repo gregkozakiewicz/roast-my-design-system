@@ -2,7 +2,7 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
-## 10.2.2 — unreleased
+## 10.2.2 — 2026-11-07
 
 Housekeeping for the Claude plugin directory, which held 10.2.0 and 10.2.1
 for a human reviewer. Nothing the scan counts changes.

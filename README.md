@@ -17,6 +17,8 @@ npx roast-my-design-system@latest
 Run it at the root of a UI repo. One second later, a report opens.
 No account. No network. No telemetry. Nothing in your repo changes.
 
+Website, with the live example reports: [www.roastds.com](https://www.roastds.com).
+
 Version history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## The idea
@@ -134,17 +136,17 @@ Nothing was rendered. Zero findings means the code follows these rules. It does 
 
 Eleven reports, hosted exactly as the tool writes them. Every number deterministic, every path real.
 
-- **[npx shadcn create, fresh](https://gregkozakiewicz.github.io/roast-my-design-system/examples/shadcn-create-fresh.html)** (factory install, all 61 components): read as a fresh install, "the score is the kit's, not yours"; 13 colours, every theme variable in place, shadcn's own 24 bracket values named and not counted. No score.
-- **[Unleash](https://gregkozakiewicz.github.io/roast-my-design-system/examples/unleash-mui.html)** (MUI): 1,109 files import the kit and the theme is read 6,166 times; 4 colours and 2 spacings per 100 kit files are written onto components. Score 60.
-- **[Metabase](https://gregkozakiewicz.github.io/roast-my-design-system/examples/metabase-mantine.html)** (Mantine): its own wrapper over Mantine counts as the kit, so 2,679 files are read instead of 392; nothing written onto components, 2 spacings per 100 kit files. Score 47.
-- **[SigNoz](https://gregkozakiewicz.github.io/roast-my-design-system/examples/signoz-antd.html)** (Ant Design): 2 colours and 7 spacings per 100 kit files written in style objects where a token exists. Score 51.
-- **[Apache Airflow](https://gregkozakiewicz.github.io/roast-my-design-system/examples/airflow-chakra.html)** (Chakra UI): no colours written onto components, 4 spacings per 100 kit files as pixel strings where a space step exists. Score 43.
-- **[vercel/ai-chatbot](https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html)** (shadcn install): 71 values like [13px] written outside the Tailwind scale, and 66 palette colours per 100 files where a theme variable exists; Claude's notes embedded. Score 80.
-- **[excalidraw/excalidraw](https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html)**: 78 off-scale spacing values and 90 !important declarations. Score 55.
-- **[dubinc/dub](https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html)**: 642 arbitrary bracket values, 21 duplicated components, and the chart-palette gap named. Score 20.
-- **[telekom/scale](https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html)** (Stencil): 95 Stencil components read by tag; 66 spacing values outside the scale where about 12 would do; Claude's notes embedded. Score 55.
-- **[magicuidesign/magicui](https://gregkozakiewicz.github.io/roast-my-design-system/examples/magicui.html)** (registry): counted on the components it publishes, 52 off-theme colours per 100 files in the code it ships, its docs site kept out and named. Score 78.
-- **[adobe/spectrum-web-components](https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html)** (Lit): 740 colour tokens with 8 hardcoded colours beside them, and 37 !important declarations. Score 83.
+- **[npx shadcn create, fresh](https://www.roastds.com/examples/shadcn-create-fresh)** (factory install, all 61 components): read as a fresh install, "the score is the kit's, not yours"; 13 colours, every theme variable in place, shadcn's own 24 bracket values named and not counted. No score.
+- **[Unleash](https://www.roastds.com/examples/unleash-mui)** (MUI): 1,109 files import the kit and the theme is read 6,166 times; 4 colours and 2 spacings per 100 kit files are written onto components. Score 60.
+- **[Metabase](https://www.roastds.com/examples/metabase-mantine)** (Mantine): its own wrapper over Mantine counts as the kit, so 2,679 files are read instead of 392; nothing written onto components, 2 spacings per 100 kit files. Score 47.
+- **[SigNoz](https://www.roastds.com/examples/signoz-antd)** (Ant Design): 2 colours and 7 spacings per 100 kit files written in style objects where a token exists. Score 51.
+- **[Apache Airflow](https://www.roastds.com/examples/airflow-chakra)** (Chakra UI): no colours written onto components, 4 spacings per 100 kit files as pixel strings where a space step exists. Score 43.
+- **[vercel/ai-chatbot](https://www.roastds.com/examples/vercel-ai-chatbot)** (shadcn install): 71 values like [13px] written outside the Tailwind scale, and 66 palette colours per 100 files where a theme variable exists; Claude's notes embedded. Score 80.
+- **[excalidraw/excalidraw](https://www.roastds.com/examples/excalidraw-excalidraw)**: 78 off-scale spacing values and 90 !important declarations. Score 55.
+- **[dubinc/dub](https://www.roastds.com/examples/dubinc-dub)**: 642 arbitrary bracket values, 21 duplicated components, and the chart-palette gap named. Score 20.
+- **[telekom/scale](https://www.roastds.com/examples/telekom-scale)** (Stencil): 95 Stencil components read by tag; 66 spacing values outside the scale where about 12 would do; Claude's notes embedded. Score 55.
+- **[magicuidesign/magicui](https://www.roastds.com/examples/magicui)** (registry): counted on the components it publishes, 52 off-theme colours per 100 files in the code it ships, its docs site kept out and named. Score 78.
+- **[adobe/spectrum-web-components](https://www.roastds.com/examples/adobe-spectrum)** (Lit): 740 colour tokens with 8 hardcoded colours beside them, and 37 !important declarations. Score 83.
 
 The full report for vercel/ai-chatbot. The verdict answers what the agent will learn here, the gap section comes first, then "What the repo teaches the agent", Claude's read of the scan:
 
@@ -318,14 +320,21 @@ cp -r roast-my-design-system/skills/roast-my-design-system roast-my-design-syste
 
 (Use `.claude/skills/` inside a repo to share it with your team. The `review` skill needs the `roast-my-design-system` folder beside it.)
 
-**OpenAI Codex CLI** (same SKILL.md, same folder):
+**OpenAI Codex** installs the [skill edition](https://github.com/gregkozakiewicz/roast-my-design-system-skill), one skill that runs the published package from npm:
 
 ```bash
-git clone https://github.com/gregkozakiewicz/roast-my-design-system.git
-cp -r roast-my-design-system/skills/roast-my-design-system ~/.codex/skills/
+codex plugin marketplace add gregkozakiewicz/roast-my-design-system-skill
+codex plugin add roast-my-design-system@roast-my-design-system-skill
 ```
 
-Invoke with `$roast-my-design-system`. Use `.codex/skills/` inside a repo to share with your team.
+**The skill edition in Claude Code**, for people who want the roast without the hooks and the local MCP server:
+
+```bash
+/plugin marketplace add gregkozakiewicz/roast-my-design-system-skill
+/plugin install roast-my-design-system@roast-my-design-system-skill
+```
+
+The skill edition is also the version submitted to the Claude plugin directory. Both editions run the same engine, so the score is the same; the full plugin is the one with the edit hook, the end-of-turn review and the MCP tools.
 
 **`npx skills`:** `npx skills add gregkozakiewicz/roast-my-design-system` works for agents that read `~/.agents/skills/`. Claude Code reads `~/.claude/skills/`, so prefer one of the routes above.
 
@@ -392,7 +401,7 @@ Review my UI changes against the design system.
 
 ## Support
 
-Bugs and questions go to [GitHub Issues](https://github.com/gregkozakiewicz/roast-my-design-system/issues). Everything else reaches Greg through [gregkozakiewicz.com](https://gregkozakiewicz.com). Security problems: see [SECURITY.md](SECURITY.md).
+Bugs and questions go to [GitHub Issues](https://github.com/gregkozakiewicz/roast-my-design-system/issues). The website is [www.roastds.com](https://www.roastds.com), with the [privacy](https://www.roastds.com/privacy) and [terms](https://www.roastds.com/terms) pages. Everything else reaches Greg through [gregkozakiewicz.com](https://gregkozakiewicz.com). Security problems: see [SECURITY.md](SECURITY.md).
 
 ## Privacy
 
@@ -426,6 +435,6 @@ MIT. The code is yours to fork, modify and redistribute; the copyright notice tr
 
 Building your own report, summary or audit from this tool's scores, counts or benchmark comparisons? Keep one line in it: *Built with [roast-my-design-system](https://github.com/gregkozakiewicz/roast-my-design-system) by Greg Kozakiewicz*. The skill asks the same of an AI agent that writes such a document from the scan.
 
-**roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://gregkozakiewicz.github.io/roast-my-design-system/brand.html).
+**roast-my-design-system**™ and the GK mark are trademarks of Greg Kozakiewicz. Forking is welcome, republishing under this name is not: see [brand and attribution](https://www.roastds.com/brand).
 
 Built and designed by <a href="https://gregkozakiewicz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/gk-mark-dark.png?v=3.10.1"><img src="assets/gk-mark.png?v=3.10.1" height="15" alt="GK mark"></picture> Greg Kozakiewicz</a>.

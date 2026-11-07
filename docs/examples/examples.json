@@ -5,74 +5,74 @@
       "file": "vercel-ai-chatbot.html",
       "repo": "vercel/ai-chatbot",
       "clone": "ai-chatbot",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/vercel-ai-chatbot.html",
-      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/vercel-ai-chatbot.png"
+      "url": "https://www.roastds.com/examples/vercel-ai-chatbot",
+      "ogImage": "https://www.roastds.com/examples/og/vercel-ai-chatbot.png"
     },
     {
       "file": "unleash-mui.html",
       "repo": "Unleash/unleash",
       "clone": "Unleash-unleash",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/unleash-mui.html"
+      "url": "https://www.roastds.com/examples/unleash-mui"
     },
     {
       "file": "metabase-mantine.html",
       "repo": "metabase/metabase",
       "clone": "metabase-metabase",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/metabase-mantine.html"
+      "url": "https://www.roastds.com/examples/metabase-mantine"
     },
     {
       "file": "signoz-antd.html",
       "repo": "SigNoz/signoz",
       "clone": "SigNoz-signoz",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/signoz-antd.html"
+      "url": "https://www.roastds.com/examples/signoz-antd"
     },
     {
       "file": "airflow-chakra.html",
       "repo": "apache/airflow",
       "clone": "apache-airflow",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/airflow-chakra.html"
+      "url": "https://www.roastds.com/examples/airflow-chakra"
     },
     {
       "file": "excalidraw-excalidraw.html",
       "repo": "excalidraw/excalidraw",
       "clone": "excalidraw-excalidraw",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/excalidraw-excalidraw.html",
-      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/excalidraw-excalidraw.png"
+      "url": "https://www.roastds.com/examples/excalidraw-excalidraw",
+      "ogImage": "https://www.roastds.com/examples/og/excalidraw-excalidraw.png"
     },
     {
       "file": "dubinc-dub.html",
       "repo": "dubinc/dub",
       "clone": "dubinc-dub",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/dubinc-dub.html",
-      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/dubinc-dub.png"
+      "url": "https://www.roastds.com/examples/dubinc-dub",
+      "ogImage": "https://www.roastds.com/examples/og/dubinc-dub.png"
     },
     {
       "file": "telekom-scale.html",
       "repo": "telekom/scale",
       "clone": "telekom-scale",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/telekom-scale.html",
-      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/telekom-scale.png"
+      "url": "https://www.roastds.com/examples/telekom-scale",
+      "ogImage": "https://www.roastds.com/examples/og/telekom-scale.png"
     },
     {
       "file": "magicui.html",
       "repo": "magicuidesign/magicui",
       "clone": "magicuidesign-magicui",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/magicui.html",
-      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/magicui.png"
+      "url": "https://www.roastds.com/examples/magicui",
+      "ogImage": "https://www.roastds.com/examples/og/magicui.png"
     },
     {
       "file": "adobe-spectrum.html",
       "repo": "adobe/spectrum-web-components",
       "clone": "adobe-spectrum-web-components",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/adobe-spectrum.html",
-      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/adobe-spectrum.png"
+      "url": "https://www.roastds.com/examples/adobe-spectrum",
+      "ogImage": "https://www.roastds.com/examples/og/adobe-spectrum.png"
     },
     {
       "file": "shadcn-create-fresh.html",
       "repo": "npx shadcn create, fresh install with all 61 components",
       "clone": "shadcn-create-fresh",
-      "url": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/shadcn-create-fresh.html",
-      "ogImage": "https://gregkozakiewicz.github.io/roast-my-design-system/examples/og/shadcn-create-fresh.png"
+      "url": "https://www.roastds.com/examples/shadcn-create-fresh",
+      "ogImage": "https://www.roastds.com/examples/og/shadcn-create-fresh.png"
     }
   ]
 }

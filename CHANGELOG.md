@@ -2,6 +2,22 @@
 
 All notable changes to roast-my-design-system. One version everywhere: the npm package, the Claude Code plugin, and the report footer always match.
 
+## 10.2.4 — 2026-11-07
+
+The front door is now [www.roastds.com](https://www.roastds.com). No engine
+change; scores and reports are identical to 10.2.3.
+
+- **The README points at the website.** The live example reports, the brand
+  page and the privacy and terms pages are linked from roastds.com, and the
+  Codex install is the two commands for the skill edition, which replaces the
+  copy-the-folder instructions.
+- **The old GitHub Pages landing page redirects** to www.roastds.com, and its
+  brand page to the new one, so old links keep working.
+- **The example list carries the new addresses**, so the next release that
+  regenerates the example reports gives them roastds.com link previews. The
+  reports themselves are unchanged in this release.
+- **npm's homepage field is the website.**
+
 ## 10.2.3 — 2026-11-07
 
 A version bump so the Claude plugin directory re-checks the listing after
